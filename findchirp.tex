@@ -901,19 +901,19 @@ byte) precision to store the calibrated interferometer data $\tilde{s}(f)$
 and the power spectral density $S_n(|f|)$ the calibrated time domain data may
 overflow the dynamic range of floating point variables. Therefore when we
 implement the digital filter, we multiply the response function $R(f)$ by a
-scaling variable $d$ which typically has values of $d = 2^{64}$ for initial
+scaling variable $d$ which typically has values of $d = 2^{69}$ for initial
 LIGO data. This scales all frequency domain quantities to have approximately
 order unity.  Therefore equation (\ref{eq:zdef}) becomes
 \begin{equation}
 \label{eq:zdefcal}
-z_j = \frac{\Delta t}{N} \sum_{k=0}^{N/2} e^{2\pi ijk/N} 
+z_j = 4 \frac{\Delta t}{N} \sum_{k=1}^{N/2-1} e^{2\pi ijk/N} 
   \frac{dR\tilde{v}_k\, d\tilde{h}_{ck}^\ast}
   {d^2|R|^2S_v\left(\left|f_k\right|\right)}
 \end{equation}
 and (\ref{eq:sigmasqdisc}) becomes
 \begin{equation}
 \label{eq:sigmasqdisccal}
-\sigma^2 = 4 \frac{\Delta t}{N} \sum_{k=0}^{N/2}
+\sigma^2 = 4 \frac{\Delta t}{N} \sum_{k=1}^{N/2-1}
 \frac{d^2 \tilde{h}_{ck}\tilde{h}_{ck}^\ast}
 {d^2|R|^2S_v\left(\left|f_k\right|\right)}. 
 \end{equation}
@@ -960,7 +960,7 @@ such must be recomputed once per template. If we substitute equation
 \begin{equation}
 \label{eq:sigmasqts}
 \sigma^2 = 4 \frac{\Delta t}{N} \mathcal{T} 
-\sum_{k=0}^{k_\mathrm{isco}} 
+\sum_{k=1}^{k_\mathrm{isco}} 
 \frac{\left(\frac{k}{N}\right)^{-\frac{7}{3}}}
 {d^2|R|^2S_v\left(\left|f_k\right|\right)}
 = 4 \frac{\Delta t}{N} \mathcal{T} \mathcal{S}
@@ -968,7 +968,7 @@ such must be recomputed once per template. If we substitute equation
 where $\mathcal{S}$ is defined to be
 \begin{equation}
 \mathcal{S} = 
-\sum_{k=0}^{k_\mathrm{isco}} 
+\sum_{k=1}^{k_\mathrm{isco}} 
 \frac{\left(\frac{k}{N}\right)^{-\frac{7}{3}}}{d^2|R|^2S_v\left(\left|f_k\right|\right)}.
 \end{equation}
 $\mathcal{S}$ is referred to as the \emph{segment dependent normalization}.
@@ -986,7 +986,7 @@ The signal-to-noise ratio squared is then
 \rho^2(t_j) = 
 \frac{16}{\sigma^2}\left(\frac{\Delta t}{N}\right)^2 \mathcal{T}
 \left| 
-  \sum_{k=1}^{N/2} e^{2\pi ijk/N} 
+  \sum_{k=1}^{N/2-1} e^{2\pi ijk/N} 
   \frac{dR\tilde{v}_k \left(\frac{k}{N}\right)^{-\frac{7}{6}} e^{-i\Psi(f_k;M,\eta)}\Theta(k-k_\mathrm{isco})}
        {d^2|R|^2 S_v\left(\left|f_k\right|\right)}
 \right|^2 
@@ -1691,17 +1691,17 @@ analysis pipeline is described in the next chapter.
 \begin{tabular}{l|c|c}
 Random Noise Generator Seed& $\left\langle \rho^2(t) \right\rangle$ & $\mathrm{Var}( \rho^2(t) )$\\
 \hline
-$1$ & $2.0118$ & $4.0312$ \\
-$2$ & $2.0059$ & $4.0196$ \\
-$3$ & $1.9965$ & $3.9911$ \\
-$4$ & $1.9998$ & $4.0023$ \\
-$5$ & $1.9936$ & $3.9846$ \\
+$7$ & $2.0118$ & $4.0312$ \\
+$15$ & $2.0059$ & $4.0196$ \\
+$19$ & $1.9965$ & $3.9911$ \\
+$43$ & $1.9998$ & $4.0023$ \\
+$69$ & $1.9936$ & $3.9846$ \\
 \end{tabular}
 \end{center}
 \caption[Mean and Variance of the Matched Filter Output for Gaussian Noise]{%
 The mean and variance of the filter output $\rho^2(t)$ for five samples of
 white, Gaussian noise with a constant power spectrum of $\ospsd =
-2\nu^2\delta T$. The observed values agree with the expected value for the
+2\varsigma^2\delta T$. The observed values agree with the expected value for the
 mean and the variance, showing that the implementation of the matched
 filter is correctly normalized.
 }
