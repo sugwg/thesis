@@ -1,5 +1,440 @@
 % $Id$
 
+In chapter \ref{ch:inspiral} we saw that the gravitational waves from binary
+inspiral take the form
+\begin{equation}
+h(t) = \mathcal{A} A(t) \cos\left( \phi(t) - \phi_0 \right)
+\end{equation}
+where $A(t)$ is the post$^{0}$-Newtonian amplitude, $\phi(t)$ is the
+post$^2$-Newtonian phase evolution. The constants $\mathcal{A}$ and $\phi$ are
+the unknown phase and amplitude of the waveform, respectively. In this chapter
+we address the problem of finding such a signal hidden in detector noise. The
+detection of signals of known form in noise is a well known
+problem\cite{wainstein:1962}. In this chapter, we present the theory behind
+such detection and then the particular implementation that we use to extract
+inspiral signals from interferometer data in a computationally efficent manner.
+
+\section{Dection of Gravitational Waves in Interferometer Noise}
+
+The output of the interferometer, $s(t)$, may contain either random noise,
+$n(t)$,
+\begin{equation}
+s(t) = n(t)
+\end{equation}
+or both the signal, $h(t)$, and random noise
+\begin{equation}
+s(t) = n(t) + h(t).
+\end{equation}
+Out goal is to decide if the signal is present or not. The interferometer
+output always contains random noise so te test we use will be probabilistic in
+nature. The test should give us the ``best'' answer to the question of signal
+presence (we defer what we mean by best until later). We call this test the
+\emph{optimum reciever} for the signal $h(t)$. The optimium reciever takes as
+input the inteferometer data and returns as its output the consitional
+probability, $P(h|s)$, that the signal, $h(t)$, is present given the data,
+$s(t)$ and the conditional probability $P(0|s) = 1 - P(h|s)$ that the signal
+is not present, given the data. The probabilities $P(h|s)$ and $P(0|s)$ are
+\emph{a posteriori} probabilities. They are the result of an experiment to
+determine if the signal is present in the data. The probability that the
+signal is present before we conduct the experiment is the \emph{a priori}
+probability $P(h)$. Similarly $P(0) = 1 - P(h)$ is the \emph{a priori}
+probability that the signal is absent. To decide if the signal is present of
+not, we construct a test on the output of the optimal reciever. Therefore we
+need to know how to construct the optimal reciever and what decision rule to
+apply to its output.
+
+We begin with a review of some elementary probability.  The probability that
+two events $A$ and $B$ occur simultaneously is given by
+\begin{equation}
+P(A,B) = P(A) P(B|A) = P(B) P(A|B).
+\label{eq:probproduct}
+\end{equation}
+We may write equation (\ref{eq:probproduct}) in the form
+\begin{equation}
+P(A|B) = \frac{P(A,B)}{P(B)} = \frac{P(A)P(B|A)}{P(B)}
+\label{eq:protobayes}
+\end{equation}
+If insted of a single event, $A$, suppose we have a complete set of mutually
+exclusive events $A_1, A_2, \ldots, A_K$. By mutually exclusive we mean that
+two or more of these events cannot occur simultaneously and by complete we
+mean that one of them one of them must occur. Now suppose $B$ is an event that
+can occur only if one of the $A_k$ occurs. Then the probability that $B$
+occurs is given by
+\begin{equation}
+\begin{split}
+P(B) &= P(A_1)P(B|A_1) + P(A_2)P(B|A_2) + \cdots + P(A_K)P(B|A_K) \\
+     &= \sum_{k=1}^K P(A_k)P(B|A_k).
+\end{split}
+\label{eq:totalprob}
+\end{equation}
+Equation (\ref{eq:totalprob}) is called the \emph{total probability formula}.
+Now let us suppose that $B$ is the result of an experiment and we want to know
+the probability that it was event $A_k$ that allowed $B$ to happen. This can
+be obtained by substituting equation (\ref{eq:totalprob}) into equation
+(\ref{eq:protobayes}) to obtain
+\begin{equation}
+P(A_k|B) = \frac{P(A_k)P(B|A_k)}{P(B)} 
+= \frac{P(A_k)P(B|A_k)}{\sum_{k=1}^K P(A_k)P(B|A_k)}.
+\label{eq:bayeslaw}
+\end{equation}
+Equation (\ref{eq:bayeslaw}) is called \emph{Bayes' theorem}. The probability
+$P(A_k)$ is the \emph{a priori} probability of event $A_k$ occuring and
+$P(A_k|B)$ is the \emph{a posteriori} probability of $A_k$ occuring given
+that the outcome of our experiment, $B$, occured. The conditional probability
+$P(B|A_k)$ is called the \emph{likelihood}.
+
+Now suppose that set $\{A_k\}$ contains only to two members: ``the signal is
+present'' and ``the signal is absent''. The \emph{a priori} probabilities of
+these events are $P(h)$ and $P(0)$, as discussed earlier. We consider $B$ to
+be the output of the interferometer for a particular ``experiment''. Let us
+Bayes' theorem to compute the \emph{a posteriori} probability that the signal
+is present, given the ouput of the detector:
+\begin{equation}
+P(h|s) = \frac{P(h)P(s|h)}{P(s)}
+\label{eq:pofhgivens1}
+\end{equation}
+where $P(s)$ is the \emph{a priori} probability of obtaining the detector
+output and $P(s|h)$ is the likelihood function; the probability of obtaining
+the detector output given that the signal is present in the data. The
+probability of obtaining the detector output is given by
+\begin{equation}
+P(s) = P(h)P(s|h) + P(0)P(s|0)
+\label{eq:pofs}
+\end{equation}
+and since the signal is either present or not, $P(h) + P(0) = 1$. Now we may
+use equation (\ref{eq:pofs}) to write equation (\ref{eq:pofhgivens1}) as
+\begin{equation}
+P(h|s) = \frac{P(h)P(s|h)}{P(h)P(s|h) + P(0)P(s|0)}.
+\label{eq:pofhgivens2}
+\end{equation}
+Dividing the numerator and denominator on the right hand side of equation
+(\ref{eq:pofhgivens2}) by $P(h)P(s|0)$ we obtain
+\begin{equation}
+P(h|s) = \frac{P(s|h)/P(s|0)}{[P(s|h)/P(s|0)] + [P(0)P(h)]}.
+\label{eq:pofhgivens3}
+\end{equation}
+Let us define the likelihood ratio, $\Lambda$, as
+\begin{equation}
+\Lambda = \frac{P(s|h)}{P(s|0)}
+\label{eq:likelihooddef}
+\end{equation}
+and then equation (\ref{eq:pofhgivens3}) becomes
+\begin{equation}
+P(h|s) = \frac{\Lambda}{[\Lambda] + [P(0)P(h)]}.
+\label{eq:pofhgivens4}
+\end{equation}
+Similarily, we find that the probability that the signal is absent is given by
+\begin{equation}
+P(0|s) = \frac{P(0)/P(h)}{\Lambda + [P(0)/P(h)}.
+\label{eq:pofnothgivens}
+\end{equation}
+Using equations (\ref{eq:pofhgivens4}) and (\ref{eq:pofnothgivens}), we find
+that the ratio of the \emph{a posteriori} probabilities that the signal is
+present of absent, given the data is
+\begin{equation}
+\frac{P(h|s)}{P(0|s)} = \Lambda\frac{P(h)}{P(0)}.
+\label{eq:postratio}
+\end{equation}
+
+We now construct an automated decision rule that will tell us if the signal is
+present or absent.  If $P(h|s)$ is large (i.e.  close to unity) then it is
+reasonable to conclude that the signal is present.  Conversely, if $P(h|s)$ is
+small (close to zero) then we may conclude that the signal is absent.
+Therefore we may set a threshold on this posterior probability, $P_\ast$, as
+our decision rule is
+\begin{equation}
+\begin{split}
+P(h|s) &\ge P_* \text{the signal is present}, \\
+P(h|s) &< P_* \text{the signal is not present}.
+\end{split}
+\end{equation}
+Given this decision rule there are four possible outcomes. If $P(h|s) \ge
+P_*$ and the signal is present, we have made a correct detection. If $P(h|s)
+\ge P_*$ and the signal is not present, we call this a \emph{false alarm}; our
+decision that the signal is present was incorrect. If $P(h|s) < P_*$ and the
+signal is not present, we have made a correct dismissal. Conversely, if
+$P(h|s) < P_*$ and the signal is present, we have made a \emph{false
+dismissal}. Each possible outcome has an accociated probability
+\begin{align}
+D & &&\text{probability that we make a correct detection} \\
+F & &&\text{probability that we make a correct dismissal} \\
+D' &= 1 - D &&\text{probability that we have a false alarm} \\
+F' &= 1 - F &&\text{probability that we have a false dismissal}.
+\end{align}
+To construct the posterior probability, $P(h|s)$, and hence $P_\ast$, we need
+the unknown \emph{a priori} probabilities, $P(h)$ and $P(0)$. We see from
+equation (\ref{eq:pofhgivens4}), however, that $P(h|s)$ is a monotonically
+increasing function of the likelihood. The ratio of the \emph{a priori}
+probabilities, $P(h)/P(0)$, is a constant that does not invovle the result of
+our experiment. Therefore we can define the output of out opitimum receiver to be
+the device which, given the input data, $s(t)$ returns the likelihood ratio,
+$\Lambda$, which does not involve the \emph{a priori} probabilities. 
+
+For the reciever to be optimal in the Neyman-Pearson sense, we mean that for a
+fixed false alarm probability, $F$, we maximize the detection probability,
+$D$. It can be shown (see for example \cite{mathstat}) that the optimal
+reciever is simply a threshold on the likelihood ratio:
+\begin{equation}
+\begin{split}
+\Lambda &\ge \Lambda_\ast \text{the signal is present}, \\
+\Lambda &< \Lambda_\ast \text{the signal is not present},
+\end{split}
+\end{equation}
+where the threshold, $\Lambda_\ast$ is chosen based on the desired false alarm
+probability, $F$. Thus, given the value of likelihood ratio, $\Lambda$, we
+can then decide if the signal is present or absent. 
+
+We now consider the construction of $\Lambda$ from the interferometer data,
+$s(t)$ and the gravitational wave signal $h(t)$. Let us assume that the noise
+is stationary and Gaussian with zero mean value
+\begin{equation}
+\left\langle n(t) \right\rangle = 0
+\end{equation}
+where angle brackets denote averaging over different ensembles of the
+noise. The noise may be coloured, that is is contains correllations which are
+expressed through its (one sided) power spectral density, $S_n(|f|)$, defined
+by
+\begin{equation}
+\left\langle \tilde{n}(f) \tilde{n}(f') \right\rangle = \frac{1}{2} S_n(|f|)
+\label{eq:ospsddef}
+\end{equation}
+where $\tilde{n}(f)$ is the Fourier transform of $n(t)$. We wish to compute
+the quantity
+\begin{equation}
+\Lambda = \frac{P(s|h)}{P(s|0)} = 
+\frac{p(s|h)\,ds}{p(s|0)\,ds} = \frac{p(s|h)}{p(s|0)}
+\end{equation}
+where $p(s|h)$ and $p(s|0)$ are the condition probability densities.  It can
+be shown that if $n(t)$ is Gaussian noise, then the probability density of
+obtaining a particular instant of noise is\cite{Finn:1992wt}
+\begin{equation}
+p(n) = \mathcal{K} \exp\left[-\frac{1}{2} (n|n)\right]
+\end{equation}
+where $\mathcal{K}$ is a normalization constant and the inner poduct
+$(\cdot|\cdot)$ is given by
+\begin{equation}
+\label{eq:fullinnerproduct}
+  (a\mid b) \equiv \int_{-\infty}^\infty df\,
+  \frac{\tilde{a}^\ast(f)\tilde{b}(f)+\tilde{a}(f)\tilde{b}^\ast(f)}
+       {S_n(|f|)}.
+\end{equation}
+The probability density of obtaining the interferometer output, $s(t)$, in the
+absence of signal (i.e. $s(t) = n(t)$) is
+\begin{equation}
+p(s|0) = p(s) = \mathcal{K} \exp\left[-\frac{1}{2} (s|s)\right]
+\end{equation}
+The probability density of obtaining $s(t)$ in the presence of a signal (i.e.
+when $s(t) = n(t) + h(t)$) is given by 
+\begin{equation}
+p(s|h) = p(s-h) = \mathcal{K} \exp\left[-\frac{1}{2} (s-h|s-h)\right]
+\end{equation}
+where we have used $n(t) = s(t) - h(t)$. Therefore the likelihood ratio
+becomes
+\begin{equation}
+\begin{split}
+\Lambda &= \frac{p(s|h)}{p(s|0)} = \frac{p(s-h)}{p(s)} \\
+&= \frac{\exp\left[-\frac{1}{2} (s-h|s-h)\right]}{\exp\left[-\frac{1}{2} (s|s)\right]} \\
+&= \exp\left\{-\frac{1}{2}\left[(s|s) - 2(s|h) - (h|h)\right] + \frac{1}{2}(s|s)\right\} \\
+&= \exp\left[(s|h) - \frac{1}{2}(h|h)\right]
+\end{split}
+\end{equation}
+where $(s|h)$ depends on the input data and $(h|h)$ is a constant (for a
+given $S_n(|f|)$.) The likelihood ratio is therefore a monotonically
+increasing function of $(s|h)$, so we insted of thresholding on $\Lambda$, we
+can threshold on $(s|h)$. Our optimal reciver is now the construction of $(s|h)$
+followed by a test
+\begin{equation}
+\begin{split}
+(s|h) &\ge (s|h)_\ast \text{the signal is present}, \\
+(s|h) &< (s|h)_\ast \text{the signal is not present},
+\end{split}
+\end{equation}
+where the threshold is now $(s|h)_\ast$. For a given $h(t)$, the inner
+product in equation $(\cdot|h)$, is a linear map from the infinite dimensional
+vector space of signals to $\mathbb{R}$. Therefore the optimal reciever is a
+linear function of the input signal, $s(t)$. For the data and signals that we
+recieve are real functions of time, so 
+\begin{align}
+\tilde{s}^\ast(f) &= \tilde{s}(-f) \\
+\tilde{h}^\ast(f) &= \tilde{h}(-f)
+\end{align}
+and the the inner product in equation (\ref{eq:fullinnerproduct}) becomes
+\begin{equation}
+\left(a\mid b\right) = 2 \int_{-\infty}^{\infty}df\,
+\frac{\tilde{a}(f)\tilde{b}^\ast(f)}{S_n\left(\left|f\right|\right)}.
+\label{eq:innerproduct}
+\end{equation}
+
+If we recieve only noise, then the mean of $(s|h)$ over a ensemble of detector
+outputs is 
+\begin{equation}
+\begin{split}
+\left\langle (s|h) \right\rangle &= \left\langle (n|h) \right\rangle \\
+&= \int_{-\infty}^{\infty} 
+   \frac{\langle\tilde{n}(f)\rangle \tilde{h}^\ast(f)}{S_n(|f|)} \\
+&= 0
+\end{split}
+\end{equation}
+since $\langle n(t) \rangle = 0$. The variance of $(s|h)$ in the absence of
+signal is
+\begin{equation}
+\begin{split}
+\left\langle(s|h)^2\right\rangle 
+&= 2 \left\langle \int_{-\infty}^\infty \int_{-\infty}^\infty \,df\,df'\,
+\frac{\tilde{n}(f)\tilde{h}^\ast(f) \tilde{n}^\ast(f')\tilde{h}(f')}
+{S_n(|f|)\,S_n(|f'|)} \right\rangle \\
+&= 2 \int_{-\infty}^\infty \int_{-\infty}^\infty \,df\,df'\,
+\frac{\left\langle \tilde{n}(f)\tilde{n}^\ast(f')\right\rangle\tilde{h}^\ast(f)\tilde{h}(f')}
+{S_n(|f|)\,S_n(|f'|)} \\
+&= 2 \int_{-\infty}^\infty \int_{-\infty}^\infty \,df\,df'\,
+\frac{\frac{1}{2}S_n(|f'|)\delta(f-f') \tilde{h}^\ast(f)\tilde{h}(f')}
+{S_n(|f|)\,S_n(|f'|)} \\
+&= (h|h)
+\end{split}
+\end{equation}
+where we have used equation (\ref{eq:ospsddef}).  In the presence of signal
+and noise, then the mean of $(s|h)$ is
+\begin{equation}
+\left\langle (n+h|h) \right\rangle = (\rangle n \langle + h|h) = (h|h).
+\end{equation}
+We can also show that the variance of $(s|h)$ in the presence of signal is
+\begin{equation}
+\left\langle (s|h)^2 \right\rangle 
+= \left\langle \left[ (s|h) - (h|h) \right]^2 \right\rangle
+= \left\langle \left[ (n|h) \right]^2 \right\rangle
+= (h|h).
+\end{equation}
+Therefore the quantity $(h|h)$ is the variance of the output of the optimal
+reciever, $(s|h)$, and we denote it by
+\begin{equation}
+\sigma^2 \equiv (h|h).
+\end{equation}
+
+Now suppose that the signal we wish to recover has an unknown amplitude,
+$\mathcal{A}$. The above discussion holds with $h(t) \rightarrow
+\mathcal{A}h(t)$ and the likelihood ratio becomes
+\begin{equation}
+\Lambda = \exp\left[\mathcal{A}(s|h) - \frac{1}{2}\mathcal{A}^2(h|h)\right]
+\end{equation}
+which is monotonic in $(s|h)$, and so our previous choise of optimal statistic
+an threshold holds. Now we are ready to consider the case of a true
+gravitational wave signal, which has unknown amplitude, $\mathcal{A}$, and
+unknown phase, $\theta$:
+\begin{equation}
+h(t) = \mathcal{A} A(t) \cos(\phi(t) - \theta).
+\end{equation}
+The likelihood ratio now becomes a function of $\theta$
+\begin{equation}
+\Lambda'(\theta) = 
+p(\theta|h) \exp\left[\mathcal{A}(s|A(t)\cos(\phi(t) - \theta) -
+\frac{1}{2}\mathcal{A}^2(h|h)\right].
+\end{equation}
+Now consider the first inner product in the above exponential. Using
+$\cos(\phi - \theta) = \cos\theta\cos\phi + \sin\theta\sin\phi$ we may write
+this as
+\begin{equation}
+\begin{split}
+(s|A(t)\cos(\phi(t) - \theta)  &= 
+\cos\theta (s|A(t)\cos(\phi(t))) + \sin\theta (s|A(t)\sin(\phi(t)))  \\
+& = x\cos\theta + y\cos\theta \\
+& = z\cos(\Phi - \theta)
+\end{split}
+\end{equation}
+where
+\begin{align}
+x &= z\cos\Phi = (s|A(t)\cos(\phi(t))), \\
+y &= z\sin\Phi = (s|A(t)\sin(\phi(t))), \\
+z &= \sqrt{x^2 + y^2}, \\
+\tan \Phi &= \frac{y}{x}.
+\end{align}
+To calculate the likelihood ratio, $\Lambda$, we assume that the unknown phase
+is uniformly distributed between $0$ and $2\pi$,
+\begin{equation}
+p(\theta|h) = \frac{1}{2\pi},
+\end{equation}
+and integrate $\Lambda'$ over the angle $\theta$. We obtain
+\begin{equation}
+\begin{split}
+\Lambda &= \int_0^{2\pi} \Lambda'(\theta) 
+= \frac{1}{2\pi}\int_0^{2\pi}\exp\left[\mathcal{A}z\cos(\Phi - \theta) -
+\mathcal{A}^2)(h|h)\right] \,d\theta \\
+&= I_0(Az) e^{-\mathcal{A}^2\frac{1}{2}(h|h)}
+\end{split}
+\end{equation}
+where $I_0$ is the modified Bessel function of the first kind of order zero.
+The function $I_0(Az)$ is a monotonically increasing function of $z$ and so we
+can threshold on $z$ insted of $\Lambda$. Therefore to construct an optimal
+reciever for a signal of unknown amplitude and phase, we can threshold on $z$.
+
+To compute the optimal reciever for a binary inspiral signal, we compute the
+two inner products $x = (s|A(t)\cos\phi(t))$ and $y = (s|A(t)\sin\phi(t))$. We
+then threshold on $z = \sqrt{x^2+y^2}$ with a threshold $z_\ast$, set by our
+desired false alarm rate, and then our detection decision is
+\begin{equation}
+\begin{split}
+z &\ge z_* \text{the signal is present}, \\
+z(h|s) &< z_* \text{the signal is not present}.
+\end{split}
+\end{equation}
+Recall from chapter \ref{ch:inspiral} that we denoted the two orthogonal
+phases of the binary inspiral waveform by $h_c$ and $h_s$ and
+\begin{align}
+h_c(t) &\propto f^\frac{2}{3}(t) \cos(\phi(t)) \\
+h_s(t) &\propto f^\frac{2}{3}(t) \sin(\phi(t)) \\
+\end{align}
+so the construction of $z$ becomes
+\begin{equation}
+z = \sqrt{(s|h_c)^2 + (s|h_s)^2}.
+\end{equation}
+The inspiral waveforms are orthogonal, so $(h_c|h_s) = 0$. We can also see
+that $(h|h) = (h_c|h_c) = (h_s|h_s)$. Notice that the inner product,
+$(\cdot|\cdot)$ contains the power spectral density, $S_n(f)$. This means that
+if $S_n(f)$ changes, we must change the threshold $z_\ast$. To remove this
+dependence, we construct the \emph{signal-to-noise ratio}, $\rho$, defined by
+\begin{equation}
+\rho = \frac{z}{\sqrt{(h_c|h_c)}} = \frac{z}{\sigma}
+\end{equation}
+and threshold on $\rho \ge \rho_\ast$.
+
+If a gravitational wave signal is present, then its location in time is
+defined by the \emph{end time} of the waveform, $t_e$. In chapter
+\ref{ch:inspiral} we defined the end time of the chirp to be the time at which
+the frequency of the gravitational wave reached $f_\mathrm{isco}$, the
+gravitational wave frequency of a particle in the innermost stable circular
+orbit of Scharzschild spacetime.  In the above discussion of the optimal
+reciever, we implicitly knew the location of the signal in the data, say 
+$t_e = 0$. Now suppose that the inspiral waveform ends at some unknown time,
+$t_e = t$. We may write the signal we are searching for as $h(t'-t)$. Consider
+the Fourier transform of this signal
+\begin{equation}
+\begin{split}
+\int_{-\infty}^\infty e^{-2\pi i f t'} h(t'-t) \, dt' &= 
+e^{-2\pi ift} \int_{-\infty}^\infty e^{-2\pi i f \tau} h(\tau) \, d\tau \\
+&= e^{-2\pi ift} \tilde{h}(f).
+\end{split}
+\end{equation}
+where we have used $\tau = t' - t$, $dt = d\tau$ and $t' = t + \tau$.
+The value of the inner product $(s|h_c)$ for a waveform that ends at time $t$ is
+therefore
+\begin{equation}
+(s|h_c(t)) = 2 \int_{-\infty}^\infty\,df e^{2\pi ift}
+\frac{\tilde{s}(f)\tilde{h}^\ast(f)}{S_n(|f|)}
+\label{eq:ipift}
+\end{equation}
+and the signal-to-noise ratio for a chirp that ends at time $t$ is
+\begin{equation}
+\rho(t) = \frac{1}{\sigma} \sqrt{ (s|h_c(t))^2 + (s|h_s(t))^2}
+\end{equation}
+where the quantities $(s|h_c(t))$ and $(s|h_s(t))$ can be obtained by inverse
+Fourier transforms. This is of particular importance as we can compute the
+entire signal-to-noise ratio for a segment of digitally sampled data using the
+Fast Fourier Transform, as we will see below. We have now completely specified
+the solution to the problem of finding a waveform of unknown amplitude and
+phase at an unknown position in the data; our optimim reciever is the
+\emph{matched filter}. In the sections below we develop the techniques that we
+use to construct a digital implementation of the matched filter to search for
+gravitational wave signals in interferometer data.
+
 \section{Conventions}
 \label{s:conventions}
 
