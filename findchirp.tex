@@ -1,66 +1,80 @@
 % $Id$
 
-We can write the gravitational wave signal of an inspiral arriving at the
-Earth in the form
+Using equation (\ref{eq:hpluswave})--(\ref{eq:ftimesfunc}), we may write the
+gravitational wave strain induced in the interferometer as
 \begin{equation}
-h(t) = \mathcal{A} A(t) \cos\left( \phi(t) - \theta \right)
+h(t) = \frac{A(t)}{D} \cos\left( \phi(t) - \theta \right),
+\labe{eq:rootwaveform}
 \end{equation}
-where $A(t)$ is the quadrupolar amplitude and $\phi(t)$ is the
-post$^2$-Newtonian phase evolution. The constants $\mathcal{A}$ and $\theta$ are
-the unknown amplitude and phase of the waveform, respectively. In this chapter
-we address the problem of finding such a signal hidden in detector noise. The
-detection of signals of known form is noise is a classic problem of signal
-processing\cite{wainstein:1962} and has been studied in the context of binary
-inspiral in \cite{Finn:1992wt,Finn:1992xs}. In this chapter, we review the
-theory that underlies inspiral signal detection and then present the particular
-implementation that we use to extract inspiral signals from interferometer
-data in a computationally efficient manner.
+where
+\begin{equation}
+A(t) = -2 \mu (\pi M f)^\frac{2}{3} \frac{2G}{c^2\,(1\,\mathrm{Mpc})}
+\end{equation}
+and $D$ is the effective distance, given by
+\begin{equation}
+D = \frac{(1\,\mathrm{Mpc}) \sqrt{ (1 + \cos^2 \iota F_+^2 + 4\iota^2
+F_\times^2}{r}.
+\end{equation}
+The phase angle $\theta$ is
+\begin{equation}
+\tan \theta = \frac{2\cos \iota F_\times}{(1 + \cos^2 \iota) F_+}
+\end{equation}
+and $\phi(t)$ is given by equation (\ref{eq:biwwphase}).
+%We can write the gravitational wave signal of an inspiral arriving at the
+%Earth in the form
+%where $A(t)$ is the quadrupolar amplitude and $\phi(t)$ is the
+%post$^2$-Newtonian phase evolution. The constants $\mathcal{A}$ and $\theta$ are
+%the unknown amplitude and phase of the waveform, respectively.
+In this chapter we address the problem of finding such a signal hidden in
+detector noise. The detection of signals of known form in noise is a classic
+problem of signal processing\cite{wainstein:1962} and has been studied in the
+context of binary inspiral in \cite{Finn:1992wt,Finn:1992xs}. This material is
+reviewed in seaction~\ref{s:detectiontheory}. The particular implementation
+used to extract inspiral signals from interferometer data in a computationally
+efficient manner is presented in section~\ref{s:matchedfilter}.
 
 \section{Detection of Gravitational Waves in Interferometer Noise}
 \label{s:detectiontheory}
 
-The (calibrated) output of the interferometer, $s(t)$, may contain either
-random noise, $n(t)$,
+Our goal is to determine if the (calibrated) output of the interferometer
+$s(t)$ contains a gravitational wave in the presence of the detector noise
+described in section~\ref{ss:noise}. When the interferometer is operating
+properly
 \begin{equation}
-s(t) = n(t)
+s(t) = \begin{cases}
+n(t) + h(t) & \text{signal present},\\
+n(t) & \text{signal absent}.
+\end{cases}
 \end{equation}
-or both the gravitational wave signal, $h(t)$, and random noise
-\begin{equation}
-s(t) = n(t) + h(t).
-\end{equation}
-Out goal is to decide if the signal is present or not. The interferometer
-output always contains random noise so the test we use will be probabilistic in
-nature. The test should give us the ``best'' answer to the question of signal
-presence (we defer what we mean by best until later). We call this test the
-\emph{optimum receiver} for the signal $h(t)$. The optimum receiver takes as
-input the interferometer data and returns as its output the conditional
-probability, $P(h|s)$, that the signal, $h(t)$, is present given the data,
-$s(t)$, and the conditional probability $P(0|s) = 1 - P(h|s)$ that the signal
-is not present, given the data. The probabilities $P(h|s)$ and $P(0|s)$ are
-\emph{a posteriori} probabilities. They are the result of an experiment to
-determine if the signal is present in the data. The probability that the
+The instrumental noise $n(t)$ arises from naturally occouring random processes
+described mathematically by a probability distribution function. The
+\emph{optimum receiver} for the signal $h(t)$ takes as input the
+interferometer data and returns as its output the conditional probability
+$P(h|s)$ that the signal $h(t)$ is present given the data $s(t)$. The
+conditional probability that the signal is not present, given the data is then
+$P(0|s) = 1 - P(h|s)$. The probabilities $P(h|s)$ and $P(0|s)$ are \emph{a
+posteriori} probabilities. They are the result of an experiment to
+search for the signal $h(t)$. The probability that the
 signal is present before we conduct the experiment is the \emph{a priori}
 probability $P(h)$. Similarly, $P(0) = 1 - P(h)$ is the \emph{a priori}
-probability that the signal is absent. To decide if the signal is present or
-not, we construct a test on the output of the optimal receiver. Therefore we
-need to know how to construct the optimal receiver and what decision rule to
-apply to its output.
+probability that the signal is absent.
 
-We begin with a review of some elementary probability.  The probability that
-two events $A$ and $B$ occur simultaneously is given by
+The construction of the optimal reciever depends on the following elememtary
+probability theory. The probability that two events $A$ and $B$ occur
+is given by
 \begin{equation}
-P(A,B) = P(A) P(B|A) = P(B) P(A|B).
+P(A,B) = P(A) P(B|A) = P(B) P(A|B),
 \label{eq:probproduct}
 \end{equation}
-We may write equation (\ref{eq:probproduct}) in the form
+allowing us to relate the two conditional probabilities by
 \begin{equation}
-P(A|B) = \frac{P(A,B)}{P(B)} = \frac{P(A)P(B|A)}{P(B)}
+P(A|B) = \frac{P(A,B)}{P(B)} = \frac{P(A)P(B|A)}{P(B)}.
 \label{eq:protobayes}
 \end{equation}
 If instead of a single event, $A$, suppose we have a complete set of mutually
 exclusive events $A_1, A_2, \ldots, A_K$. By mutually exclusive we mean that
 two or more of these events cannot occur simultaneously and by complete we
-mean that one of them one of them must occur. Now suppose $B$ is an event that
+mean that one of them must occur. Now suppose $B$ is an event that
 can occur only if one of the $A_k$ occurs. Then the probability that $B$
 occurs is given by
 \begin{equation}
@@ -74,22 +88,22 @@ Equation (\ref{eq:totalprob}) is called the \emph{total probability formula}.
 Now let us suppose that $B$ is the result of an experiment and we want to know
 the probability that it was event $A_k$ that allowed $B$ to happen. This can
 be obtained by substituting equation (\ref{eq:totalprob}) into equation
-(\ref{eq:protobayes}) to obtain
+(\ref{eq:protobayes}) to get
 \begin{equation}
 P(A_k|B) = \frac{P(A_k)P(B|A_k)}{P(B)} 
 = \frac{P(A_k)P(B|A_k)}{\sum_{k=1}^K P(A_k)P(B|A_k)}.
 \label{eq:bayeslaw}
 \end{equation}
-Equation (\ref{eq:bayeslaw}) is called \emph{Bayes' theorem}. The probability
+Equation (\ref{eq:bayeslaw}) is \emph{Bayes' theorem}. The probability
 $P(A_k)$ is the \emph{a priori} probability of event $A_k$ occurring and
 $P(A_k|B)$ is the \emph{a posteriori} probability of $A_k$ occurring given
-that the outcome of our experiment, $B$, occurred. The conditional probability
+that the outcome of our experiment $B$ occurred. The conditional probability
 $P(B|A_k)$ is called the \emph{likelihood}.
 
 Now suppose that set $\{A_k\}$ contains only to two members: ``the signal is
 present'' and ``the signal is absent''. The \emph{a priori} probabilities of
 these events are $P(h)$ and $P(0)$, as discussed earlier. We consider $B$ to
-be the output of the interferometer for a particular ``experiment''. We can
+be the output of the interferometer for a particular experiment. We can
 use Bayes' theorem to compute the \emph{a posteriori} probability that the
 signal is present, given the output of the detector:
 \begin{equation}
@@ -104,9 +118,8 @@ The probability of obtaining the detector output is given by
 P(s) = P(h)P(s|h) + P(0)P(s|0)
 \label{eq:pofs}
 \end{equation}
-and since the signal is either present or nor present, $P(h) + P(0) = 1$. Now
-we may use equation (\ref{eq:pofs}) to write equation (\ref{eq:pofhgivens1})
-as
+since the signal is either present or not present.  Substituting equation
+(\ref{eq:pofs}) into (\ref{eq:pofhgivens1}), we write
 \begin{equation}
 P(h|s) = \frac{P(h)P(s|h)}{P(h)P(s|h) + P(0)P(s|0)}.
 \label{eq:pofhgivens2}
@@ -114,86 +127,69 @@ P(h|s) = \frac{P(h)P(s|h)}{P(h)P(s|h) + P(0)P(s|0)}.
 Dividing the numerator and denominator on the right hand side of equation
 (\ref{eq:pofhgivens2}) by $P(h)P(s|0)$ we obtain
 \begin{equation}
-P(h|s) = \frac{P(s|h)/P(s|0)}{[P(s|h)/P(s|0)] + [P(0)P(h)]}.
+P(h|s) = \frac{P(s|h)/P(s|0)}{[P(s|h)/P(s|0)] + [P(0)/P(h)]}.
 \label{eq:pofhgivens3}
 \end{equation}
-Let us define the likelihood ratio, $\Lambda$, as
+Define the likelihood ratio
 \begin{equation}
 \Lambda = \frac{P(s|h)}{P(s|0)}
 \label{eq:likelihooddef}
 \end{equation}
-and then equation (\ref{eq:pofhgivens3}) becomes
+so that equation (\ref{eq:pofhgivens3}) becomes
 \begin{equation}
-P(h|s) = \frac{\Lambda}{[\Lambda] + [P(0)P(h)]}.
+P(h|s) = \frac{\Lambda}{\Lambda + [P(0)/P(h)]}.
 \label{eq:pofhgivens4}
 \end{equation}
 Similarly, we find that the probability that the signal is absent is given by
 \begin{equation}
-P(0|s) = \frac{P(0)/P(h)}{\Lambda + [P(0)/P(h)}.
+P(0|s) = \frac{P(0)/P(h)}{\Lambda + [P(0)/P(h)]}.
 \label{eq:pofnothgivens}
 \end{equation}
 Using equations (\ref{eq:pofhgivens4}) and (\ref{eq:pofnothgivens}), we find
-that the ratio of the \emph{a posteriori} probabilities that the signal is
-present of absent, given the data is
+that the ratio of the \emph{a posteriori} probabilities is
 \begin{equation}
 \frac{P(h|s)}{P(0|s)} = \Lambda\frac{P(h)}{P(0)}.
 \label{eq:postratio}
 \end{equation}
 
-We now construct an automated decision rule that will tell us if the signal is
-present or absent.  If $P(h|s)$ is large (close to unity) then it is
-reasonable to conclude that the signal is present.  Conversely, if $P(h|s)$ is
-small (close to zero) then we may conclude that the signal is absent.
-Therefore we may set a threshold on this posterior probability, $P_\ast$, as
-our decision rule is
+We now construct a decision rule for present or absence of the signal.  If
+$P(h|s)$ is large (close to unity) then it is reasonable to conclude that the
+signal is present.  Conversely, if $P(h|s)$ is small (close to zero) then we
+may conclude that the signal is absent.  Therefore we may set a threshold
+$P_\ast$ on this posterior probability as our decision rule is
 \begin{alignat}{2}
 P(h|s) &\ge P_* &\quad&\text{the signal is present}, \\
 P(h|s) &< P_* &&\text{the signal is not present}.
 \end{alignat}
-Given this decision rule there are four possible outcomes. If $P(h|s) \ge
-P_*$ and the signal is present, we have made a correct detection. If $P(h|s)
+Given this decision rule there are two important outcomes.  If $P(h|s)
 \ge P_*$ and the signal is not present, we call this a \emph{false alarm}; our
-decision that the signal is present was incorrect. If $P(h|s) < P_*$ and the
-signal is not present, we have made a correct dismissal. Conversely, if
+decision that the signal is present was incorrect. Conversely, if
 $P(h|s) < P_*$ and the signal is present, we have made a \emph{false
 dismissal}. Each possible outcome has an associated probability
 \begin{align}
-D & &&\text{probability that we make a correct detection} \\
-F & &&\text{probability that we make a correct dismissal} \\
-D' &= 1 - D &&\text{probability that we have a false alarm} \\
-F' &= 1 - F &&\text{probability that we have a false dismissal}.
+F  &&&\text{probability that we have a false alarm} \\
+F' &= 1 - D &&\text{probability that we have a false dismissal},
 \end{align}
+where $D$ is the probability of a correct detection.
 To construct the posterior probability, $P(h|s)$, and hence $P_\ast$, we need
 the unknown \emph{a priori} probabilities, $P(h)$ and $P(0)$. We see from
 equation (\ref{eq:pofhgivens4}), however, that $P(h|s)$ is a monotonically
 increasing function of the likelihood. The ratio of the \emph{a priori}
 probabilities, $P(h)/P(0)$, is a constant that does not involve the result of
-our experiment. Therefore we can define the output of out optimum receiver to be
-the device which, given the input data, $s(t)$ returns the likelihood ratio,
-$\Lambda$, which does not involve the \emph{a priori} probabilities. 
+our experiment. Therefore we can define the output of our optimum receiver to be
+the device which, given the input data $s(t)$, returns the likelihood ratio
+$\Lambda$.  For the receiver to be optimal in the Neyman-Pearson sense the
+detection probability should be maximized for $F$.  
 
-For the receiver to be optimal in the Neyman-Pearson sense, we mean that for a
-fixed false alarm probability, $F$, we maximize the detection probability,
-$D$. It can be shown (see for example \cite{casella:2002}) that the optimal
-receiver is simply a threshold on the likelihood ratio:
-\begin{alignat}{2}
-\Lambda &\ge &\quad& \Lambda_\ast \text{the signal is present}, \\
-\Lambda &< && \Lambda_\ast \text{the signal is not present},
-\end{alignat}
-where the threshold, $\Lambda_\ast$ is chosen based on the desired false alarm
-probability, $F$. Thus, given the value of likelihood ratio, $\Lambda$, we
-can then decide if the signal is present or absent. 
-
-We now consider the construction of $\Lambda$ from the interferometer data,
-$s(t)$ and the gravitational wave signal $h(t)$. Let us assume that the noise
+We now consider the construction of $\Lambda$ for the interferometer data
+$s(t)$ and the gravitational wave signal $h(t)$. Assume that the noise
 is stationary and Gaussian with zero mean value
 \begin{equation}
 \left\langle n(t) \right\rangle = 0
 \end{equation}
 where angle brackets denote averaging over different ensembles of the
-noise. The noise may be colored, that is is contains correlations which are
-expressed through its (one sided) power spectral density, $S_n(|f|)$, defined
-by
+noise. The  (one sided) power spectral density $S_n(|f|)$ of the noise is
+defined by
 \begin{equation}
 \left\langle \tilde{n}(f) \tilde{n}(f') \right\rangle = \frac{1}{2} S_n(|f|)
 \delta(f-f')
@@ -202,12 +198,11 @@ by
 where $\tilde{n}(f)$ is the Fourier transform of $n(t)$. We wish to compute
 the quantity
 \begin{equation}
-\Lambda = \frac{P(s|h)}{P(s|0)} = 
-\frac{p(s|h)\,ds}{p(s|0)\,ds} = \frac{p(s|h)}{p(s|0)}
+\Lambda = \frac{p(s|h)}{p(s|0)}
 \end{equation}
-where $p(s|h)$ and $p(s|0)$ are the conditional probability densities.  It can
-be shown that if $n(t)$ is Gaussian noise, then the probability density of
-obtaining a particular instant of noise is\cite{Finn:1992wt}
+where $p(s|h)$ and $p(s|0)$ are the conditional probability densities. The
+probability density of obtaining a particular instantiation of detector noise
+is\cite{Finn:1992wt}
 \begin{equation}
 p(n) = \mathcal{K} \exp\left[-\frac{1}{2} (n|n)\right]
 \end{equation}
@@ -220,12 +215,12 @@ $(\cdot|\cdot)$ is given by
        {S_n(|f|)}.
 \end{equation}
 The probability density of obtaining the interferometer output, $s(t)$, in the
-absence of signal (i.e. $s(t) = n(t)$) is
+absence of signal, i.e. $s(t) = n(t)$, is therefore
 \begin{equation}
 p(s|0) = p(s) = \mathcal{K} \exp\left[-\frac{1}{2} (s|s)\right]
 \end{equation}
-The probability density of obtaining $s(t)$ in the presence of a signal (i.e.
-when $s(t) = n(t) + h(t)$) is given by 
+The probability density of obtaining $s(t)$ in the presence of a signal, i.e.
+when $s(t) = n(t) + h(t)$, is given by 
 \begin{equation}
 p(s|h) = p(s-h) = \mathcal{K} \exp\left[-\frac{1}{2} (s-h|s-h)\right]
 \end{equation}
@@ -239,35 +234,35 @@ becomes
 &= \exp\left[(s|h) - \frac{1}{2}(h|h)\right]
 \end{split}
 \end{equation}
-where $(s|h)$ depends on the input data and $(h|h)$ is a constant for a
-particular $S_n(|f|)$. The likelihood ratio is therefore a monotonically
-increasing function of $(s|h)$, so we instead of thresholding on $\Lambda$, we
-can threshold on $(s|h)$. Our optimal receiver is now the construction of $(s|h)$
-followed by a test
+where $(s|h)$ depends on the detector output and $(h|h)$ is constant for a
+particular $S_n(|f|)$. Since the likelihood ratio is a monotonically
+increasing function of $(s|h)$ we can threshold on $(s|h)$ insted of the
+posterior probabilities. Our optimal receiver is involves the construction of
+$(s|h)$ followed by a test
 \begin{equation}
 \begin{split}
-(s|h) &\ge (s|h)_\ast \text{the signal is present}, \\
-(s|h) &< (s|h)_\ast \text{the signal is not present},
+(s|h) &\ge x_\ast \quad \text{the signal is present}, \\
+(s|h) &< x_\ast \quad \text{the signal is not present}.
 \end{split}
 \end{equation}
-where the threshold is now $(s|h)_\ast$. For a given $h(t)$, the inner
-product in equation $(\cdot|h)$, is a linear map from the infinite dimensional
-vector space of signals to $\mathbb{R}$. Therefore the optimal receiver is a
-linear function of the input signal, $s(t)$. Both the output of a
-gravitational wave interferometer and inspiral signals that we are searching
-for are real functions of time, so 
+For a given $h(t)$, the inner
+product in equation (\ref{eq:fullinnerproduct}), is a linear map from the
+infinite dimensional vector space of signals to $\mathbb{R}$. Therefore the
+optimal receiver is a linear function of the input signal $s(t)$. Both the
+output of a gravitational wave interferometer and inspiral signals that we are
+searching for are real functions of time, so 
 \begin{align}
 \tilde{s}^\ast(f) &= \tilde{s}(-f) \\
 \tilde{h}^\ast(f) &= \tilde{h}(-f)
 \end{align}
-and the the inner product in equation (\ref{eq:fullinnerproduct}) becomes
+and the inner product in equation (\ref{eq:fullinnerproduct}) becomes
 \begin{equation}
 \left(a\mid b\right) = 2 \int_{-\infty}^{\infty}df\,
 \frac{\tilde{a}(f)\tilde{b}^\ast(f)}{S_n\left(\left|f\right|\right)}.
 \label{eq:innerproduct}
 \end{equation}
 
-If we receive only noise, then the mean of $(s|h)$ over a ensemble of detector
+If we receive only noise, then the mean of $(s|h)$ over an ensemble of detector
 outputs is 
 \begin{equation}
 \begin{split}
@@ -278,17 +273,17 @@ outputs is
 \end{split}
 \end{equation}
 since $\langle n(t) \rangle = 0$. The variance of $(s|h)$ in the absence of
-signal is
+a signal is
 \begin{equation}
 \begin{split}
 \left\langle(s|h)^2\right\rangle 
-&= 2 \left\langle \int_{-\infty}^\infty \int_{-\infty}^\infty \,df\,df'\,
+&= 4 \left\langle \int_{-\infty}^\infty \int_{-\infty}^\infty \,df\,df'\,
 \frac{\tilde{n}(f)\tilde{h}^\ast(f) \tilde{n}^\ast(f')\tilde{h}(f')}
 {S_n(|f|)\,S_n(|f'|)} \right\rangle \\
-&= 2 \int_{-\infty}^\infty \int_{-\infty}^\infty \,df\,df'\,
+&= 4 \int_{-\infty}^\infty \int_{-\infty}^\infty \,df\,df'\,
 \frac{\left\langle \tilde{n}(f)\tilde{n}^\ast(f')\right\rangle\tilde{h}^\ast(f)\tilde{h}(f')}
 {S_n(|f|)\,S_n(|f'|)} \\
-&= 2 \int_{-\infty}^\infty \int_{-\infty}^\infty \,df\,df'\,
+&= 4 \int_{-\infty}^\infty \int_{-\infty}^\infty \,df\,df'\,
 \frac{\frac{1}{2}S_n(|f'|)\delta(f-f') \tilde{h}^\ast(f)\tilde{h}(f')}
 {S_n(|f|)\,S_n(|f'|)} \\
 &= (h|h)
@@ -298,8 +293,9 @@ signal is
 where we have used the definition of the one sided power spectral density from
 equation (\ref{eq:ospsddef}).  In the presence of signal and noise, then the
 mean of $(s|h)$ is
+% FIXME check this
 \begin{equation}
-\left\langle (n+h|h) \right\rangle = (\rangle n \langle + h|h) = (h|h).
+\left\langle (n+h|h) \right\rangle = (\langle n \rangle + h|h) = (h|h).
 \end{equation}
 We can also show that the variance of $(s|h)$ in the presence of signal is
 \begin{equation}
@@ -322,104 +318,115 @@ $\mathcal{A}$. The above discussion holds with $h(t) \rightarrow
 \Lambda = \exp\left[\mathcal{A}(s|h) - \frac{1}{2}\mathcal{A}^2(h|h)\right]
 \end{equation}
 which is again monotonic in $(s|h)$, and so our previous choice of optimal
-statistic an threshold holds. Now we are ready to consider the case of a true
-gravitational wave signal, which has unknown amplitude, $\mathcal{A}$, and
-unknown phase, $\theta$:
-\begin{equation}
-h(t) = \mathcal{A} A(t) \cos(\phi(t) - \theta).
-\end{equation}
-The likelihood ratio now becomes a function of $\theta$
+statistic and decision rule hold. Now we are ready to consider the case of a
+gravitational wave inspiral signal of the form given in equation
+(\ref{eq:rootwaveform}).  The likelihood ratio now becomes a function of
+$\theta$
 \begin{equation}
 \Lambda'(\theta) = 
-p(\theta|h) \exp\left[\mathcal{A}(s|A(t)\cos(\phi(t) - \theta) -
-\frac{1}{2}\mathcal{A}^2(h|h)\right].
+p(\theta) \exp\left\{D^{-1}(s|A(t)\cos\left[\phi(t) - \theta\right] -
+\frac{1}{2}D^{-2}(h|h)\right\}.
 \end{equation}
 Now consider the first inner product in the above exponential. Using
-$\cos(\phi - \theta) = \cos\theta\cos\phi + \sin\theta\sin\phi$ we may write
+$\cos(\phi - \theta) = \cos\theta\cos\phi + \sin\theta\sin\phi$, we may write
 this as
 \begin{equation}
 \begin{split}
-\left(s\big|A(t)\cos(\phi(t) - \theta)\right)  &= 
-\cos\theta \left(s\big|A(t)\cos(\phi(t))\right) + \sin\theta \left(s\big|A(t)\sin(\phi(t))\right)  \\
+\left(s\big|A(t)\cos\left[\phi(t) - \theta\right]\right)  &= 
+\cos\theta \left(s\big|A(t)\cos\left[\phi(t)\right]\right) + 
+\sin\theta \left(s\big|A(t)\sin\left[\phi(t)\right]\right)  \\
 & = x\cos\theta + y\cos\theta \\
-& = z\cos(\Phi - \theta)
+& = |z|\cos(\Phi - \theta)
 \end{split}
 \end{equation}
 where
 \begin{align}
-x &= z\cos\Phi = \left(s\big|A(t)\cos(\phi(t))\right), \\
-y &= z\sin\Phi = \left(s\big|A(t)\sin(\phi(t))\right), \\
-z &= \sqrt{x^2 + y^2}, \\
+x &= |z|\cos\Phi = \left(s\big|A(t)\cos(\phi(t))\right), \\
+y &= |z|\sin\Phi = \left(s\big|A(t)\sin(\phi(t))\right), \\
+|z| &= \sqrt{x^2 + y^2}, \\
 \tan \Phi &= \frac{y}{x}.
 \end{align}
-To calculate the likelihood ratio, $\Lambda$, we assume that the unknown phase
-is uniformly distributed between $0$ and $2\pi$,
+(The notation $|z|$ will become clear later in this chapter.) To calculate the
+likelihood ratio, $\Lambda$, we assume that the unknown phase is uniformly
+distributed between $0$ and $2\pi$,
 \begin{equation}
-p(\theta|h) = \frac{1}{2\pi},
+p(\theta) = \frac{1}{2\pi},
 \end{equation}
-and integrate $\Lambda'$ over the angle $\theta$. We obtain
+and integrate $\Lambda'$ over the angle $\theta$ to obtain
 \begin{equation}
 \begin{split}
 \Lambda &= \int_0^{2\pi} \Lambda'(\theta) 
-= \frac{1}{2\pi}\int_0^{2\pi}\exp\left[\mathcal{A}z\cos(\Phi - \theta) -
-\frac{\mathcal{A}^2}{2}(h|h)\right] \,d\theta \\
-&= I_0(Az) e^{-\mathcal{A}^2\frac{1}{2}(h|h)}
+= \frac{1}{2\pi}\int_0^{2\pi}\exp\left[D^{-1}|z|\cos(\Phi - \theta) -
+\frac{D^{-2}}{2}(h|h)\right] \,d\theta \\
+&= I_0(D^{-1}|z|) e^{-D^{-2}\frac{1}{2}(h|h)}
 \end{split}
 \end{equation}
-where $I_0$ is the modified Bessel function of the first kind of order zero.
-The function $I_0(Az)$ is a monotonically increasing function of $z$ and so we
-can threshold on $z$ instead of $\Lambda$. 
+where $I_0$ is a modified Bessel function of the first kind. Once again, we
+note that the function $I_0(D^{-1}|z|)$ is a monotonically increasing function
+of $|z|$ and so we can threshold on $|z|$ instead of $\Lambda$. 
 
-To compute the optimal receiver for a binary inspiral signal, we compute the
-two inner products $x = (s|A(t)\cos\phi(t))$ and $y = (s|A(t)\sin\phi(t))$. We
-then threshold on $z = \sqrt{x^2+y^2}$ with a threshold $z_\ast$, set by our
-desired false alarm rate, and then our detection decision is
-\begin{alignat}{2}
-z &\ge z_* &\quad&\text{the signal is present}, \\
-z &< z_* &&\text{the signal is not present}.
-\end{alignat}
+%To compute the optimal receiver for a binary inspiral signal, we compute the
+%two inner products $x = (s|A(t)\cos\phi(t))$ and $y = (s|A(t)\sin\phi(t))$. We
+%then threshold on $z = \sqrt{x^2+y^2}$ with a threshold $z_\ast$, set by our
+%desired false alarm rate, and then our detection decision is
+%\begin{alignat}{2}
+%z &\ge z_* &\quad&\text{the signal is present}, \\
+%z &< z_* &&\text{the signal is not present}.
+%\end{alignat}
 Recall from chapter \ref{ch:inspiral} that we denoted the two orthogonal
-phases of the binary inspiral waveform by $h_c$ and $h_s$ given by
+phases of the binary inspiral waveform by $h_c$ and $h_s$ given by equations
+(\ref{eq:coschirp}) and (\ref{eq:sinechirp})
 \begin{align}
-h_c(t) &\propto f^\frac{2}{3}(t) \cos(\phi(t)) \\
-h_s(t) &\propto f^\frac{2}{3}(t) \sin(\phi(t)) \\
+h_c(t) & = 2\mu (\pi M f)^{\frac{2}{3}} \cos(2\pi f t - 2\phi_0), \\
+h_s(t) & = 2\mu (\pi M f)^{\frac{2}{3}} \sin(2\pi f t - 2\phi_0),
 \end{align}
-and so for inspiral waveforms we can compute $z$ by
+and so for inspiral waveforms we can compute $|z|$ by
 \begin{equation}
 z = \sqrt{(s|h_c)^2 + (s|h_s)^2}.
 \end{equation}
-The inspiral waveforms are orthogonal, so $(h_c|h_s) = 0$. We can also see
-that $(h|h) = (h_c|h_c) = (h_s|h_s)$. Notice that the inner product,
-$(\cdot|\cdot)$ contains the power spectral density, $S_n(f)$. This means that
-if $S_n(f)$ changes, we must change the threshold $z_\ast$. To remove this
-dependence, we construct the \emph{signal-to-noise ratio}, $\rho$, defined by
+The threshold on $|z|$ would be determined to achive a given false alarm
+probability. We note that $|z|^2$ is the sum of squares of two Gaussian random
+variables of zero means and variance $\sigma^2 = (h_c|h_c) = (h_s|h_s)$. It is
+therefore convenient to work with a normalized signal-to-noise ratio
+defined by
 \begin{equation}
-\rho = \frac{z}{\sqrt{(h_c|h_c)}} = \frac{z}{\sigma}
+\rho^2 = \frac{|z|^2}{\sigma^2}
+\label{eq:snrrootdef}
 \end{equation}
-and threshold on $\rho \ge \rho_\ast$.
+which is $\chi^2$ distributed with two degrees of freedom for Gaussian
+detector noise.
+%The inspiral waveforms are orthogonal, so $(h_c|h_s) = 0$. We can also see
+%that $(h|h) = (h_c|h_c) = (h_s|h_s)$. Notice that the inner product,
+%$(\cdot|\cdot)$ contains the power spectral density, $S_n(f)$. This means that
+%if $S_n(f)$ changes, we must change the threshold $z_\ast$. To remove this
+%dependence, we construct the \emph{signal-to-noise ratio}, $\rho$, defined by
+%\begin{equation}
+%\rho = \frac{z}{\sqrt{(h_c|h_c)}} = \frac{z}{\sigma}
+%\end{equation}
+%and threshold on $\rho \ge \rho_\ast$.
 
 If a gravitational wave signal is present, then its location in time is
-defined by the \emph{end time} of the waveform, $t_e$. In chapter
+defined by the \emph{end time} parameter $t_e$ of the waveform. In chapter
 \ref{ch:inspiral} we defined the end time of the chirp to be the time at which
-the frequency of the gravitational wave reached $f_\mathrm{isco}$, the
+the frequency of the gravitational wave reached $f_\mathrm{isco}$, taken as the
 gravitational wave frequency of a particle in the innermost stable circular
 orbit of Schwarzschild spacetime.  In the above discussion of the optimal
-receiver, we implicitly knew the location of the signal in the data with
-$t_e = 0$. Now suppose that the inspiral waveform ends at some unknown time,
-$t_e = t$. We may write the signal we are searching for as $h(t'-t)$. Consider
+receiver, we implicitly knew the location of the signal in the data to have
+$t_e = 0$. Now suppose that the inspiral waveform ends at some unknown time
+$t_e$. We may write the signal we are searching for as $h(t'-t_e)$. Consider
 the Fourier transform of this signal
 \begin{equation}
 \begin{split}
-\int_{-\infty}^\infty e^{-2\pi i f t'} h(t'-t) \, dt' &= 
-e^{-2\pi ift} \int_{-\infty}^\infty e^{-2\pi i f \tau} h(\tau) \, d\tau \\
-&= e^{-2\pi ift} \tilde{h}(f).
+\int_{-\infty}^\infty e^{-2\pi i f t'} h(t'-t_e) \, dt' &= 
+e^{-2\pi ift_e} \int_{-\infty}^\infty e^{-2\pi i f \tau} h(\tau) \, d\tau \\
+&= e^{-2\pi ift_e} \tilde{h}(f).
 \end{split}
 \end{equation}
-where we have used $\tau = t' - t$, $dt = d\tau$ and $t' = t + \tau$.
-The value of the inner product $(s|h_c)$ for a waveform that ends at time $t$ is
+where we have used $\tau = t' - t_e$, $dt = d\tau$ and $t' = t_e + \tau$.
+The value of the inner product $(s|h_c)$ for a waveform that ends at time $t_e$ is
 therefore
 \begin{equation}
-(s|h_c(t)) = 2 \int_{-\infty}^\infty\,df e^{2\pi ift}
+(s|h_c(t_e)) = 2 \int_{-\infty}^\infty\,df e^{2\pi ift_e}
 \frac{\tilde{s}(f)\tilde{h}^\ast(f)}{S_n(|f|)}
 \label{eq:ipift}
 \end{equation}
@@ -428,60 +435,55 @@ and the signal-to-noise ratio for a chirp that ends at time $t$ is
 \rho(t) = \frac{1}{\sigma} \sqrt{ (s|h_c(t))^2 + (s|h_s(t))^2}
 \end{equation}
 where the quantities $(s|h_c(t))$ and $(s|h_s(t))$ can be obtained by inverse
-Fourier transforms. This is of particular importance as we can compute the
-entire signal-to-noise ratio for a segment of digitally sampled data using the
-Fast Fourier Transform (FFT), as we will see below. Now the statistic $\rho(t)$
-derived from the likelihood is a function of time. For Neyman-Pearson optimal
-detection, we would integrate over all possible arrival times and threshold on
-this value. As well as making a statement about the presence or absence of a
-signal in the data we also want to measure the time that the signal occurs. To
-do this we use the method of \emph{maximum likelihood}\cite{helstrom:1995}.
-The maximum likelihood estimator states that the most probable value for the
-location of the signal is the time at which the likelihood ratio is maximized.
-So to find a single inspiral signal in a segment of interferometer data, we
-search for the maximum of $\rho(t)$. If $\max_t(\rho(t)) > \rho_\ast$ then we
-assume that we have detected a signal at the time of the maximum. There may be
-more than one inspiral in a single data segment, however, and we consider this
-case later.
+Fourier transforms of the form in equation (\ref{eq:ipift}).
+
+Now the statistic $\rho(t)$ derived from the likelihood is a function of a
+time parameter. For Neyman-Pearson optimal detection, we would integrate over
+all possible arrival times and threshold on this value. As well as making a
+statement about the presence or absence of a signal in the data we also want
+to measure the time that the signal occurs. To do this, we use the method of
+\emph{maximum likelihood}\cite{helstrom:1995}.  The maximum likelihood
+estimator states that the most probable value for the location of the signal
+is the time at which the likelihood ratio is maximized.  So to find a single
+inspiral signal in a segment of interferometer data, we search for the maximum
+of $\rho(t)$. If $\max_t\left[\rho(t)\right] > \rho_\ast$ then we decide that
+we have detected a signal at the time of the maximum. When there is more than
+one inspiral in the data segment the maximization is not over all times.
 
 We have now completely specified the solution to the problem of finding a
-waveform of unknown amplitude and phase at an unknown position in the data;
-our optimum receiver is the \emph{matched filter}. In the sections below we
-develop the techniques that we use to construct a digital implementation of
-the matched filter to search for gravitational wave signals in interferometer
-data.
+waveform of unknown amplitude and phase at an unknown time in the data;
+our optimum receiver is the \emph{matched filter} of equation equation
+(\ref{eq:ipift}). Below we develop the formailism to construct a digital
+implementation of the matched filter to search for gravitational wave signals
+in interferometer data.
 
 \section{Conventions for Discrete Quantities}
 \label{s:conventions}
 
 The raw output of the interferometer is the error signal from the length
-sensing and control servo, AS\_Q, as described in chapter \ref{ch:inspiral}.
-Although this signal is a dimensionless quantity, we say that it has units of
-``counts'' and we denote it by the time series, $v(t)$.  We will search for
-the (dimensionless) inspiral signal $h(t)$ in the (dimensionless) calibrated
-detector output, $s(t)$ using the techniques developed in the previous
-section. We say that $s(t)$ and $h(t)$ have units of strain. The calibrated
+sensing and control servo, LSC-AS\_Q, as described in chapter
+\ref{ch:inspiral}.  Although this signal is a dimensionless quantity, we say
+that it has units of ``counts'' and we denote it by $v(t)$.  The calibrated
 detector output is related to the raw detector output by the detector response
 function according
 to \begin{equation}
 \tilde{s}(f) = R(f;t) \tilde{v}(f)
 \end{equation}
-where $R(f;t)$ is the (complex) response function of the detector at time
-$t$\cite{Adhikari:2003} and has units of strain/count.  In practice, the
-interferometer output is a discretely sampled quantity with sampling interval
-$\Delta t$, that is $v_j \equiv v(t_j)$ where $t_j = j\Delta t$.  The digital
-matched filter that we construct will operate on a single \emph{data segment}
+where $R(f;t)$ is the (complex) response function of the detector at time $t$
+and has units of strain/count (see section \ref{ss:calibration}).  In
+practice, the interferometer output is a discretely sampled quantity with
+sampling interval $\Delta t$, that is $v_j \equiv v(t_j)$ where $t_j = j\Delta
+t$.  The digital matched filter operates on a single \emph{data segment}
 consisting of $N$ consecutive samples of $v(t_j)$. The length of this data
-segment is $T = N\Delta t$.  Henceforth and without loss of generality, we let
-$N$ be a multiple of $2$.  In this thesis, we follow the convention that the
-subscript $j$ refers to discretely sampled time domain quantities and the
-subscript $k$ to discretely sampled frequency domain quantities.  The
-frequency domain quantity $\tilde{v}(f_k)$ denotes the value of the continuous
-function $\tilde{v}(f)$ at a particular frequency, labeled $f_k = k/(N\Delta
-t)$. If the units of $v_j$ are counts, then $\tilde{v}(f_k)$ has units of
-counts/Hz. We define the quantity $\tilde{v}_k$ to be $\tilde{v}_k =
-\tilde{v}(f_k) / \Delta t$, which has units of counts. If $k$ is negative,
-this corresponds to negative frequencies.
+segment is $T = N\Delta t$~seconds.  Henceforth, we let $N$ be a power of
+$2$ and follow the convention that the subscript $j$ refers to discretely
+sampled time domain quantities and the subscript $k$ to discretely sampled
+frequency domain quantities.  The frequency domain quantity $\tilde{v}(f_k)$
+denotes the value of the continuous function $\tilde{v}(f)$ at a particular
+frequency, labeled $f_k = k/(N\Delta t)$. If the units of $v_j$ are counts,
+then $\tilde{v}(f_k)$ has units of counts/Hz. We define the quantity
+$\tilde{v}_k$ by $\tilde{v}_k = \tilde{v}(f_k) / \Delta t$, which has units of
+counts. If $k$ is negative, this corresponds to negative frequencies.
 
 \subsection{The Discrete Fourier Transform}
 \label{ss:dft}
@@ -493,28 +495,28 @@ frequency range $-f_\mathrm{Ny} \le f \le f_\mathrm{Ny}$, where
 f_\mathrm{Ny} = \frac{1}{2\Delta t}
 \end{equation}
 is the \emph{Nyquist critical frequency}. Any signals of frequency higher than
-$f_\mathrm{Ny}$ in the interferometer output are removed using analog filters before
-the signal is digitized. Therefore $v(t_j)$ completely determines the signal
-$v(t)$ in the band of interest. We may approximate the Fourier transform of
-this band limited signal, $v(t_j)$, at $N$ samples in the range 
-$-(N/2 + 1) \le k \le N/2$ by
+$f_\mathrm{Ny}$ in the interferometer output are removed using analog low-pass
+filters before the signal is digitized. Therefore $v(t_j)$ completely
+determines the signal $v(t)$ in the band of interest. We may approximate the
+Fourier transform of this band limited signal $v(t_j)$ by
 \begin{equation}
 \tilde{v}(f_k) \approx \sum_{j=0}^{N-1} \Delta t\, v(t_j) e^{-2 \pi i f_k t_j}
-= \Delta t \sum_{j=0}^{N-1} v_j e^{-2 \pi i j k / N}.
+= \Delta t \sum_{j=0}^{N-1} v_j e^{-2 \pi i j k / N},
 \label{eq:fftapprox}
 \end{equation}
+where $-(N/2 + 1) \le k \le N/2$.
 Notice that the approximation to the Fourier transform is periodic in $k$ with
 period $N$ and so 
 \begin{equation}
 \tilde{v}_{-k} = \tilde{v}_{N-k}\quad k = 0, \ldots, N.
 \end{equation}
 Thus we let $k$ vary from $0$ to $N-1$ where zero frequency (DC) corresponds
-to $k=0$, positive frequencies, $0 < f < f_\mathrm{Ny}$, to values in the range $0 <
-k < N/2-1$ and negative frequencies, $-f_\mathrm{Ny} < f < 0$, to values in the range $N/2+1 <
-k < N-1$. The value $k = N/2$ approximates the value of the Fourier
-transform at both $-f_\mathrm{Ny}$ and $f_\mathrm{Ny}$; both these values are equal due to
-the periodicity of the discrete transform.
-We define the \emph{discrete Fourier transform} to be\cite{Anderson:2001a}
+to $k=0$, positive frequencies $0 < f < f_\mathrm{Ny}$ to values in the range
+$0 < k < N/2-1$ and negative frequencies $-f_\mathrm{Ny} < f < 0$ correspond
+to values in the range $N/2+1 < k < N-1$. The value $k = N/2$ approximates the
+value of the Fourier transform at both $-f_\mathrm{Ny}$ and $f_\mathrm{Ny}$;
+both these values are equal due to the periodicity of the discrete transform 
+defined by\cite{Anderson:2001a}
 \begin{equation}
 \tilde{v}_k = \sum_{j=0}^{N-1} v_j e^{-i 2 \pi j k / N}.
 \label{eq:dftdef}
@@ -527,20 +529,19 @@ We may estimate the discrete inverse Fourier transform from equation
 \end{equation}
 to obtain
 \begin{equation}
-v(t_j) \approx \sum_{k=0}^{N-1} \tilde{v}(f_k) e^{2 \pi i f_k t_j / N} \Delta f
-= \frac{1}{N} \sum_{k=0}^{N-1} \tilde{v}_k e^{2 \pi i j k / N}.
+v_j = \frac{1}{N} \sum_{k=0}^{N-1} \tilde{v}_k e^{2 \pi i j k / N}.
 \end{equation}
 
 \subsection{Power Spectral Densities}
 \label{ss:psdconv}
 
 In equation (\ref{eq:ospsddef}), we defined the one sided power spectral
-density, $S_n(|f|)$, of a signal $n(t)$ containing Gaussian noise to be 
+density $S_n(|f|)$ of $n(t)$ to be 
 \begin{equation}
 \left\langle\tilde{n}(f) \tilde{n}^\ast(f')\right\rangle = 
 \frac{1}{2}S_n(|f|)\delta(f-f')
 \end{equation}
-where angle brackets denote an average different realizations of the noise.
+where angle brackets denote an average over different realizations of the noise.
 If $n(t)$ has units of $U$ then $\tilde{n}(f)$ has units of
 $(\mathrm{time}) \times U$. The units $\delta(f-f')$ are $(\mathrm{time})$,
 since 
@@ -558,7 +559,7 @@ $\tilde{n}_k = \tilde{n}(f_k)$, we obtain
 \end{equation}
 where $\delta_{kk'}$ is the dimensionless $\delta$-function defined by
 \begin{equation}
-\delta(f-f') = N\Delta t\delta_{kk'}
+\delta(f-f') \approx N\Delta t\delta_{kk'}
 \end{equation}
 Equation (\ref{eq:ospsddisc}) defines \ospsd in terms of the discrete
 frequency domain quantities.  The definition in equation (\ref{eq:ospsddisc}) is
@@ -580,8 +581,8 @@ Parseval's theorem states that the total power in a signal is independent of
 whether it is calculated in the time domain or the frequency domain.
 
 The value of \ospsd for white Gaussian noise will be useful to us later, so we
-compute it here. If the noise $n(t)$ is white, then $\langle n^2(t) \rangle =
-\varsigma^2$, where $\varsigma^2$ is the variance of the Gaussian noise, so
+compute it here. If the noise $n(t)$ is zero mean, white noise with variance
+$\varsigma^2$, then
 \begin{equation}
 \begin{split}
 \langle n^2(t) \rangle &= \varsigma^2 = \frac{1}{N} \sum_{j=0}^{N-1} |n_j|^2 \\
@@ -591,14 +592,15 @@ compute it here. If the noise $n(t)$ is white, then $\langle n^2(t) \rangle =
 \end{equation}
 and we have
 \begin{equation}
-\ospsd = 2\varsigma^2\Delta t \quad\text{for white Gaussian noise}
+\ospsd = 2\varsigma^2\Delta t 
 \end{equation}
+for white Gaussian noise.
 
 \section{Digital Matched Filtering}
 \label{s:matchedfilter}
 
-In section \ref{s:detectiontheory} we saw that to detect an inspiral signal,
-$h(t)$, in the detector output, $s(t)$, we must construct the time series
+The signal-to-noise ratio (\ref{eq:snrrootdef}) requires us to compute
+the time series
 \begin{equation}
 \label{eq:xcts}
 x(t) = 2 \int_{-\infty}^{\infty}df\,e^{2\pi i f t} 
@@ -608,18 +610,12 @@ and
 \begin{equation}
 \label{eq:ycts}
 y(t) = 2 \int_{-\infty}^{\infty}df\,e^{2\pi i f t} 
-\frac{\tilde{s}(f) \tilde{h_s}^\ast(f)}{S_n\left(\left|f\right|\right)}.
+\frac{\tilde{s}(f) \tilde{h_s}^\ast(f)}{S_n\left(\left|f\right|\right)}
 \end{equation}
-We then construct the signal-to-noise ratio
-\begin{equation}
-\rho(t) = \frac{1}{\sigma}\sqrt{x^2(t) + y^2(t)}
-\label{eq:rhosqcts}
-\end{equation}
-and threshold on $\rho(t) \ge \rho_\ast$. Here we consider $\sigma$ to be a
-normalization constant that measures that ``amount of noise'' in the detector
-(for a given inspiral waveform.) From the definition of the inner product in
-equation (\ref{eq:innerproduct}) and the definition of $\sigma^2$ in equation
-(\ref{eq:sigmasqdef}) we find that
+and the normalization constant $\sigma$ that measures that ``amount of noise''
+in the detector (for a given inspiral waveform). From the definition of the
+inner product in equation (\ref{eq:innerproduct}) and the definition of
+$\sigma^2$ in equation (\ref{eq:sigmasqdef}), we explicitly write
 \begin{equation}
 \label{eq:sigmasqcts}
 \sigma^2 = 2 \int_{-\infty}^{\infty}df\,
@@ -635,14 +631,14 @@ over an ensemble of detectors with different realizations of the noise is
 \left\langle \rho^2 \right\rangle = 
 \frac{1}{\sigma^2} \left\langle x^2 + y^2 \right\rangle = 2,
 \end{equation}
-which can be seen from equation (\ref{eq:filtervariance}).
+as seen from equation (\ref{eq:filtervariance}).
 
 \subsection{Construction of the digital filter using stationary phase chirps}
 \label{ss:digitalfilter}
 
 In section \ref{ss:stationaryphase} we derived the stationary phase
-approximation to Fourier transform of the restricted post$^2$-Newtonian binary
-inspiral waveform, given by 
+approximation to the Fourier transform of the restricted post$^2$-Newtonian
+binary inspiral waveform to be
 \begin{align}
 \label{eq:spcos}
 \tilde{h}_c(f)&=\frac{2GM_\odot c}{(1\,\mathrm{Mpc})c^2}
@@ -656,8 +652,8 @@ e^{i\Psi(f;M,\eta)},\\
 where $f$ is the gravitational wave frequency in Hz, $M = m_1+m_2$ 
 is the total mass of the binary measured in solar masses, $\mu = m_1 m_2 / M$
 is the reduced mass and $\eta = \mu/M$.  Note that $\tilde{h}_{c,s}(f)$ have
-units of 1/Hz.  The instrument strain per Hz, $\tilde{h}(f)$, is obtained from
-a linear superposition of $\tilde{h}_{c,s}(f)$ in exactly the same way as
+units of 1/Hz.  The instrument strain per Hz $\tilde{h}(f)$ is 
+a linear superposition of $\tilde{h}_{c,s}(f)$ in the same way as
 $h(t)$ is obtained from $h_{c,s}(t)$. The phase evolution to
 post$^2$-Newtonian order is given by
 \begin{equation}
@@ -673,21 +669,21 @@ post$^2$-Newtonian order is given by
 where $x=(\pi M f G/c^3)^{1/3}$. The coalescence phase $\phi_0$ is the orbital
 phase, determined by the binary ephemeris, and the coalescence time $t_c$ is
 the time at which the bodies collide. The overall value coalescence phase
-$\phi_0$ is part of the unknown phase of the matched filter and so the chirps
-$\tilde{h}_c$ and $\tilde{h}_s$ are given $\phi_0=0$ and $\phi_0=-\pi/4$,
-respectively.  We set the coalescence time $t_c = 0$.  The validity of the
-stationary phase approximation for inspiral templates is well
-established\cite{Droz:1999qx}.
+$\phi_0$ is part of the unknown phase of the matched filter and we set
+$\phi_0=0$.  respectively.  We set the coalescence time $t_c = 0$, since it is
+accounted for by the Fourier transform in equations (\ref{eq:xcts}) and
+(\ref{eq:ycts}).  The validity of the stationary phase approximation for
+inspiral templates is well established\cite{Droz:1999qx}.
 
 Since the two chirp waveforms $\tilde{h_c}$ and $\tilde{h_s}$ are 
-orthogonal, it is possible to increase the efficiency of the algorithm by
-constructing the time series $\rho(t)$ directly using a single complex inverse
-FFT rather than computing it from $x(t)$ and $y(t)$ which requires two real
-inverse FFTs. We may further increase efficiency when using stationary phase
-chirps by dividing the filter into a part that depends on the data and a part
-that depends only on the template parameters. In this section we describe the
-construction of a digital matched filter which uses these two methods.
-Consider the discrete form of equation (\ref{eq:xcts})
+orthogonal, the most efficient algorithm for constructing the time series
+$\rho(t)$ uses a single complex inverse FFT rather than computing it from
+$x(t)$ and $y(t)$ which requires two real inverse FFTs. We may further
+increase efficiency when using stationary phase chirps by splitting the filter
+into a part that depends on the data and a part that depends only on the
+template parameters. In this section we describe the construction of a digital
+matched filter which uses these two tricks.  Consider the discrete form of
+equation (\ref{eq:xcts})
 \begin{equation}
 \begin{split}
 \label{eq:xdisc}
@@ -698,14 +694,12 @@ x_j &= 2 \frac{1}{N\Delta t} \sum_{k=0}^{N-1} e^{2\pi ijk/N}
 \frac{\tilde{s}_k \tilde{h}_{ck}^\ast} {\ospsd}
 \end{split}
 \end{equation}
-where we have used the definition of the discrete Fourier transform,
-$\tilde{s}_k$, from equation \ref{eq:dftdef} and defined 
-$\tilde{h}_{ck} \equiv {h}_c(f_k) / \Delta t$. From equation
+where  $\tilde{h}_{ck} \equiv {h}_c(f_k) / \Delta t$. From equation
 (\ref{eq:ycts}) we obtain
 \begin{equation}
 \label{eq:ydisc}
 y_j = 2 \frac{\Delta t}{N} \sum_{k=0}^{N-1} e^{2\pi ijk/N} 
-\frac{\tilde{s}_k \tilde{h}_{sk}^\ast} {\ospsd}
+\frac{\tilde{s}_k \tilde{h}_{sk}^\ast} {\ospsd}.
 \end{equation}
 Recall that $s(t)$ and $h(t)$ are real signals. We may use the relations
 $\tilde{s}(f) = \tilde{s}^\ast(-f)$ and $\tilde{h}(f) = \tilde{h}^\ast(-f)$ to
@@ -730,12 +724,12 @@ write the normalization constant, $\sigma^2$, defined in equation
 \right).
 \end{split}
 \end{equation}
-Since gravitational wave detectors are AC-coupled and have no useful low
-frequency response, henceforth we set the DC $k=0$ term to zero. In addition
-to this, we assume that there is no power at the Nyquist frequency, as the
-low pass filter that band limits the interferometer data to frequencies below
+Since earth based gravitational wave detectors have no useful low frequency
+response, henceforth we set the DC ($k=0$) term to zero. In addition to this, we
+assume that there is no power at the Nyquist frequency, as the low pass filter
+that band limits the interferometer data to frequencies below
 $f_\mathrm{Ny}$ falls off rapidly as the Nyquist frequency is approached.
-Therefore we may also set the $k=N/2$ to zero. We assume that this for all
+Therefore we may also set the $k=N/2$ term to zero. We assume this for all
 frequency domain quantities.
 
 Now we may write the cosine phase of the filter given in equation
@@ -846,28 +840,32 @@ where
 \end{equation}
 We can now compute the square of the signal-to-noise ratio
 \begin{equation}
-\rho^2(t_j) = x_j^2 + y_j^2 = \frac{16}{\sigma^2}|z_j|^2
+\rho^2(t_j) = \frac{x_j^2 + y_j^2}{\sigma^2} = \frac{16}{\sigma^2}|z_j|^2
 \end{equation}
 by a single complex inverse Fourier transform and threshold on $\rho^2 \ge
-\rho^2_\ast$.  Since we choose the template, $\tilde{h}_c(f)$, to be at a
-canonical distance of $1$~Mpc, the effective distance, $\mathcal{D}$, to a chirp
-detected with signal to noise ratio $\rho^2$ is then given by
+\rho^2_\ast$.  Since we choose the template $\tilde{h}_c(f)$ to be at a
+canonical distance of $1$~Mpc, the effective distance $D$ to a chirp
+detected with signal to noise ratio $\rho^2$ can be established as
 \begin{equation}
-\mathcal{D} = \frac{\sigma}{\rho} \,\mathrm{Mpc}.
+D = \frac{\sigma}{\rho} \,\mathrm{Mpc}.
 \label{eq:effdistdef}
 \end{equation}
 Recall that $\sigma$ is a measure of the noise in the interferometer output.
 Larger values of $\sigma$ correspond to a quieter detector (due to the
 $1/\ospsd$ term in the expression for $\sigma$) and smaller values to a
-noisier detector. We can see that at a constant signal strength (i.e. a fixed
-value of $\rho$),
-\begin{equation}
-\mathcal{D} \propto \sigma
-\end{equation}
-the quieter the detector, the greater the effective distance of the inspiral
-signal. Similarly, at a constant detector noise level (i.e. fixed value of
-$\sigma$), a larger value the of $\rho$ corresponds to a smaller effective
-distance of the inspiral signal.
+noisier detector. 
+%We can see that at a constant signal strength (i.e. a fixed
+%value of $\rho$),
+%\begin{equation}
+%\mathcal{D} \propto \sigma
+%\end{equation}
+%the quieter the detector, the greater the effective distance of the inspiral
+%signal. Similarly, at a constant detector noise level (i.e. fixed value of
+%$\sigma$), a larger value the of $\rho$ corresponds to a smaller effective
+%distance of the inspiral signal.
+
+\subsection{Details of Filter Implementation}
+\label{ss:dirtydetails}
 
 The calibrated detector output is related to the raw detector output by the
 detector response function according to
@@ -875,9 +873,10 @@ detector response function according to
 \tilde{s}(f) = R(f;t) \tilde{v}(f)
 \end{equation}
 where $R(f;t)$ is the (complex) response function of the detector at a
-specific time $t$\cite{Adhikari:2003}. In practice, we compute the uncalibrated
-power spectral density $S_v(|f_k|)$ from the raw data and then the calibrated
-power spectral density, $\ospsd$, in the denominator of (\ref{eq:zdef}) is
+specific time $t$, as described in chapter~\ref{ch:inspiral}. In practice, we
+compute the uncalibrated power spectral density $S_v(|f_k|)$ from the raw data
+and then the calibrated power spectral density, $\ospsd$, in the denominator
+of (\ref{eq:zdef}) is
 \begin{equation}
 \ospsd = |R(f;t)|^2 S_v(|f_k|).
 \end{equation}
@@ -885,16 +884,15 @@ Further details of the computation of $S_v(|f_k|)$ are given in sections
 \ref{ss:psd} and \ref{ss:invspec}.
 
 Typical values of the variance of $v(t)$ for initial LIGO data are $10^3$,
-however the response function, $R(f)$, has magnitude $\sim 10^{-22}$ in the
+however the response function $R(f)$ has magnitude $\sim 10^{-22}$ in the
 sensitive band of the instrument. Although we only need floating point (4
-byte) precision to store the calibrated interferometer data, $\tilde{s}(f)$
-and the power spectral density, $S_n(|f|)$, the calibrated time domain data may
+byte) precision to store the calibrated interferometer data $\tilde{s}(f)$
+and the power spectral density $S_n(|f|)$ the calibrated time domain data may
 overflow the dynamic range of floating point variables. Therefore when we
 implement the digital filter, we multiply the response function $R(f)$ by a
-scaling variable, $d$, which typically has values of $d = 2^{64}$ for initial
-LIGO data. This scales all frequency domain quantities have approximately
-order unity, that is $\log_{10}|d\tilde{s}_{k}| \sim 10$.  Therefore equation
-(\ref{eq:zdef}) becomes
+scaling variable $d$ which typically has values of $d = 2^{64}$ for initial
+LIGO data. This scales all frequency domain quantities to have approximately
+order unity.  Therefore equation (\ref{eq:zdef}) becomes
 \begin{equation}
 \label{eq:zdefcal}
 z_j = \frac{\Delta t}{N} \sum_{k=0}^{N/2} e^{2\pi ijk/N} 
@@ -909,8 +907,8 @@ and (\ref{eq:sigmasqdisc}) becomes
 {d^2|R|^2S_v\left(\left|f_k\right|\right)}. 
 \end{equation}
 Notice that we must also multiply the chirp by $d$ so that all the factors of
-$d$ cancel in the signal-to-noise ratio, $\rho(t_j)$, and the normalization
-constant, $\sigma^2$. In fact this is convenient as it brings the value of
+$d$ cancel in the signal-to-noise ratio $\rho(t_j)$ and the normalization
+constant $\sigma^2$. In fact this is convenient as it brings the value of
 the $\tilde{h}_c(f_k)$ to order unity for chirps that would produce a
 signal-to-noise ratio of order unity. From equation (\ref{eq:spcos}) we obtain
 the dimensionless quantity
@@ -924,19 +922,19 @@ d\,\tilde{h}_{ck} &= \frac{d \tilde{h}_c(f_k)}{\Delta t} \\
 \left(\frac{M}{\pi^2M_\odot}\right)^\frac{1}{3}
 \left(\frac{GM_\odot}{c^3\Delta t}\right)^{-\frac{1}{6}}
 \left( f\,\Delta t \right)^{-\frac{7}{6}} \\
-&\quad\quad\times\exp\,[i\Psi(f_k;M,\eta)] \Theta\left(k-k_\mathrm{ISCO}\right)\\
+&\quad\quad\times\exp\,[i\Psi(f_k;M,\eta)] \Theta\left(k-k_\mathrm{isco}\right)\\
 &=
 \sqrt{\mathcal{T}(M,\mu)}\left(\frac{k}{N}\right)^{-\frac{7}{6}}
 e^{i\Psi\left(f_k;M,\eta\right)} \Theta\left(k-k_\mathrm{isco}\right)
 \end{split}
 \end{equation}
 where the term $\Theta\left(k-k_\mathrm{isco}\right)$ ensure that the chirp is
-terminated at $k = k_\mathrm{isco} = f_\mathrm{isco} / \Delta f$, the
-frequency of the innermost stable circular orbit of Schwarzschild.
-$\Psi(f_k;M,\eta)$ is the value of the post$^2$-Newtonian phase evolution,
-which is given by (\ref{eq:spphase}), at the frequency $f_k$. The quantity
-$\mathcal{T}(M,\mu)$ in equation (\ref{eq:hck}) is called the \emph{template
-dependent normalization constant} and is defined to be 
+terminated at the frequency of the innermost stable circular orbit of
+Schwarzschild. The function $\Psi(f_k;M,\eta)$ is the value of the
+post$^2$-Newtonian phase evolution, which is given by (\ref{eq:spphase}), at
+the frequency $f_k$. The quantity $\mathcal{T}(M,\mu)$ in equation
+(\ref{eq:hck}) is called the \emph{template dependent normalization constant}
+and is given by
 \begin{equation}
 \mathcal{T}(M,\mu) = \left[
 \left(\frac{2dGM_\odot}{(1\,\mathrm{Mpc})c^2}\right)
@@ -945,10 +943,11 @@ dependent normalization constant} and is defined to be
 \left(\frac{GM_\odot}{\Delta tc^3}\right)^{-\frac{1}{6}}
 \right]^2.
 \end{equation}
-$\mathcal{T}(M,\eta)$ depends on the masses of the template and as such must
-be recomputed once per template. If we substitute equation (\ref{eq:hck}) 
-into equation (\ref{eq:sigmasqdisccal}) we obtain
+Note that $\mathcal{T}(M,\eta)$ depends on the masses of the template and as
+such must be recomputed once per template. If we substitute equation
+(\ref{eq:hck}) into equation (\ref{eq:sigmasqdisccal}) we obtain
 \begin{equation}
+\label{eq:sigmasqts}
 \sigma^2 = 4 \frac{\Delta t}{N} \mathcal{T} 
 \sum_{k=0}^{k_\mathrm{isco}} 
 \frac{\left(\frac{k}{N}\right)^{-\frac{7}{3}}}
@@ -962,14 +961,14 @@ where $\mathcal{S}$ is defined to be
 \frac{\left(\frac{k}{N}\right)^{-\frac{7}{3}}}{d^2|R|^2S_v\left(\left|f_k\right|\right)}.
 \end{equation}
 $\mathcal{S}$ is referred to as the \emph{segment dependent normalization}.
-It depends on the template only through $k_\mathrm{isco}$, so we compute and
-store the array 
+It depends on the binary masses only through $k_\mathrm{isco}$, so we compute
+and store the array 
 \begin{equation}
 \mathcal{S}(k_\mathrm{isco}) \quad \quad 1 \le k_\mathrm{isco} \le \frac{N}{2}
 \end{equation}
 from the input power spectral density. We then select the correct value of
-$\mathcal{S}$ for each chirp by computing the $f_\mathrm{isco}$ of the
-template.
+$\mathcal{S}$ for a given mass pair by computing $k_\mathrm{isco} =
+f_\mathrm{isco} / \Delta f$.
 
 The signal-to-noise ratio squared is then
 \begin{equation}
@@ -977,17 +976,13 @@ The signal-to-noise ratio squared is then
 \frac{16}{\sigma^2}\left(\frac{\Delta t}{N}\right)^2 \mathcal{T}
 \left| 
   \sum_{k=1}^{N/2} e^{2\pi ijk/N} 
-  \frac{dR\tilde{v}_k \left(\frac{k}{N}\right)^{-\frac{7}{6}} e^{-i\Psi(f_k;M,\eta)}\Theta(k-k_\mathrm{isco}}
+  \frac{dR\tilde{v}_k \left(\frac{k}{N}\right)^{-\frac{7}{6}} e^{-i\Psi(f_k;M,\eta)}\Theta(k-k_\mathrm{isco})}
        {d^2|R|^2 S_v\left(\left|f_k\right|\right)}
 \right|^2 
 \label{eq:signaltonoisesq}
 \end{equation}
-where $\sigma^2$ is now given by
-\begin{equation}
-\sigma^2 = \frac{4\Delta t}{N} \mathcal{T}\mathcal{S}.
-\label{eq:sigmasqts}
-\end{equation}
-Let us define $\tilde{q}_k$ by
+where $\sigma^2$ is now given by equation (\ref{eq:sigmasqts}).  Let us define
+$\tilde{q}_k$ by
 \begin{equation}
 \label{eq:qtildedef}
 \tilde{q}_k = 
@@ -1023,40 +1018,47 @@ $\tilde{T}_k$ is called the \emph{findchirp template}, so
 \end{cases}
 \end{equation}
 
-We have now split the computation of $\rho(t)$ into parts that depend on only
-the data segment, $\left\{v_j\right\}, j = 1,\ldots,N$ and only the template,
-$\tilde{h}_{ck}$. The goal of this separation is to reduce the computational
+%We have now split the computation of $\rho(t)$ into parts that depend on only
+%the data segment, $\left\{v_j\right\}, j = 1,\ldots,N$ and only the template,
+%$\tilde{h}_{ck}$.
+The goal of this separation is to reduce the computational
 cost of producing $\rho(t)$ by computing the template and using it to filter
-several data segments. For a given power spectral density, $S_v(|f_k|)$, we
-only need to compute $\mathcal{S}(k_\mathrm{isco})$ once. If we design the
-code to process several data segments, labeled $i = 1,\ldots,M$, we can
-compute $\tilde{F}_k^i$ once for the each data segment and then for each
-template we then compute $\mathcal{T}$ and $\tilde{T}_k$. We then construct
-$\tilde{F}_k^i\tilde{T}_k$ for each of the $M$ data segments, recycling the
-template for each data segment. We can threshold the modulus of the inverse
-FFT of this quantity, $|q_j|^2$, on
+several data segments. For a given power spectral density $S_v(|f_k|)$ we
+only need to compute $\mathcal{S}(k_\mathrm{isco})$ once. The findchirp code
+is designed to process several data segments, labeled $i = 1,\ldots,M$, at a
+time. We can compute $\tilde{F}_k^i$ once for  each data segment and then for
+each template we compute $\mathcal{T}$ and $\tilde{T}_k$. 
+This reduces the computational cost of filter generation.
+%We then construct
+%$\tilde{F}_k^i\tilde{T}_k$ for each of the $M$ data segments, recycling the
+%template for each data segment.
+Furthermore, we can threshold against the quantity $|q_j|^2$
 \begin{equation}
 |q|^2_\ast = \frac{\rho^2_\ast} 
 {\frac{16}{\sigma^2}\left(\frac{\Delta t}{N}\right)^2 \mathcal{T}}
 \end{equation}
-and thresholding on 
+thus saving a multiplication per sample point.
+%and thresholding on 
+%\begin{equation}
+%\max_{j} |q_j|^2 
+%\begin{cases}
+%\ge |q|^2_\ast &\quad \text{the signal is present}\\
+%< |q|^2_\ast &\quad \text{the signal is absent}
+%\end{cases}
+%\label{eq:qopstat}
+%\end{equation}
+The effective distance of an inspiral signal at time $t_j = j\Delta t$ is
+given by equation (\ref{eq:effdistdef}) which becomes
 \begin{equation}
-\max_{j} |q_j|^2 
-\begin{cases}
-\ge |q|^2_\ast &\quad \text{the signal is present}\\
-< |q|^2_\ast &\quad \text{the signal is absent}
-\end{cases}
-\label{eq:qopstat}
+D = \frac{\mathcal{T}\mathcal{S}^2}{|q_j|^2}
 \end{equation}
-The effective distance of an
-inspiral signal at time $t_j = j\Delta t$ is given by equation
-(\ref{eq:effdistdef}), which becomes
-\begin{equation}
-\mathcal{D} = \frac{\mathcal{T}\mathcal{S}^2}{|q_j|^2}
-\end{equation}.
+in this notation.
+
+\subsection{Recording Triggers}
+\label{ss:record}
 
 We call times when the optimal receiver tells us that a signal is
-present \emph{candidate inspiral triggers} and record the time of the trigger,
+present \emph{inspiral triggers} and record the time of the trigger,
 the mass parameters of the template and the value of $\sigma^2$ for the data
 segment. There are several complications that mean that the test in equation
 (\ref{eq:qopstat}) is not what we do in practice, however. In section
@@ -1065,15 +1067,15 @@ cause the filter output event though no chirp is present, and hence cause a
 false alarms. Although such events are rare in Gaussian noise, they are quite
 common in real detector output, so we construct an addition test on the
 presence of absence of the signal, called the $\chi^2$ veto\cite{Allen:2004},
-which we will describe in section \ref{s:chisqcts}. Furthermore, the inspiral
-signals that we are searching for are generally shorter than the the length of
+which is described in section \ref{s:chisqcts}. Furthermore, the inspiral
+signals that we are searching for are shorter than the length of
 a data segment, so we want to allow the possibility of generating multiple
-inspiral triggers in a single data segment. We also do not want to record all
-times for which $|q_j|^2 \ge |q|^2_\ast$, as we will soon be flooded with
-triggers in real interferometer data. In section \ref{s:maxoverchirp}, we will
-describe the algorithm that we use to select the times for which we generate
-inspiral triggers based on the output of the matched filter and the $\chi^2$
-veto.
+inspiral triggers in a single data segment. We also do not record all
+times for which $|q_j|^2 \ge |q|^2_\ast$, as we would soon be flooded with
+triggers in real interferometer data. The algorithm that we use to select the
+times for which we generate inspiral triggers based on the output of the
+matched filter and the $\chi^2$ veto is described in section
+\ref{s:maxoverchirp}.
 
 \section{Testing the filtering code}
 \label{s:testing}
@@ -1081,16 +1083,16 @@ veto.
 \subsection{Normalization}
 \label{ss:normalization}
 
-In section \ref{s:detectiontheory} we showed that we can construct a quantity
-$\rho^2$ and threshold on this to decide if a signal is present in the data
-and that in the presence of Gaussian noise, $\rho^2$ is normalized such that 
-$\langle\rho^2\rangle = 2$.  In section \ref{ss:digitalfilter} we described
-how the construction of $\rho^2$ is implemented in the digital filtering code.
-In this section, we consider some testing of the most basic tests of this
-filtering code.
+%In section \ref{s:detectiontheory} we showed that we can construct a quantity
+%$\rho^2$ and threshold on this to decide if a signal is present in the data
+%and that in the presence of Gaussian noise, $\rho^2$ is normalized such that 
+%$\langle\rho^2\rangle = 2$.  In section \ref{ss:digitalfilter} we described
+%how the construction of $\rho^2$ is implemented in the digital filtering code.
+%In this section, we consider some testing of the most basic tests of this
+%filtering code.
 
 Consider the case when the filter input is Gaussian noise, i.e. $\tilde{s}_k =
-\tilde{n}_k$.  We will also set $R(f_k)\equiv 1$ and $d = 1$.  Then the expectation
+\tilde{n}_k$ and set $R(f_k)\equiv 1$ and $d = 1$.  Then the expectation
 value of the signal-to-noise ratio squared, $\langle \rho^2
 \rangle$ is
 \begin{equation}
@@ -1127,8 +1129,8 @@ where we have used the definition of $\sigma^2$ from equation
 (\ref{eq:sigmasqts}) and the definition of the one-sided power spectral
 density from equation (\ref{eq:ospsddisc}).
 
-The first test of the code that we perform is to check that the normalization
-of the filter agrees with equation (\ref{eq:filternorm}). The response
+The first test of the code is to check that the normalization
+of the filter agrees with equation (\ref{eq:filternorm}) when the response
 function, $R$, and dynamic range scaling, $d$, are both set to unity. In order
 to exclude issues related to power spectral estimation at this stage of
 testing  we set the power spectral density to be the (constant) theoretical
@@ -1139,20 +1141,20 @@ value for white Gaussian noise given by
 \end{equation}
 where $\varsigma^2$ is the variance of the Gaussian noise.  We generate five
 data segments containing white Gaussian noise of mean zero and variance
-$\varsigma^2 = 64$ at a sample rate of $16384$~Hz. The length of each sample is
-$1920$~seconds, so $N = 31\,457\,280$. Table \ref{t:normresults} shows the value
-of the value of $\langle \rho^2 \rangle$ from the averaging the output
-$\rho^2(t_j)$ of the filtering code over all output samples. It can be seen
-the value obtained is good agreement with the theoretical value.  Similar
-tests were performed with colored Gaussian noise, where the power spectrum is
-no longer a constant and noise colored by a response function, $R(f)$, are not
-constant and the average filter output was consistent with the expected value.
-Large and small values of the variance for the noise, $\varsigma^2$, were also
-used to test the that the dynamic range scaling factor $d$ was correctly
-implemented. In all cases the output of the filtering code was consistent with
-equation (\ref{eq:filternorm}).
+$\varsigma^2 = 64$ at a sample rate of $16384$~Hz. The length of each segment
+is $1920$~seconds, so there are $N = 31\,457\,280$ samples per segment. Table
+\ref{t:normresults} shows the value of $\langle \rho^2 \rangle$ after
+averaging the output $\rho^2(t_j)$ of the filtering code over all output
+samples. The values obtained are in good agreement with the theoretical
+expectation.  Similar tests were performed with colored Gaussian noise, where
+the power spectrum is no longer a constant, and noise colored by a response
+function $R(f)$; the average filter output was
+consistent with the expected value.  Large and small values of the variance
+for the noise, $\varsigma^2$, were also used to test that the dynamic
+range scaling factor $d$ was correctly implemented. In all cases the output of
+the filtering code was consistent with equation (\ref{eq:filternorm}).
 
-We may may also consider the distribution of the signal-to-noise squared in
+We may also consider the distribution of the signal-to-noise squared in
 the presence of Gaussian noise. It is we can see from the definition of the
 filter $x(t)$, given by equation (\ref{eq:xcts}), that it is a linear map from
 $s(t)$ to $x(t)$, and similarly for the filter in equation (\ref{eq:ycts}) that
@@ -1168,29 +1170,29 @@ P(x) = \int_{-\infty}^x p(x)\, dx
 where $p(x)$ is the probability density function. For a $\chi^2$ distribution
 with $2$ degrees of freedom, this is
 \begin{equation}
-P(\chi^2) = \int_0^{\chi^2} \frac{e^{-t/2}}{2}.
+P(\chi^2) = \int_0^{\chi^2} \frac{e^{-{x}/2}}{2}\,dx.
 \label{eq:chisqcdf}
 \end{equation}
 Figure \ref{f:rhosq_gaussian_cdf} shows the cumulative density function of
 $\rho^2(t)$ obtained from one of the data segments in Table
 \ref{t:normresults} plotted against the theoretical value given in equation
-(\ref{eq:chisqcdf}) and we can see that the measured and theoretical values
-agree very well.
+(\ref{eq:chisqcdf}). Clearly the measured and theoretical values agree very
+well.
 
 \subsection{Impulse Time}
 \label{ss:impulsetime}
 
 The second test is to examine the output of the filter in the presence of a
-delta function and a uniform power spectrum. In this case the input to the
-matched filter is
+delta function and a constant (white) power spectrum. The input to the matched
+filter is
 \begin{equation}
 \tilde{s}_k = \sum_{k=0}^{N-1} \delta_{jl} e^{-2\pi ijk/N} = e^{-2\pi ilk/N}.
 \label{eq:deltafft}
 \end{equation}
-Using equation (\ref{eq:deltafft}) in our expression for the signal-to-noise
-squared, given by equation (\ref{eq:signaltonoisesq}), we obtain
+Substituting equation (\ref{eq:deltafft}) into equation 
+(\ref{eq:signaltonoisesq}), we obtain
 \begin{equation}
-\rho^2(t_j) = h_c^2(t_0 - t_j) + h_s^2(t_0 - t_j)
+\rho^2(t_j) = h_c^2(t_e - t_j) + h_s^2(t_e - t_j)
 \label{eq:impulse_snr}
 \end{equation}
 which is the sum of the squares of the time reversed chirps.  Figure
@@ -1682,34 +1684,35 @@ pipeline is described in the next chapter.
 %%% figures %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{table}[p]
-  \begin{center}
-  \begin{tabular}{l|c|c}
-  Random Noise Generator Seed& $\left\langle \rho^2(t) \right\rangle$ & $\mathrm{Var}( \rho^2(t) )$\\
-  \hline
-  $1$ & $2.0000$ & $2.0000$ \\
-  $2$ & $2.0000$ & $2.0000$ \\
-  $3$ & $2.0000$ & $2.0000$ \\
-  $4$ & $2.0000$ & $2.0000$ \\
-  $5$ & $2.0000$ & $2.0000$ \\
-  \end{tabular}
-  \end{center}
-  \caption{%
-  The mean and variance of the filter output $\rho^2(t)$ for five samples of
-  white, Gaussian noise with a constant power spectrum of $\ospsd =
-  2\nu^2\delta T$. The observed values agree with the expected value for the
-  mean and the variance of $2$, showing that the implementation of the matched
-  filter is correctly normalized. \color{red}{The results are currently fake.}
-  }
 \label{t:normresults}
+\begin{center}
+\begin{tabular}{l|c|c}
+Random Noise Generator Seed& $\left\langle \rho^2(t) \right\rangle$ & $\mathrm{Var}( \rho^2(t) )$\\
+\hline
+$1$ & $2.0000$ & $2.0000$ \\
+$2$ & $2.0000$ & $2.0000$ \\
+$3$ & $2.0000$ & $2.0000$ \\
+$4$ & $2.0000$ & $2.0000$ \\
+$5$ & $2.0000$ & $2.0000$ \\
+\end{tabular}
+\end{center}
+\caption[Mean and Variance of the Matched Filter Output for Gaussian Noise]{%
+The mean and variance of the filter output $\rho^2(t)$ for five samples of
+white, Gaussian noise with a constant power spectrum of $\ospsd =
+2\nu^2\delta T$. The observed values agree with the expected value for the
+mean and the variance of $2$, showing that the implementation of the matched
+filter is correctly normalized.
+}
 \end{table}
 
 \newpage
 
 \begin{figure}[p]
+\label{f:rhosq_gaussian_cdf}
 \begin{center}
 \includegraphics[width=\linewidth]{figures/findchirp/rhosq_gaussian_cdf}
 \end{center}
-\caption{\label{f:rhosq_gaussian_cdf}%
+\caption[Distribution of the Filter Output for Gaussian Noise]{%
 In the presence of Gaussian noise the expected filter output, $\rho^2(t)$, is
 the sum of the squares of two Gaussian distributed quantities and so should be
 $\chi^2$ distributed with two degrees of freedom. This figure shows the
@@ -1722,10 +1725,11 @@ values.
 \end{figure}
 
 \begin{figure}[p]
+\label{f:impulse_snr}
 \begin{center}
 \includegraphics[width=\linewidth]{figures/findchirp/impulse_snr}
 \end{center}
-\caption{\label{f:impulse_snr}%
+\caption[Impulse Response of Matched Filter With a Constant Power Spectrum]{
 The top panel shows the filter input which consists of an impulse at $t_0 = 90$.
 The power spectrum is set to that of white uncorrelated noise. The bottom panel
 shows the output of the filter. The filter output is the sum of the squares of
@@ -1735,10 +1739,11 @@ time of the impulse.
 \end{figure}
 
 \begin{figure}[p]
+\label{f:impulse_spec}
 \begin{center}
 \includegraphics[width=\linewidth]{figures/findchirp/impulse_spec}
 \end{center}
-\caption{\label{f:impulse_spec}%
+\caption[Impulse Response of Matched Filter With a Real Power Spectrum]{
 The top panel shows the filter input which consists of an impulse at $t_0 =
 90$.  The power spectrum is computed from Gaussian noise of the same length of
 the input data using Welch's method. The bottom panel shows the output of the
@@ -1753,7 +1758,7 @@ entire filter output is corrupted due to the wrap around of the FFT.
 \begin{center}
 \includegraphics[width=\linewidth]{figures/findchirp/impulse_wraparound}
 \end{center}
-\caption{%
+\caption[Wrap-around of the Matched Filter]{%
 The top panel shows the filter input which consists of an impulse at $t_0 = 250$.
 The power spectrum is set to that of white uncorrelated noise. The bottom panel
 shows the output of the filter. The length of the chirp template is $43.7$
@@ -1767,7 +1772,7 @@ seconds of the output due to the wrap-around of the FFT.
 \begin{center}
 \includegraphics[width=\linewidth]{figures/findchirp/rhosq_gaussian_cdf}
 \end{center}
-\caption{%
+\caption[Distribution of Filter Output Using Median Power Spectral Estimator]{%
 In the presence of Gaussian noise the expected filter output, $\rho^2(t)$, is
 the sum of the squares of two Gaussian distributed quantities and so should be
 $\chi^2$ distributed with two degrees of freedom. This figure shows the
@@ -1784,7 +1789,7 @@ using Hann windowing and the median estimator.
 \begin{center}
 \includegraphics[width=\linewidth]{figures/findchirp/impulse_inv_spec}
 \end{center}
-\caption{%
+\caption[Impulse Response of Matched Filter With a Truncated Power Spectrum]{%
 The top panel shows the input to the filtering code which is an impulse at $t
 = 90$ seconds. The average power spectrum is computed from typical LIGO noise
 and then truncated to $16$ seconds in the time domain. The duration of non-zero
@@ -1793,10 +1798,12 @@ filter output is also $16$ seconds.
 \end{figure}
 
 \begin{figure}[p]
+\label{f:zero_inject_zoom}
 \begin{center}
 \includegraphics[angle=-90,width=\linewidth]{figures/findchirp/zero_inject_zoom}
 \end{center}
-\caption{\label{f:zero_inject_zoom}Output time series from the filtering code
+\caption[Output of the Filtering Code for a Chirp In the Absence of Noise]{
+Output time series from the filtering code
 for an inspiral chirp in the absence of noise. A $(2.0,2.0)\,m_\odot$ inspiral
 chirp is generated using the post$^2$-Newtonian time domain waveform
 generation and injected into the data. This is filtered using the
@@ -1810,10 +1817,11 @@ signal.
 \end{figure}
 
 \begin{figure}[p]
+\label{f:maxoverchirp}
 \begin{center}
 \includegraphics[width=\linewidth]{figures/findchirp/maxoverchirp}
 \end{center}
-\caption{\label{f:maxoverchirp}%
+\caption[Inspiral Trigger Selection Algorithm]{
 The algorithm used to generate inspiral triggers. For a given inspiral
 template we begin by calculating the length of the chirp and the filter
 output. For a data segment of length $N$, the first and last $N/4$ points in
