@@ -2,15 +2,15 @@
 
 set ifolist [list L1]
 
-set winlist [list {-5,2} {-10,2} {-16,2}]
-set snrlist [list 7 8 9 10]
+set winlist [list {-4,+8} {-6,+8} {-6,+10} {-10,+10} {-2,+10}]
+set snrlist [list  8 10 12]
 
 foreach ifo $ifolist {
     set cfile ${ifo}-INSPIRAL_PLG.xml
     set rfile S2${ifo}_macho_playsegs.txt
 
     #-- Construct list of veto files
-    set dir /scratch/duncan/macho/2004052501_vetoes/2004051103_l1_playground/$ifo
+    set dir $ifo
     set vfiles [lsort -dictionary [concat \
 	[glob -nocomplain $dir/${ifo}*-FINAL6.xml] \
 	[glob -nocomplain ${ifo}:*-FINAL6.xml] \
