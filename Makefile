@@ -8,6 +8,7 @@ thesis.pdf: acknowledge.tex \
             macho.tex \
             papers.bib \
             pipeline.tex \
+            hardware.tex \
             result.tex \
             thesis.tex \
             references.bib \

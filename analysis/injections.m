@@ -72,7 +72,10 @@ end
 
 
 f = figure;
+scatter(missed.H2.mass1,missed.H2.mass2,50,missed.H2.eff_dist_h,'v','filled');
+hold on;
 scatter(missed.H1.mass1,missed.H1.mass2,50,missed.H1.eff_dist_h,'^','filled');
+hold off;
 grid on;
 c = colorbar;
 set(get(c,'XLabel'),'String','D (Mpc)')
