@@ -69,36 +69,6 @@ Since the matched filter is performed in the frequency domain, we use the
 stationary phase approximation to the Fourier transform of the 2~PN
 waveform\cite{poissonwill}. The stationary phase approximations to the Fourier
 transforms of $h_c(t)$ and $h_s(t)$ are given by
-\begin{eqnarray}
-\label{eq:spcos}
-\tilde{h}_c(f)&=&\frac{2T_\odot c}{1\,\mathrm{Mpc}}
-\left(\frac{5\mu}{96M_\odot}\right)^\frac{1}{2}
-\left(\frac{M}{\pi^2M_\odot}\right)^\frac{1}{3}%\\
-%&&\quad\quad\times 
-f^{-\frac{7}{6}}\,T_\odot^{-\frac{1}{6}}\,
-e^{i\Psi(f;M,\eta)},\\%\nonumber \\
-\label{eq:hsorthog}
-\tilde{h}_s(f)&=&i\tilde{h}_c(f),
-\end{eqnarray}
-where $f$ is the gravitational wave frequency in Hz, $M = m_1+m_2$ 
-is the total mass of the binary, $\mu = m_1 m_2 / M$ is the reduced mass and
-$\eta = \mu/M$.  Note that $\tilde{h}_{c,s}(f)$ have dimensions of 1/Hz.  The
-instrument strain per Hz, $\tilde{h}(f)$, is obtained from a linear
-superposition of $\tilde{h}_{c,s}(f)$ in exactly the same way as $h(t)$ is
-obtained from $h_{c,s}(t)$. The phase evolution to 2~PN order is given by
-\begin{eqnarray}
-\Psi(f;M,\eta) = 2\pi ft_c-2\phi_c-\pi/4+\frac{3}{128\eta}\biggl[x^{-5}+
-\left(\frac{3715}{756}+\frac{55}{9}\eta\right)x^{-3}
--16\pi x^{-2} \nonumber\\
-+\left(\frac{15\,293\,365}{508\,032}+\frac{27\,145}{504}\eta
-+\frac{3085}{72}\eta^2\right)x^{-1}\biggr],
-\end{eqnarray}
-where $x=(\pi MfT_\odot/M_\odot)^{1/3}$, the coalescence phase
-$\phi_c$ is determined by the binary ephemeris, and the coalescence
-time $t_c$ is the time at which the bodies collide.  The chirps
-$\tilde{h}_c$ and $\tilde{h}_s$ are given $\phi_c=0$ and
-$\phi_c=-\pi/4$, respectively. The validity of the stationary phase
-approximation for inspiral templates is well established\cite{spvalid}.
 
 
 To detect the waveforms decribed above we use matched filtering in the
@@ -107,12 +77,42 @@ the introduction, is
 \begin{equation}
 \tilde{h}(f) = \int_{-\infty}^{\infty} h(t) e^{-2\pi i f t}.
 \end{equation}
-There are two ways of obtaining $\tilde{h}(f)$. The first is to compute $h(t)$
-and then take the Fourier transform. This is compulationally expensive,
-however, as it requires an additional FFT for each template that we wish to
-filter. The second method is to use the stationary phase
-approximation\cite{xxx} to express the chirp directly in the frequency
-domain\cite{xxx}. Given a function
+
+
+The 2~PN waveform is a sweeping sinusoid which is computed from a specified 
+low frequency cutoff which is chosen based on the characteristic noise in the
+detector. It sweeps through the sensitive band of the detector with increasing
+frequency and amplitude.  The upper frequency cutoff of the waveform is
+determined by the frequency at which the post-Newtonian approximation breaks
+down and we no longer trust the waveforms. For post-Newtonian chirps computed
+in the time domain, the frequency at which the frequency evolution becomes
+non-monotonic is a good indication of this.  In the stationary phase
+approximation there is no equivalent measure of the breakdown.  Therefore to
+set a high frequency cutoff for the inspiral waveforms, we choose the
+frequency of the Schwartzchild innermost stable orbit (ISCO). This can be
+computed exactly and is given by
+\begin{equation}
+f_{\mathrm{max}} = \left( 6M\pi\sqrt{6}T_\odot \right)^{-1}\,\mathrm{Hz}
+\label{eq:isco}
+\end{equation} where $M$ is the total mass of the binary system in solar
+masses. Since the ISCO frequency is currently not known for a pair of
+comparably massive objects, it is something of a kludge to use this, however
+we find in practice that this yields a maximum frequency which is close to that
+given by the frequency at which the time domain waveforms are cut off.  The
+upper frequency cutoff for the waveform of a $2\times 1.4 \> M_\odot$ binary
+system is thus $1570$~Hz.
+
+\subsection{The Stationary Phase Waveforms}
+\label{ss:stationaryphase}
+
+The inspiral waveforms that we need in the matched filter are $\tilde{h}_c(f)$
+and $\tilde{h}_s(f)$, rather than the waveforms $h_c(t)$ and $h_t(t)$ computed
+in chapter \ref{ch:inspiral}. There are two ways of obtaining $\tilde{h_c}(f)$.
+The first is to compute $h_c(t)$ then Fourier transform the signal. This is
+compulationally expensive, however, as it requires an additional FFT for each
+template that we wish to filter. The second method is to use the stationary phase
+approximation\cite{Mathews:1992} to express the chirp directly in the frequency
+domain\cite{WillWiseman:1996,Cutler:1994}. Given a function
 \begin{equation}
 B(t) = A(t) \cos \phi(t)
 \end{equation}
@@ -128,9 +128,9 @@ then the stationary phase approximation to the Fourier transform of $B(t)$ is
 given by
 \begin{equation}
 \tilde{B}(f) = \frac{1}{2} A(t) \left(\frac{df}{dt}\right)^{-\frac{1}{2}}
-\exp\left[ -i \left(2\pi f t - \phi(f) - \frac{\pi}{4} \right)\right]
+\exp\left[ -i \left(2\pi f t' - \phi(f) - \frac{\pi}{4} \right)\right]
 \end{equation}
-where $t$ is the time at which
+where $t'$ is the time at which
 \begin{equation}
 \frac{d\phi(t)}{dt} = 2\pi f
 \end{equation}
@@ -139,8 +139,8 @@ and
 \phi(f) = \phi\left[t(f)\right].
 \end{equation}
 
-According to the Newtonian quadrupole formula, the orbital frequency at any
-instant is given by
+For the restricted post$^2$-Newtonian chirps discussed in chapter
+\ref{ch:inspiral}, the orbital frequency at any instant is given by
 \begin{equation}
 \Omega = \frac{M^{\frac{1}{2}}}{r^{\frac{3}{2}}}.
 \end{equation}
@@ -196,7 +196,7 @@ where we have defined the \emph{chirp mass} by
 \begin{equation}
 \mathcal{M} = \mu^\frac{3}{5} M^\frac{2}{5}.
 \end{equation}
-Now
+Now the phase is given to post$^2$-Newtonian order by\cite{Blanchet:1996pi}
 \begin{equation}
 \phi(t) = \int^t 2\pi f(t') \, dt'
 \end{equation}
@@ -228,31 +228,6 @@ and so
 \end{align}
 Equation (\ref{eq:sp:template}) is the stationary phase binary inspiral
 template that we will use in the matched filter.
-
-
-The 2~PN waveform is a sweeping sinusoid which is computed from a specified 
-low frequency cutoff which is chosen based on the characteristic noise in the
-detector. It sweeps through the sensitive band of the detector with increasing
-frequency and amplitude.  The upper frequency cutoff of the waveform is
-determined by the frequency at which the post-Newtonian approximation breaks
-down and we no longer trust the waveforms. For post-Newtonian chirps computed
-in the time domain, the frequency at which the frequency evolution becomes
-non-monotonic is a good indication of this.  In the stationary phase
-approximation there is no equivalent measure of the breakdown.  Therefore to
-set a high frequency cutoff for the inspiral waveforms, we choose the
-frequency of the Schwartzchild innermost stable orbit (ISCO). This can be
-computed exactly and is given by
-\begin{equation}
-f_{\mathrm{max}} = \left( 6M\pi\sqrt{6}T_\odot \right)^{-1}\,\mathrm{Hz}
-\label{eq:isco}
-\end{equation} where $M$ is the total mass of the binary system in solar
-masses. Since the ISCO frequency is currently not known for a pair of
-comparably massive objects, it is something of a kludge to use this, however
-we find in practice that this yields a maximum frequency which is close to that
-given by the frequency at which the time domain waveforms are cut off.  The
-upper frequency cutoff for the waveform of a $2\times 1.4 \> M_\odot$ binary
-system is thus $1570$~Hz.
-
 
 Discussion of validity of SP waveform.
 
