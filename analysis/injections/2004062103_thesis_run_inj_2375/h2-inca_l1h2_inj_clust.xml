@@ -1,0 +1,206 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE LIGO_LW [
+<!ELEMENT LIGO_LW ((LIGO_LW|Comment|Param|Table|Array|Stream|IGWDFrame|AdcData|AdcInterval|Time|Detector)*)>
+<!ATTLIST LIGO_LW
+         Name CDATA #IMPLIED
+         Type CDATA #IMPLIED>
+
+<!ELEMENT Comment (#PCDATA)>
+
+<!ELEMENT Param (#PCDATA|Comment)*>
+<!ATTLIST Param 
+         Name CDATA #IMPLIED
+         Type CDATA #IMPLIED
+         Start CDATA #IMPLIED
+         Scale CDATA #IMPLIED
+         Unit CDATA #IMPLIED
+         DataUnit CDATA #IMPLIED>
+
+<!ELEMENT Table (Comment?,Column*,Stream?)>
+<!ATTLIST Table 
+         Name CDATA #IMPLIED
+         Type CDATA #IMPLIED>
+
+<!ELEMENT Column EMPTY>
+<!ATTLIST Column
+         Name CDATA #IMPLIED
+         Type CDATA #IMPLIED
+         Unit CDATA #IMPLIED>
+
+<!ELEMENT Array (Dim*,Stream?)>
+<!ATTLIST Array 
+         Name CDATA #IMPLIED
+         Type CDATA #IMPLIED
+         Unit CDATA #IMPLIED>
+
+<!ELEMENT Dim (#PCDATA)>
+<!ATTLIST Dim 
+         Name  CDATA #IMPLIED
+         Unit CDATA #IMPLIED
+         Start CDATA #IMPLIED
+         Scale CDATA #IMPLIED>
+
+<!ELEMENT Stream (#PCDATA)>
+<!ATTLIST Stream 
+         Name      CDATA #IMPLIED
+         Type      (Remote|Local) "Local"
+         Delimiter CDATA ","
+         Encoding  CDATA #IMPLIED
+         Content   CDATA #IMPLIED>
+
+<!ELEMENT IGWDFrame ((Comment|Param|Time|Detector|AdcData|LIGO_LW|Stream?|Array|IGWDFrame)*)>
+<!ATTLIST IGWDFrame 
+         Name CDATA #IMPLIED>
+
+<!ELEMENT Detector ((Comment|Param|LIGO_LW)*)>
+<!ATTLIST Detector 
+         Name CDATA #IMPLIED>
+
+<!ELEMENT AdcData ((AdcData|Comment|Param|Time|LIGO_LW|Array)*)>
+<!ATTLIST AdcData 
+         Name CDATA #IMPLIED>
+
+<!ELEMENT AdcInterval ((AdcData|Comment|Time)*)>
+<!ATTLIST AdcInterval 
+         Name CDATA #IMPLIED
+         StartTime CDATA #IMPLIED
+         DeltaT CDATA #IMPLIED>
+
+<!ELEMENT Time (#PCDATA)>
+<!ATTLIST Time 
+         Name CDATA #IMPLIED
+         Type (GPS|Unix|ISO-8601) "ISO-8601">
+]>
+
+<LIGO_LW>
+   <Comment>metadata</Comment>
+   <Table Name="processgroup:process:table">
+      <Column Name="processgroup:process:program" Type="lstring"/>
+      <Column Name="processgroup:process:version" Type="lstring"/>
+      <Column Name="processgroup:process:cvs_repository" Type="lstring"/>
+      <Column Name="processgroup:process:cvs_entry_time" Type="int_4s"/>
+      <Column Name="processgroup:process:comment" Type="lstring"/>
+      <Column Name="processgroup:process:is_online" Type="int_4s"/>
+      <Column Name="processgroup:process:node" Type="lstring"/>
+      <Column Name="processgroup:process:username" Type="lstring"/>
+      <Column Name="processgroup:process:unix_procid" Type="int_4s"/>
+      <Column Name="processgroup:process:start_time" Type="int_4s"/>
+      <Column Name="processgroup:process:end_time" Type="int_4s"/>
+      <Column Name="processgroup:process:jobid" Type="int_4s"/>
+      <Column Name="processgroup:process:domain" Type="lstring"/>
+      <Column Name="processgroup:process:ifos" Type="lstring"/>
+      <Column Name="processgroup:process:process_id" Type="ilwd:char"/>
+      <Stream Name="processgroup:process:table" Type="Local" Delimiter=",">
+         "sire","1.15","/usr/local/cvs/lscsoft/lalapps/src/inspiral/sire.c\,v",769623277," ",0,"ldas-grid.ligo.caltech.edu","dbrown",23489,776376239,776376240,0,"lalapps","","process:process_id:0"
+      </Stream>
+   </Table>
+   <Table Name="process_paramsgroup:process_params:table">
+      <Column Name="process_paramsgroup:process_params:program" Type="lstring"/>
+      <Column Name="process_paramsgroup:process_params:process_id" Type="ilwd:char"/>
+      <Column Name="process_paramsgroup:process_params:param" Type="lstring"/>
+      <Column Name="process_paramsgroup:process_params:type" Type="lstring"/>
+      <Column Name="process_paramsgroup:process_params:value" Type="lstring"/>
+      <Stream Name="process_paramsgroup:process_params:table" Type="Local" Delimiter=",">
+         "sire","process:process_id:0","--playground-only","string"," ",
+         "sire","process:process_id:0","--input","string","h2-inca_l1h2.files",
+         "sire","process:process_id:0","--output","string","h2-inca_l1h2_inj_clust.xml",
+         "sire","process:process_id:0","--debug-level","string","33",
+         "sire","process:process_id:0","--injection-coincidence","int","5",
+         "sire","process:process_id:0","--cluster-time","int","16",
+         "sire","process:process_id:0","--cluster-algorithm","string","snr",
+         "sire","process:process_id:0","--injection-file","string","HL-INJECTIONS_2375-729273613-5094000.xml"
+      </Stream>
+   </Table>
+   <Table Name="sim_inspiralgroup:sim_inspiral:table">
+      <Column Name="sim_inspiralgroup:sim_inspiral:process_id" Type="ilwd:char"/>
+      <Column Name="sim_inspiralgroup:sim_inspiral:waveform" Type="lstring"/>
+      <Column Name="sim_inspiralgroup:sim_inspiral:geocent_end_time" Type="int_4s"/>
+      <Column Name="sim_inspiralgroup:sim_inspiral:geocent_end_time_ns" Type="int_4s"/>
+      <Column Name="sim_inspiralgroup:sim_inspiral:h_end_time" Type="int_4s"/>
+      <Column Name="sim_inspiralgroup:sim_inspiral:h_end_time_ns" Type="int_4s"/>
+      <Column Name="sim_inspiralgroup:sim_inspiral:l_end_time" Type="int_4s"/>
+      <Column Name="sim_inspiralgroup:sim_inspiral:l_end_time_ns" Type="int_4s"/>
+      <Column Name="sim_inspiralgroup:sim_inspiral:end_time_gmst" Type="real_8"/>
+      <Column Name="sim_inspiralgroup:sim_inspiral:source" Type="lstring"/>
+      <Column Name="sim_inspiralgroup:sim_inspiral:mass1" Type="real_4"/>
+      <Column Name="sim_inspiralgroup:sim_inspiral:mass2" Type="real_4"/>
+      <Column Name="sim_inspiralgroup:sim_inspiral:eta" Type="real_4"/>
+      <Column Name="sim_inspiralgroup:sim_inspiral:distance" Type="real_4"/>
+      <Column Name="sim_inspiralgroup:sim_inspiral:longitude" Type="real_4"/>
+      <Column Name="sim_inspiralgroup:sim_inspiral:latitude" Type="real_4"/>
+      <Column Name="sim_inspiralgroup:sim_inspiral:inclination" Type="real_4"/>
+      <Column Name="sim_inspiralgroup:sim_inspiral:coa_phase" Type="real_4"/>
+      <Column Name="sim_inspiralgroup:sim_inspiral:polarization" Type="real_4"/>
+      <Column Name="sim_inspiralgroup:sim_inspiral:eff_dist_h" Type="real_4"/>
+      <Column Name="sim_inspiralgroup:sim_inspiral:eff_dist_l" Type="real_4"/>
+      <Column Name="sim_inspiralgroup:sim_inspiral:simulation_id" Type="ilwd:char"/>
+      <Stream Name="sim_inspiralgroup:sim_inspiral:table" Type="Local" Delimiter=",">
+         "process:process_id:0","GeneratePPNtwoPN",729439438,240201950,729439438,231333739,729439438,231520819,2.3806207910879618e+01,"MW",4.427303e-01,5.472688e-01,2.472124e-01,3.446198e-02,3.811759e+00,-2.912904e-01,1.135639e+00,4.740113e+00,5.895225e-01,1.360390e-01,1.386824e-01,"sim_inspiral:simulation_id:0",
+         "process:process_id:0","GeneratePPNtwoPN",729483905,360875607,729483905,373583009,729483905,379979808,1.2192004481073884e+01,"MW",2.003722e-01,5.036674e-01,2.036044e-01,2.575655e-02,5.093754e+00,-2.077008e-01,3.002823e+00,5.498539e+00,4.919199e+00,4.203141e-02,2.892093e-02,"sim_inspiral:simulation_id:0",
+         "process:process_id:0","GeneratePPNtwoPN",729490687,143688679,729490687,153401615,729490687,144476359,1.4080990790931715e+01,"MW",3.719227e-01,5.386242e-01,2.416206e-01,2.257303e-02,3.507662e+00,-3.439492e-01,2.540557e+00,4.602389e+00,3.633599e+00,5.796825e-02,2.587847e-01,"sim_inspiral:simulation_id:0",
+         "process:process_id:0","GeneratePPNtwoPN",729509340,612858415,729509340,605065617,729509340,604094710,1.9276696523705290e+01,"MW",1.669840e-01,8.994994e-01,1.320589e-01,1.444521e-02,4.998367e+00,8.908629e-01,1.436993e+00,3.039185e+00,4.892490e+00,1.780952e-01,1.245479e-01,"sim_inspiral:simulation_id:0",
+         "process:process_id:0","GeneratePPNtwoPN",729566881,383426666,729566881,387120886,729566881,394353214,1.1304005409624013e+01,"MW",3.584151e-01,2.018502e-01,2.304772e-01,2.154443e-02,4.558008e+00,4.996839e-01,1.447180e+00,4.378263e+00,3.443874e+00,8.826820e-02,7.062165e-02,"sim_inspiral:simulation_id:0",
+         "process:process_id:0","GeneratePPNtwoPN",729853598,465760231,729853598,457665362,729853598,451562000,1.9165696451494263e+01,"MW",4.571671e-01,4.559518e-01,2.499996e-01,2.290894e-02,4.384977e+00,4.382727e-01,1.305555e+00,2.015706e+00,5.600554e+00,1.199812e-01,1.180353e-01,"sim_inspiral:simulation_id:0",
+         "process:process_id:0","GeneratePPNtwoPN",729859731,876122832,729859731,879446198,729859731,885613309,2.0874086180999875e+01,"MW",9.067869e-01,6.679645e-01,2.442500e-01,9.581940e-03,1.977864e+00,-3.740783e-01,1.728560e+00,2.151243e+00,1.274505e-02,1.292590e-01,3.964506e-02,"sim_inspiral:simulation_id:0",
+         "process:process_id:0","GeneratePPNtwoPN",730191123,129814148,730191123,149327751,730191123,151015643,1.7179245332831311e+01,"MW",3.077084e-01,9.414036e-01,1.856575e-01,5.299038e-02,6.007405e+00,-5.904682e-01,1.498880e+00,1.113302e+00,6.132928e+00,1.975951e-01,1.828930e-01,"sim_inspiral:simulation_id:0",
+         "process:process_id:0","GeneratePPNtwoPN",730535084,855745316,730535084,872349305,730535084,872443402,1.6985762541517616e+01,"MW",3.567013e-01,9.930013e-01,1.944367e-01,1.482160e-02,3.286653e-01,-1.065410e+00,2.347675e+00,1.173969e+00,3.014355e+00,2.487736e-02,2.526428e-02,"sim_inspiral:simulation_id:0",
+         "process:process_id:0","GeneratePPNtwoPN",730541605,856745720,730541605,869953802,730541605,861149450,1.8802111127724249e+01,"MW",1.695767e-01,3.562952e-01,2.184823e-01,2.691857e-02,4.814795e+00,-5.750162e-01,1.845536e+00,2.204749e+00,4.737928e+00,8.384076e-02,2.356323e-01,"sim_inspiral:simulation_id:0",
+         "process:process_id:0","GeneratePPNtwoPN",732153032,423493147,732153032,426563428,732153032,435167452,1.1646140746759871e+01,"MW",7.793598e-01,6.944638e-01,2.491705e-01,1.437997e-02,4.926633e+00,4.099172e-01,2.700860e+00,3.387118e+00,3.714157e+00,3.180794e-02,2.440500e-02,"sim_inspiral:simulation_id:0",
+         "process:process_id:0","GeneratePPNtwoPN",732650264,675069332,732650264,686085701,732650264,683518646,6.1443708579200838e+00,"MW",9.313419e-01,2.771716e-01,1.767481e-01,4.361798e-02,5.015642e+00,-1.230050e+00,1.032905e+00,3.646403e-01,1.191460e+00,1.412418e-01,1.969976e-01,"sim_inspiral:simulation_id:0",
+         "process:process_id:0","GeneratePPNtwoPN",732879062,472818971,732879062,488323101,732879062,480020608,2.1873322359079289e+01,"MW",6.230013e-01,8.424091e-01,2.443956e-01,5.493292e-02,5.711236e+00,-7.365342e-01,1.971240e+00,6.032604e+00,3.982862e+00,1.762930e-01,3.577754e-01,"sim_inspiral:simulation_id:0",
+         "process:process_id:0","GeneratePPNtwoPN",733713674,44290066,733713674,60691476,733713674,54713493,1.4344617431701886e+01,"MW",3.078850e-01,1.670166e-01,2.280032e-01,3.306786e-02,3.716180e+00,-1.361920e+00,1.978640e+00,7.365675e-01,2.072798e+00,8.659858e-02,1.013387e-01,"sim_inspiral:simulation_id:0",
+         "process:process_id:0","GeneratePPNtwoPN",734350994,693580151,734350994,701464567,734350994,709634575,2.3862832832125324e+01,"MW",5.088500e-01,2.918382e-01,2.316355e-01,4.126958e-02,2.018877e+00,5.390506e-03,8.681108e-01,1.483522e+00,3.395334e+00,1.333810e-01,7.645407e-02,"sim_inspiral:simulation_id:0"
+      </Stream>
+   </Table>
+   <Table Name="sngl_inspiralgroup:sngl_inspiral:table">
+      <Column Name="sngl_inspiralgroup:sngl_inspiral:process_id" Type="ilwd:char"/>
+      <Column Name="sngl_inspiralgroup:sngl_inspiral:ifo" Type="lstring"/>
+      <Column Name="sngl_inspiralgroup:sngl_inspiral:search" Type="lstring"/>
+      <Column Name="sngl_inspiralgroup:sngl_inspiral:channel" Type="lstring"/>
+      <Column Name="sngl_inspiralgroup:sngl_inspiral:end_time" Type="int_4s"/>
+      <Column Name="sngl_inspiralgroup:sngl_inspiral:end_time_ns" Type="int_4s"/>
+      <Column Name="sngl_inspiralgroup:sngl_inspiral:end_time_gmst" Type="real_8"/>
+      <Column Name="sngl_inspiralgroup:sngl_inspiral:impulse_time" Type="int_4s"/>
+      <Column Name="sngl_inspiralgroup:sngl_inspiral:impulse_time_ns" Type="int_4s"/>
+      <Column Name="sngl_inspiralgroup:sngl_inspiral:template_duration" Type="real_8"/>
+      <Column Name="sngl_inspiralgroup:sngl_inspiral:event_duration" Type="real_8"/>
+      <Column Name="sngl_inspiralgroup:sngl_inspiral:amplitude" Type="real_4"/>
+      <Column Name="sngl_inspiralgroup:sngl_inspiral:eff_distance" Type="real_4"/>
+      <Column Name="sngl_inspiralgroup:sngl_inspiral:coa_phase" Type="real_4"/>
+      <Column Name="sngl_inspiralgroup:sngl_inspiral:mass1" Type="real_4"/>
+      <Column Name="sngl_inspiralgroup:sngl_inspiral:mass2" Type="real_4"/>
+      <Column Name="sngl_inspiralgroup:sngl_inspiral:mchirp" Type="real_4"/>
+      <Column Name="sngl_inspiralgroup:sngl_inspiral:eta" Type="real_4"/>
+      <Column Name="sngl_inspiralgroup:sngl_inspiral:tau0" Type="real_4"/>
+      <Column Name="sngl_inspiralgroup:sngl_inspiral:tau2" Type="real_4"/>
+      <Column Name="sngl_inspiralgroup:sngl_inspiral:tau3" Type="real_4"/>
+      <Column Name="sngl_inspiralgroup:sngl_inspiral:tau4" Type="real_4"/>
+      <Column Name="sngl_inspiralgroup:sngl_inspiral:tau5" Type="real_4"/>
+      <Column Name="sngl_inspiralgroup:sngl_inspiral:ttotal" Type="real_4"/>
+      <Column Name="sngl_inspiralgroup:sngl_inspiral:psi0" Type="real_4"/>
+      <Column Name="sngl_inspiralgroup:sngl_inspiral:psi3" Type="real_4"/>
+      <Column Name="sngl_inspiralgroup:sngl_inspiral:f_final" Type="real_4"/>
+      <Column Name="sngl_inspiralgroup:sngl_inspiral:snr" Type="real_4"/>
+      <Column Name="sngl_inspiralgroup:sngl_inspiral:chisq" Type="real_4"/>
+      <Column Name="sngl_inspiralgroup:sngl_inspiral:chisq_dof" Type="int_4s"/>
+      <Column Name="sngl_inspiralgroup:sngl_inspiral:sigmasq" Type="real_8"/>
+      <Column Name="sngl_inspiralgroup:sngl_inspiral:alpha" Type="real_4"/>
+      <Stream Name="sngl_inspiralgroup:sngl_inspiral:table" Type="Local" Delimiter=",">
+         "process:process_id:0","H2","FindChirpSPtwoPN","LSC-AS_Q",729439438,231689453,2.3806205546313691e+01,729439438,231689453,1.2368450164794922e+01,1.4648437500000000e-03,0.000000e+00,1.413703e-01,-6.515310e-01,4.918388e-01,4.918387e-01,4.281705e-01,2.500000e-01,1.234677e+01,6.314609e-01,3.778638e-01,1.999521e-02,0.000000e+00,1.262036e+01,0.000000e+00,0.000000e+00,0.000000e+00,1.070431e+01,4.357864e+01,15,2.2899904904586941e+00,0.000000e+00,
+         "process:process_id:0","H2","FindChirpSPtwoPN","LSC-AS_Q",729483905,372802734,1.2192007798192401e+01,729483905,372802734,2.6553796768188477e+01,2.1972656250000000e-03,0.000000e+00,4.172628e-02,-2.287116e+00,5.517656e-01,1.856462e-01,2.708460e-01,1.883738e-01,2.648767e+01,1.052558e+00,6.076915e-01,2.638413e-02,0.000000e+00,2.695892e+01,0.000000e+00,0.000000e+00,0.000000e+00,3.009340e+01,5.944836e+01,15,1.5767455431339328e+00,0.000000e+00,
+         "process:process_id:0","H2","FindChirpSPtwoPN","LSC-AS_Q",729490687,153076171,1.4080993402037356e+01,729490687,153076171,1.4561621665954590e+01,1.9531250000000000e-03,0.000000e+00,5.828882e-02,-1.587670e+00,6.261491e-01,3.241482e-01,3.880440e-01,2.247514e-01,1.454721e+01,7.096566e-01,4.300989e-01,2.158744e-02,0.000000e+00,1.484835e+01,0.000000e+00,0.000000e+00,0.000000e+00,2.621067e+01,4.220430e+01,15,2.3341402782507328e+00,0.000000e+00,
+         "process:process_id:0","H2","FindChirpSPtwoPN","LSC-AS_Q",729509340,609130859,1.9276695481505659e+01,729509340,609130859,2.0331031799316406e+01,2.4414062500000000e-04,0.000000e+00,1.716228e-01,3.024030e+00,7.510467e-01,1.925217e-01,3.170540e-01,1.624052e-01,2.037163e+01,9.291564e-01,5.980374e-01,2.698144e-02,0.000000e+00,2.072973e+01,0.000000e+00,0.000000e+00,0.000000e+00,7.715266e+00,3.026648e+01,15,1.7532825520410842e+00,0.000000e+00,
+         "process:process_id:0","H2","FindChirpSPtwoPN","LSC-AS_Q",729566881,388427734,1.1304006799227661e+01,729566881,388427734,3.4444515228271484e+01,7.3242187500000000e-04,0.000000e+00,8.965718e-02,-2.717100e+00,3.137990e-01,2.280568e-01,2.322951e-01,2.437402e-01,3.421221e+01,1.168804e+00,5.767586e-01,2.476449e-02,0.000000e+00,3.482902e+01,0.000000e+00,0.000000e+00,0.000000e+00,1.082099e+01,3.790768e+01,15,9.4124803689913228e-01,0.000000e+00,
+         "process:process_id:0","H2","FindChirpSPtwoPN","LSC-AS_Q",729853598,457763671,1.9165694221403037e+01,729853598,457763671,1.4010770797729492e+01,2.1972656250000000e-03,0.000000e+00,1.280849e-01,2.564626e+00,4.566691e-01,4.566690e-01,3.975535e-01,2.500000e-01,1.397189e+01,6.800919e-01,3.970233e-01,2.049587e-02,0.000000e+00,1.427546e+01,0.000000e+00,0.000000e+00,0.000000e+00,1.585279e+01,4.534777e+01,15,4.1229425786187726e+00,0.000000e+00,
+         "process:process_id:0","H2","FindChirpSPtwoPN","LSC-AS_Q",729859731,879638671,2.0874087167167001e+01,729859731,879638671,5.7145113945007324e+00,1.7089843750000000e-03,0.000000e+00,1.297716e-01,-1.176194e+00,7.769886e-01,7.769886e-01,6.764078e-01,2.500000e-01,5.761914e+00,3.997188e-01,2.785740e-01,1.716835e-02,0.000000e+00,5.900227e+00,0.000000e+00,0.000000e+00,0.000000e+00,2.727062e+01,2.824577e+01,15,1.2524190252749134e+01,0.000000e+00,
+         "process:process_id:0","H2","FindChirpSPtwoPN","LSC-AS_Q",730191123,149658203,1.7179250868827932e+01,730191123,149658203,1.1092593193054199e+01,7.3242187500000000e-04,0.000000e+00,2.014805e-01,7.313216e-01,9.143794e-01,3.153891e-01,4.550081e-01,1.906893e-01,1.115705e+01,6.249411e-01,4.268761e-01,2.206397e-02,0.000000e+00,1.137717e+01,0.000000e+00,0.000000e+00,0.000000e+00,9.338030e+00,2.923350e+01,15,3.5397832695549991e+00,0.000000e+00,
+         "process:process_id:0","H2","FindChirpSPtwoPN","LSC-AS_Q",730535084,872802734,1.6985767293063304e+01,730535084,872802734,9.2969636917114258e+00,8.3740234375000000e-02,0.000000e+00,2.529597e-02,5.631491e-01,9.617654e-01,3.665720e-01,5.054467e-01,1.998074e-01,9.363873e+00,5.572258e-01,3.869841e-01,2.083783e-02,0.000000e+00,9.554953e+00,0.000000e+00,0.000000e+00,0.000000e+00,7.058434e+01,6.708968e+01,15,3.1880079653350140e+00,0.000000e+00,
+         "process:process_id:0","H2","FindChirpSPtwoPN","LSC-AS_Q",730541605,872314453,1.8802115464624432e+01,730541605,872314453,4.0386463165283203e+01,1.9531250000000000e-03,0.000000e+00,8.142250e-02,-1.520702e+00,2.426243e-01,2.426243e-01,2.112167e-01,2.500000e-01,4.008981e+01,1.280073e+00,6.052399e-01,2.530591e-02,0.000000e+00,4.078994e+01,0.000000e+00,0.000000e+00,0.000000e+00,1.264972e+01,2.484879e+01,15,1.0608423166446797e+00,0.000000e+00,
+         "process:process_id:0","H2","FindChirpSPtwoPN","LSC-AS_Q",732153032,426757812,1.1646141654480662e+01,732153032,426757812,6.2692232131958008e+00,8.3496093750000000e-02,0.000000e+00,3.147444e-02,3.522630e-01,7.356855e-01,7.356855e-01,6.404514e-01,2.500000e-01,6.311088e+00,4.221599e-01,2.889054e-01,1.748381e-02,0.000000e+00,6.461826e+00,0.000000e+00,0.000000e+00,0.000000e+00,1.045125e+02,1.310134e+02,15,1.0820622874958978e+01,0.000000e+00,
+         "process:process_id:0","H2","FindChirpSPtwoPN","LSC-AS_Q",732650264,686523437,6.1443740517646077e+00,732650264,686523437,1.2318102836608887e+01,2.1972656250000000e-03,0.000000e+00,1.377170e-01,-1.570349e+00,9.296392e-01,2.775248e-01,4.271855e-01,1.770450e-01,1.239425e+01,6.763025e-01,4.654959e-01,2.337013e-02,0.000000e+00,1.262843e+01,0.000000e+00,0.000000e+00,0.000000e+00,1.475473e+01,2.876477e+01,15,4.1289328251348394e+00,0.000000e+00,
+         "process:process_id:0","H2","FindChirpSPtwoPN","LSC-AS_Q",732879062,488525390,2.1873326729602283e+01,732879062,488525390,6.4495525360107422e+00,2.9296875000000000e-03,0.000000e+00,1.672089e-01,-1.379946e+00,7.234757e-01,7.234757e-01,6.298222e-01,2.500000e-01,6.489600e+00,4.292845e-01,2.921468e-01,1.758162e-02,0.000000e+00,6.644320e+00,0.000000e+00,0.000000e+00,0.000000e+00,1.766826e+01,2.444505e+01,15,8.7278329588154246e+00,0.000000e+00,
+         "process:process_id:0","H2","FindChirpSPtwoPN","LSC-AS_Q",733713674,62988281,1.4344622642712460e+01,733713674,62988281,4.5895721435546875e+01,1.7089843750000000e-03,0.000000e+00,8.189093e-02,-8.645399e-01,2.247322e-01,2.247322e-01,1.956407e-01,2.500000e-01,4.554937e+01,1.381987e+00,6.369522e-01,2.596042e-02,0.000000e+00,4.632036e+01,0.000000e+00,0.000000e+00,0.000000e+00,1.204087e+01,5.183213e+01,15,9.7227060950989330e-01,0.000000e+00,
+         "process:process_id:0","H2","FindChirpSPtwoPN","LSC-AS_Q",734350994,701904296,2.3862835151863596e+01,734350994,701904296,1.8848829269409180e+01,1.4648437500000000e-03,0.000000e+00,1.365048e-01,6.072401e-01,4.971509e-01,2.980023e-01,3.329159e-01,2.343183e-01,1.877977e+01,8.210559e-01,4.645905e-01,2.232190e-02,0.000000e+00,1.915856e+01,0.000000e+00,0.000000e+00,0.000000e+00,1.300017e+01,2.306349e+01,15,3.1491551039157866e+00,0.000000e+00
+      </Stream>
+   </Table>
+</LIGO_LW>
