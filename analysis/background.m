@@ -86,8 +86,10 @@ title('Background MACHO Triggers');
 grid on;
 
 for l = 1:length(coinc)
-    bkg.(char(coinc(l))).co_snr = 1.0 ./ ( ( bkg.(char(coinc(l))).l.chisq ./ (15 + bkg.(char(coinc(l))).l.snr.^2 .* 0.2) ) + ...
-        ( bkg.(char(coinc(l))).h.chisq ./ (15 + bkg.(char(coinc(l))).h.snr.^2 .* 0.2) ) );   
+    %    bkg.(char(coinc(l))).co_snr = 1.0 ./ ( ( bkg.(char(coinc(l))).l.chisq ./ (15 + bkg.(char(coinc(l))).l.snr.^2 .* 0.2) ) + ...
+    %        ( bkg.(char(coinc(l))).h.chisq ./ (15 + bkg.(char(coinc(l))).h.snr.^2 .* 0.2) ) );   
+    
+    bkg.(char(coinc(l))).co_snr = bkg.(char(coinc(l))).l.snr.^2 + ( bkg.(char(coinc(l))).h.snr.^2 ./ 4) ;   
     try
         bkg_co_snr = vertcat( bkg_co_snr, bkg.(char(coinc(l))).co_snr );
     catch
@@ -143,8 +145,11 @@ end
 
 
 for l = 1:length(coinc)
-    cand.(char(coinc(l))).co_snr = 1.0 ./ ( ( cand.(char(coinc(l))).l.chisq ./ (15 + cand.(char(coinc(l))).l.snr.^2 .* 0.2) ) + ...
-        ( cand.(char(coinc(l))).h.chisq ./ (15 + cand.(char(coinc(l))).h.snr.^2 .* 0.2) ) );   
+    %    cand.(char(coinc(l))).co_snr = 1.0 ./ ( ( cand.(char(coinc(l))).l.chisq ./ (15 + cand.(char(coinc(l))).l.snr.^2 .* 0.2) ) + ...
+    %        ( cand.(char(coinc(l))).h.chisq ./ (15 + cand.(char(coinc(l))).h.snr.^2 .* 0.2) ) );   
+    
+    cand.(char(coinc(l))).co_snr = cand.(char(coinc(l))).l.snr.^2 + ( cand.(char(coinc(l))).h.snr.^2 ./ 4) ;   
+    
     try
         cand_co_snr = vertcat( cand_co_snr, cand.(char(coinc(l))).co_snr );
     catch
@@ -161,7 +166,7 @@ title('Playground MACHO Injections');
 grid on;
 
 figure;
-hist(cand_co_snr,100);
+hist(cand_co_snr(cand_co_snr>=1000),100);
 title('Playground MACHO Injections');
 grid on;
 xlabel('( (\chi^2_{L1} / 15 + 0.2 * \rho^2_{L1}) + (\chi^2_{H} / 15 + 0.2 * \rho^2_{H}) )^{-1}');
