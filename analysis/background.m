@@ -35,8 +35,9 @@ sire_files.l1h1h1 = {'l1-inca_l1h1h2_clust.xml','h1-inca_l1h1h2_clust.xml'};
 
 coinc = fieldnames(sire_files);
 
-for l = 1:length(coinc)
-    for i = 1:length(slide_dirs)
+
+for i = 1:length(slide_dirs)
+    for l = 1:length(coinc)
         for j = 1:2:length(sire_files)
             
             try
@@ -52,8 +53,21 @@ for l = 1:length(coinc)
                     bkg.(char(coinc(l))).l = tmp;
                 end
                 
+                try 
+                    lag(i).l = vertcat( lag(i).l, tmp.snr )
+                catch
+                    lag(i).l = tmp.snr
+                end
+                   
             catch
                 fprintf(2,'empty file\n')
+                
+                try 
+                    lag(i).l = vertcat( lag(i).l, 0)
+                catch
+                    lag(i).l = 0
+                end
+
             end
             
             try
@@ -69,12 +83,27 @@ for l = 1:length(coinc)
                     bkg.(char(coinc(l))).h = tmp;
                 end
                 
+                try 
+                    lag(i).h = vertcat( lag(i).h, tmp.snr)
+                catch
+                    lag(i).h = tmp.snr
+                end
+                
             catch
                 fprintf(2,'empty file\n')
+                
+                try 
+                    lag(i).h = vertcat( lag(i).h, 0)
+                catch
+                    lag(i).h = 0
+                end
+
             end
                         
         end
+        
     end
+    lag(i).coherent = lag(i).l.^2 + lag(i).h.^2 / 4;
 end
 
 trig.l1h2.l = readMeta('box/l1-inca_l1h2_box_clust.xml','sngl_inspiral');
@@ -173,10 +202,19 @@ for ifo = 1:length(ifonames)
                 found.(char(ifonames(ifo))).h = tmp;
             end
             
+            tmp = readMeta( sprintf( 'injections/%s/%s_missed.xml', char(inj_dirs(i)), char(sire_files.(char(ifonames(ifo)))(j)) ), 'sim_inspiral' );
+            try
+                names = fieldnames(tmp);
+                for k = 1:length(names)
+                    missed.(char(names(k))) = vertcat(missed.(char(names(k))) ,tmp.(char(names(k))));
+                end
+            catch
+                missed = tmp;
+            end
+            
         end
     end
 end
-
 
 for l = 1:length(coinc)
     %    cand.(char(coinc(l))).co_snr = 1.0 ./ ( ( cand.(char(coinc(l))).l.chisq ./ (15 + cand.(char(coinc(l))).l.snr.^2 .* 0.2) ) + ...
@@ -196,6 +234,7 @@ for l = 1:length(coinc)
     catch
         cand_co_snr = bkg.(char(coinc(l))).co_snr;
     end
+    
 end
 
 f = figure;
@@ -244,5 +283,13 @@ title('MACHO Playground Injections and Background');
 grid on;
 saveas(f,'figures/inj_bkg_snr','png');
 saveas(f,'figures/inj_bkg_snr','pdf');
+
+
+for i = 1:length(lag)
+pb(i)=length(lag(i).coherent(lag(i).coherent>67.4225));
+end
+
+f = figure;
+hist(pb)
 
 clear i j k l coinc sire_files names slide_dirs tmp;
