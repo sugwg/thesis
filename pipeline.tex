@@ -1,5 +1,235 @@
 % $Id$
 
+\section{Construction of Inspiral Pipelines}
+\label{s:construction}
+
+Chapter \ref{ch:findchirp} described the algorithms that we use to generate
+inspiral triggers for an inspiral template from a single data segment.
+However, there is more to searching for binary coalescences than inspiral
+trigger generation. To perform a search for a given class of sources in a
+large quantity of interferometer data we construct a \emph{detection
+pipeline}. In this chapter we describe the pipeline that has been constructed
+to search for binary neutron stars and binary black hole MACHOs in the S2
+data.
+
+A detection pipeline is a sequence of operations that starts with the raw data
+from the interferometers and produces a list of \emph{candidate events}.
+Figure \ref{f:simple_pipe} shows a simple pipeline to filter the data from a
+pair of interferometers labelled $1$ and $2$. In this section, we will give an
+overview of the pipeline and the following sections describe each component in
+more detail. 
+
+We first consider the data from the interferometers. In order to analyze
+data, it must come from interferometers in stable operation. Running an
+interferometer is a complex process that requires \emph{interferometer
+operators} trained to align and lock the inteferometers and to monitor the
+quality of the data being taken. From a quisecent state, the operators
+manually align the optics of the interferometer to within appropriate
+parameters. The operators then direct the automated length sensing and control
+system to bring the Fabry--Perot cavities into resonance; the beam splitter
+is positioned so that the light at the anti-symmetric port is a minimum. The
+recycling cavity is then brought into resonance and the interferometer reports
+to the operators that it is \emph{locked}.  In conjection with the operators
+\emph{scientfic monitors} physically present at the observatory then decide if
+the quality of the data being recorded is suitable to be flagged as
+\emph{science mode data} and used for gravitational wave analysis.
+
+It is possible that the operators or science monitors may make mistakes in
+deciding that data should be flagged as science mode, such as forgetting to
+enable calibration lines. There may also be noise sources or transient events
+in the data which make it unsuitable for analysis but which are not detectable
+in the control room while the data is being taken. To prevent such data from
+being using in an astrophysical analysis, we may apply several \emph{data
+quality cuts} to discard poor quality data. We may consider the manual
+selection of science mode data is the first line of data quality cuts and we
+describe other automated tests in section \ref{s:dq} below.
+
+As mentioned above, the matched filtering described in the previous chapter
+generates triggers for a single inspiral template. We generally wish to search
+the data for a class of signals. In this thesis, we describe searching for
+gravitational waves from binary neutron stars and binary black hole MACHOs.
+Both sources use the second order post-Newtonian stationary phase templates
+described in chapter \ref{ch:inspiral} and the search algorithms described in
+chapter \ref{ch:findchirp}. However, possible template paramters cover
+distinct regions of the template parameter space, described by the component
+masses $m_1$ and $m_2$. This means that we are searching for signals from a 
+region of parameter space, rather than a single template. To do this we
+construct a \emph{bank} of inspiral templates as described in section
+\ref{s:pipetemplate}. The template bank covers the parameter space of interest, so
+that we do not discard any signals from our desired population.
+
+We then use the template bank to filter the data for inspiral signals using
+the matched filter and $\chi^2$ veto. This generates a list of \emph{inspiral
+triggers} for each interferometer. In figure \ref{f:simple_pipe} a template
+bank is generated for each interferometer and the data from an interferometer
+filterer through the bank particular to that data. This is not the only method
+of generating inspiral triggers in a pipeline, as we will see later. Section
+\ref{s:templated} described in more detail how the trigger generation is used
+in a pipeline.
+
+One of the most poweful methods of rejecting false alarms is coincidence
+between different interferometers. As described previously, there are three
+LIGO interferometers which are operated simultaneously during science runs.
+The interferometers are named H1, H2 and L1. The H1 and H2 detectors are
+$4$~km and $2$~km long interferometers, respectively, co-located to the LIGO
+Hanford Observatory. The L1 detector is a $4$~km long interferometer located
+at the LIGO Livingston Observatory. A true gravitational wave should be found
+in all operating detectors at the same time, up to the error in measurement of
+arrival time and the time it takes a gravitational wave to propagate between
+the observatories. The time difference between gravitational wave arrival time
+may be between $0$~seconds, if the gravitational wave is propagating
+perpendicular to a line joining the detectors, or $10$~ms if the gravitational
+wave is propagating parrallel to a line joining the detectors. The maximum
+time difference comes from the time it takes a gravitational wave to propagate
+between the observatories, given by $t = \frac{d}{c}$, where $d = x$~km is the
+distance between the observatories and $c$ is the speed of light.This
+\emph{time coincidence} test can be applied to inspiral triggers from each
+interferometer and is an excellent method of distinguishing real signals from
+noise. Other coincidence tests may be used, such as demanding consistency of
+the waveform parameters between triggers from two detectors, or consistency in
+the recovered amplitude of the signal relative to the sensitivity of the
+detectors. We describe these tests and related subtelties in section
+\ref{s:coincidence}.
+
+While the goal of the interferometer commissioners and operators is to ensure
+that the data recoreded is as stationary and Gaussian as possible, transient
+noise sources may still be present in the data. For example it has been seen
+that a person jumping up and down in the control room at the observatory will
+cause a burst of noise in the gravitational wave channel. There may also be
+occasional glitches in the interferometer control systems that cause a
+transient in the gravitational wave channel, despite the best efforts of the
+experimental team. To allow us to distingish such events from true
+gravitational wave signals, we record several thousand data streams of
+auxiliary interferometer control channels and physical environmen (PEM)
+channels. Auxiliary channels monitor the state of the servo loops that control
+the interferometer and include information about the pre-stabilized laser, the
+length sensing and control system and the input and output optics. PEM
+channels are the data from devices such as siesmometers, magnetometers and
+microphones placed in and around the interferometer to detect environmental
+sources that may couple to signals in the gravitational wave channel. As
+described in section \ref{s:vetoes} this data can be used to construct
+\emph{vetoes} on the inspiral triggers. If a coupling can be identified
+between a noise source present in an auxiliary or PEM channel and inspiral
+triggers in the gravitational wave channel, we may exclude any triggers that
+ocour withing some time window of the event in the auxiliary or PEM channel.
+
+The final step in contructing a pipeline is to turn the chosen pipeline
+algorithm, such as the one shown in figure \ref{f:simple_pipe}, into code that
+can be executed in an automated way on a computing cluster. The execution of
+the code must ensures that all the input data has been analyzed in a manner
+consistent with the pipeline algorithm. To do this we construct a directed
+acyclic graph (DAG) that described the work flow for a specific search on a
+data set. For example, we may construct write a DAG to execute the simple
+pipeline in figure \ref{f:simple_pipe} on all the data from L1 and H1 recorded
+in S2. The DAG decribing the workflow is submitted to a computing cluster and
+the Condor high throughput computing system executes that workflow using the
+Condor DAG manager. This process is decribed in more detail in section
+\ref{s:dag}.
+
+Implict in the above discussion is that fact that there are many parameters
+that must be set at each stage of the pipeline. For example: What data quality
+cuts should we use? What signal-to-noise and $\chi^2$ thresholds should we use
+when generating the inspiral triggers? What coincidence tests should we apply
+and what should thier parameters be? What auxiliary channels and PEM channels
+should be used and vetoes and how do we apply the vetoes that we choose to
+inspiral triggers? Answering these questions is the key to turning a pipeline
+into a full binary inspiral search; we call the process of selecting the
+paremeters \emph{tuning the pipeline}. In fact, pipeline tuning and
+construction of the pipeline are not entirely separate. After constructing a
+pipeline and initial tuning, we may decide to revisit the pipeline algorithm
+before performing additional tuning.
+
+When tuning the pipeline we may wish to minimize the false alarm rate, that is
+minimize the number of candidate events that are not due to inspiral signals.
+We may also wish to minimize the false dismissal rate, so ensure that the
+pipeline does not discard triggers that are due to real events. We must also
+do this in a such a way so that we do not bias our upper limit result. To do
+this, we select $10\%$ of all the data that we record as \emph{playground
+data}. The data from GPS time $[t,t+1)$ is playground if 
+\begin{equation}
+t - 700000000  < 600 \quad \mathrm{mod}(6370).
+\end{equation}
+Playground data is selected algorithmically so as to provide a representative
+sample of the full data set. We are free to persue whatever investigations
+that we wish on the playground data. We do not use this data in the upper
+limit calculation, however we do not preclude the detection of a gravitational
+wave signal in this data. We describe the process of tuning the S2 binary
+neutron star search in chapter \ref{ch:bns} and the S2 binary black hole MACHO
+search in chapter \ref{ch:result}. False alarm rate can be studied by looking
+at candidate events in the playground and false dismissal rate can be studied
+by \emph{injecting} signals into the data, that is generating a known inspiral
+signal and addiing it to the data before passing it through the pipeline.
+Injection is decribed in section \ref{s:injections} and chapter
+\ref{ch:hardware}.
+
+If we are using data from multiple interferometers, we may measure the
+\emph{background rate} of inspiral signals in the data by introducing a time
+shift into the data from different detetctors before passing it through the
+pipeline. If we assume that noise between the detectors is uncorrelated and
+the time shift is sufficiently large, as described in section
+\ref{s:background}, then any candidate events that survive the pipeline should
+be due to noise alone and not astrophysical signals. By measuring the
+background rate, we can measure the false alarm rate of the pipeline which can
+be used for both tuning and the computation of the upper limit or detection
+confidence.
+
+\begin{figure}[htb]
+\label{f:simple_pipe}
+\begin{center}
+\includegraphics[width=\linewidth]{figures/pipeline/simple_pipe}
+\end{center}
+\caption{%
+An simple pipeline used to search data from two interferometers for inspiral
+signals. Raw data from interferometer, labeled $1$ and $2$, is recorded at the
+observatories. Data quality cuts are then applied to the raw data to discard
+times when the interferometer was not in a stable operating mode. Power
+spectra generated from the data are used to generate a template bank for the
+inspiral population being searched for. The template banks and interferometer
+data are used to generate inspiral triggers for each interferometer. The
+triggers for each interferometer are tested for coincidence, as a true
+inspiral signal should be present in both interferometers at the same time, up
+to the time it takes a gravitational wave to travel between the observatories.
+Other coincidence tests, such as waveform parameter consistency, can be
+applied at this stage. Transient noise sources may be detected in auxiliary
+interferometer channels, for example siesmometers. Such channels may be used to 
+veto triggers that survive the coincidence alanysis but are coincidenct with
+the signature of noise in the auxiliary channel. Finally we obtain a sample of
+candidate events for futher investigation. Each step of the pipeline has many
+parameters that can be tuned to minimize the false alarm and false dismissal 
+rates.  
+}
+\end{figure}
+
+\section{Data Quality Cuts}
+\label{s:dq}
+
+The inspiral search algorithm is optimized for data with a known,
+calibrated noise spectrum which are stationary over the time scale of
+the data chunks analyzed ($2048$~s, described in
+Section~\ref{ss:analysispipeline}), requiring stable,
+well-characterized interferometer performance.  In practice, the
+performance is influenced by optical alignment, servo control
+settings, and environmental conditions.  We used two strategies to
+avoid problematic data.  One was to evaluate {\it data quality} over
+relatively long time intervals, using several different tests; time
+intervals identified as being suspect or demonstrably bad were skipped
+when filtering the data.
+
+Further studies of the raw data yield a series of data quality cuts
+that are used to exclude anomalous data from the inspiral
+analysis\cite{gwdawveto}. We have excluded times when \emph{(i)} servo
+controls in the L1 interferometer were set incorrectly, \emph{(ii)}
+calibration information is unavailable for the analysis, \emph{(iii)} there
+are photodiode saturations, \emph{(iv)} data has invalid time stamp
+information and \emph{(v)} the noise in the H1 interferometer is significantly
+larger than average. In general, the interferometer is considered to be
+malfunctioning during these times with the exception of \emph{(i)} and
+\emph{(ii)} which are due to operator error. In the case of \emph{(v)}, we
+ensure that the increased noise is not due to the presence of an inspiral
+signal in the data by only excluding times when the noise is excessive for
+more than $180$~sec, which is significantly longer that our longest inspiral
+signal of $3.7$~sec.
+
 \section{Templated Inspiral Search}
 \label{s:pipetemplate}
 
@@ -103,39 +333,13 @@ chunk.
 }
 \end{figure}
 
-\section{Data Quality Checks and Vetoes}
+\section{Auxiliary and Environmental Vetoes}
 \label{s:dq}
 
-The inspiral search algorithm is optimized for data with a known,
-calibrated noise spectrum which are stationary over the time scale of
-the data chunks analyzed ($2048$~s, described in
-Section~\ref{ss:analysispipeline}), requiring stable,
-well-characterized interferometer performance.  In practice, the
-performance is influenced by optical alignment, servo control
-settings, and environmental conditions.  We used two strategies to
-avoid problematic data.  One was to evaluate {\it data quality} over
-relatively long time intervals, using several different tests; time
-intervals identified as being suspect or demonstrably bad were skipped
-when filtering the data.  The other method was to look for signatures
-in environmental monitoring channels and auxiliary interferometer
-channels which would indicate an external disturbance or instrumental
-``glitch'', allowing us to {\it veto} any triggers recorded at that
-time.
-
-Further studies of the raw data yield a series of data quality cuts
-that are used to exclude anomalous data from the inspiral
-analysis\cite{gwdawveto}. We have excluded times when \emph{(i)} servo
-controls in the L1 interferometer were set incorrectly, \emph{(ii)}
-calibration information is unavailable for the analysis, \emph{(iii)} there
-are photodiode saturations, \emph{(iv)} data has invalid time stamp
-information and \emph{(v)} the noise in the H1 interferometer is significantly
-larger than average. In general, the interferometer is considered to be
-malfunctioning during these times with the exception of \emph{(i)} and
-\emph{(ii)} which are due to operator error. In the case of \emph{(v)}, we
-ensure that the increased noise is not due to the presence of an inspiral
-signal in the data by only excluding times when the noise is excessive for
-more than $180$~sec, which is significantly longer that our longest inspiral
-signal of $3.7$~sec.
+The other method was to look for signatures in environmental monitoring
+channels and auxiliary interferometer channels which would indicate an
+external disturbance or instrumental ``glitch'', allowing us to {\it veto} any
+triggers recorded at that time.
 
 Auxiliary interferometer channels (which monitor the light in the
 interferometer at points other than the antisymmetric port---where a
@@ -277,10 +481,6 @@ search for triple coincident triggers in H2.  The remaining triggers from H1
 when H2 is not available are used to search for L1/H1 double coincident
 triggers.
 
-To perform the triggered search pipeline on the full data set, we constructed
-a directed acyclic graph (DAG) that described the work flow.  The DAG is
-executed using the Condor high throughput computing system\cite{condor} on the
-UWM and Caltech bewoulf clusters.
 
 \section{Trigger Coincidence}
 \label{s:coincidence}
