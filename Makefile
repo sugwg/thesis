@@ -16,4 +16,4 @@ thesis.pdf: acknowledge.tex \
 	pdflatex thesis && bibtex thesis && bibtex thesis.1 && pdflatex thesis && pdflatex thesis
 
 clean:
-	rm -f thesis.pdf *.aux *.bbl *.blg *.log *.lot *.toc *.lof
+	rm -f thesis.pdf *.aux *.bbl *.blg *.log *.lot *.toc *.lof *.bak
