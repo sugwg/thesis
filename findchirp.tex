@@ -633,22 +633,6 @@ two degrees of freedom,
 \begin{equation}
 \mathrm{CDF}(x) = \int_0^x \frac{e^{-\frac{t}{2}}}{2} \quad x \in [0,1].
 \end{equation}
-\begin{figure}[htb]
-\label{f:rhosq_gaussian_cdf}
-\begin{center}
-\includegraphics[width=\linewidth]{figures/findchirp/rhosq_gaussian_cdf}
-\end{center}
-\caption{%
-In the presence of Gaussian noise the expected filter output, $\rho^2(t)$, is
-the sum of the squares of two Gaussian distributed quantities and so should be
-$\chi^2$ distributed with two degrees of freedom. This figure shows the
-cumulative distribution function (CDF) of the filtering code output and the
-expected analytic value. The filter input is white Gaussian noise of variance
-$\nu$ and a constant power spectral density of $\ospsd = 2\nu^2\delta T$. It
-can be seen that there is good agreement between the observed and expected
-values.
-}
-\end{figure}
 
 \subsection{Impulse Time}
 \label{ss:impulsetime}
@@ -680,19 +664,6 @@ the data so that the filter output peaks at $t_0$. We can see from equation
 \ref{eq:impulse_snr} and figure \ref{f:impulse_snr} that for the filter we
 have implemented, the impulse time will be at $t = t_0$, since this is when
 the maximum of the filter occurs in the presence of an impulse.
-\begin{figure}[htb]
-\label{f:impuse_snr}
-\begin{center}
-\includegraphics[width=\linewidth]{figures/findchirp/impulse_snr}
-\end{center}
-\caption{%
-The top panel shows the filter input which consists of an impulse at $t_0 = 90$.
-The power spectrum is set to that of white Gaussian noise. The bottom panel
-shows the output of the filter. The filter output is the sum of the squares of
-the time reverse chirps and the maximum of the filter output occurs at the
-time of the impulse.
-}
-\end{figure}
 
 \section{Wrap Around of the Fast Fourier Transform}
 \label{s:wraparound}
@@ -715,19 +686,6 @@ first $t_c$ seconds of the filter corrupted and ensure that we do not consider
 this data when searching for signals. We will return to this problem in section
 \ref{ss:invspec} when we consider the construction of the inverse power
 spectrum, $1/\ospsd$, used in the filter.
-\begin{figure}[htb]
-\label{f:impuse_wraparound}
-\begin{center}
-\includegraphics[width=\linewidth]{figures/findchirp/impulse_wraparound}
-\end{center}
-\caption{%
-The top panel shows the filter input which consists of an impulse at $t_0 = 250$.
-The power spectrum is set to that of white Gaussian noise. The bottom panel
-shows the output of the filter. The length of the chirp template is $43.7$
-seconds. Notice that the filter output is non-zero for the first $37.7$
-seconds of the output due to the wrap-around of the FFT.
-}
-\end{figure}
 
 \section{Power Spectral Estimation}
 \label{ss:psd}
@@ -793,22 +751,6 @@ filtering code. Figure \ref{f:rhosq_median_cdf} shows the cumulative
 distribution of the filter output in the presence of Gaussian noise, where the
 average power spectrum is computed using the median method and there is good
 agreement with the expected value.
-\begin{figure}[htb]
-\label{f:rhosq_median_cdf}
-\begin{center}
-\includegraphics[width=\linewidth]{figures/findchirp/rhosq_gaussian_cdf}
-\end{center}
-\caption{%
-In the presence of Gaussian noise the expected filter output, $\rho^2(t)$, is
-the sum of the squares of two Gaussian distributed quantities and so should be
-$\chi^2$ distributed with two degrees of freedom. This figure shows the
-cumulative distribution function (CDF) of the filtering code output and the
-expected analytic value. The filter input is white Gaussian noise of length
-$256$ seconds and the power spectrum $\ospsd$ is computed from $15$ segments
-of white Gaussian noise length $256$ seconds, overlapped by $128$ seconds
-using Hann windowing and the median to estimator.
-}
-\end{figure}
 
 \section{Computation of the inverse power spectrum}
 \label{ss:invspec}
@@ -869,18 +811,6 @@ Figure \ref{f:impulse_inv_spec} shows the filter output in the presence of an
 impulse for a truncated power spectrum. There is non-zero data \emph{before}
 as well as after the impulse, so we must ignore data at the end of a segment
 as well as before.
-\begin{figure}[htb]
-\label{f:impulse_inv_spec}
-\begin{center}
-\includegraphics[width=\linewidth]{figures/findchirp/impulse_inv_spec}
-\end{center}
-\caption{%
-The top panel shows the input to the filtering code which is an impulse at $t
-= 90$ seconds. The average power spectrum is computed from typical LIGO noise
-and then truncated to $16$ seconds in the time domain. The duration of non-zero
-filter output is also $16$ seconds.
-}
-\end{figure}
 
 \section{The $\chi^2$ veto}
 \label{s:chisqcts}
@@ -1067,21 +997,6 @@ from this time series; times at which there may be a binary inspiral signal in
 the data stream. The GPS time recorded in the trigger is the coalescence time of
 an inspiral signal, which corresponds to the time at which the signal to noise
 ratio squared is a maximum, as shown in figure \ref{f:zero_inject_zoom}.
-\begin{figure}[htb]
-\begin{center}
-\includegraphics[angle=-90,width=0.75\linewidth]{figures/findchirp/zero_inject_zoom}
-\end{center}
-\caption{\label{f:zero_inject_zoom}Output time series from the filtering code
-for an inspiral chirp in the absence of noise. A $(2.0,2.0)\,m_\odot$ inspiral
-chirp is generated using the 2pN time domain waveform generation and injected
-into the data. This is filtered using the 2pN stationary phase waveform. The
-signal to noise squared and $\chi^2$ time series are shown.  The signal to
-noise squared is a maximum at the coalescence time of the \textit{template}
-inspiral signal. This occurs slightly after the coalescence time of the
-injected signal. The difference in coalescence times is due to the different
-methods of generating the chirp signal.
-}
-\end{figure}
 
 We have seen in sections \ref{s:wraparound} and \ref{ss:invspec} that if the
 length of the chirp is $t_\mathrm{chirp}$ seconds and the length of the
@@ -1179,3 +1094,97 @@ matched filtering and $\chi^2$ code we can, for example, test for coincidence
 between multiple interferometers, examine environmental data and auxiliary
 interferometer channels, etc. Construction of such a pipelines is described in
 the next chapter.
+
+%%% figures %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{figure}[htb]
+\label{f:rhosq_gaussian_cdf}
+\begin{center}
+\includegraphics[width=\linewidth]{figures/findchirp/rhosq_gaussian_cdf}
+\end{center}
+\caption{%
+In the presence of Gaussian noise the expected filter output, $\rho^2(t)$, is
+the sum of the squares of two Gaussian distributed quantities and so should be
+$\chi^2$ distributed with two degrees of freedom. This figure shows the
+cumulative distribution function (CDF) of the filtering code output and the
+expected analytic value. The filter input is white Gaussian noise of variance
+$\nu$ and a constant power spectral density of $\ospsd = 2\nu^2\delta T$. It
+can be seen that there is good agreement between the observed and expected
+values.
+}
+\end{figure}
+
+\begin{figure}[htb]
+\label{f:impuse_snr}
+\begin{center}
+\includegraphics[width=\linewidth]{figures/findchirp/impulse_snr}
+\end{center}
+\caption{%
+The top panel shows the filter input which consists of an impulse at $t_0 = 90$.
+The power spectrum is set to that of white Gaussian noise. The bottom panel
+shows the output of the filter. The filter output is the sum of the squares of
+the time reverse chirps and the maximum of the filter output occurs at the
+time of the impulse.
+}
+\end{figure}
+
+\begin{figure}[htb]
+\label{f:impuse_wraparound}
+\begin{center}
+\includegraphics[width=\linewidth]{figures/findchirp/impulse_wraparound}
+\end{center}
+\caption{%
+The top panel shows the filter input which consists of an impulse at $t_0 = 250$.
+The power spectrum is set to that of white Gaussian noise. The bottom panel
+shows the output of the filter. The length of the chirp template is $43.7$
+seconds. Notice that the filter output is non-zero for the first $37.7$
+seconds of the output due to the wrap-around of the FFT.
+}
+\end{figure}
+
+\begin{figure}[htb]
+\label{f:rhosq_median_cdf}
+\begin{center}
+\includegraphics[width=\linewidth]{figures/findchirp/rhosq_gaussian_cdf}
+\end{center}
+\caption{%
+In the presence of Gaussian noise the expected filter output, $\rho^2(t)$, is
+the sum of the squares of two Gaussian distributed quantities and so should be
+$\chi^2$ distributed with two degrees of freedom. This figure shows the
+cumulative distribution function (CDF) of the filtering code output and the
+expected analytic value. The filter input is white Gaussian noise of length
+$256$ seconds and the power spectrum $\ospsd$ is computed from $15$ segments
+of white Gaussian noise length $256$ seconds, overlapped by $128$ seconds
+using Hann windowing and the median to estimator.
+}
+\end{figure}
+
+\begin{figure}[htb]
+\label{f:impulse_inv_spec}
+\begin{center}
+\includegraphics[width=\linewidth]{figures/findchirp/impulse_inv_spec}
+\end{center}
+\caption{%
+The top panel shows the input to the filtering code which is an impulse at $t
+= 90$ seconds. The average power spectrum is computed from typical LIGO noise
+and then truncated to $16$ seconds in the time domain. The duration of non-zero
+filter output is also $16$ seconds.
+}
+\end{figure}
+
+\begin{figure}[htb]
+\begin{center}
+\includegraphics[angle=-90,width=0.75\linewidth]{figures/findchirp/zero_inject_zoom}
+\end{center}
+\caption{\label{f:zero_inject_zoom}Output time series from the filtering code
+for an inspiral chirp in the absence of noise. A $(2.0,2.0)\,m_\odot$ inspiral
+chirp is generated using the 2pN time domain waveform generation and injected
+into the data. This is filtered using the 2pN stationary phase waveform. The
+signal to noise squared and $\chi^2$ time series are shown.  The signal to
+noise squared is a maximum at the coalescence time of the \textit{template}
+inspiral signal. This occurs slightly after the coalescence time of the
+injected signal. The difference in coalescence times is due to the different
+methods of generating the chirp signal.
+}
+\end{figure}
+
