@@ -2,10 +2,152 @@
 
 \section{Gravitational Radiation}
 
+Linarized GR, review of gravitational waves.
+
 \section{Generation Of Gravitational Waves By Binary Inspiral}
+
+\subsection{Quadrupole Emission of Gravitational Waves}
+
+Peter's and Matthew's calculation
+
+\subsection{Post-Newtonian Corrections to the Waveform}
+
+Higher order corrections in $v/c$.
+
+\subsection{The Stationary Phase Inspiral Waveform}
+
+To detect the waveforms decribed above we use matched filtering in the
+frequency domain. The Fourier transform of chirp signal $h(t)$, as defined in
+the introduction, is
+\begin{equation}
+\tilde{h}(f) = \int_{-\infty}^{\infty} h(t) e^{-2\pi i f t}.
+\end{equation}
+There are two ways of obtaining $\tilde{h}(f)$. The first is to compute $h(t)$
+and then take the Fourier transform. This is compulationally expensive,
+however, as it requires an additional FFT for each template that we wish to
+filter. The second method is to use the stationary phase
+approximation\cite{xxx} to express the chirp directly in the frequency
+domain\cite{xxx}. Given a function
+\begin{equation}
+B(t) = A(t) \cos \phi(t)
+\end{equation}
+where
+\begin{equation}
+\frac{d\ln A}{dt} \ll \frac{d\phi}{dt}
+\end{equation}
+and
+\begin{equation}
+\frac{d^2\ln A}{dt^2} \ll \left(\frac{d\phi}{dt}\right)^2
+\end{equation}
+then the stationary phase approximation to the Fourier transform of $B(t)$ is
+given by
+\begin{equation}
+\tilde{B}(f) = \frac{1}{2} A(t) \left(\frac{df}{dt}\right)^{-\frac{1}{2}}
+\exp\left[ -i \left(2\pi f t - \phi(f) - \frac{\pi}{4} \right)\right]
+\end{equation}
+where $t$ is the time at which
+\begin{equation}
+\frac{d\phi(t)}{dt} = 2\pi f
+\end{equation}
+and
+\begin{equation}
+\phi(f) = \phi\left[t(f)\right].
+\end{equation}
+
+According to the Newtonian quadrupole formula, the orbital frequency at any
+instant is given by
+\begin{equation}
+\Omega = \frac{M^{\frac{1}{2}}}{r^{\frac{3}{2}}}.
+\end{equation}
+The inspiral rate for circular orbits is given by
+\begin{equation}
+\frac{dr}{dt} = - \frac{r}{E} \frac{dE}{dt} = 
+- \frac{64}{5} \frac{\mu M^2}{r^3}.
+\end{equation}
+Thus
+\begin{align}
+r^3 \, dr &= - \frac{64}{5} \mu M^2 \, dt \\
+\frac{r^4}{4} &= \frac{64}{5} \mu M^2 (t - t_c)
+\end{align}
+and so
+\begin{equation}
+r(t) = \left(\frac{256}{5} \mu M^2 \right)^{\frac{1}{4}}
+       \left(t_c - t\right)^{\frac{1}{4}}.
+\end{equation}
+Since the emitted radiation is quadrupolar
+\begin{equation}
+f = \frac{\Omega}{\pi}.
+\end{equation}
+The gravitational wave strain is
+\begin{equation}
+h(t) = \frac{Q}{D} \left(\frac{384}{5}\right)^\frac{1}{2} \pi^\frac{2}{3} \mu M
+r^{-1}(t) \cos \left( \int 2\pi f(t) \, dt \right).
+\end{equation}
+Now
+\begin{align}
+\frac{df}{dt} 
+     &= \frac{d}{dt} \left(\frac{\Omega}{\pi}\right) 
+      = \frac{d}{dt} \left(\frac{M^\frac{1}{2}}{\pi} r^{-\frac{3}{2}}\right) \\
+     &= \frac{M^\frac{1}{2}}{\pi} \frac{dr}{dt} \left(-\frac{3}{2} r^{-frac{5}{2}}\right) \\
+     &= \frac{M^\frac{1}{2}}{\pi} \left(-\frac{64}{5} \frac{\mu M^2}{r^3}\right)
+        \left(-\frac{3}{2} r^{-frac{5}{2}}\right) \\
+     &= \frac{96}{5} \frac{M^\frac{5}{2} \mu}{\pi} r^{-\frac{11}{2}}. 
+     \label{eq:sp:dfdt}
+\end{align}
+Now
+\begin{equation}
+f = \frac{M^\frac{1}{2}}{\pi} r^{-\frac{3}{2}}.
+\end{equation}
+Solving this for $r$, we obtain
+\begin{equation}
+r = \frac{M^\frac{1}{3}}{\pi^\frac{2}{3} f^\frac{2}{3}}
+\end{equation}
+which we can substitute into equation (\ref{eq:sp:dfdt}) and obtain
+\begin{align}
+\frac{df}{dt} &= \frac{96}{5} \pi^\frac{8}{3} \mu M^\frac{2}{3} f^\frac{11}{3} \\
+&= \frac{96}{5} \pi^\frac{8}{3} \mathcal{M}^\frac{5}{3} f^\frac{11}{3}
+\end{align}
+where we have defined the \emph{chirp mass} by
+\begin{equation}
+\mathcal{M} = \mu^\frac{3}{5} M^\frac{2}{5}.
+\end{equation}
+Now
+\begin{equation}
+\phi(t) = \int^t 2\pi f(t') \, dt'
+\end{equation}
+we won't worry about this yet.
+
+Therefore using the stationary phase approximation, we obtain
+\begin{align}
+\tilde{h}(f) &= \frac{1}{2} \frac{Q}{D} \left(\frac{384}{5}\right)^\frac{1}{2} \pi^{2}{3} \mu M
+                r^{-1}(t) \left(\frac{df}{dt}\right)^{-\frac{1}{2}} \exp\left[-i \Psi\right] \\
+             &= \frac{1}{2} \frac{Q}{D} \left(\frac{384}{5}\right)^\frac{1}{2} \pi^{2}{3} \mu M
+                \frac{\pi^\frac{2}{3} f^\frac{2}{3}}{M^\frac{1}{3}}
+                \left(\frac{df}{dt}\right)^{-\frac{1}{2}} \exp\left[-i \Psi\right] \\
+             &= \frac{1}{2} \frac{Q}{D} \left(\frac{384}{5}\right)^\frac{1}{2} \pi^{4}{3} \mu
+                M^\frac{2}{3} r^\frac{2}{3}
+                \left(\frac{df}{dt}\right)^{-\frac{1}{2}} \exp\left[-i \Psi\right].
+\end{align}
+Now
+\begin{equation}
+\left(\frac{df}{dt}\right)^{-\frac{1}{2}} =
+\left(\frac{5}{96}\right)^\frac{1}{2} \pi^{-\frac{4}{3}} 
+\mu^{-\frac{1}{2}} M^{-\frac{1}{3}} f^{-\frac{11}{6}}
+\end{equation}
+and so 
+\begin{align}
+\tilde{h}(f) &= \frac{1}{2} \frac{Q}{D} \left(\frac{384}{5} \frac{5}{96}\right)^\frac{1}{2}
+                \mu^\frac{1}{2} M^\frac{1}{3} f^{-\frac{7}{6}} \exp\left[-i \psi\right] \\
+             &= \frac{Q}{D} \mathcal{M}^\frac{5}{6} f^{-\frac{7}{6}} \exp\left[-i \psi\right].
+             \label{eq:sp:template}
+\end{align}
+Equation (\ref{eq:sp:template}) is the stationary phase binary inspiral template that we will use in
+the matched filter.
 
 \section{Interferometric Gravitational Wave Detectors}
 
+
+%
 \section{Previous Searches for Compact Binary Inspiral}
 
 40m, TAMA, S1. Plot of rate vs time.
