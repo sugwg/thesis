@@ -120,11 +120,11 @@ ylabel('\rho_H');
 title('Full Data Set MACHO Triggers');
 grid on;
 axis([7 14 7 14]);
-saveas(f,'figures/bkg_fgd','pdf');
-saveas(f,'figures/bkg_fgd','png');
+% saveas(f,'figures/bkg_fgd','pdf');
+% saveas(f,'figures/bkg_fgd','png');
 axis([7 8 7 8]);
-saveas(f,'figures/bkg_fgd_zoom','pdf');
-saveas(f,'figures/bkg_fgd_zoom','png');
+% saveas(f,'figures/bkg_fgd_zoom','pdf');
+% saveas(f,'figures/bkg_fgd_zoom','png');
 
 for l = 1:length(coinc)
     %    bkg.(char(coinc(l))).co_snr = 1.0 ./ ( ( bkg.(char(coinc(l))).l.chisq ./ (15 + bkg.(char(coinc(l))).l.snr.^2 .* 0.2) ) + ...
@@ -144,8 +144,8 @@ title('Background MACHO Triggers');
 grid on;
 xlabel('\rho^2_{L1} + \rho^2_{H} / 4');
 ylabel('N');
-saveas(f,'figures/bkg_hist','pdf');
-saveas(f,'figures/bkg_hist','png');
+% saveas(f,'figures/bkg_hist','pdf');
+% saveas(f,'figures/bkg_hist','png');
 
 clear sire_files;
 
@@ -244,8 +244,8 @@ xlabel('\rho_{L1}');
 ylabel('\rho_H');
 title('Playground MACHO Injections');
 grid on;
-saveas(f,'figures/inj_snr','png');
-saveas(f,'figures/inj_snr','pdf');
+% saveas(f,'figures/inj_snr','png');
+% saveas(f,'figures/inj_snr','pdf');
 
 f = figure;
 hist(cand_co_snr(cand_co_snr>=1000),100);
@@ -253,8 +253,8 @@ title('Playground MACHO Injections');
 grid on;
 xlabel('\rho^2_{L1} + \rho^2_{H} / 4 >= 1000');
 ylabel('N');
-saveas(f,'figures/inj_hist_hi','png');
-saveas(f,'figures/inj_hist_hi','pdf');
+% saveas(f,'figures/inj_hist_hi','png');
+% saveas(f,'figures/inj_hist_hi','pdf');
 
 f = figure;
 hist(cand_co_snr(cand_co_snr<1000),100);
@@ -262,8 +262,8 @@ title('Playground MACHO Injections');
 grid on;
 xlabel('\rho^2_{L1} + \rho^2_{H} / 4 < 1000');
 ylabel('N');
-saveas(f,'figures/inj_hist_lo','png');
-saveas(f,'figures/inj_hist_lo','pdf');
+% saveas(f,'figures/inj_hist_lo','png');
+% saveas(f,'figures/inj_hist_lo','pdf');
 
 f = figure;
 plot(cand.l1h1.l.snr(   found.l1h1.l.mass1 > 0.2 &  found.l1h1.l.mass2 > 0.2   ),...
@@ -281,8 +281,8 @@ ylabel('\rho_H');
 axis([7 30 7 30]);
 title('MACHO Playground Injections and Background');
 grid on;
-saveas(f,'figures/inj_bkg_snr','png');
-saveas(f,'figures/inj_bkg_snr','pdf');
+% saveas(f,'figures/inj_bkg_snr','png');
+% saveas(f,'figures/inj_bkg_snr','pdf');
 
 
 for i = 1:length(lag)

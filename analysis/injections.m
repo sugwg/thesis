@@ -82,7 +82,7 @@ xlabel('Mass 1');
 ylabel('Mass 2');
 title('H1 Missed MACHO Playground Injections');
 %saveas(f,'m1m2_missed','png');
-saveas(f,'figures/m1m2_missed','pdf');
+% saveas(f,'figures/m1m2_missed','pdf');
 
 f = figure;
 scatter(found.H1.mass1,found.H1.mass2,50,found.H1.eff_dist_h,'o','filled');
@@ -95,7 +95,7 @@ xlabel('Mass 1');
 ylabel('Mass 2');
 title('H1 Found MACHO Playground Injections');
 %saveas(f,'m1m2_found','png');
-saveas(f,'figures/m1m2_found','pdf');
+% saveas(f,'figures/m1m2_found','pdf');
 
 f = figure;
 plot(missed.H1.mlow(missed.H1.mlow>0.2),missed.H1.mhigh(missed.H1.mlow>0.2),'rx',...
@@ -106,8 +106,8 @@ xlabel('Mass 1');
 ylabel('Mass 2');
 title('H1 Missed MACHO Playground Injections');
 grid on;
-saveas(f,'figures/m1m2_found_missed','png');
-saveas(f,'figures/m1m2_found_missed','pdf');
+% saveas(f,'figures/m1m2_found_missed','png');
+% saveas(f,'figures/m1m2_found_missed','pdf');
 
 mbin=(0.2:0.025:1.0);
 n=histc([missed.H1.mhigh; found.H1.mhigh],mbin);
@@ -131,8 +131,8 @@ legend('Found');
 grid on;
 axis([0.2 1 0 1.1]);
 
-saveas(f,'figures/msun_eff','png');
-saveas(f,'figures/msun_eff','pdf');
+% saveas(f,'figures/msun_eff','png');
+% saveas(f,'figures/msun_eff','pdf');
 
 mbin=(0.1741:0.0348:0.8706);
 n=histc([missed.H1.mchirp(missed.H1.mchirp>0.1741); found.H1.mchirp(found.H1.mchirp>0.1741)],mbin);
@@ -154,8 +154,8 @@ ylabel('\epsilon');
 legend('Found');
 grid on;
 
-saveas(f,'figures/mchirp_eff','png');
-saveas(f,'figures/mchirp_eff','pdf');
+% saveas(f,'figures/mchirp_eff','png');
+% saveas(f,'figures/mchirp_eff','pdf');
 
 f = figure;
 plot(found.H1.mchirp,found.H1.eff_dist_h,'b+',missed.H1.mchirp,missed.H1.eff_dist_h,'rx');
@@ -165,8 +165,8 @@ ylabel('LHO Effective Distance');
 title('H1 MACHO Playground Injections');
 grid on;
 
-saveas(f,'figures/mchirp_found_missed','png');
-saveas(f,'figures/mchirp_found_missed','pdf');
+% saveas(f,'figures/mchirp_found_missed','png');
+% saveas(f,'figures/mchirp_found_missed','pdf');
 
 f = figure;
 subplot(3,2,1);
@@ -200,8 +200,8 @@ grid on;
 xlabel('L1 \Delta t (ms)');
 ylabel('L1 Number of Injections');
 
-saveas(f,'figures/l1_param_error','png');
-saveas(f,'figures/l1_param_error','pdf');
+% saveas(f,'figures/l1_param_error','png');
+% saveas(f,'figures/l1_param_error','pdf');
 
 sire_files.H2 = { 'h2-inca_l1h1h2' };
 
@@ -293,10 +293,10 @@ for ifo = 2:length(ifonames)
     ylabel(sprintf('%s Number of Injections',char(ifonames(ifo))));
 end
 
-saveas(f.H1,'figures/h1_param_error','pdf');
-saveas(f.H1,'figures/h1_param_error','png');
-saveas(f.H2,'figures/h2_param_error','pdf');
-saveas(f.H2,'figures/h2_param_error','png');
+% saveas(f.H1,'figures/h1_param_error','pdf');
+% saveas(f.H1,'figures/h1_param_error','png');
+% saveas(f.H2,'figures/h2_param_error','pdf');
+% saveas(f.H2,'figures/h2_param_error','png');
 clear f;
 
 f = figure;
@@ -319,8 +319,8 @@ axis([-0.5 0.5 0 Inf]);
 xlabel('H2 \Delta D / D (Mpc)');
 ylabel('H2 Number of Injections');
 
-saveas(f,'figures/inj_dist_err','png');
-saveas(f,'figures/inj_dist_err','pdf');
+% saveas(f,'figures/inj_dist_err','png');
+% saveas(f,'figures/inj_dist_err','pdf');
 
 f = figure;
 subplot(3,1,1);
@@ -342,8 +342,8 @@ axis([-0.5 0.5 0 Inf]);
 xlabel('H2 \Delta D^\ast / D^\ast (Mpc)');
 ylabel('H2 Number of Injections');
 
-saveas(f,'figures/inj_diststar_err','png');
-saveas(f,'figures/inj_diststar_err','pdf');
+% saveas(f,'figures/inj_diststar_err','png');
+% saveas(f,'figures/inj_diststar_err','pdf');
 
 clear c mbin n nfound nmissed;
 clear tmp sire_files inj_dirs i j k ifo ifonames names;
