@@ -90,7 +90,7 @@ k\neq 0.
 \right.
 \end{equation}
 
-\section{The matched filter}
+\section{Matched Filtering}
 \label{s:matchedfilter}
 
 The dimensionless strain $h(t)$ of the gravitational wave produces a
@@ -169,6 +169,7 @@ y(t) = 2 \int_{-\infty}^{\infty}df\,e^{2\pi i f t}
 For each observation period, we construct the statistic
 \begin{equation}
 \rho(t) = \frac{1}{\sigma}\sqrt{x^2(t) + y^2(t)}
+\label{eq:rhosqcts}
 \end{equation}
 and threshold on this statistic, which we call the signal-to-noise ratio
 (SNR). The normalization constant $\sigma$ is defined in terms of the
@@ -198,14 +199,16 @@ chirps by dividing the filter into a part that depends on the data and a part
 that depends only on the template parameters. In this section we describe the
 construction of the digital filter used in findchirp, which uses these two 
 methods. Consider the discrete form of equation (\ref{eq:xcts})
-\begin{eqnarray}
+\begin{equation}
+\begin{split}
 \label{eq:xdisc}
-x_j &=& \frac{2}{\sigma} \frac{1}{N\Delta t} \sum_{k=0}^{N-1} e^{2\pi ijk/N} 
+x_j &= \frac{2}{\sigma} \frac{1}{N\Delta t} \sum_{k=0}^{N-1} e^{2\pi ijk/N} 
 \frac{\tilde{s}(f_k) \tilde{h}_{c}^\ast(f_k)}{\ospsd} \\
-&=&
+&=
 \frac{2}{\sigma} \frac{\Delta t}{N} \sum_{k=0}^{N-1} e^{2\pi ijk/N} 
 \frac{\tilde{s}_k \tilde{h}_{ck}^\ast} {\ospsd}
-\end{eqnarray}
+\end{split}
+\end{equation}
 where we have used $\tilde{s}(f_k) = \Delta t\, \tilde{s}_k$ and
 ${h}_c(f_k) \equiv \Delta t\, \tilde{h}_{ck}$. From equation
 (\ref{eq:ycts}) we obtain
@@ -216,22 +219,25 @@ y_j = \frac{2}{\sigma} \frac{\Delta t}{N} \sum_{k=0}^{N-1} e^{2\pi ijk/N}
 \end{equation}
 The normalization constant $\sigma^2$ defined in equation
 (\ref{eq:sigmasqcts}) is
-\begin{eqnarray}
+\begin{equation}
+\begin{split}
 \label{eq:sigmasqdisc}
-\sigma^2 &=& 2 \frac{1}{N\Delta t} \sum_{k=0}^{N-1}
-\frac{\tilde{h}_{c}(f_k)\tilde{h}_{c}^\ast(f_k)}{\ospsd} 
-=
+\sigma^2 &= 2 \frac{1}{N\Delta t} \sum_{k=0}^{N-1}
+\frac{\tilde{h}_{c}(f_k)\tilde{h}_{c}^\ast(f_k)}{\ospsd}  \\
+&=
 2 \frac{\Delta t}{N} \sum_{k=0}^{N-1}
 \frac{\tilde{h}_{ck}\tilde{h}_{ck}^\ast}{\ospsd} \\
-&=&
+&=
 4 \frac{\Delta t}{N} \sum_{k=0}^{N/2}
 \frac{\tilde{h}_{ck}\tilde{h}_{ck}^\ast}{\ospsd}.
-\end{eqnarray}
+\end{split}
+\end{equation}
 Now we may use the fact that $s(t)$ is a real signal and so $\tilde{s}(f) = 
 \tilde{s}(-f)^\ast$ to write equation the cosine phase of the filter 
 (\ref{eq:xdisc}) as
-\begin{eqnarray}
-x_j = 
+\begin{equation}
+\begin{split}
+x_j &= 
 \frac{2}{\sigma}\frac{\Delta t}{N}
 \left[
   \sum_{k=N/2}^{N-1} e^{2\pi ijk/N} 
@@ -239,17 +245,18 @@ x_j =
   +
   \sum_{k=0}^{N/2} e^{2\pi ijk/N} 
   \frac{\tilde{s}_k \tilde{h}_{ck}^\ast}{\ospsd}
-\right] \nonumber \\
-= \frac{2}{\sigma}\frac{\Delta t}{N}
+\right] \\
+&= \frac{2}{\sigma}\frac{\Delta t}{N}
 \left[
   \sum_{k=0}^{N/2} e^{-2\pi ijk/N} 
   \frac{\tilde{s}_k^\ast \tilde{h}_{ck}}{\ospsd}
   +
   \sum_{k=0}^{N/2} e^{2\pi ijk/N} 
   \frac{\tilde{s}_k \tilde{h}_{ck}^\ast}{\ospsd}
-\right] \nonumber \\
-= \frac{2}{\sigma}\frac{\Delta t}{N}(Q_j^\ast + Q_j)
-\end{eqnarray}
+\right] \\
+&= \frac{2}{\sigma}\frac{\Delta t}{N}(Q_j^\ast + Q_j)
+\end{split}
+\end{equation}
 where
 \begin{equation}
 \label{eq:Qdef}
@@ -257,9 +264,10 @@ Q_j = \sum_{k=0}^{N/2} e^{2\pi ijk/N}
   \frac{\tilde{s}_k \tilde{h}_{ck}^\ast}{\ospsd}.
 \end{equation}
 The sine phase of the filter (\ref{eq:ydisc}) can be written as
-\begin{eqnarray}
+\begin{equation}
+\begin{split}
 \label{eq:yinter}
-y_j =
+y_j &=
 \frac{2}{\sigma}\frac{\Delta t}{N}
 \left[
   \sum_{k=N/2}^{N-1} e^{2\pi ijk/N} 
@@ -267,8 +275,8 @@ y_j =
   +
   \sum_{k=0}^{N/2} e^{2\pi ijk/N} 
   \frac{\tilde{s}_k \tilde{h}_{sk}^\ast}{\ospsd}
-\right] \nonumber \\
-= 
+\right] \\
+&= 
 \frac{2}{\sigma}\frac{\Delta t}{N}
 \left[
   \sum_{k=0}^{N/2} e^{-2\pi ijk/N} 
@@ -277,10 +285,12 @@ y_j =
   \sum_{k=0}^{N/2} e^{2\pi ijk/N} 
   \frac{\tilde{s}_k \tilde{h}_{sk}^\ast}{\ospsd}
 \right]
-\end{eqnarray}
+\end{split}
+\end{equation}
 Using (\ref{eq:hsorthog}), equation (\ref{eq:yinter}) becomes
-\begin{eqnarray}
-y_j = 
+\begin{equation}
+\begin{split}
+y_j &= 
 \frac{2}{\sigma}\frac{\Delta t}{N}
 \left[
   \sum_{k=0}^{N/2} e^{-2\pi ijk/N} 
@@ -288,8 +298,8 @@ y_j =
   +
   \sum_{k=0}^{N/2} e^{2\pi ijk/N} 
   \frac{\tilde{s}_k (-i)\tilde{h}_{ck}^\ast}{\ospsd}
-\right] \nonumber \\
-= 
+\right] \\
+& = 
 \frac{-2i}{\sigma}\frac{\Delta t}{N}
 \left[
   - \sum_{k=0}^{N/2} e^{-2\pi ijk/N} 
@@ -297,10 +307,11 @@ y_j =
   +
   \sum_{k=0}^{N/2} e^{2\pi ijk/N} 
   \frac{\tilde{s}_k \tilde{h}_{ck}^\ast}{\ospsd}
-\right] \nonumber \\
-= 
+\right] \\
+& = 
 \frac{2}{\sigma}\frac{\Delta t}{N}i(Q_j^\ast - Q_j).
-\end{eqnarray}
+\end{split}
+\end{equation}
 This the outputs of the filter for the two phases are
 \begin{equation}
 x_j = \frac{4}{\sigma} \Re z_j,
@@ -310,10 +321,12 @@ y_j = \frac{4}{\sigma} \Im z_j.
 The quantity $z_j$ is defined to be \textcolor{red}{(check factors 
 of $\Delta t$ so $z$ matches S2 paper.)}
 \begin{equation}
+\begin{split}
 \label{eq:zdef}
-z_j = \frac{\Delta t}{N}\sum_{k=0}^{N/2} e^{2\pi ijk/N} 
-\frac{\tilde{s}_k \tilde{h}_{ck}^\ast}{\ospsd} 
-= \frac{\Delta t}{N}\sum_{k=0}^{N-1} e^{2\pi ijk/N} \tilde{z}_k
+z_j &= \frac{\Delta t}{N}\sum_{k=0}^{N/2} e^{2\pi ijk/N} 
+\frac{\tilde{s}_k \tilde{h}_{ck}^\ast}{\ospsd}  \\
+&= \frac{\Delta t}{N}\sum_{k=0}^{N-1} e^{2\pi ijk/N} \tilde{z}_k
+\end{split}
 \end{equation}
 where
 \begin{equation}
@@ -385,20 +398,22 @@ the strain $h_c(f_k)$ to order unity.
 
 We now return to the definition of $\tilde{h}_{ck}$.  From equation
 (\ref{eq:spcos}) we define the dimensionless quantity
-\begin{eqnarray}
+\begin{equation}
+\begin{split}
 \label{eq:hck}
-d\,\tilde{h}_{ck} = \frac{d \tilde{h}_c(f_k)}{\Delta t} \nonumber \\
-= 
+d\,\tilde{h}_{ck} &= \frac{d \tilde{h}_c(f_k)}{\Delta t} \\
+&= 
 \frac{2dT_\odot c}{1\,\mathrm{Mpc}}
 \left(\frac{5\mu}{96M_\odot}\right)^\frac{1}{2}
 \left(\frac{M}{\pi^2M_\odot}\right)^\frac{1}{3}
 \left(\frac{T_\odot}{\Delta t}\right)^{-\frac{1}{6}}
 \left( f\,\Delta t \right)^{-\frac{7}{6}}
-\exp\,[i\Psi(f_k;M,\eta)] \nonumber \\
-=
+\exp\,[i\Psi(f_k;M,\eta)] \\
+&=
 \sqrt{\mathcal{T}(M,\mu)}\left(\frac{k}{N}\right)^{-\frac{7}{6}}
 \exp\left[i\Psi\left(f_k;M,\eta\right)\right]
-\end{eqnarray}
+\end{split}
+\end{equation}
 where $\mathcal{T}(M,\mu)$ is defined to be
 \begin{equation}
 \mathcal{T}(M,\mu) = \left[
@@ -434,7 +449,7 @@ The signal-to-noise ratio squared is then
 \frac{16}{\sigma^2}\left(\frac{\Delta t}{N}\right)^2 \mathcal{T}
 \left| 
   \sum_{k=0}^{N/2} e^{2\pi ijk/N} 
-  \frac{dR\tilde{v}_k (k/N)^{-\frac{7}{6}} \exp\left[-i\Psi(f_k;M,\eta)\right]}
+  \frac{dR\tilde{v}_k \frac{k}{N}^{-\frac{7}{6}} \exp\left[-i\Psi(f_k;M,\eta)\right]}
        {d^2|R|^2 S_v\left(\left|f_k\right|\right)}
 \right|^2 
 \label{eq:signaltonoisesq}
@@ -500,48 +515,374 @@ and thresholding on $|q_j|^2 \ge |q_j|^2_\ast$. \textcolor{red}{Note that we
 now compute the template normalization correctly for chirps with different
 high frequency cutoffs. This needs to be added to this section.}
 
-\subsection{Testing the Filter Normalization}
+\section{Testing the filtering code}
+\label{s:testing}
 
-Consider the case when the filter input is 
-Gaussian noise, i.e. $\tilde{s}_k = \tilde{n}_k$. 
-We will also set $R\equiv 1$ and $d = 1$.
-Then the expectation value of the signal-to-noise ratio squared, $\langle \rho^2
+\subsection{Normalization}
+\label{ss:normalization}
+
+In section \ref{s:maxrec} we showed that we can construct a quantity $\rho^2$
+and threshold on this to decide if a signal is present in the data. In section
+\ref{ss:digitalfilter} we described how the construction of $\rho^2$ is
+implemented in the digital filtering code. In this section, we consider some 
+testing of the most basic tests of the inspiral filtering code.
+
+Consider the case when the filter input is Gaussian noise, i.e. $\tilde{s}_k =
+\tilde{n}_k$.  We will also set $R\equiv 1$ and $d = 1$.  Then the expectation
+value of the signal-to-noise ratio squared, $\langle \rho^2
 \rangle$ is
-\begin{eqnarray}
-\langle \rho^2(t_j) \rangle =
+\begin{equation}
+\begin{split}
+\langle \rho^2(t_j) \rangle &=
 \frac{16}{\sigma^2}\left(\frac{\Delta t}{N}\right)^2 \mathcal{T}
   \sum_{k=0}^{N/2} \sum_{k'=0}^{N/2} 
   e^{2\pi ij(k-k')/N} 
   \frac{\left\langle \tilde{n}_k \tilde{n}_{k'}^{\ast} \right\rangle 
         \frac{k}{N}^{-\frac{7}{6}} \frac{k'}{N}^{-\frac{7}{6}}
         e^{-i\Psi(f_k)} e^{i\Psi(f_{k'})}}
-       {S_n\left(\left|f_k\right|\right)S_n\left(\left|f_{k'}\right|\right)} \nonumber \\
-= 
-\frac{16}{\sigma^2}\left(\frac{\Delta t}{N}\right)^2 \mathcal{T}
+       {S_n\left(\left|f_k\right|\right)S_n\left(\left|f_{k'}\right|\right)} \\
+&= 
+\frac{16}{\sigma^2}\left(\frac{\Delta t}{N}\right)^2 \mathcal{T} \\
+&\quad\times
   \sum_{k=0}^{N/2} \sum_{k'=0}^{N/2} 
-  e^{2\pi ij(k-k')/N} \left(\frac{1}{2} \frac{N}{\Delta t}  \delta_{kk'} \right)\nonumber \\
-\times \frac{ S_n\left(\left|f_k\right|\right)
+  e^{2\pi ij(k-k')/N} \left(\frac{1}{2} \frac{N}{\Delta t}  \delta_{kk'} \right) 
+  \frac{ S_n\left(\left|f_k\right|\right)
         \frac{kk'}{N^2}^{-\frac{7}{6}}
         e^{i ( \Psi(f_{k'})} - \Psi(f_k) )}
-       {S_n\left(\left|f_k\right|\right)S_n\left(\left|f_{k'}\right|\right)} \nonumber \\
-= 
+       {S_n\left(\left|f_k\right|\right)S_n\left(\left|f_{k'}\right|\right)} \\
+&= 
 \frac{8}{\sigma^2} \frac{\Delta t}{N} \mathcal{T}
   \sum_{k=0}^{N/2}
   \frac{ (k/N)^{-7/3} }
-       {S_n\left(\left|f_k\right|\right)} \nonumber \\
-= 
-\frac{8N}{4\Delta t\, \mathcal{T}\mathcal{S}} 
-\frac{\Delta t}{N} \mathcal{T} \mathcal{S} \nonumber \\
-= 2,
-\end{eqnarray}
+       {S_n\left(\left|f_k\right|\right)} \\
+&= 
+\frac{8N}{4\Delta t\, \mathcal{T}\mathcal{S}} \frac{\Delta t}{N} \mathcal{T} \mathcal{S} \\
+&= 2,
+\label{eq:filternorm}
+\end{split}
+\end{equation}
 where we have used the defintion of $\sigma^2$ from equation
 (\ref{eq:sigmasqts}) and the definition of the one-sided power spectral
-density from equation (\ref{eq:psddef}).
+density from equation (\ref{eq:psddef}). Similar calculation shows that 
+the expected variance of the filter output, $Var( \rho^2(t) ) = 2$. 
+\begin{table}[htb]
+  \begin{center}
+  \begin{tabular}{l|c|c}
+  Random Seed Noise Generator& $\left\langle \rho^2(t) \right\rangle$ & $Var( \rho^2(t) )$\\
+  \hline
+  $1$ & $2.0000$ & $2.0000$ \\
+  $2$ & $2.0000$ & $2.0000$ \\
+  $3$ & $2.0000$ & $2.0000$ \\
+  $4$ & $2.0000$ & $2.0000$ \\
+  $5$ & $2.0000$ & $2.0000$ \\
+  \end{tabular}
+  \end{center}
+  \caption{%
+  The mean and variance of the filter output $\rho^2(t)$ for five samples of
+  white, gaussian noise with a comstant power spectrum of $\ospsd =
+  2\nu^2\delta T$. The observed values agree with the expeced value for the
+  mean and the variance of $2$, showing that the implementation of the matched
+  filter is correctly normalized.
+  }
+\label{t:normresults}
+\end{table}
+
+The first test of the code that we perform is to check that the normalization
+of the filter agrees with equation (\ref{eq:filternorm}). The response
+function, $R$ and dynamic range scaling, $d$ are both set to unity. In order
+to exclude issues related to power spectral estimation at this stage of
+testing, we set the power spectral density to be the (constant) theoretical
+value for white Gaussian noise given by
+\begin{equation}
+\ospsd = 2 \nu^2 \Delta t.
+\label{eq:gaussianpsd}
+\end{equation}
+We generate five samples of white Gaussian noise of mean zero and variance
+$\nu = 64$ at a sample rate of $16384$~Hz. The length of each sample is 1920
+seconds. Table \ref{t:normresults} shows the value of the mean and variance of
+the signal-to-noise squared generated by the filtering code. It can be seen 
+that these are in good agreement with the theoretical values. Similar tests
+were performed with colored Gaussian noise, where the power spectrum and
+response function, $R(f)$, are no longer constant and similar results were
+obtained. Large and small values of the variance for the noise, $\nu$, were
+also used to test the that the dynamic range scaling factor $d$ was correctly
+implemented. In all cases the output of the filtering code was consistent with
+equation (\ref{eq:filternorm}).
+
+We may may also consider the distribution of the signal-to-noise squared in
+the presence of Gaussian noise. It is obvious from equation (\ref{eq:xcts})
+that if the input signal is normally distributed, then the filter output,
+$x(t)$, will be normally distributed. The same will be true for $y(t)$ in
+equation (\ref{y:cts}). Since the filter output $\rho^2(t)$ is the sum of the
+squares of these two Gaussian quantities, it will be $\chi^2$ distibuted with
+two degrees of freedom. Figure \ref{f:rhosq_gaussian_cdf} shows the cumulative
+distibution function of $\rho^2(t)$ for one of the samples in table
+\ref{t:normresults} it can be seen that this agreed very well with the
+predicted cumulative distribution function for a $\chi^2$ distribution with
+two degrees of freedom,
+\begin{equation}
+CDF(x) = \int_0^x \frac{e^{-\frac{t}{2}}}{2} \quad x \in [0,1].
+\end{equation}
+\begin{figure}[htb]
+\label{f:rhosq_gaussian_cdf}
+\begin{center}
+\includegraphics[width=\linewidth]{figures/findchirp/rhosq_gaussian_cdf}
+\end{center}
+\caption{%
+In the presence of Gaussian noise the expected filter output, $\rho^2(t)$, is
+the sum of the squares of two Gaussian distributed quantities and so should be
+$\chi^2$ distributed with two degrees of freedom. This figure shows the
+cumulative distribution function (CDF) of the filtering code ouput and the
+expected analytic value. The filter input is white Gaussian noise of variance
+$\nu$ and a constant power spectral dentity of $\ospsd = 2\nu^2\delta T$. It
+can be seen that there is good agreement between the observered and expected
+values.
+}
+\end{figure}
+
+\subsection{Impulse Time}
+\label{ss:impulsetime}
+
+The second test is to examine the output of the filter in the presence of a
+delta function and a white, Gaussian power spectrum. In this case the signal
+in the matched filter is
+\begin{equation}
+\tilde{s}_k = \sum_{k=0}^{N-1} \delta{jl} e^{-2\pi ijk/N} = e^{-2\pi ilk/N}
+\label{eq:deltafft}
+\end{equation}
+and the power spectral density is given by equation (\ref{eq:gaussianpsd}).
+Using equation (\ref{eq:deltafft}) and (\ref{eq:gaussianpsd}) into equation
+(\ref{eq:signaltonoisesq}), we obtain
+\begin{equation}
+\rho^2(t_j) = h_c(t_0 - t_j)^2 + h_c(t_0 - t_j)^2
+\label{eq:impulse_snr}
+\end{equation}
+which is the sum of the squares of the time reversed chirps.  Figure
+\ref{f:impulse_snr} shows the output of the matched filter with a delta
+function input at $t=90$ seconds. The length of the input data is $256$
+seconds and we use the template is a pair of neutron starts each of
+mass $1 M_\odot$. The length of this template is in the time domain is $43.7$
+seconds.  It can be seen that the filter output does indeed follow the form of
+equation (\ref{eq:impluse_snr}). If in the presence of a signal
+the maximum of the filter output ocours at time $t = t_0$ then the
+\emph{impulse time} is the time at which an impuse would have to be placed in
+the data so that the filter output peaks at $t_0$. We can see from equation
+\ref{eq:impulse_snr} and figure \ref{f:impulse_snr} that for the filter we
+have implemented, the impulse time will be at $t = t_0$, since this is when
+the maximum of the filter ocuours in the presence of an impulse.
+\begin{figure}[htb]
+\label{f:impuse_snr}
+\begin{center}
+\includegraphics[width=\linewidth]{figures/findchirp/impulse_snr}
+\end{center}
+\caption{%
+The top pannel shows the filter input which consists of an impulse at $t_0 = 90$.
+The power spectrum is set to that of white Gaussian noise. The bottom pannel
+shows the output of the filter. The filter output is the sum of the squares of
+the time reverse chirps and the maximum of the filter output occours at the
+time of the impulse.
+}
+\end{figure}
+
+\section{Wraparound of the Fast Fourier Transform}
+\label{s:wraparound}
+
+We now consider an important aspect of digital matched filtering that we need
+to consider when searching the filter output for threshold crossings. Consider
+a similar situation to figure \ref{f:impulse_snr}. We generate $256$ seconds of
+input data, however now we place the impulse at $t = 250$ seconds. Figure
+\ref{f:impuse_wraparound} shows the input and output of the filter for such an
+impulse. Notice that the output of the filter wraps around, so that the first 
+$43.7-6 = 37.7$ seconds of the filter output is non-zero. This is due to the
+well known effect that the Fast Fourier Transform (FFT) treats the data as being
+periodic; it identifies $t=0$ and $t=256$\cite{fftbook}. If the impulse was
+place at $t=256$, just before the end of the segment, then the first $t_c$
+seconds of the data would be corrupted, where $t_c$ is the length of the chirp
+template. This demonstrates that data at the \emph{start} of the segment is
+being correlated with data at the \emph{end} of the segment due to the
+wrap-around of the FFT. This is obviously unphysical and so we consider the
+first $t_c$ seconds of the filter corrupted and ensure that we do not consider
+this data when searching for signals. We will return to this problem in section
+\ref{ss:invspec} when we consider the construction of the invserse power
+spectrum, $1/\ospsd$, used in the filter.
+\begin{figure}[htb]
+\label{f:impuse_wraparound}
+\begin{center}
+\includegraphics[width=\linewidth]{figures/findchirp/impulse_wraparound}
+\end{center}
+\caption{%
+The top pannel shows the filter input which consists of an impulse at $t_0 = 250$.
+The power spectrum is set to that of white Gaussian noise. The bottom pannel
+shows the output of the filter. The length of the chirp template is $43.7$
+seconds. Notice that the filter output is non-zero for the first $37.7$
+seconds of the output due to the wrap-around of the FFT.
+}
+\end{figure}
+
+\section{Power Spectral Estimation}
+\label{ss:psd}
+
+In the tests decribed in section \ref{ss:normalization} the power spectral
+density was a known function of frequency, since the input data was white
+Gaussian noise. In practice, this is not the case; we assume that the input
+data is stationary, but not necessarily white. To estimate the average power
+specral density used in the filter, $\ospsd$, we use Welch's method\cite{fftbook}. 
+
+A Welch power spectral density estimate is defined by an FFT length, overlap
+length, choice of window function and averaging method. We require is that the
+frequency resolution and length of the power spectrum that we use in the
+matched filter are consistent with the frequency resolution and length of the
+frequency domain input data, $\tilde{v}_k$ and template, $\tilde{h}_{ck}$. It
+is possible to generate the average power spectral density at a different
+resolution and then up or down sample to the correct frequency resolution,
+however in the implementation used here, the FFT length, $N$, is the same as
+that used in the matched filter for simplicity.  To construct the average
+power spectrum, we take $M$ data segments of length $N$ from near the time
+that we wish to perform the correlation. The time domain data is overlapped
+by $O$ sample points, so we need
+\begin{equation}
+N * S - ( S - 1 ) * O
+\end{equation}
+input data points to compute the average power spectrum. For each data
+segment, we window the data using a Hann window. Recall that since we are
+computing a discrete Fourier transform of the input data any power that is not
+at a frequency that corresponds exactly to a frequency bin in the power
+spectrum will bleed into adjacent bins. This is a particular problem for LIGO
+data, where there is a lot of power in the input data at low frequencies, as
+can be seen from figure \ref{f:ligonoisecurve}. To prevent power in a
+bin bleeding into adjacent bins, we window the data before taking the Fourier
+transform. This is a standard technique and for futher details we refer to the
+discussion in \cite{numrec}. In addition to windowing, we also high pass the
+data using an IIR time domain filter before constructing the power spectra to
+remove the high power at low frequencies in the LIGO data.
+
+To construct an average power spectrum from the $M$ individual spectra that
+are computed we average the $M$ values for each frequency bin. That is, the
+value of $\ospsd$ at a frequency $f_k$ is the averaerage of the $M$ values of
+the power spectra at $f_k$. Consider using the mean to compute the average in
+the presence of a loud signal. If the data that contains the loud signal is
+used in the computation of the average spectrum, then $\ospsd$ may contain
+significant power due to the signal. This will supress the correlation of the
+signal and the template at those freqencies and cause the value of the
+signal-to-noise ratio to be lower than one would obtain if the average power
+spectrum is computed from noise alone. To avoid this, we may drop the segment
+that we are analyzing from the computation of the average power spectrum. 
+However, in practice we use the median to estimate the avereage power
+spectrum. This has two advantages: \emph{(i)} computational simplicity, as we
+only need to compute one PSD and can use it for several data segments and
+\emph{(ii)} insensitivity to outlier in the spectra, which is useful since the
+LIGO data is not truly stationary.
+
+To ensure that the median power spectral estimate has the same normalization
+as the mean power spectrum in the presence of Gaussian noise, we must divide
+the computed median power spectrum by a factor of $\log 2$. However, this also
+supresses constant features in the spectrum, such as power lines and wire
+resonances, by the same factor compared with the mean spectrum. In practice we
+find that this does not have a significant effect on the output of the
+filtering code. Figure \ref{f:rhosq_median_cdf} shows the cumulative
+distribution of the filter output in the presence of Gaussian noise, where the
+average power spectrum is computed using the median methodand there is good
+agreement with the expected value.
+\begin{figure}[htb]
+\label{f:rhosq_median_cdf}
+\begin{center}
+\includegraphics[width=\linewidth]{figures/findchirp/rhosq_gaussian_cdf}
+\end{center}
+\caption{%
+In the presence of Gaussian noise the expected filter output, $\rho^2(t)$, is
+the sum of the squares of two Gaussian distributed quantities and so should be
+$\chi^2$ distributed with two degrees of freedom. This figure shows the
+cumulative distribution function (CDF) of the filtering code ouput and the
+expected analytic value. The filter input is white Gaussian noise of length
+$256$ seconds and the power spectrum $\ospsd$ is computed from $15$ segments
+of white Gaussian noise length $256$ seconds, overlapped by $128$ seconds
+using Hann windowing and the median to estimator.
+}
+\end{figure}
+
+\section{Computation of the inverse power spectrum}
+\label{ss:invspec}
+
+We observerd in section \ref{s:wraparound} that the FFT we use to compute the
+match filter treats the data as being periodic and that we had to ignore part
+of the filter output that was corrupted due to wraparound of the filter output
+from the chirp signal. 
+
+If we look at the correlation in equation (\ref{eq:signaltonoisesq}), we can
+see that we are filtering the data against the inverse power
+spectrum as well as the chirp, that is our ``filter'' is
+\begin{equation}
+\frac{\tilde{h}_c^\ast}{\ospsd}.
+\end{equation}
+Recall that the chirp has a duration that is typically much less than the
+length of the data segment. It only corrupts a region that is the length of
+the chirp at the start of the data segment. However the length of the 
+inverse power spectrum in the time domain is the same length of the data
+segment. Figure \ref{f:impuse_spec} shows the filter output when the input
+data is an impuse at $t=90$ seconds and the power spectrum is computed from
+Gaussian noise using the median method. Notice that the filter output is
+non-zero at all times before the chirp. If the impulse was place at $t=256$
+then the entire filter output would be corrupted due to the inverse power
+spectrum.  To prevent this, we truncate the inverse power spectrum to a
+length $l$ seconds in the time domain. This has the effect of smoothing out the
+high $Q$ features and restricting the corruption of the filter to the part of
+the data segment where the power spectrum is non-zero. These regions can then
+be ignored when searching for chirps in the filter output.
+
+The algorithm used to truncate the power spectrum is as follows:
+\begin{enumerate}
+\item Compute the average power spectrum of the uncalibrated input data
+$v(t_j)$ using Welch's method as described in the previous section.
+\item Compute the square root of the inverse power spectrum,
+\begin{equation}
+\sqrt{S^{-1}_v(|f_k|)}$.
+\end{equation}
+\item Set the Nyquist, $k = N/2$ and DC $k = 0$ components of this to zero.
+\item Compute the inverse Fourier transform of $\sqrt{S^{-1}_v(|f_k|)}$ to to
+obtain the time domain inverse PSD of length $L$ seconds.
+\item Zero the spectrum between the time $l/2$ and $L-l/2$ second. This sets
+the length of the inverse spectrum in the time domain to be $l$ seconds.
+\item Fourier transform the time domain quantity back to the frequency domain.
+\item Divide by the number of points $N$ to ensure that the inverse power
+spectrum is correctly normalized.
+\item Square this quantity to recover $S^{-1}_v(|f_k|)$.
+\item Set the Nyquist and DC frequencies to zero.
+\item The strain inverse power spectral density is then computed by
+\begin{equation}
+\ospsd = \frac{1}{\left|d \times R(f_k)\right|^2} S^{-1}_v(|f_k|).
+\end{equation}
+\end{enumerate}
+The length of the inverse power spectrum is a parameter that we may tune based
+on the data we are filtering. In all the analysis decribed here, we set the
+length of the inverse power spectrum in the time domain to 16 seconds.
+Figure \ref{f:impulse_inv_spec} shows the filter output in the presence of an
+impulse for a truncated power spectrum. There is non-zero data \emph{before}
+as well as after the impulse, so we must ignore data at the end of a segment
+as well as before.
+\begin{figure}[htb]
+\label{f:impulse_inv_spec}
+\begin{center}
+\includegraphics[width=\linewidth]{figures/findchirp/impuse_inv_spec}
+\end{center}
+\caption{%
+The top pannel shows the input to the filtering code which is an impulse at $t
+= 90$ seconds. The average power spectrum is computed from typical LIGO noise
+and then truncated to $16$ seconds in the time domain. The duration of non-zero
+filter output is also $16$ seconds.
+}
+\end{figure}
 
 \section{The $\chi^2$ veto}
-\label{s:chisq}
+\label{s:chisqcts}
 
-
+Although the matched filter is very good at finding signals in the noise,
+transient events in the data will also cause high values of the
+signal-to-noise ratio, as we saw for data containing impulses. To distinguish
+a high signal-to-noise event due to a signal to that due to a transient, we
+use a time-frequency veto known as the $\chi^2$ veto. This was first proposed
+in \cite{grasp} and is described in more detail in \cite{brucechisqpaper}.
+In this section, we review the construction of the $\chi^2$ veto and in the
+next sections describe the implementation used in the filtering code.
 
 Let $u$ and $v$ be two orthonormal time series representing the two phases of a
 binary inspiral signal, $h_c(t_j)$ and $h_s(t_j)$.  We divide these waveforms
@@ -553,52 +894,91 @@ into $p$ frequency sub-intervals $\{u_l\}$ and $\{v_l\}$, $l=1\ldots p$ with
 \end{eqnarray}
 with $u=\sum_{l=1}^p u_l$ and $v=\sum_{l=1}^p v_l$.
 
-We then obtain the $2p$ time series $\{X_l\}=(h|u_l)$ and $\{Y_l\}=(h|v_l)$,
-where $h$ is the detector output. Notice that  $X=\sum_{l=1}^p X_l=(h|u)$ and
+We then obtain the $2p$ time series $\{X_l\}=(s|u_l)$ and $\{Y_l\}=(s|v_l)$,
+where $s$ is the detector output. Notice that  $X=\sum_{l=1}^p X_l=(h|u)$ and
 $Y=\sum_{i=l}^p Y_l=(h|v)$ so that $X^2+Y^2=\rho^2$ is the signal to noise
 ratio squared. Now, let $\Delta X_l=X_l-X/p$ and $\Delta Y_l=Y_l-Y/p$ and
 define
 \begin{equation}
   r^2 = \sum_{l=1}^p \bigl\{ (\Delta X_l)^2 + (\Delta Y_l)^2 \bigr\}
 \end{equation}
-In the presence of Gaussian noise alone, $h=n$, $\chi^2=pr^2$ is chi-squared
+In the presence of Gaussian noise alone, $s=n$, $\chi^2=pr^2$ is chi-squared
 distributed with $\nu=2p-2$ degrees of freedom.  Furthermore, if a signal
 $s=Au+Bv$ (with signal to noise squared of $\rho^2_{\mathrm{signal}}=A^2+B^2$) 
 is present along with Gaussian noise, $h=s+n$, then $\chi^2=pr^2$ is still
 chi-squared distributed with $\nu=2p-2$ degrees of freedom.
 
-
-
 \subsection{Implementation of the Digital $\chi^2$ Veto}
+\label{ss:chisqdisc}
 
 Recall that the templates $\tilde{h}_c$ and $\tilde{h}_s$ are normalized such
 that
 \begin{equation}
-\frac{\sigma^2}{2} = \frac{\Delta t}{N} \sum_{k=-\frac{N}{2}}^{\frac{N}{2}}
+\frac{\sigma^2}{2} = \frac{\Delta t}{N} \sum_{k=-N/2}^{N/2}
 \frac{\tilde{h}_{ck} \tilde{h}_{ck}^\ast } {\ospsd} \nonumber \\
-= 2 \frac{\Delta t}{N} \sum_{k=0}^{\frac{N}{2}}
+= 2 \frac{\Delta t}{N} \sum_{k=0}^{N/2}
 \frac{\tilde{h}_{ck} \tilde{h}_{ck}^\ast } {\ospsd}.
 \end{equation}
-We construct the $p$ templates $\left\{ \tilde{h}_{cl} \right\}$ and 
-$\left\{ \tilde{h}_{sl} \right\}$, where $l = 1,\ldots,p$, with
+We construct the $p$ templates $\left\{ \tilde{h}_{c(l)} \right\}$ and 
+$\left\{ \tilde{h}_{s(l)} \right\}$, where $l = 1,\ldots,p$, with
 \begin{eqnarray}
 \frac{4\Delta t}{N} \sum_{k=0}^{\frac{N}{2}} 
-\frac{\tilde{h}_{clk} \tilde{h}_{cmk}^\ast}{\ospsd} &=& \frac{1}{p}\delta{lm}\sigma^2 \\
+\frac{\tilde{h}_{ck(l)} \tilde{h}_{ck(m)}^\ast}{\ospsd} &=& \frac{1}{p}\delta_{lm}\sigma^2 \\
 \frac{4\Delta t}{N} \sum_{k=0}^{\frac{N}{2}} 
-\frac{\tilde{h}_{slk} \tilde{h}_{smk}^\ast}{\ospsd} &=& \frac{1}{p}\delta{lm}\sigma^2 \\
+\frac{\tilde{h}_{sk(l)} \tilde{h}_{sk(m)}^\ast}{\ospsd} &=& \frac{1}{p}\delta_{lm}\sigma^2 \\
 \frac{4\Delta t}{N} \sum_{k=0}^{\frac{N}{2}} 
-\frac{\tilde{h}_{clk} \tilde{h}_{smk}^\ast}{\ospsd} &=& 0
+\frac{\tilde{h}_{ck(l)} \tilde{h}_{sk(m)}^\ast}{\ospsd} &=& 0
 \end{eqnarray}
 and
 \begin{eqnarray}
-\tilde{h}_{c} &=& \sum_{l=1}{p} \tilde{h}_{cl}, \\
-\tilde{h}_{s} &=& \sum_{l=1}{p} \tilde{h}_{sl}
+\tilde{h}_{c} &=& \sum_{l=1}^{p} \tilde{h}_{c(l)}, \\
+\tilde{h}_{s} &=& \sum_{l=1}^{p} \tilde{h}_{s(l)}.
 \end{eqnarray}
+We can construct the $2p$ filter outputs
+\begin{equation}
+x_{j(l)} &=& \frac{4}{\sigma} \frac{\Delta t}{N} 
+   \sum_{k=0}^{N/2} e^{2\pi ijk/N} 
+   \frac{\tilde{s}_k \tilde{h}_{ck(l)}^\ast}
+        {\ospsd}
+\end{equation}
+and
+\begin{equation}
+y_{j(l)} &=& \frac{4}{\sigma} \frac{\Delta t}{N} 
+   \sum_{k=0}^{N/2} e^{2\pi ijk/N} 
+   \frac{\tilde{s}_k \tilde{h}_{sk(l)}^\ast}
+        {\ospsd}
+\end{equation}
+from which we can recover equations (\ref{eq:xdisc}) and (\ref{ydisc}) by
+\begin{equation}
+x_j = \sum_{l = 1}{p} x_{j(l)}
+\end{equation}
+and
+\begin{equation}
+\quad y_j = \sum_{l = 1}{p} y_{j(l)}
+\end{equation}
+and so 
+\begin{equation}
+\rho^2(t_j) = \left( \sum_{l = 1}{p} x_{j(l)} \right)^2 + \left( \sum_{l = 1}{p} y_{j(l)} \right )^2.
+\end{equation}
+Let
+\begin{equation}
+\Delta x_{j(l)} = x_{j(l)} - \frac{x_j}{p}
+\end{equation}
+and
+\begin{equation}
+\Delta y_{j(l)} = y_{j(l)} - \frac{y_j}{p}
+\end{equation}
+and define the quantity
+\begin{equation}
+\chi^2(t_j) = p \sum_{l = 1}^p \left[ \left(\Delta x_{j(l)}\right)^2 + \left(\Delta y_{j(l)}\right)^2 \right].
+\label{eq:chisqdefn}
+\end{equation}
+Equation (\ref{eq:chisqdefn}) defines the quantity that we call the
+\emph{$\chi^2$ veto} and store in the output of the filtering code.  This
+quantity is $\chi^2$ distributed with $2p-2$ degrees of freedom, as shown in
+section \ref{s:chisqcts}.
 
-
-
-
-\subsubsection{Mismatched signal.}
+\subsection{Mismatched signal.}
 Suppose a signal that is not exactly matched by $u$ or $v$ is present in
 the data: $h=Aw$ where $w$ is a normal vector and $A$ is an amplitude.
 (Here we assume no noise.)  With no loss of generality, orient $u$ and $v$
@@ -631,16 +1011,16 @@ so $g_{\alpha\beta}=-{\textstyle{\frac{1}{2}}}(u_{,\alpha\beta}|u)$.
 
 Now compute $r^2$.  We can ignore the $v$ terms.  Thus
 \begin{eqnarray}
-  r^2 &=& \sum_{l=1}^p \bigl[ (h|u_l) - (h|u)/p \bigr]^2 \\
+  r^2 &=& \sum_{l=1}^p \bigl[ (h|u_l) - (h|u)/p \bigr]^2 \nonumber \\
       &=& \sum_{i=l}^p \bigl\{ (h|u_l)^2 - 2(h|u)(h|u_l)/p + (h|u)^2/p^2 \bigr\}
-          \\
+          \nonumber \\
       &=& \sum_{i=l}^p (h|u_l)^2 - (h|u)^2/p.
 \end{eqnarray}
 Now $(h|u_l)^2\le(h|h)(u_l|u_l)=(h|h)/p$ so
 \begin{eqnarray}
-  r^2 &\le& \frac{1}{p}\bigl[ (h|h) - (h|u)^2 \bigr] \\
-      &=& \frac{A^2}{p}\bigl[ (w|w) - (w|u)^2 \bigr] \\
-      &=& \frac{A^2}{p}\bigl[ 1 - ( 1 - ds^2 )^2 \bigr] \\
+  r^2 &\le& \frac{1}{p}\bigl[ (h|h) - (h|u)^2 \bigr] \nonumber \\
+      &=& \frac{A^2}{p}\bigl[ (w|w) - (w|u)^2 \bigr] \nonumber \\
+      &=& \frac{A^2}{p}\bigl[ 1 - ( 1 - ds^2 )^2 \bigr] \nonumber \\
       &\simeq& \frac{2A^2ds^2}{p}.
 \end{eqnarray}
 
@@ -667,91 +1047,15 @@ on $r^2/(1+A^2ds^2/p)$.  (Since the noise is not really Gaussian anyway,
 it does not seem important to use the exact result for the non-central
 chi-squared distribution, though this could certainly be done.)
 
-In the inspiral analysis performed here, we construct the time series
-\begin{equation}
-\mathcal{R}^2(t_j) = \frac{r^2(t_j)}{1+\frac{\rho^2(t_j)\,ds^2}{p}}
-\label{e:modified-chisq}
-\end{equation}
-where $ds^2$ is be the maximum mismatch expected for binary inspirals,
-$\rho^2$ is the the signal to noise ratio squared of the putative trigger, and
-$p$ is the number of frequency bands that were used in constructing the $r^2$
-statistic.  When we refer to the vetoing on the $\chi^2$ statistic, we are
-thresholding on the value of $\mathcal{R}^2(t_j)$ for an inspiral trigger at
-$t_j$. This is the value that is is recorded in the database table
-\verb|CHISQ|. The number of frequency bands $p$ is stored in the database
-table \verb|CHISQ_DOF|.
-
-The number of frequency bands is chosen to be 8. Increasing the number of
-frequency bands increases the computational overhead for the $\chi^2$ veto and
-this number was chosen as a compromise between computational and detection
-efficiencies. $ds^2 = 0.03$ is set by the template bank mismatch. 
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Practical details of the implementation}
-\label{s:practical}
-
-\subsection{Power Spectral Estimation}
-\label{ss:psd}
-
-\subsection{Computation of the inverse power spectrum}
-\label{ss:invspec}
-Recall that the FFT we use to compute the match filter treats the data as
-
-being periodic and that we had to ignore part of the filter output that was
-corrupted due to wraparound of the filter output from the chirp signal. 
-
-As well as the chirp, we are also filtering the data against the inverse power
-spectrum. The chirp has a duration that is typically much less than the
-length of the data segment. It only corrupts a region that is the length of
-the chirp at the start of the data segment. However, in the time domain the
-inverse power spectrum is the same length of the data segment. This will cause
-the filter output to be corrupted for all times, as it is non-zero over the
-entire data segment.
-
-To prevent this, we truncate the inverse power spectrum to a specified length
-in the time domain. This has the effect of smoothing out the high $Q$ features
-and restricting the corruption of the filter to the part of the data segment
-where the power spectrum is non-zero. These regions can then be ignored when
-searching for chirps in the filter output.
-
-The parameter that controls the duration of the power spectrum in the time
-domain is \texttt{invSpecTrunc} and the algorithm used to perform the
-truncation is as follows:
-\begin{enumerate}
-\item Compute the square root of the inverse power spectrum,
-$\sqrt{S^{-1}_v(|f_k|)}$.
-\item Set the Nyquist, $k = N/2$ and DC $k = 0$ components of this to zero.
-\item Inverse FFT to to obtain the time domain inverse PSD of length $N$
-points.
-\item Zero the spectrum between the points $j = \mathtt{invSpecTrunc}/2$ and 
-$j = N - \mathtt{invSpecTrunc}/2$. This sets the length of the inverse
-spectrum in the time domain to be \texttt{invSpecTrunc} points.
-\item FFT the time domain quantity back to the frequency domain.
-\item Divide by $N$ so that to recover the quantity before the inverse FFT.
-\item Square this quantity to recover $S^{-1}_v(|f_k|)$.
-\item Set the Nyquist and DC frequencies to zero and zero the inverse power
-spectrum below $f_{\mathrm{low}}$.
-\end{enumerate}
-The strain inverse power spectral density is then computed by
-\begin{equation}
-S^{-1}_h(|f_k|) = \frac{1}{\left|\mathtt{dynRange} \times R(f_k)\right|^2}
- S^{-1}_v(|f_k|).
-\end{equation}
-In this analysis we set the length of the inverse power spectrum in the time
-domain to 16 seconds.
-
-\subsection{Trigger selection algorithm}
+\section{Trigger selection algorithm}
 \label{ss:trigger}
 
 The object of the search algorithm is to generate a list of inspiral triggers
 from this time series; times at which there may be a binary inspiral signal in
 the data stream. The GPS time recorded in the trigger is the coalescence time of
 an inspiral signal, which corresponds to the time at which the signal to noise
-ratio squared is a maximum, as shown in figure
-\ref{f:zero_inject_zoom}.
-\begin{figure}[htp]
+ratio squared is a maximum, as shown in figure \ref{f:zero_inject_zoom}.
+\begin{figure}[htb]
 \begin{center}
 \includegraphics[angle=-90,width=0.75\linewidth]{figures/findchirp/zero_inject_zoom}
 \end{center}
@@ -766,29 +1070,38 @@ injected signal. The difference in coalescence times is due to the different
 methods of generating the chirp signal.
 }
 \end{figure}
-The algorithm to generate triggers is based on the following:
-\begin{itemize}
-\item The signal to noise ratio of a trigger must exceed some threshold to
-distinguish the trigger from background noise in the detector. 
 
-\item The value of the $\chi^2$ statistic for the trigger should be less than
-some threshold value $\chi^2_\ast$ to veto triggers that exceed the signal to
-noise threshold, but do not have the characteristic waveform of an inspiral
-signal (e.g. impulse like events in the data).
+We have seen in sections \ref{s:wraparound} and \ref{ss:invspec} that if the
+length of the chirp is $t_\mathrm{chirp}$ seconds and the length of the
+inverse power spectrum is $t_\mathrm{PSD}$ seconds then we must ignore
+$t_\mathrm{PSD}/2 + t_\mathrm{chirp}$ seconds of data at the beginning of the
+data segment and $t_\mathrm{PSD}/2$ seconds of data at the end of the data
+segment due to wrap around corruption. To increase the simplicity of data
+management, in practice we always igore the first and last quarter of a
+segment, we test that $t_\mathrm{PSD}/2 + t_\mathrm{chirp}$ is less that one
+quarter of a segment and generate an error is it is not. The error informs the
+user that they need to use longer data segments to avoid corruption of the
+filter output.
 
-\item We do not want to construct triggers from times at which the output
-signal to noise time series is corrupted by wrap around from the inspiral
-template or the inverse power spectrum.
+The signal to noise ratio of a trigger must exceed some threshold to
+distinguish the trigger from background noise in the detector and the value of
+the $\chi^2$ statistic for the trigger should be less than some threshold
+value $\chi^2_\ast$ to veto triggers that exceed the signal to noise
+threshold, but do not have the characteristic waveform of an inspiral signal
+(e.g. impulse like events in the data).   When generating triggers, we must
+consider the fact that the length of a data segment is greater than the length
+of a chirp, so may be multiple chirps in a single segment.
 
-\item The length of a data segment is greater than the length of a chirp, so
-may be multiple chirps in a single segment.
-\end{itemize}
-
+We could simply examine the time series for sample points where $\rho^2 >
+\rho^2_\ast$, however it is likely that for a true signal, there will be many
+sample points above threshold corresponding to the same event. Similarly, if
+the data is noisy, we do not wish to generate a flood of events by considering
+every sample point above threshold a unique event. We solve this by a trigger
+selection algorithm that we call \emph{maximization over a chirp}. 
 Given these requirements, the algorithm for construction of the list of
 inspiral triggers is as follows:
 
 \begin{enumerate}
-
 \item Compute the length of the inspiral chirp used as the template
 \begin{equation}
 t_\mathrm{chirp} = \frac{5m}{256\eta} 
@@ -804,29 +1117,10 @@ x & = & \left(\pi m T_\odot f_{\mathrm{low}}\right)^{\frac{1}{3}}, \\
 $m$ is the mass of the more massive object and $f_{\mathrm{low}}$ is the low
 frequency cutoff of the inspiral template.
 
-\item Since the overlap of the data segments is one half the length of a
-segment, set the length of time to ignore at the start and end of the data
-segment to be one quarter of the length of a data segment.
+\item Generate the complex time series $q_j$ of length $N$ points.
 
-\item Check that the the sum of the length of the chirp and one half the
-length of the inverse power spectrum in the time domain is less than one
-quarter of a data segment. If it is not, an error is generated and the data
-segment is rejected. This ensures that we do not generate inspiral triggers
-for times that have been corrupted by wraparound.
-
-\item Generate the complex time series $q_j$ of length $N$ points, which is
-related to the signal to noise squared by
-\begin{equation}
-\rho^2(t_j) = \mathtt{norm} \times |q_j|^2
-\end{equation}
-where the quantity \texttt{norm} is defined to be
-\begin{equation}
-\mathtt{norm} = \frac{4\Delta t}{N} \left[ \sum_{k=0}^{N/2}
-\frac{k^{-\frac{7}{3}}}{S_h(|f_k|)} \right]^{-1}.
-\end{equation}
-
-\item Construct a modified signal to noise threshold $q^2_\ast = \rho^2_{\ast}
-/ \mathtt{norm}$ on which to threshold the time series $q_j$.
+\item Construct the modified signal to noise threshold $q^2_\ast$
+on which to threshold the time series $q_j$.
 
 \item Starting at the point $N/4$ step through the time series $q_j$ until the
 point $3N/4$. For each point $j$: 
@@ -861,3 +1155,15 @@ one data segment. The coalescence times for the different triggers must be
 separated by \textit{at least} the length of the template.  The list of
 triggers for each template and data segment are then stored in the database. 
 \end{enumerate}
+
+This list of triggers is the final output of the filtering code. For each
+trigger generated, we store the GPS time, mass parameters of the template,
+the signal-to-noise ratio, the value of the $\chi^2$ veto, the effective
+distance $\mathcal{D}$ of the trigger in Mpc and the value of $\sigma^2$.
+
+The core of the inspiral pipelines that we construct is the generation of
+inspiral triggers. Once we have generated the inspiral triggers from the
+matched filtering and $\chi^2$ code we can, for example, test for conicidence
+between multiple interferometers, examine environmental data and auxiliary
+interferometer channels, etc. Construction of such a pipelines is described in
+the next chapter.
