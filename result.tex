@@ -1,42 +1,44 @@
 % $Id$
 
-In this chapter, we use the techniques developed in the previous chapters to
-search for gravitational waves from the inspiral of binary black hole MACHOs
-in data from the second LIGO science run.  The goal of the search is the
-detection of the gravitational waves. In the absence of detection, however, we
-may place an \emph{upper limit} on the rate of inspiralling BBHMACHOs. This
-limit may be compared this to the predicted rate of $5 \times 10^{-2} \times
-2^{\pm 1}$ discussed in chapter \ref{ch:macho}.  In section \ref{s:s2run} we
-describe the data sample used in the analysis.  Section \ref{s:s2tuning}
-describes how the parameters of the search listed in the previous chapter were
-tuned on the playground data. Section \ref{s:monte} described the Monte Carlo
-simulations used to measure the efficiency of the pipeline. In section
-\ref{s:s2background} we describe the background observed in the S2 data.
+In this chapter, we present the results of a search for gravitational waves
+from the inspiral of binary black hole MACHOs in data from the second LIGO
+science run (called S2).  The goal of the search is the
+detection of the gravitational waves. In the absence of a detection, however, we
+place an upper limit on the rate of inspiralling BBHMACHOs. This
+limit may be compared to the predicted rate of $5 \times 10^{-2} \times
+2^{\pm 1}$ discussed in chapter \ref{ch:macho}.  
 
 Analysis of the full S2 data set for gravitational waves from inspiralling
-BBHMACHOs is complete and the result of this search will appear in
-\cite{S2Macho:2004}. Since this result is currently embargoed pending LIGO
+binary black hole MACHOs is complete and the result of this search will appear
+in \cite{S2Macho:2004}. Since this result is currently embargoed pending LIGO
 Scientific Collaboration internal review, we instead present the result of the
 search on the playground data. No gravitational waves from BBHMACHO inspirals
-were found in the playground, so in section \ref{s:s2upperlimit} we compute
-an upper limit on the rate of BBHMACHO inspirals in the playground data.
-Although this result contains statistical bias, as it is computed from data
-used to tune the pipeline, it allows us to make a reasonable prediction of the
-upper limit obtained from the full S2 data, assuming no BBHMACHO signals are
-detected in the full data set. In which case I'd be in a pub Stockholm, not in
-my office at 2am on a Wednesday morning.
+were found in the playground, so in section \ref{s:s2upperlimit} we compute an
+upper limit on the rate of binary black hole MACHO inspirals in the playground
+data.  Although this result is statistically biased, as it is computed from
+data used to tune the pipeline, it allows us to make a reasonable prediction
+of the upper limit available using the full S2 data and assuming no BBHMACHO
+signals are detected in the full data set.
+
+In section \ref{s:s2run} we describe the data sample used in the analysis.
+Section \ref{s:s2tuning} describes how the parameters of the search listed in
+the previous chapter were tuned on the playground data. Section \ref{s:monte}
+described the Monte Carlo simulations used to measure the efficiency of the
+pipeline. In section \ref{s:s2background} we describe the background observed
+in the S2 data.
+
 
 \section{The Second LIGO Science Run}
 \label{s:s2run}
 
 All three LIGO detectors operated during the second science run, referred to
 as S2, which lasted for 59 days (1415 hours) from February 14 to April 14,
-2003.  Although the detectors were manned by operators and scimons around
-the clock, the amount of data flagged as science mode was limited by
-environmental factors (especially high ground motion at LLO and strong winds
-at LHO), occasional equipment failures, and periodic special investigations.
-The total amount of science data obtained was 536 hours for L1, 1044 hours for
-H1, and 822 hours for H2.
+2003.  Although the detectors were manned by operators and scientific monitors
+around the clock, the amount of data flagged for scientific analysis was
+limited by environmental factors (especially high ground motion at LLO and
+strong winds at LHO), occasional equipment failures, and periodic special
+investigations.  The total amount of science data obtained was 536 hours for
+L1, 1044 hours for H1, and 822 hours for H2.
 
 The analysis described in this thesis uses data collected while the LLO
 detector was operating at the same time as one or both of the LHO detectors in
@@ -48,53 +50,54 @@ co-located detectors. This data set, as well as data collected while only one
 of the LIGO detectors was in science mode, will be combined with data from the
 third LIGO science run in a future analysis. Figure~\ref{f:S2times} shows a
 breakdown of the data recorded during S2 by interferometer. The data used in
-this search is shown by the shaded region.
+this search is indicated by the shaded region.
 
 \section{Tuning the Analysis Pipeline}
 \label{s:s2tuning}
 
 The entire analysis pipeline was explored first using the playground data set
-in order to tune the values of the various parameters. The goal of tuning the
-pipeline is to maximize the efficiency of the pipeline to detection of
-gravitational waves from binary inspirals without producing an excessive rate
-of spurious candidate events. In the absence of a detection, a pipeline with a
-high efficiency and low false alarm rate allows us to set a better upper
-limit, but it should be noted that our primary motivation is to enable
-reliable detection of gravitational waves. By evaluating the efficiency
-directly by a Monte Carlo method in which signals from the hypothetical
-population are injected into the data and then sought, we account for any
-systematic effects caused by the various vetoes and methods in our pipeline.
-Note that another factor in the tuning of the pipeline are the available
-computational resources. We would like to be able to complete the search in
-less time than the length of the data being analyzed, so that real-time
-searches are possible when the interferometers are taking continuous data. For
-this reason, certain tuning decisions are based on the computational
-efficiency of the pipeline.
+in order to tune the the various thresholds and other parameters. The goal of
+tuning the pipeline is to maximize the efficiency of the pipeline to detection
+of gravitational waves from binary inspirals without producing an excessive
+rate of spurious candidate events. In the absence of a detection, a pipeline
+with a high efficiency and low false alarm rate allows us to set the best
+upper limit. It should be noted, however, that our primary motivation is to
+enable reliable detection of gravitational waves. The efficiency is measured
+by Monte Carlo simulations in which signals from the hypothetical population
+are added to the data and then sought. This approach accounts for any
+systematic associated with the methods used in our pipeline.  Note that
+another factor in the tuning of the pipeline are the available computational
+resources. We would like to be able to complete the search in less time than
+the length of the data being analyzed, so that real-time searches are possible
+when the interferometers are taking continuous data. For this reason, certain
+tuning decisions are based on the computational efficiency of the pipeline;
+these descisons will be clearly indentified below.
 
-Prior to the commencing the BBHMACHO search, a search for inspiralling binary
-neutron stars (BNS) was conducted on the S2 data\cite{LIGOS2iul} using the
-pipeline described in chapter~\ref{ch:pipeline}. The mechanics of the BNS
-search are very similar to those described here, except that the template bank
-covers a region of the parameter space from $1.0\,M_\odot$ to $3.0\,M_\odot$
-binary component mass. Since the BNS and BBHMACHO searches are very similar
-and share the same playground data, we may use the parameters of the BNS
-search (which were tuned on the playground data) as a starting point for
-tuning the BBHMACHO search. 
+Prior to commencing the binary black hole MACHO search, a search for
+inspiralling binary neutron stars (BNS) was conducted on the S2 data using the
+pipeline described in chapter~\ref{ch:pipeline}\cite{LIGOS2iul}. The mechanics
+of the BNS search are very similar to those described here, except that the
+template bank covers binaries with $1.0\,M_\odot < m_1, m_2 < 3.0\,M_\odot$,
+where $m_1$ and $m_2$ are the masses of each object in the binary. Since the
+BNS and binary black hole MACHO searches are very similar, and share the same
+playground data, we may use the parameters of the BNS search (which were tuned
+on the playground data) as a starting point for tuning the binary black hole
+MACHO search. 
 
-There are two sets of parameters that we are able to tune in the pipeline: (1)
+There are two sets of parameters that we are able to tune in the pipeline: (i)
 the single interferometer parameters which are used in the matched filter and
-$\chi^2$ veto to generate inspiral triggers in each interferometer, and (2)
+$\chi^2$ veto to generate inspiral triggers in each interferometer, and (ii)
 the coincidence parameters used to determine if triggers from two
 interferometers are coincident. The single interferometer parameters include
-the signal-to-noise threshold, $\rho^\ast$, the number of frequency sub-bands
-in the $\chi^2$ statistic, $p$, the $\chi^2$ cut threshold $\Xi^\ast$.  and
-the coefficient on the signal-to-noise dependence of the $\chi^2$ cut,
-$\delta^2$. These are tuned on a per-interferometer basis, although some of
-the values chosen are common to two or three detectors.  The coincidence
-parameters are the time coincidence window for triggers, $\delta t$, the mass
-parameter coincidence window, $\delta m$, and the effective distance cut
-parameters $\epsilon$ and $\kappa$ described in
-equation.~\ref{eq:eff_dist_test}.  Due to the nature of the triggered search
+the signal-to-noise threshold $\rho^\ast$ the number of frequency sub-bands in
+the $\chi^2$ statistic $p$ the $\chi^2$ cut threshold $\Xi^\ast$.  and the
+coefficient on the signal-to-noise dependence of the $\chi^2$ cut, i.e.
+$\delta^2$ in equation (\ref{eq:chisqthresholdtest}). These are tuned on a
+per-interferometer basis, although some of the values chosen are common to two
+or even three detectors.  The coincidence parameters are the time coincidence
+window $\delta t$ for triggers, the mass parameter coincidence window $\delta
+m$ and the effective distance cut parameters $\epsilon$ and $\kappa$ in
+equation.~(\ref{eq:eff_dist_test}).  Due to the nature of the triggered search
 pipeline, parameter tuning was carried out in two stages. We first tuned the
 single interferometer parameters for the primary detector (L1).  We then used
 the triggered template banks (generated from the L1 triggers) to explore the
@@ -104,62 +107,62 @@ Finally the parameters of the coincidence test were tuned.
 \subsection{Template Bank Generation}
 \label{ss:tunebank}
 
-Recall that as the shape of the noise power spectrum changes, the number of
-templates needed to cover a given region of parameter space at a specified
-minimal match fluctuates. The greater the sensitivity at low frequencies
-(relative to higher frequencies) the larger the template bank, as described in
-section \ref{ss:templatebank}. Since we are limited in the amount of
-computational resources available, and searching for lower mass inspirals
-requires more templates and hence more computational power, the shape of the
-noise curve determines what regions of the mass parameter space are accessible
-to our search. 
+Recall that the number of templates needed to cover a given region of
+parameter space at a specified minimal match fluctuates as the shape of the
+noise power spectrum changes. The greater the sensitivity at low frequencies,
+relative to higher frequencies, the larger the template bank (see 
+section \ref{ss:templatebank}). Since we have limited computational resorces
+available for this search, the first thing to be tuned was the template bank
+since the number of templates determines the computational cost.
 
-Figure~\ref{f:bank_size} shows size of the template bank necessary to cover
-each playground analysis chunk at a minimal match of $0.97\%$ for several
-values of minimum binary component mass, $m_\mathrm{min}$. The lowest mass
-binary in the parameter space covered by the template bank is therefore
-$(m_\mathrm{min},m_\mathrm{min})$.  The maximum binary component mass in each
-case is $1\,M_\odot$, so the largest mass binary in the bank parameter space
-$(1,1)\,M_\odot$. It can be seen that although there is not a significant
-fluctuation in the number of templates required for a given lower mass over
-the course of the S2 run, there is a large variation in the number of
-templates required as a function of lower mass. The scaling of template number
+Due to algorithm used to construct the template bank\cite{Owen:1998dk}, the
+smallest mass template in the bank will be the equal mass binary
+$(m_\mathrm{min},m_\mathrm{min})$, where $m_\mathrm{min}$ is the (user
+specified) minimum binary component mass. Figure~\ref{f:bank_size} shows the
+size of the template bank necessary to cover each playground analysis chunk at
+a minimal match of $0.97\%$ for several values of $m_\mathrm{min}$.  The
+maximum binary component mass in each case is $1\,M_\odot$, so the largest
+mass binary in the bank parameter space $(1,1)\,M_\odot$. For fixed
+$m_\mathrm{min}$ the number of templates remains reasonably constant over the
+course of the S2 run, There is a large variation in the number of templates
+required as a function of lower mass, however. The scaling of template number
 as a function of lower mass is consistent with that described in
 \cite{Owen:1998dk}.
 
 As described in chapter \ref{ch:macho}, the MACHO mass range measured by
 microlensing is $0.15\,M_\odot$ to $0.9\,M_\odot$ at $95\%$ confidence. It
-would therefore be desirable for the BBHMACHO inspiral search to cover a
-region of mass parameter space slightly larger than this, say $0.1\,M_\odot$
-to $1.0\,M_\odot$.  It can be seen, however, that almost an order of magnitude
-more templates are needed to decrease lower boundary of the mass parameter
-space from $0.2\,M_\odot$ to $0.1\,M_\odot$.  Therefore, given the
-computational resources available for the BBHMACHO search, the lowest mass
-template in the bank was set to $0.2\,M_\odot$. Note that for the final
-search, the match of the template bank was also lowered to $0.95\%$ to further
-decrease the number of templates to an average of $14\,179$ over the S2 run.
-This can be justified by the sensitivity to galactic BBHMACHOs in S2, as will
-be seen below. The final size of the inspiral template bank used is shown in
+would therefore be desirable for the binary black hole MACHO inspiral search
+to cover a region of mass parameter space slightly larger than this, say
+$0.1\,M_\odot$ to $1.0\,M_\odot$.  It can be seen, however, that almost an
+order of magnitude more templates are needed to decrease the lower boundary of
+the mass parameter space from $0.2\,M_\odot$ to $0.1\,M_\odot$.  Therefore,
+given the computational resources available for the BBHMACHO search, the
+lowest mass template in the bank was set to $0.2\,M_\odot$. Note that for the
+final search, the match of the template bank was also lowered to $0.95\%$ to
+further decrease the number of templates to an average of $14\,179$ per
+analysis chunk over the S2 run.  The latter choice is be justified by the
+sensitivity to galactic binary black hole MACHOs in S2, as will be seen below.
+The size of the inspiral template bank used is shown in
 figure~\ref{f:inspiral_summary}.
  
 \subsection{Interferometer Sensitivity and Signal-to-noise Thresholds}
 \label{ss:snrthreshold}
 
 The noise power spectrum also determines the sensitivity of the interferometer
-to binary inspiral. We can summarize this effect in the distance to which we
-can see an optimally oriented binary inspiral at a given signal-to-noise
-ratio. This gives us the maximum range that the interferometer can detect a
-binary at this signal-to-noise ratio, since the gravitational wave strain in
-the interferometer will be a maximum when the binary is optimally oriented.
-The maximum inspiral ranges for an optimally oriented binary at
-signal-to-noise ratio $\rho^\ast = 8$ are shown in
-figure~\ref{f:inspiral_summary}.  The range increases as we decrease
-$\rho^\ast$, scaling as $\rho^{-1/2}$. The range is also a function of the
-mass of the binary, scaling as $\mu^{1/2}M^{1/3}$. The figure shows the ranges
-for a $(0.5,0.5)\,M_\odot$ and a $(0.1,0.1)\,M_\odot$ binary.
+to binary inspirals. We can quantify the sensitivity in terms of the distance
+to which we can see an optimally oriented binary inspiral at a given
+signal-to-noise ratio. This is the maximum distance at which the
+interferometer can detect a binary (at this signal-to-noise ratio), since the
+gravitational wave strain in the interferometer is a maximum when the binary
+is optimally oriented.  The maximum inspiral ranges for an optimally oriented
+binary at signal-to-noise ratio $\rho^\ast = 8$ are shown in
+figure~\ref{f:inspiral_summary}.  The distance to which we can detect an
+optimally oriented binary is also a function of the mass of the binary,
+scaling as $\mu^{1/2}M^{1/3}$; figure~\ref{f:inspiral_summary} shows the
+ranges for a $(0.5,0.5)\,M_\odot$ and a $(0.1,0.1)\,M_\odot$ binary.
 
-It should be noted that at no times are either of the LHO interferometers more
-sensitive than the LLO interferometer, justifying the triggered search
+Notice that there are no times when either of the LHO interferometers are more
+sensitive than the LLO interferometer--this justifies the triggered search
 pipeline. In fact the LLO interferometer has a significantly larger range than
 either of the LHO interferometers, at times being sensitive to BBHMACHO
 inspirals in Andromeda at around $0.7$~Mpc.  Since we require coincidence
@@ -169,37 +172,50 @@ are restricted to a search for BBHMACHOs in the Galactic halo.
 Based on the sensitivity plots shown in figure~\ref{f:inspiral_summary}, we
 set the signal-to-noise threshold to $7$ in all three interferometers; we
 justify this as follows. All three interferometers are sensitive to optimally
-oriented inspiral at $\rho^\ast = 8$ at distances greater than the size of the
-Galactic halo in the region of parameter space of interest. A BBHMACHO in the
-Galaxy may have an unfavorable orientation, however, causing it to appear at
-a large effective distance. Therefore we want to set the signal-to-noise ratio
+oriented inspirals with $\rho^\ast \ge 8$ at distances greater than the size
+of the Galactic halo. A binary black hole MACHO in the Galaxy may have an
+unfavorable orientation, however, causing it to appear at a large effective
+distance.  For this reason, we want to set the signal-to-noise ratio threshold
 as low as possible without producing an excessive false alarm rate. Lowering
-the signal-to-noise threshold also has a computational impact on our search.
-When the signal-to-noise ratio for a data segment crosses threshold, we
+the signal-to-noise threshold has a computational impact on our search:
+when the signal-to-noise ratio for a template crosses threshold, we
 perform the $\chi^2$ veto which requires $p$ additional complex inverse FFTs,
 where $p$ is the number of frequency bins used in the veto. If we set the
 signal-to-noise threshold too low, we may exceed the available computational
-resources, due to the extra operations required to perform the $\chi^2$ veto,
-before the false alarm rate of coincident triggers becomes excessive. In fact
-this is what happens with the S2 BBHMACHO search since the template banks are
-so large. Whereas in the S2 BNS search we were able to lower the
-signal-to-noise threshold to $6$, the BBHMACHO search is limited to $\rho^\ast
-= 7$.
+resources due to the extra operations required to perform the $\chi^2$ veto.
+In fact this is what happens with the S2 binary black hole MACHO search since
+the template banks are so large. Whereas in the S2 BNS search we were able to
+lower the signal-to-noise threshold to $6$, the BBHMACHO search is limited to
+a signal-to-noise threshold to $7$.
 
 \subsection{Tuning the $\chi^2$ Veto Parameters}
 \label{ss:chisqtuning}
 
-Recall that the $\chi^2$ veto constructs the quantity
+%Recall that the $\chi^2$ veto constructs the quantity
+%\begin{equation}
+%\Xi = \frac{\chi^2}{p + \delta^2\rho^2}
+%\end{equation}
+%and accepts triggers that pass the test $\Xi < \Xi^\ast$, where $\Xi^\ast$ is
+%the threshold, as described in section~\ref{s:chisqcts}.
+%The initial parameters used for the $\chi^2$ veto, based on tuning of the BNS
+%search, were $p = 15$ and $\delta^2 = 0.04$ with the threshold set to
+%$\Xi^\ast_\mathrm{L1} = 5.0$ in the L1 interferometer and
+%$\Xi^\ast_\mathrm{H1} = \Xi^\ast_\mathrm{H2} = 12.5$ in the LHO
+%interferometers. 
+
+Recall from section~\ref{ss:mismatchedchisq} that the $\chi^2$ veto thresholds
+on
 \begin{equation}
-\Xi = \frac{\chi^2}{p + \delta^2\rho^2}
+\chi^2 < \chi^2_\ast (p+\rho^2 \delta^2),
+\label{eq:chisqthreshold2}
 \end{equation}
-and accepts triggers that pass the test $\Xi < \Xi^\ast$, where $\Xi^\ast$ is
-the threshold, as described in section~\ref{s:chisqcts}.
-The initial parameters used for the $\chi^2$ veto, based on tuning of the BNS
-search, were $p = 15$ and $\delta^2 = 0.04$ with the threshold set to
-$\Xi^\ast_\mathrm{L1} = 5.0$ in the L1 interferometer and
-$\Xi^\ast_\mathrm{H1} = \Xi^\ast_\mathrm{H2} = 12.5$ in the LHO
-interferometers. 
+where $\rho$ is the signal-to-noise ratio of the signal and $\delta^2$ is a
+parameter chosen to reflect the to be the largest amount mismatch that a true
+signal will have with the templates in the bank. The initial parameters used
+for the $\chi^2$ veto, based on tuning of the BNS search, were $p = 15$ and
+$\delta^2 = 0.04$ with the threshold set to $\chi^2_\ast(\mathrm{L1}) = 5.0$ in
+the L1 interferometer and $\chi^2_\ast(\mathrm{H1}) = \chi^2_\ast(\mathrm{H2}) =
+12.5$ in the LHO interferometers.
 
 Figure \ref{f:h1_chiqsq_tuning} illustrates tuning of the $\chi^2$ veto on the
 H1 playground triggers. If the interferometer noise is Gaussian, then the
@@ -207,50 +223,55 @@ square of the signal-to-noise ratio should be $\chi^2$ distributed with two
 degrees of freedom. This means that the histogram of the signal-to-noise ratio
 of the triggers should be a monotonically decreasing function of $\rho$. We
 can see from figure~\ref{f:h1_chiqsq_tuning}, however, that there is an excess
-in the number of triggers with $\rho \approx 8.5$, which suggests some
+in the number of triggers with $\rho \approx 8.5$; this suggests some
 non-Gaussian behavior in the data that we would like to remove. It can be seen
-that be decreasing the threshold $\Xi$ to $5$ has the effect of removing this
-``hump'' in the distribution and decreasing the signal-to-noise ratio of the
-loudest event from $\rho = 13.8$ to $\rho = 10.7$. This might suggest that
-lowering the $\chi^2$ threshold would be desirable.
-Figure~\ref{f:h1_missed_tuning} shows the danger of making such decisions
-without reference to the detection efficiency, however. The small Monte Carlo
-shown in this figure indicates that with the initial choice of $\chi^2$ veto
-parameters, several injections are missed at effective distances well within
-the range of the interferometers. Follow up investigations of these missed
-triggers show that although they have very large values of signal-to-noise
-ratio $\rho \sim 10^2 - 10^3$, they are missed as the fail the $\chi^2$ veto
-due to the mismatch between the signal and the template.  The results of this
-study imply that we should loosen the $\chi^2$ veto, in contradiction to the
-results suggested by figure~\ref{f:h1_chiqsq_tuning}.  Notice, however, that
-the excess of H1 triggers occurs at low values of $\rho$ and the missed
-injections are at higher values of $\rho$. Figure~\ref{f:h1_inj_xi_tuning} 
-shows the values of $\Xi$ and $\rho$ for the detected L1 injections and the
+that decreasing the threshold $\chi^2_\ast$ to $5$ removes this hump in the
+distribution and decreases the signal-to-noise ratio of the loudest event from
+$\rho = 13.8$ to $\rho = 10.7$. This suggests that lowering the $\chi^2$
+threshold is desirable.  Figure~\ref{f:h1_missed_tuning}, which shows the
+results of a small Monte Carlo simulation, demonstrates the danger of making
+such decisions without reference to the detection efficiency, however. For
+each simulated signal added to the data, the figure shows wether or not it was
+detected in the H1 data using the initial choice of $\chi^2$ veto parameters
+($\delta^2 = 0.04$, $\chi^2_\ast(\mathrm{H1}) = 12.5$). Several injections are
+missed at effective distances well within the range of the H1 interferometer.
+Follow up investigations of these missed triggers show that, although they
+have very large values of signal-to-noise $\rho \sim 10^2 - 10^3$, they are
+missed because they fail the $\chi^2$ veto. This is caused by the mismatch
+between the signal and the template.  The results of this study imply that we
+should loosen the $\chi^2$ veto, in contradiction to the results suggested by
+figure~\ref{f:h1_chiqsq_tuning}.  Notice, however, that the excess of H1
+triggers occurs at low values of $\rho$ and the missed injections are at
+higher values of $\rho$. Figure~\ref{f:h1_inj_xi_tuning} shows the values of
+$\chi^2/(p+\rho^2\delta^2)$ and $\rho$ for the detected L1 injections and the
 detected H1 injections before coincidence is applied. These triggers are taken
 from the same Monte Carlo simulation as the triggers shown in
-figure~\ref{f:h1_missed_tuning}. The values of $\Xi$ observed for the
-detected H1 injections are significantly higher than those for the L1
-injections. This suggests that we should increase the parameter $\delta^2$,
-which has the effect of decreasing the value of $\Xi$ for triggers with high
-signal-to-noise ratios. If we increase $\delta^2$ we may be able to decrease
-the value of $\Xi$ to remove the excess of triggers in H1, without adversely
-affecting the pipeline detection efficiency. After several iterations, the
-value of $\delta^2 = 0.4$, $\Xi_\mathrm{L1} = 3.1$, $\Xi_\mathrm{H1} = 5.0$
-and $\Xi_\mathrm{H2} = 10.0$ were chosen.  Figure~\ref{f:h1_inj_xi_final}
-shows the values of $\Xi$ and $\rho$ for the detected L1 injections and the
-detected H1 injections with these new parameters. Notice that the values of
-$\Xi$ for the loud signal-to-noise triggers are much lower. It was noted that
-it would be possible to reduce $\Xi_\mathrm{H1}$ further to $2.51$ without
-loss of efficiency, however at the selected value no coincident triggers
-survived the pipeline in the playground data, so a further iteration of this
-threshold was not performed.
+figure~\ref{f:h1_missed_tuning}. The values of $\chi^2/(p+\rho^2\delta^2)$
+observed for the detected H1 injections are significantly higher than those
+for the L1 injections. This suggests that we should increase the parameter
+$\delta^2$, which has the effect of decreasing the value of
+$\chi^2/(p+\rho^2\delta^2)$ for triggers with high signal-to-noise ratios. If
+we increase $\delta^2$ we may be able to decrease the value of
+$\chi^2/(p+\rho^2\delta^2)$ to remove the excess of triggers in H1, without
+adversely affecting the pipeline detection efficiency. After several
+iterations, the values $\delta^2 = 0.4$, $\chi^2_\ast(\mathrm{L1}) = 3.1$,
+$\chi^2_\ast(\mathrm{H1}) = 5.0$ and $\chi^2_\ast(\mathrm{H2}) = 10.0$ were
+chosen.  Figure~\ref{f:h1_inj_xi_final} shows the values of $\Xi$ and $\rho$
+for the detected L1 injections and the detected H1 injections with these new
+parameters. Notice that the values of $\chi^2/(p+\rho^2\delta^2)$ for the loud
+signal-to-noise triggers are considerably lower than before. It appears from
+the results in figure~\ref{f:h1_inj_xi_final} that it would be possible to
+reduce $\chi^2_\ast(\mathrm{H1})$ further to $2.51$, without loss of
+efficiency. No coincident triggers survived the pipeline in the playground
+data with a threshold of $\chi^2_\ast(\mathrm{H1}) = 5.0$, however, so it was
+decided not to reduce this threshold further.
 
 \subsection{Coincidence Parameter Tuning}
 \label{ss:coinc_tuning}
 
 After the single interferometer parameters had been selected, the coincidence
 parameters were tuned using the triggers from the single interferometers.  As
-described in Sec.~\ref{ch:hardware}, the coalescence time of an inspiral
+described in section~\ref{ch:hardware}, the coalescence time of an inspiral
 signal can be measured to within $\le1$~ms. The light travel time between
 observatories is $10$~ms, so $\delta t$ was chosen to be $1$~ms for LHO-LHO
 coincidence and $11$~ms for LHO-LLO coincidence. The mass coincidence
@@ -259,17 +280,18 @@ the binary neutron star search showed that this could be set to $\delta m =
 0.0$ ({\it i.e.}\ requiring the triggers in each interferometer to be found
 with the exact same template) without loss of efficiency.
 
-After tuning the time and mass parameters, we attempted to tune the effective
+Having tuned the time and mass parameters, we tune the effective
 distance parameters $\kappa$ and $\epsilon$. Initial estimates of $\epsilon =
 2$ and $\kappa = 0.2$ were used for testing, however it was discovered that
 many injections were missed using these thresholds to test for LLO-LHO
 coincidence. This is due to the fact that the detectors are slightly
 misaligned, so the ratio of effective distance of a trigger between the two
 observatories can be large for a significant fraction of the population, as
-shown in Fig.~\ref{f:gmst_dist_ratio}. As a result of this we disabled the
-effective distance cut for triggers not generated at the same observatory.
-A study of simulated events injected into H1 and H2 suggested values
-of $\epsilon_{HH} = 2$ and $\kappa_{HH} = 0.5$ are suitable. Note
+shown in Fig.~\ref{f:gmst_dist_ratio}. As a result, we disabled the
+effective distance cut for triggers generated at different observatories.
+A study of simulated signals injected into H1 and H2 interferometers, both
+located at the LIGO Hanford Observatory, suggested using values
+of $\epsilon_{HH} = 2$ and $\kappa_{HH} = 0.5$. Note
 that, as described above, we demand that an L1/H1 trigger pass the H1/H2
 coincidence test if the effective distance of the trigger in H1 is within the
 maximum range of the H2 detector at threshold.
@@ -277,56 +299,79 @@ maximum range of the H2 detector at threshold.
 \section{Results of Injection Monte Carlo Simulations}
 \label{s:monte}
 
-The final choice of parameter values chosen are shown in
-table~\ref{t:ifo_params}. Once these values were selected an injection Monte
-Carlo was performed to measure the efficiency of the search pipeline. For each
-playground interval in the S2 data, an inspiral waveform was generated using
-the population model described in section~\ref{s:bbhmachopopulation}. Inspiral
-signals were injected between $0.1\,M_\odot$ and $1.0\,M_\odot$. Each inspiral
-signal was injected into the data at a random time during a unique playground
-interval and the data analyzed through the full pipeline with the final set
-of parameters. Four separate injection simulations were performed giving a
-total of 849 injections in the analyzed playground data.
-Figure~\ref{f:m1m2_found_missed} shows the results of this simulation in the
-$(m_1,m_2)$ plane. It can be seen from the upper plot that although the
-template bank only coves the region above and to the right of the red lines at
-$0.2\,M_\odot$, there are a reasonable amount of signals detected that have
-component mass between $\sim 0.15$--$0.20\,M_\odot$. This is due to increasing
-$\delta^2$ in the $\chi^2$ veto allowing loud, but slightly mismatched signals
-to be detected. The lower plot in figure~\ref{f:m1m2_found_missed} shows the
-injections that are not detected by the pipeline. Injections missed from
-triple, L1-H1 double and L1-H2 double coincident data are shown with a star,
-an upward triangle and a downward triangle respectively. These missed signals
-are color coded with the injected effective distance in the LHO detectors. It
-can be seen that injections are only missed when their effective distance is
-comparable or greater than the ranges for the LHO detectors shown in
-figure~\ref{f:inspiral_summary}; there are no anomalous missed injections.
-Figure~\ref{f:mchirp_eff} shows the efficiency of the search as a function of
-chirp mass. As expected, given the strength of the BBHMACHO signals and the
-sensitivity of the detectors, the efficiency is $\varepsilon \sim 1$ for
-$\mathcal{M} >0.35$ with the small loss of efficiency coming from systems with
-an unfavorable orientation. The efficiency drops below $\mathcal{M} \approx
-0.35$ due to the combined effect of the signals become weaker as the chirp
-mass decreases and falling outside the region of good template bank coverage.
-Notice that there appears to be an anomalous value of $\varepsilon$ at
-$\mathcal{M} \approx 0.2$, although it can be seen from the lower plot in
-figure~\ref{f:mchirp_eff} that not many injections were performed at this
-chirp mass. Large scale Monte Carlos with many more injections are currently
-being performed to explore this region of parameters space and investigate
-this anomaly.
+The final parameter values chosen are shown in table~\ref{t:ifo_params}. Once
+fixed, an injection Monte Carlo was performed to measure the efficiency of the
+search pipeline. For each playground interval in the S2 data, an inspiral
+waveform was generated using the population model described in
+section~\ref{s:bbhmachopopulation}. These signals has masses between
+$0.1\,M_\odot$ and $1.0\,M_\odot$. Each inspiral signal was injected into the
+data at a random time during a unique playground interval and the data
+analyzed through the full pipeline with the final set of parameters. Four
+separate simulation runs were performed giving a total of 849 injections in
+the analyzed playground data.  Figure~\ref{f:m1m2_found_missed} shows the
+results of this simulation in the $(m_1,m_2)$ plane. The figure shows which of
+the simulated signals were detected and which were missed by the full pipeline
+in the double and triple coincident playground data. Also shown in the figure
+is the effective distance at which these signals were injected in the LHO
+interferometers, since it is generally the less sensitive detector that limits
+the detection effciency.  Although the template bank only coves the region
+above and to the right of the red lines at $0.2\,M_\odot$, the upper plot
+shows that some signals are detected with component masses between $\sim
+0.15$--$0.20\,M_\odot$. This is a direct result of increasing $\delta^2$ in
+the $\chi^2$ veto, equation (\ref{eq:chisqthreshold2}), allowing loud, but
+slightly mismatched signals to be detected. The lower plot in
+figure~\ref{f:m1m2_found_missed} shows the injections that are missed by
+the pipeline. Injections missed from triple, L1-H1 double and L1-H2 double
+coincident data are shown with a star, an upward triangle and a downward
+triangle respectively. These missed signals are color coded with the injected
+effective distance in the LHO detectors. Injections are
+only missed when their effective distance is comparable or greater than the
+ranges for the LHO detectors shown in figure~\ref{f:inspiral_summary}; there
+are no anomalous missed injections.  Figure~\ref{f:mchirp_eff} shows the
+efficiency of the search as a function of chirp mass. As expected, given the
+strength of the BBHMACHO signals and the sensitivity of the detectors, the
+efficiency is $\varepsilon \sim 1$ for $\mathcal{M} >0.35$ with the small loss
+of efficiency coming from systems with an unfavorable orientation. The
+efficiency drops below $\mathcal{M} \approx 0.35$ due to the combined effect
+of the signals becoming weaker as the chirp mass decreases and falling outside
+the region of good template bank coverage.  Notice that there appears to be an
+anomalous value of $\varepsilon$ at $\mathcal{M} \approx 0.2$; this appears to
+be associated with a dearth of injections in this mass range.  Large scale
+Monte Carlos, with many more injections, are currently being performed to
+explore this region of parameters space and investigate this anomaly in the
+full S2 data set.
 
 A comparison of the inspiral parameters recovered by the pipeline and the
 known injection parameters from signals injected in the Monte Carlo simulation
-are shown in for L1, H1 and H2 in figures \ref{f:l1_param_error},
+are shown for L1, H1 and H2 in figures \ref{f:l1_param_error},
 \ref{f:h1_param_error} and \ref{f:h2_param_error} respectively. It can be seen
 that the effective distance recorded by the search code is unbiased in all
 cases, and can typically be recovered to an accuracy of $\sim 10\%$. This is
-comparable to the $10\%$ uncertainty on the measured distance to Andromeda.
-Using the measured coalescence phase, luminosity distance and difference in
-time of arrive at the two detectors, it is possible to gain 
-
-Chirp mass is recovered to $0.01\%$. Note SP vs TD in time of arrival, but it
-doesn't matter for detections.
+comparable to the $10\%$ distance uncertainty to nearby galaxies.  Using the
+measured coalescence phase, effective distance and difference in time of
+arrive at the two detectors, it is possible to gain information about the
+location of the signals, however a comprehensive study of this has not been
+performed for the S2 data. For all interferometers, the chirp mass is
+recovered extremly well with an accuracy of $0.1\%$. This consistent with the
+results quoted in \cite{Cutler:1994} and is encoraging for the parameter
+measurement in the case of a detection. Although there appears to be a bias in
+the measure end time of the signal, this is due to the fact that the current
+implementation of the filtering code measures the end time of the template,
+not the coalescence time of the binary. The injected signals are generated
+with a time domain waveform generator\cite{LAL} and recovered with the
+stationary phase waveforms described in chapter \ref{ch:findchirp}. There is a
+slight difference in the frequency at which these waveforms terminate: the
+time domain waveforms are terminated when the post-Newtonian phase evolution
+of equation (\ref{eq:biwwphase}) can no longer be evoloved and the stationary
+phase waveforms are terminated when they reach the gravitational wave
+frequency of a test particle in the innermost stable circular orbit of
+Schwarzschild spacetime. As a result of this there is a small mass dependent
+offset between the end times of the waveform as recorded by the injection code
+and the filtering code. This will not affect the time coincidence test,
+however, as we demand that the templates have the same mass parameters
+in all the detectors. As a result this time offset will be identical between
+detectors and we can apply coincidence. Changes to the filtering code are
+planed to remove this offset in time measurement.
 
 \section{Background Estimation}
 \label{s:s2background}
@@ -341,28 +386,23 @@ than 20~ms, we ensure that a true gravitational wave will not be coincident in
 the time-shifted data streams.  We do not time-shift the two Hanford detectors
 relative to one another since there may be real correlations due to
 environmental disturbances.  If the times of background triggers are not
-correlated at the sites then the background rate can be measured. Background
-triggers are clustered by choosing the largest signal-to-noise over
-$4$~seconds. Clustering is performed so that a noise transient that may cause
-several templates to trigger within a small window is only counted as a single
-event in the data sample.
-
-A total of 20 time-lags were analyzed to estimate the background. Note that
-the time lags use all the data and are not restricted to playground. The
-resulting distribution of time-lag triggers in the
-$(\rho_{\mathrm{H}},\rho_{\mathrm{L}})$ plane is shown in figure~\ref{f:bkg}.
-Figure~\ref{f:bkg_inj} compares the distribution of background triggers and
-injected signals in the $(\rho_{\mathrm{H}},\rho_{\mathrm{L}})$ plane. It can
-be seen that the signal-to-noise ratio of background triggers is higher in the
-LHO interferometers than in the L1 interferometer, whereas the signal-to-noise
-ratio of injections louder in the L1 interferometer. This distribution
-suggested the form of a ``coherent'' signal-to-noise ratio $\hat{\rho}$ which
-gives a factor of 2 more significance to the signal-to-noise ratio in L1
-compared to the signal-to-noise ratio in L1. Based on the studies of the
-background and injections, we chose a ``coherent'' signal-to-noise statistic of
+correlated at the sites then the background rate can be measured. A total of
+20 time-lags were analyzed to estimate the background. Note that the time lags
+use all the data and are not restricted to playground. The resulting
+distribution of time-lag triggers in the
+$(\rho_{\mathrm{H}},\rho_{\mathrm{L}})$ plane is shown in figure~\ref{f:bkg};
+the distribution of background triggers and injected signals are compared in
+figure~\ref{f:bkg_inj}. It can be seen that the signal-to-noise ratios of
+background triggers are higher in the LHO interferometers than in the L1
+interferometer, whereas the signal-to-noise ratios of injections are louder in the
+L1 interferometer. This distribution suggested the form of a ``coherent''
+signal-to-noise ratio $\hat{\rho}$ which gives a factor of 2 more significance
+to the signal-to-noise ratio in L1 compared to the signal-to-noise ratio in
+L1. Based on the studies of the background and injections, we chose a
+combined signal-to-noise statistic
 \begin{equation}
-\hat{\rho}^2 = \rho^2_{\mathrm{L1}} +  \rho_{\mathrm{H}}^2 / 4.
-\label{e:combined-snr}
+\hat{\rho}^2 = \rho^2_{\mathrm{L1}} +  \frac{\rho_{\mathrm{H}}^2 }{ 4 }.
+\label{eq:combinedsnr}
 \end{equation}
 
 \section{Upper Limit on BBHMACHO Inspiral in the S2 Playground Data}
@@ -375,8 +415,13 @@ triple-detector data,  {10.2} hours of L1-H1 and {3.97} hours of L1-H2. The
 analysis of the playground data produced no double or triple coincident
 inspiral candidates.
 
-Suppose the population of sources produce Poisson-distributed events with a
-rate $\mathcal{R}$ per year per Milky Way Equivalent Galaxy (MWEG) and
+To determine an upper limit on the event rate we use the \emph{loudest event
+statistic}\cite{loudestGWDAW03} which uses the detection efficiency at the
+signal-to-noise ratio of the loudest trigger surviving the pipeline to
+determine an upper limit on the rate. If no triggers survive the pipeline, we
+use the signal-to-noise threshold as the loudest event.  Suppose the
+population of sources produces Poisson-distributed events with a rate
+$\mathcal{R}$ per year per Milky Way Equivalent Galaxy (MWEG) and
 $N_G(\rho^\ast)$ is the number of MWEGs to which the search is sensitive at
 $\rho \geq \rho^\ast$.   Then the probability of observing an inspiral signal
 with $\rho > \rho^\ast$, given some rate $\mathcal{R}$ and some observation
@@ -387,7 +432,7 @@ P(\rho>\rho^\ast;{\mathcal{R}}) = 1 - e^{-{\mathcal{R}}T N_G(\rho^\ast)}.
 \end{equation}
 A trigger can arise from either an inspiral signal in the data or from
 background.   If $P_b$ denotes the probability that all background triggers
-have SNR less than $\rho^\ast$,  then the probability of observing either an
+have signal-to-noise ratio less than $\rho^\ast$,  then the probability of observing either an
 inspiral signal or a background trigger with $\rho > \rho^\ast$ is given by
 \begin{equation}
 P(\rho>\rho^\ast;{\mathcal{R}},b) = 1 - P_b e^{-{\mathcal{R}}TN_G(\rho^\ast)}.
@@ -395,15 +440,14 @@ P(\rho>\rho^\ast;{\mathcal{R}},b) = 1 - P_b e^{-{\mathcal{R}}TN_G(\rho^\ast)}.
 \end{equation}
 Given the probability $P_b$, the total observation time $T$, and the number of
 Milky Way equivalent galaxies $N_{{G}}$ to which the search is sensitive, we
-find that the rate of binary neutron star inspirals per MWEG is
+find that the rate of binary black hole MACHO inspirals per MWEG is
 \begin{equation}
   R_{90\%} = \frac{2.303+\ln P_b}{T N_{G}(\rho^\ast)}
 \end{equation}
 with 90\% confidence. This is a frequentist upper limit on the rate.
 For ${\mathcal{R}}>{\mathcal{R}}_{90\%}$, there is more than $90\%$
 probability that at least one event would be observed with SNR greater
-than $\rho_{\text{max}}$.   Details of this method of determining an 
-upper limit can be found in~\cite{loudestGWDAW03}.
+than $\rho_{\text{max}}$. 
 
 Since no coincident events were observed in the playground data, we determine
 the rate by measuring the efficiency of the pipeline at the (combined)
@@ -412,14 +456,14 @@ signal-to-noise threshold
 \hat{\rho}^2_\mathrm{max} =  7^2 + \frac{7^2}{4} = 61.25.
 \label{eq:threshold}
 \end{equation}
-This will be a conservative limit on the rate. If we lowered the
+This is a conservative limit on the rate. If we lowered the
 signal-to-noise thresholds until we observed the loudest trigger, then this
 trigger will have a signal-to-noise ratio less than the value given in equation
 (\ref{eq:threshold}); the measured efficiency will be greater than or equal to
-that used here so and the rate will be the same as or less that that which we
-quote here. Furthermore, since we only have a small number of time lags, we
+that used here so the rate will be less than or equal to which we
+quoted here. Furthermore, since we only have a small number of time lags, we
 neglect the background term $P_b$. Dropping this term will give a conservative
-value for upper limit.
+value for upper limit\cite{loudestGWDAW03}.
 
 If we restrict the mass parameters of the injected signals to those with a
 component in the range $0.15$ to $1.0\,M_\odot$, the mass range suggested by
@@ -430,10 +474,10 @@ $\hat{\rho}^\ast = \sqrt{61.25}$ is
 } = 0.915.
 \end{equation}
 The observation time for the playground data is $T = 35.2\,\mathrm{hours} = 4
-\times 10^{-3}\,\mathrm{yr}$ and so the upper limit on the rate of BBHMACHO
-inspirals in the playground data is
+\times 10^{-3}\,\mathrm{yr}$ and so the upper limit on the rate of binary
+black hole MACHO inspirals in the playground data is
 \begin{equation}
-R_{90\%} = \frac{2.303}{0.915 * 4 \times 10^{-3}} = 
+R_{90\%} = \frac{2.303}{0.915 \times 4 \times 10^{-3}} = 
 627\,\mathrm{yr}^{-1}\,\mathrm{MWEG}^{-1}.
 \end{equation}
 
@@ -442,27 +486,25 @@ science segments with durations shorter than 2048 sec,  and application of the
 instrumental veto in L1, there is a total of 345 hours of non-playground data;
 225 hours of triple-detector data, 90 hours of L1-H1 and 30 hours of L1-H2.
 Assuming that the signal-to-noise ratio of the loudest event in the full data
-is comparable to $\hat{rho}^2 = 61.25$, which is suggested by the background
-triggers, we may estimate the upper limit as
+is comparable to $\hat{\rho}^2 = 61.25$, which is suggested by the background
+triggers, we may estimate the achievable upper limit as
 \begin{equation}
-R_{90\%} = \frac{2.303}{0.915 * 3.9 \times 10^{-2}} = 
+R_{90\%} = \frac{2.303}{0.915 \times 3.9 \times 10^{-2}} = 
 64\,\mathrm{yr}^{-1}\,\mathrm{MWEG}^{-1}.
 \end{equation}
 This upper limit is three orders of magnitude larger than the upper bound on
-the theoretical rate of $R = 0.05\times2^{\pm
-1}\,\mathrm{yr}^{-1}\,\mathrm{MWEG}^{-1}$, so we are not yet able to constrain
-the fraction of the Galactic halo in BBHMACHOs. The sensitivity of the
-interferometers during the S2 search is roughly an order of magnitude from
-design sensitivity. however. For a $(0.5,0.5)\,M_\odot$ binary, at design
-sensitivity the interferometers will be sensitive to $\sim 50$~MWEG, so in one
-year of data taking, assuming no detections have been made, an upper limit on
-rate of BBHMACHO inspirals of $R =
-3\times10^{-2}\,\mathrm{yr}^{-1}\,\mathrm{MWEG}^{-1}$ are possible (assuming
-$P_b = 0.5$) which will significantly constrain the upper bounds on the
-theoretical rate. Additionally, since the range of the search scales as a
-function of the mass, the possibility for detecting more massive BBHMACHO
-binaries increases as more galaxies become accessible and the rate can be
-further constrained.
+the rate of $R = 0.05\times2^{\pm 1}\,\mathrm{yr}^{-1}\,\mathrm{MWEG}^{-1}$,
+so we are not yet able to constrain the fraction of the Galactic halo in
+BBHMACHOs. The sensitivity of the interferometers during the S2 search is
+roughly an order of magnitude from design sensitivity, however. For a
+$(0.5,0.5)\,M_\odot$ binary, at design sensitivity the interferometers will be
+sensitive to $\sim 50$~MWEG, so in one year of data taking, assuming no
+detections have been made, an upper limit on rate of BBHMACHO inspirals of $R
+= 3\times10^{-2}\,\mathrm{yr}^{-1}\,\mathrm{MWEG}^{-1}$ are possible (assuming
+$P_b = 0.5$) which will significantly impact the theoretical rate estimates.
+Additionally, since the range of the search scales as a function of the mass,
+the possibility for detecting more massive BBHMACHO binaries increases as more
+galaxies become accessible and the rate can be further constrained.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
