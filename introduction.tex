@@ -1,2 +1,91 @@
 % $Id$
 
+Introduction to inspiral stuff.
+
+\section*{Conventions}
+\label{s:conventions}
+
+The raw (uncalibrated) output of the detector is denoted $v(t)$. In order to
+construct a digital matched filter, we sample the output at $N$ consecutive
+points with sampling interval $\Delta t$, that is $v_j \equiv v(t_j)$ where
+$t_j = j\Delta t$. We reserve the subscript $j$ for discretely sampled time
+domain quantities and the subscript $k$ for discretely sampled frequency
+domain quantities. For a frequency domain quantity $v(f_k)$ denotes the
+value quantity samples at a particular frequency $f_k$ whereas $v_k = v(f_k)
+/ \Delta t$ denotes the same quantity divided by the sampling interval.
+
+\subsection*{The Fourier Transform}
+\label{ss:ftconv}
+
+We define the forward Fourier transform $\tilde{v}(f)$ of a time domain
+quantity $v(t)$ to be
+\begin{equation}
+\label{eq:ft}
+\tilde{v}(f)=\int_{-\infty}^\infty dt\,v(t)\, e^{- 2 \pi i f t}
+\end{equation}
+and the inverse Fourier transform to be 
+\begin{equation}
+\label{eq:ift}
+v(t)=\int_{-\infty}^\infty df\,\tilde{v}(f)\, e^{2 \pi i f t}.
+\end{equation}
+
+For the $N$ sample points $v_j$ we may estimate the Fourier transform at 
+$N + 1$ samples in the range $[-f_n,f_n]$, where $f_n = 1/(2\Delta t)$ is the
+Nyquist critical frequency, by
+\begin{equation}
+\tilde{v}(f_k) \approx \sum_{j=0}^{N-1} \Delta t\, h(t_j) e^{-2 \pi i f_k t_j}
+= \Delta t \sum_{j=0}^{N-1} v_j e^{-2 \pi i j k / N}.
+\end{equation}
+There are only $N$ independent values of $\tilde{v}(f_k)$ as the extreme
+values of $k$ correspond to the upper and lower limits of the Nyquist
+frequency range and are equal. The discrete Fourier transform is the defined
+to be\cite{T010095}
+\begin{equation}
+\tilde{v}_k = \sum_{j=0}^{N-1} v_j e^{-i 2 \pi j k / N}.
+\end{equation}
+We may estimate the discrete inverse Fourier transform from \ref{eq:ift} using
+\begin{equation}
+\Delta f = f_{k+1} - f_k = \frac{k+1}{N\Delta t} - \frac{k}{N\Delta t} =
+\frac{1}{N\Delta t}
+\end{equation}
+which gives
+\begin{equation}
+v(t_j) \approx \sum_{k=0}^{N-1} \tilde{v}(f_k) e^{2 \pi i f_k t_j / N} \Delta f
+= \frac{1}{N} \sum_{k=0}^{N-1} \tilde{v}_k e^{2 \pi i j k / N}.
+\end{equation}
+
+\subsection*{Power Spectral Densities}
+\label{ss:psdconv}
+
+Consider a signal $n(t)$ containing Gaussian noise and dimensions $U$, which
+may be voltage, strain, etc. We define the one sided power spectral density,
+$S(|f|)$, of this signal by the equation
+\begin{equation}
+\left\langle\tilde{n}(f) \tilde{n}^\ast(f')\right\rangle = 
+\frac{1}{2}\ospsd\delta(f-f)
+\end{equation}
+which has units of $\mathrm{time}\times U^2$. For discretely sampled 
+quantities we have
+\begin{equation}
+\left\langle\tilde{n}(f_k) \tilde{n}^\ast(f_{k'})\right\rangle = 
+\frac{1}{2}\ospsd\delta(f_k-f_{k'})
+\end{equation}
+which gives
+\begin{equation}
+\label{eq:psddef}
+\left\langle\tilde{n}_k \tilde{n}_{k'}^\ast\right\rangle = 
+\frac{N}{2\Delta t}\ospsd\delta_{kk'}
+\end{equation}
+which defines \ospsd in terms of the discrete frequency domain quantities.
+The definition in equation \ref{eq:psddef} is equivalent to
+\begin{equation}
+\ospsd = \left\{
+\begin{array}{ll}
+\frac{\Delta t}{N} | \tilde{n}_0 |^2 & k = 0, \\
+\\
+\frac{\Delta t}{N} \left[ | \tilde{n}_k |^2 + | \tilde{n}_{N-k} |^2 \right] &
+k\neq 0.
+\end{array}
+\right.
+\end{equation}
+
