@@ -126,7 +126,7 @@ simple pipeline in figure \ref{f:simple_pipe} on all the data from L1 and H1
 recorded in S2. The DAG describing the work flow is submitted to a computing
 cluster via the Condor high throughput computing system. The Condor DAG
 manager executes the pipeline described in the. This process is described in
-more detail in section \ref{s:dag}.
+more detail in section \ref{ss:dag}.
 
 Implicit in the above discussion is that fact that there are many parameters
 that must be set at each stage of the pipeline. For example: What data quality
@@ -275,7 +275,7 @@ only searching for triggers in the signal-to-noise ratio, $\rho^2(t_j)$, when
 \end{equation}
 where $N$ is the number of sample points in the data segment, and demanding
 that the amount of data corrupted is less than $N/4$ sample points. To ensure
-that all data is analyzed we must overlap each data segment by $(N/2)\Deltat
+that all data is analyzed we must overlap each data segment by $(N/2)\Delta t
 t$~seconds. To compute an average power spectrum we require a sample of data
 near the data segment being filtered so that a good estimate of the noise can
 be obtained; the power spectral estimate also requires overlapping data
@@ -283,11 +283,11 @@ segments. We combine these two requirements by bundling several overlapping
 data segments together in an \emph{analysis chunk}. The length of an analysis
 chunk is bounded above by the amount of memory avaliable in the computers
 performing the filtering and bounded below by required a sufficently large
-number of segments in the computation of the average power spectrum. In S2, we
-constructed analysis chunks of length $2048$~seconds from $15$ data segments
-of length $256$~seconds. The data segments are overlapped by $128$~seconds,
-with the first and last $64$ seconds of data segment ignored when searching
-for triggers. 
+number of segments in the computation of the average power spectrum. In the S2
+pipeline, we construct analysis chunks of length $2048$~seconds from $15$ data
+segments of length $256$~seconds. The data segments are overlapped by
+$128$~seconds, with the first and last $64$ seconds of data segment ignored
+when searching for triggers. 
 
 The interferometer records data at $16\,384$~Hz, so we downsample the analysis
 chunk to a sample rate of $4096$~Hz after reading it from disk to decrease the
@@ -368,86 +368,177 @@ still be required.
 We wish to use matched filtering and the $\chi^2$ veto to detect the inspiral
 waveforms from binary neutron stars in the mass range $1\,M_\odot\le m_1,
 m_2\le 3\,M_\odot$ and binary black hole MACHOs in the mass range
-$0.2\,M_\odot\le m_2, m_1\le 1\,M_\odot$. Each mass pair $\{m_1,m_2\}$
-produces a slightly different waveform. If we only used a single template to
-search for inspiral waveforms, then the correlation of 
+$0.2\,M_\odot\le m_2, m_1\le 1\,M_\odot$. Since each mass pair $\{m_1,m_2\}$
+in the space produces a different waveform, we construct a {\em template
+bank}, a discrete subset of the continuus family of waveforms that belong to
+the parameter space. The placement of templates in the bank is determined by
+the \emph{minimal match} of the bank, $\mathbb{M}$. The minimal match is the
+fractional loss in signal to noise that results when an inspiral signal, $s$,
+is not exactly correlated with a template in the bank, $h$. In terms of the
+inner product defined in equation \ref{eq:innerproduct2} of section
+\ref{ss:maxrec} it is
+\begin{equation}
+\mathbb{M} = \frac{(h|t)} {\sqrt{(h|h)(t|t)}}.
+\end{equation}
+If we consider the distrubution of binaries to be uniform in space, then the
+fraction of events detected from a population is approximately the cube of the
+minimal match. A minimal match of $0.97$, i.e. a $10\%$ loss of event rate, is
+conventionally accepted as a reasonable goal for binary neutron stars. For
+binary black hole MACHOs, we reduce the minimal match of the template bank to
+$0.95$. This is due to the fact that the number of templates in the bank
+scales as approximately $m_\mathrm{min}^{-8/3}$. Lower the minimal match to
+decrease the computational cost as $(1 - \mathbb{M})^{-1}$. The
+loss in signal-to-noise ratio is balanced by the fact that we are searching
+for a population of binary black hole MACHOs in the galactic halo which will,
+on average, produce higher signal-to-noise ratios than a population of binary
+neutron stars in Andromeda and beyond.
 
+This scaling in the number of templates as a function of the lower mass of the
+bank parameter space is due to the fact that the number of templates required
+to achive a given minimal match is a function of the number of cycles that the
+inspiral waveforms spends in the sensitive bank of the interferometer. The
+more cycles the matched filter correlates against, the greater its
+discriminating power and so the loss in signal-to-noise ratio for a mismatched
+template increases. A pair of inspiralling $1.4\,M_\odot$ neutron stars have
+$347$ cycles in the S2 sensitive band (between $100$~Hz and $2048$~Hz),
+compared to $1960$ cycles for a pair of $0.5\,M_\odot$ binary black hole
+MACHOS; a pair of $0.5\,M_\odot$ binary black hole MACHOS have nearly $9000$
+cycles.
 
-, we constructed a {\em bank} of
-templates to filter the data. The template bank 
-
-
-with different mass pairs such that, for any actual mass pair in the
-parameter space of interest the loss of SNR due to the mismatch of the true
-waveform from that of the best fitting waveform from the bank is less than
-$3\%$ in the case of binary neutron stars and $5\%$ in the case of
-BBHMACHOs\cite{owensatyha}.  The size of the template bank depends on the
-shape (but not overall scale) of the power spectral density of the
-interferometer and the mass parameter space. Due to to the chirp nature of
-inspiral signals there are more cycles in the chirp at lower frequencies. In
-addition, low mass signals produce longer chirps with more cycles in the
-sensitive band of the detector. An interferometer with good low frequency
-sensitivity y will require more templates then one with poorer low frequency
-sensitivity as the matched filter will be more sensitive to the low frequency
-part of the chirp. A bank that covers a lower mass inspiral signals will be
-bigger than a higher mass bank due to the longer length of the low mass signals. 
-Typical numbers for the size of the template banks for the Livingston 4km
-interferometer are $900$ for binary neutron starts and $14\,000$ for binary
-black hole MACHOs.
-
-The input to the inspiral trigger generation algorithm is an inspiral
-template, a finite stretch of interferometer data, an average power spectral
-estimate of the noise in the input data and a instrument response function
-describing the response of the interferometer to gravitational waves as a
-function of frequency. This input is constructed from the interferometer data
-as follows.  
-
-The interferometer operators, in consultation with scientific monitors present
-at the observatory during data taking, flag times when the interferometers are
-in stable operation and the data is suitable for analysis.  Times when an
-interferometer was in stable operation are identified as ``science segments''.
-These science segments were analyzed in ``analysis chunks'' of 2048 seconds.
-The length of the analysis chunks are chosen based on the available memory in
-the hardware used to perform the search.  The analysis chunks are further
-divided into data segments of length $256$ seconds. The length of the data
-segment is set by the length of the longest chirp in the template bank and the
-length of the square root of the inverse power spectrum in the time domain,
-which must be shorter than one quarter of a segment.  Triggers are not
-generated for the first and last $64$~s of a given data segment due to wrap
-around, so we overlap subsequent data segments by $128$~s to ensure that all
-data is filtered for triggers. Therefore there are $15$ data segments in an
-analysis chunk. Since the first and last $64$ seconds of a chunk are not
-analyzed, the chunks are also overlapped by $128$ seconds.  If a science
-segment cannot be exactly divided into overlapping chunks (as is usually the
-case) the remainder of the data is covered by a special $2048$-s chunk which
-overlaps with the previous chunk as much as necessary to allow it to end at
-the end of the segment.  For this final chunk, a parameter was set to restrict
-the inspiral search to the time interval not covered by any other chunk. 
-
-  The
-power spectrum $S_n(f)$ for the $2048$ seconds of data was estimated by taking
-the median of the power spectra of the $15$ segments.  The calibration,
-$R(f)$, was generated for each chunk using the mean value of the calibration
-factors $\alpha$ and $\beta$ over the chunk.  The algorithm to construct the
-filter input from the science segments is shown in figure~\ref{f:s2_segments}.
-
-For a given template multiple triggers can be recorded in a segment.  The
-triggers are clustered so that distinct triggers are separated by at least the
-length of the template.  Each analysis segment is filtered through all the
-templates. It is possible for multiple templates to trigger at same time.
+Since the number of templates is a function of the number of cycles of an
+inspiral in the sensitive band of the interferometer, it also depends on the
+shape of the power spectral density of the noise curve, since it is the PSD
+that decribes the senstivity. In fact location of the templates in the bank is
+also a function of the PSD, as described in \cite{Owen:1998dk}. The power
+spectrum of the instrument changes over time and so we must also change the
+template bank. We acomplish this by using the power spectral density for an
+analysis chunk to generate a template bank that is unique to that chunk. The
+PSD is calibrated and the template bank generated. Figure \ref{f:s2_banks}
+shows a binary neutron star and binary black hole MACHO template banks
+generated for a typical stretch of S2 data.  The largest and smallest number
+of templates in a bank during S2 was $589$ and $857$ for binary neutron stars
+and $11\,588$ and $17\,335$ for binary black hole MACHOs.
 
 \subsection{Trigger Generation Parameters}
 \label{ss:triggerparameters}
 
-To summarize: for a given template we use matched
-filtering to construct the signal-to-noise ratio, $\rho$, and search for times
-when this exceeds a threshold, $\rho > \rho^\ast$. If this happens, we
-construct a template based veto, the $\chi^2$ veto\cite{brucechisq}. Small
-values of $\chi^2$ indicate that the signal-to-noise was accumulated in a
-manner consistent with an inspiral signal. If the value of the $\chi^2$ veto
-is below a threshold, $\chi^2 < {\chi^2}^\ast$, then an inspiral trigger is
-recorded at the maximum value of $\rho$.
+The process of template bank construction and inspiral trigger generation has
+several parameters that can be tuned to minimize the false dismissal or false
+alarm rate. We have touched on some of these already; in this section we
+enumerate all of the tunable parameters for bank and inspiral trigger
+generation.
 
+Both template bank and inspiral trigger generation require a calibrated power
+spectral density. In the inspiral trigger genration described above,
+construction of the PSD is coupled to the length of the data segments and
+analysis chunks. The following \emph{data conditioning} parameters are used to
+constuct the data segments, and so determine the characteristics of the PSD:
+\begin{itemize}
+\item Number of sample points in a data segment, $N$. This
+determines the length of the segments correlated in the matched filter and the
+length of the segments used in the Welch PSD estimate. The number of points
+that subsequent data segments are overlapped by is then $N_\mathrm{overlap} =
+N/2$.
+
+\item Number of data segments in a chunk $N_\mathrm{segments}$. This sets the
+number of data segments used in the Welch PSD estimate and so the number of
+segments in an analysis chunk.
+
+\item Sample Rate, $1/\Delta t$. The sample rates used in LIGO data analysis
+are integer powers of two.
+\end{itemize}
+Once these parameters have be specified, it follows that the length of an
+analysis chunk, in seconds, is given by
+\begin{equation}
+T_\mathrm{chunk} = (N \times N_\mathrm{segments} - ( N_\mathrm{segments} - 1 )
+\times N_\mathrm{overlap} \times \delta T.
+\end{equation}
+The choice of these parameters is governed by the class of waveforms searched
+for and the low frequency sensitivity of the interferometer. The longest
+inspiral waveform in the template bank, generated from the lowest sensitive
+frequency of the interferometer, must be able to fit into the uncorrupted
+region of the signal-to-noise output, $\rho(t)$. In addition, the corruption
+caused by wraparound of the FFT must be less than $1/4$ of a segment, since we
+overlap the segments by $N/2$ and ignore the first and last quarter of a
+segment.
+
+Other data conditioning parameters control the cut-offs of the time
+and frequency domain filters applied to the data. These are:
+\begin{itemize}
+\item The high pass filter cutoff, $f_\mathrm{high}$, and high pass filter
+order $O_\mathrm{high}$. These parameters determine the shape of the IIR
+Butterworth high pass filter applied to the analysis chunks before PSD
+estimation and inspiral trigger generation.
+
+\item The frequency domain low frequency cut off, $f_\mathrm{low}$. This
+parameter allows us to exclude frequencies below a certain value from the
+correlations in the matched filter and $\chi^2$ veto. A non-zero value of
+$f_\mathrm{low}$ sets the value of the data in all frequency bins $k <
+k_\mathrm{min} = f_\mathrm{low} / (N \Delta t)$ to zero. This excludes this
+data from the correlations.
+\end{itemize}
+During investigation of inspiral triggers in the S2 playground data, it was
+discovered that many of the L1 inspiral triggers appeared to be the result of
+non-stationary noise with frequency content around $70$~Hz.  An important
+auxiliary channel, \texttt{L1:LSC-POB\_I}, proportional to the residual length
+of the power recycling cavity, was found to have highly variable noise at
+$70$~Hz.  There are understandable physical reasons for this, namely the power
+recycling servo loop (for which \texttt{L1:LSC-POB\_I} is the error signal)
+has a known instability around $70$~Hz, which often results in the appearance
+of glitches in the detector output channel at around $70$~Hz.  As a
+consequence, it was decided that to reduce sensitivity to these glitches the
+high pass cut off should be set to $f_\mathrm{high} = 100$~Hz with order
+$O_\mathrm{high} = 8$ and the low-frequency cutoff set to $f_\mathrm{low} =
+100$~Hz.  This subsequently reduced the number of inspiral triggers
+(presumably created by this problem); an inspection of artificial signals
+injected into the interferometer revealed a very small loss of efficiency for
+binary neutron star inspiral and BBHMACHO signal detection resulting from the
+increase in the low frequency cutoff.
+
+Once we have defined the data conditioning parameters and a paremeter space
+for the search, the only remaining free parameter for template bank generation
+is:
+\begin{itemize}
+\item The template bank minimal match, $\mathbb{M} \in [0,1)$. Given a value
+of minimal match, $\mathbb{M}$, a real signal that lies in the bank parameter
+space the fractional loss in signal-to-noise ration should be no larger than
+$(1 - \mathbb{M})\, \%$ when filtering with the signal against its exact
+waveform compared to filtering the signal against the template in the bank
+with yields the highest signal-to-noise ratio.
+\end{itemize}
+As descrived the previous section, the values chosen for the S2 search are
+$\mathbb{M}_\mathrm{BNS} = 0.96$ and $\mathbb{M}_\mathrm{BBHMACHO} = 0.95$. 
+
+For a given template we use matched filtering to construct the signal-to-noise
+ratio, $\rho$, and search for times when this exceeds a threshold, $\rho >
+\rho^\ast$. If this happens, we construct the template based veto, $\chi^2$,
+with $p$ bins. Small values of $\chi^2$ indicate that the signal-to-noise was
+accumulated in a manner consistent with an inspiral signal. If the value of
+the $\chi^2$ veto is below a threshold, $\chi^2 < \chi^2_\ast (p + \delta^2
+\rho^2)$, then an inspiral trigger is recorded at the maximum value of $\rho$.
+The parameters used avaliable in trigger generation are therefore:
+\begin{itemize}
+\item Number of points non-zero points in the square root of inverse power
+spectrum length in the time domain, $N_\mathrm{inv-spec-trunc}$. This
+parameter was described in detail in section \ref{s:invspectrunc}.
+
+\item The signal to noise threshold, $\rho_\ast$.
+
+\item The $\chi^2$ threshold, $\chi^2$.
+
+\item The number of bins used in the $\chi^2$ veto, $p$.
+
+\item The parameter $\delta^2$ used to acount for this mismatch of a signal
+and template in the $\chi^2$ veto, as described in section
+\ref{ss:mismatchedchisq}.
+\end{itemize}
+We set $N_\mathrm{inv-spec-trunc} = 16 / \Delta t$~seconds for the S2 analysis
+based on the length of wraparound corruption allowed. A systematic study of
+the value of $N_\mathrm{inv-spec-trunc}$ has not been carried out for the S1
+or S2 data, but is planned for future analysis. Tuning of the other inspiral
+trigger generation parameters is particluar to the class of search used. A
+detailed discussion of this can be found in chapted \ref{ch:bns} for binary
+neutron stars and chapter \ref{ch:result} for binary black hole MACHOs.
 
 \section{Trigger Coincidence}
 \label{s:coincidence}
@@ -550,25 +641,6 @@ time eliminated by the veto). The results of the veto investigations for
 binary neutron stars are described in section \ref{s:} and for binary black
 hole MACHOs in section \ref{s:}.
 
-During investigation of inspiral triggers in the playground data, it was
-discovered that many of the L1 inspiral triggers appeared to be the result of
-non-stationary noise with frequency content around $70$~Hz.  An important
-auxiliary channel, \texttt{L1:LSC-POB\_I}, proportional to the residual length
-of the power recycling cavity, was found to have highly variable noise at
-$70$~Hz.  There are understandable physical reasons for this, namely the power
-recycling servo loop (for which \texttt{L1:LSC-POB\_I} is the error signal)
-has a known instability around $70$~Hz, which often results in the appearance
-of glitches in the detector output channel at around $70$~Hz.  As a
-consequence, it was decided that the low-frequency cutoff of the binary
-neutron star inspiral search should be set to $100$~Hz to reduce sensitivity
-to these glitches.  This subsequently reduced the number of inspiral triggers
-(presumably created by this problem); an inspection of artificial signals
-injected into the interferometer revealed a very small loss of efficiency for
-binary neutron star inspiral and BBHMACHO signal detection resulting from the
-increase in the low frequency cutoff.
-
-\section{Directed Acyclic Graphs}
-\label{s:dag}
 
 \section{Background Estimation}
 \label{s:background}
@@ -703,6 +775,235 @@ chunk and the H2 chunk is filtered with this bank.  These triggers are used to
 search for triple coincident triggers in H2.  The remaining triggers from H1
 when H2 is not available are used to search for L1/H1 double coincident
 triggers.
+
+\subsection{A Directed Acyclic Graph for the S2 Pipeline}
+\label{ss:dag}
+
+In this section we demonstrate how the S2 pipeline in figure \ref{f:pipeline}
+can be turned into a DAG to execute the analysis. We illustrate the
+construction of the dag with the short list of science segments shown in table
+\ref{t:fakesegslist}. For simplicity, we only describe the construction of the
+DAG for zero time lag data. The DAG we construct filters more than the
+absolute minimum amount of data needed to cover all the double and triple
+coincident data, but since we were not computationally limited during S2, we
+chose simplicity over the maximum amount of optimization that could have used.
+
+A DAG consists of \emph{nodes} and \emph{edges}. The nodes are the programs
+which are executed to perform the inspiral search pipeline. In the S2
+pipeline, the possible nodes of the DAG are:
+\begin{enumerate}
+\item \textbf{datafind} locates data for a specified time interfval on the compute
+cluster and creates a file contining the paths to the input data that other
+programs can read.
+
+\item\textbf{tmpltbank} genrates an average power spectral density for a chunk and
+computes a template bank for a given region of mass parameter space and
+minimal match.
+
+\item\textbf{inspiral} filters an analysis chunk using a template bank and generates 
+inspiral triggers for further analysis.
+
+\item\textbf{trigtotmplt} generated a triggered template bank from the output of the
+inspiral code.
+
+\item\textbf{inca} implements the coincidence analysis described in section
+\ref{s:coincidence} and figure \ref{f:s2_coinc_test}.
+\end{enumerate}
+The edges in the dag define the relations between programs; these relations
+are determined in terms of parents and children. A node in the DAG will not be
+executed until all of its parents have been sucessfully executed. There is no
+limit to the number of patents a node can have; it may be zero or many. In
+order for the DAG to be acyclic, no node cannot be a child of any node that
+depends on the execution of that node. By definition, there must be at least
+one node in the DAG with no parents. This node is executed first, follwed by
+any other nodes who have no parents or whose parents have previously executed.
+The construction of a DAG allow us to ensure that inspiral triggers for two
+interferometers have been genrated before looking for coincidence between
+the triggers, for example.
+
+The S2 dag is generated by a program called the \emph{pipeline script}, which
+is an implementation of the logic of the S2 pipeline in the Python programming
+language. The pipeline script takes as input the list of science segments for
+each interferometer, with data quality cuts applied. The script reads in all
+science segments longer than $2048$~seconds and divides them into \emph{master
+analysis chunks}. If there is data at the end of a science segment that is
+shorter than $2048$~seconds, the chunk is overlaped with the previous one, so
+that the chunk ends at the end of the science segment. An option named
+\verb|trig-start-time| is set and passed to the inspiral code. No triggers are
+generated before this time and so no triggers are duplicated between chunks.
+For example, the first L1 science segment in the fake segment list in table
+\ref{t:fakesegslist} starts at GPS time 730000000 and ends at GPS time
+730010000. It is divided into the following master chunks:
+\begin{verbatim}
+<AnalysisChunk: start 730000000, end 730002048>
+<AnalysisChunk: start 730001920, end 730003968> 
+<AnalysisChunk: start 730003840, end 730005888> 
+<AnalysisChunk: start 730005760, end 730007808> 
+<AnalysisChunk: start 730007680, end 730009728> 
+<AnalysisChunk: start 730007952, end 730010000, trig_start 730009664>
+\end{verbatim}
+Although the script generates all the master chunks for a given
+interferometer, not all of them will be filtered. Only those that overlap with
+double or triple coincident data are used for analysis.  The master analysis
+chunks are constructed for L1, H1 and H2 separately by reading in the three
+science segment files. The full list of master chunks for the fake segments is
+written to a log file.
+
+The pipeline script next computes the disjoint regions of double and triple
+coincident data to be searched for triggers. 64 seconds is subtracted from the
+start and end of each science segment (since this data is not searched for
+triggers) and the script performs the correct intersection and unions of the
+science segments from each interferometer to generate the following segments
+containing the times of science mode data to search:
+\begin{verbatim}
+Writing 2 L1/H1 double coincident segments 
+<ScienceSegment: start 730007936, end 730009936, dur 2000>
+<ScienceSegment: start 731001064, end 731002436, dur 1372>
+total time 3372 seconds 
+
+Writing 2 L1/H2 double coincident segments 
+<ScienceSegment: start 730002564, end 730004064, dur 1500>
+<ScienceSegment: start 731004564, end 731005936, dur 1372>
+total time 2872 seconds 
+ 
+Writing 2 L1/H1/H2 triple coincident segments 
+<ScienceSegment: start 730004064, end 730007936, dur 3872>
+<ScienceSegment: start 732000064, end 732002936, dur 2872>
+total time 6744 seconds
+\end{verbatim}
+The GPS start and end times are given for each segment to be searched for
+triggers.  The script uses this list of science data to decide which master
+analysis chunks need to be filtered. All L1 master chunks that overlap with H1
+or H2 science data to be searched are filtered. An L1 template bank is
+generated for each master chunk and the L1 data is filtered using this bank.
+This produces two intermediate data products for each master chunk, which are
+stored as XML data. The intermediate data products are the template bank file,
+\verb|L1-TMPLTBANK-730000000-2048.xml|, and the inspiral trigger file,
+\verb|L1-INSPIRAL-730000000-2048.xml|. The GPS time in the filename
+corresponds to the start time of the master chunk filtered and the nunber
+before the \verb|.xml| file extension is the length of the master chunk.
+
+All H2 master chunks that overlap with the L1/H2 double coincident data to
+filter are then analyzed. For each H2 master chunk, a triggered template bank
+is generated from L1 triggers between the start and end time of the H2 master
+chunk. The triggered bank file generated is called
+\verb|H2-TRIGBANK_L1-730002500-2048.xml|, where the GPS time corresponds to
+start time of the master H2 chunk to filter. All L1 master chunks that overlap
+with the H2 master chunk are used as input to the triggered bank generation to
+ensure that all necessary templates are filtered.  The H2 master chunks are
+filted using the triggered template bank for that master chunk to produce H2
+triggers in files named \verb|H2-INSPIRAL_L1-730002500-2048.xml|. The GPS
+start time in the file name is the start time of the H2 master chunk.
+
+All H1 master chunks that overlap with either the L1/H1 double coincident data
+or the L1/H1/H2 triple coincident data are filtered. The bank and trigger
+generation is similar to the L1/H2 double coincident case. The triggered
+template bank is stored in a file names
+\verb|H1-TRIGBANK_L1-730004000-2048.xml| and the triggers in a file named
+\verb|H1-INSPIRAL_L1-730004000-2048.xml| where the GPS time in the file name
+is the GPS start time of the H1 master chunk. The H2 master chunks that
+overlap with the L1/H1/H2 triple coincident data are decribed below.
+
+For each L1/H1 double coincident segments to search, an inca process is run to
+perform the coincdence test. The input to inca is all L1 and H1 master chunks
+that overlap the segment to search. The GPS start and stop times passed to
+inca are the start and stop times of the double coincident segment to search.
+The output is a file names \verb|H1-INCA_L1H1-730007936-2000.xml|. The GPS
+start time in the file name is the start time of the double coincident
+segment.  A similar procedure is followed for each L1/H2 double coincident
+segment to search. The output files from inca are names
+\verb|H2-INCA_L1H2-731004564-1372.xml|, and so on.
+
+For each L1/H1/H2 triple coincident segment, an inca process is run to create
+the L1/H1 coincident triggers for this segment. The input files are all L1 and
+H1 master chunks that overlap with the segmnent. The start and end times to
+inca are the start and end times of the segment. This creates a file named
+\begin{verbatim}
+\verb|H1-INCA_L1H1T-730004064-3872.xml
+\end{verbatim}
+where the GPS start time and duration in the file name are those of the triple
+coincident segment to search.  For coincidence between L1 and an LHO
+interferometer, we only check for time, $dt$, and mass, $dm$, coincidence.
+The parameter $\kappa$ in the effective distance cut is set to $1000$, so the
+amplitude cut is disabled.
+
+For each H2 master chunk that overlaps with triple coincident data, a triggerd
+template bank is generated. The input file to the triggered bank generation is
+the inca file for the segment to filter that contains the master chunk. The
+start and end times of the triggered bank generation are the start and end
+times of the master chunk. This creates a file called
+\verb|H2-TRIGBANK_L1H1-730004420-2048.xml|.  The H2 master chunk is filtered
+through the inspiral code to produce a trigger file
+\verb|H2-INSPIRAL_L1H1-730004420-2048.xml|.
+ 
+For each triple coincident segment to filter, and inca is run between the H1
+triggers from the L1H1T inca and the H2 triggers produced by the inspiral
+code. The input files are the H1 inca file \verb|H1-INCA_L1H1T-730004064-3872.xml|
+and all H2 master chunk inspiral files that overlap with this interval. The
+coincidence is performed as follows:
+\begin{enumerate}
+\item For each H1 trigger compute the effective distance of the trigger minus
+kappa times the effective distance (this is the lower bound on the error
+allowed in effective distance).
+
+\item Compute the maximum range of H2 for the trigger mass.
+
+\item If the lower bound on the H1 trigger is futher away than can be seen in
+H2, keep the trigger.
+
+\item If the lower bound on the effective distance of the H1 trigger is less
+than the range of H2, but the upper bound is greater, keep the trigger in H1.
+If a H2 trigger is found within the interval, store it as well.
+
+\item If upper bound on the distance of the H1 trigger is less than the range
+of H2, check for coincidence. A coincidence check is performed in dt, dm,
+epsilon and kappa. If there is no coincident trigger discard the H1 trigger.
+\end{enumerate}
+This coincidence step creates two files
+\begin{verbatim}
+H1-INCA_L1H1H2-730004064-3872.xml
+H2-INCA_L1H1H2-730004064-3872.xml
+\end{verbatim}
+where the GPS start time and duration of the files are the start and duration
+of the triple coincident segment.  The L1/H1 coincidence step is then executed
+again to discard any L1 triggers coincident with a H1 triggered that has been
+discared by H2. The input to the inca are the files
+\begin{verbatim}
+L1-INCA_L1H1T-730004064-3872.xml
+H1-INCA_L1H1H2-730004064-3872.xml
+\end{verbatim}
+and the output is the files
+\begin{verbatim}
+L1-INCA_L1H1H2-730004064-3872.xml
+H1-INCA_L1H1H2-730004064-3872.xml.
+\end{verbatim}
+The H1 input file is overwritten as it is identical to the H1 output file.
+Finally, we obtain the data products of the search which contain the candidate
+trigger found by the S2 pipeline in these fake segments. The for the fake
+segments described here, the final output files will be:
+
+\subsubsection*{Double Coincident L1/H1 Data}
+\begin{verbatim}
+L1-INCA_L1H1-730007936-2000.xml L1-INCA_L1H1-731001064-1372.xml 
+H1-INCA_L1H1-730007936-2000.xml H1-INCA_L1H1-731001064-1372.xml
+\end{verbatim}
+
+\subsubsection*{Double Coincident L1/H2 Data}
+\begin{verbatim}
+L1-INCA_L1H2-730002564-1500.xml L1-INCA_L1H2-731004564-1372.xml 
+H2-INCA_L1H2-730002564-1500.xml H2-INCA_L1H2-731004564-1372.xml
+\end{verbatim}
+
+\subsubsection*{Triple Coincident L1/H1/H2 Data}
+\begin{verbatim}
+L1-INCA_L1H1H2-730004064-3872.xml L1-INCA_L1H1H2-732000064-2872.xml 
+H1-INCA_L1H1H2-730004064-3872.xml H1-INCA_L1H1H2-732000064-2872.xml 
+H2-INCA_L1H1H2-730004064-3872.xml H2-INCA_L1H1H2-732000064-2872.xml
+\end{verbatim}
+
+As the size of the input science segment files increase, so the number of
+nodes and vertices in the DAG increases, however the algorithm for generating
+the DAG remains the same.
 
 %%% chapter figures %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[p]
@@ -845,6 +1146,26 @@ triggers by the search pipeline. The gray area in the last chunk of the
 science segment is not searched for triggers as this time is covered by the
 preceding chunk, however this data is used in the PSD estimate for the final
 chunk.
+}
+\end{figure}
+
+\begin{figure}[p]
+\begin{tabular}{c}
+\includegraphics[width=\linewidth]{figures/pipeline/bns_bank}\\
+\includegraphics[width=\linewidth]{figures/pipeline/macho_bank}
+\end{tabular}
+\caption{\label{f:s2_banks}%
+The top panel shows a template bank required to cover the binary neutron start
+parameter space from $1$ to $3$ $M_\odot$ at a minimal match of $97\%$.  The
+bottom panel shows a template bank required to cover the binary black hole
+MACHO parameter space from $0.2$ to $1$ $M_\odot$. Both template banks are
+used the average power spectral density from a typical S2 analysis chunk at
+GPS time 734256712. The BNS bank contains $656$ templates and the BBHMACHO
+bank contains $11\,941$. The large number of templates in the BBHMACHO bank is
+due to the lager number of cycles of the MACHO templates in the sensitive band
+of the interferometer. The placement of templates outside the mass parameter
+space is required to ensure that any signal that lies in the space has a
+minimal match $> 0.97$ for BNS inspirals and $> 0.95$ for BBHMACHO inspirals.
 }
 \end{figure}
 
@@ -1012,4 +1333,19 @@ interferometer was operating in coincidence with only the H2 interferometer.
 The outputs of the search pipeline are triggers that belong to one of the
 two double coincident data sets or to the triple coincident data set.}
 \end{figure}
+
+\begin{sidewaysfigure}[p]
+\begin{center}
+\hspace*{-0.2in}\includegraphics[width=\linewidth]{figures/pipeline/fake_segs_dag}
+\end{center}
+\caption{\label{f:fake_segs_dag}%
+The DAG generated from the pipeline shown in figure ref{f:pipeline} and the
+fake science segment list described in section \ref{ss:dag}. The figure shows
+the structure of the DAG with all job dependencies needed to execute the S2
+pipeline. Note that it appears that there are several LHO master chunks
+analyzed that do not need to be filtered for a zero time lag.  These are added
+to the DAG to ensure that all the data necessary for a background estimation
+with a maximum time side of 500 seconds is analyzed.
+}
+\end{sidewaysfigure}
 
