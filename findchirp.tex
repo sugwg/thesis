@@ -427,7 +427,7 @@ The value of the inner product $(s|h_c)$ for a waveform that ends at time $t_e$ 
 therefore
 \begin{equation}
 (s|h_c(t_e)) = 2 \int_{-\infty}^\infty\,df e^{2\pi ift_e}
-\frac{\tilde{s}(f)\tilde{h}^\ast(f)}{S_n(|f|)}
+\frac{\tilde{s}(f)\tilde{h}_c^\ast(f)}{S_n(|f|)}
 \label{eq:ipift}
 \end{equation}
 and the signal-to-noise ratio for a chirp that ends at time $t$ is
@@ -894,12 +894,24 @@ of (\ref{eq:zdef}) is
 Further details of the computation of $S_v(|f_k|)$ are given in sections
 \ref{ss:psd} and \ref{ss:invspec}.
 
-Typical values of the variance of $v(t)$ for initial LIGO data are $10^3$,
-however the response function $R(f)$ has magnitude $\sim 10^{-22}$ in the
-sensitive band of the instrument. Although we only need floating point (4
-byte) precision to store the calibrated interferometer data $\tilde{s}(f)$
-and the power spectral density $S_n(|f|)$ the calibrated time domain data may
-overflow the dynamic range of floating point variables. Therefore when we
+%Typical values of the variance of $v(t)$ for initial LIGO data are $10^3$,
+%however the response function $R(f)$ has magnitude $\sim 10^{-22}$ in the
+%sensitive band of the instrument. Although we only need floating point (4
+%byte) precision to store the calibrated interferometer data $\tilde{s}(f)$
+%and the power spectral density $S_n(|f|)$ the calibrated time domain data may
+%overflow the dynamic range of floating point variables. Therefore when we
+%implement the digital filter, we multiply the response function $R(f)$ by a
+%scaling variable $d$ which typically has values of $d = 2^{69}$ for initial
+%LIGO data. This scales all frequency domain quantities to have approximately
+%order unity. 
+Typical values of the variance of $v(t)$ for initial LIGO data are $10^3$;
+however, the response function $R(f)$ has magnitude $\sim 10^{-22}$ at the most
+sensitive frequencies of the instrument.  This means that $\ospsd \sim
+10^{-44}$ which is beyond the range of 4-byte floating point
+numbers\footnote{The smallest non-zero value that can be stored in an IEEE~754
+floating point number is $1.17549435\times 10^{-38}$.}. We may store such
+values as 8-byte floating point numbers, but this is wasteful of memory since
+the extra precison of an 8-byte number is not needed. Therefore when we
 implement the digital filter, we multiply the response function $R(f)$ by a
 scaling variable $d$ which typically has values of $d = 2^{69}$ for initial
 LIGO data. This scales all frequency domain quantities to have approximately
