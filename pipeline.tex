@@ -173,7 +173,7 @@ background rate, we can measure the false alarm rate of the pipeline which can
 be used for both tuning and the computation of the upper limit or detection
 confidence.
 
-\begin{figure}[htb]
+\begin{figure}[thb]
 \label{f:simple_pipe}
 \begin{center}
 \includegraphics[width=\linewidth]{figures/pipeline/simple_pipe}
@@ -203,17 +203,125 @@ rates.
 \section{Data Quality Cuts}
 \label{s:dq}
 
-The inspiral search algorithm is optimized for data with a known,
-calibrated noise spectrum which are stationary over the time scale of
-the data chunks analyzed ($2048$~s, described in
-Section~\ref{ss:analysispipeline}), requiring stable,
-well-characterized interferometer performance.  In practice, the
-performance is influenced by optical alignment, servo control
-settings, and environmental conditions.  We used two strategies to
-avoid problematic data.  One was to evaluate {\it data quality} over
-relatively long time intervals, using several different tests; time
-intervals identified as being suspect or demonstrably bad were skipped
-when filtering the data.
+The inspiral search algorithm is optimized for data with a known, calibrated
+noise spectrum which are stationary over the time scale of the data analyzed,
+requiring stable, well-characterized interferometer performance.  In practice,
+the performance is influenced by optical alignment, servo control settings,
+and environmental conditions. Unstable interferometer data can produce false
+triggers that may survive the $\chi^2$ test and coincidence. We wish to
+eliminate these from our candidate events either by vetoing the triggers or
+discarding the unstable data before analysis. Data quality cuts evaluate the
+interferometer data over relatively long time intervals, using several
+different tests, or look for specific behaviour in the interferometer.
+We then evaluate the performance of the inspiral code on data flagged as
+suspect and can decide to exclude these times from the data analyzed. We
+illustrate two examples of data quality cuts and then list the final cuts
+chosen in the BNS and BBHMACHO pipelines.
+
+Figure \ref{f:s1loudest} shows the signal-to-noise ratio and $\chi^2$ time
+series of the loudest candidate event that was produced by the LIGO S1
+inspiral search. Also shown is the filter output for an inspiral waveform with
+similar parameters that is injected into the data in software. Notice that the
+time series $\rho(t)$, $\chi^2(t)$ and the raw data are very noisy around the
+time of the S1 loudest candidate. In contrast, the time series for the
+simulated signal is very clean. On further investigation, we determined that
+at the time of the S1 loudest event, the photodiode that records the light at
+the anti-symmertic port has saturated. The system that converts the light into
+an electronic signal for the length sensing an control servo had exceeded it's
+dynamic range causing a noise transient in the data. As well as the saturation
+itself being problematic, it was determined that it was a symptom of poor
+interferometer performance; large bursts of noise in the gravity wave channel
+cause photodide saturations. A test was developed to monitor the gravity wave
+channel for photodiode saturations; this test has become a data quality cut
+for current and future searches.
+
+\begin{figure}[thb]
+\begin{center}
+\begin{tabular}{cc}
+\includegraphics[width=0.45\linewidth]{figures/pipeline/loudest-snrplot} &
+\includegraphics[width=0.45\linewidth]{figures/pipeline/injection-snrplot}\\
+\includegraphics[width=0.45\linewidth]{figures/pipeline/loudest-ts} &
+\includegraphics[width=0.45\linewidth]{figures/pipeline/injection-ts}
+\end{tabular}
+\end{center}
+\caption{\label{f:snrplot}
+Left Panels: The largest SNR candidate event seen during the search of the
+LIGO S1 data. The top panel shows the signal-to-noise time series,
+$\rho(t)$.  Notice that $\rho(t) > 6.5$ many times in a  $\sim 5$ second
+interval around the candidate event.   The center panel shows $\chi^2/ (p+
+0.03 \rho^2)$ as a function of time;  notice $\chi^2 / (p+ 0.03 \rho^2) > 5$
+for $\sim 5$ seconds around the candidate event,  but drops below this
+threshold right at the time of maximum $\rho$.  The inset shows this more
+clearly for $\pm 0.1$ second around the event where the threshold is indicated
+by a dot-dashed horizontal line.  The bottom panel shows the time series for
+this candidate event after applying a high-pass filter with a knee frequency
+of 200~Hz.  Notice the bursting behavior which does not look like an inspiral
+chirp signal.  \break
+Right Panels: A simulated injection into the L1 data.  This example was chosen
+for comparison with the largest SNR event shown in the left panels since it
+similar in mass parameters, detected signal to noise and $\chi^2$.   The
+instrument was behaving well at the time around the simulated injection.  The
+top panel shows that $\rho(t) < 6.5$ except in close proximity to the signal
+detection time.   The center panel shows $\chi^2/ (p+ 0.03 \rho^2)$ as a
+function of time.  Notice that it is much closer to threshold at all times
+around the simulated injection; this contrasts dramatically with the case of
+the candidate event shown in the left panels.   The inset shows this more
+clearly for $\pm 0.1$ seconds around the injection.  The bottom panel shows
+the time series for this simulated injection after applying a high-pass filter
+with a knee frequency of 200~Hz.  The inspiral chirp signal is not visible in
+the noisy detector output.}
+\end{figure}
+
+A second, more straightforward, example of a data quality cut is the presence
+of calibration lines; sinusoidal signals injected into the data. These are
+used to track the response of the instrument to a gravitational wave, which
+varies over time. Without the calibration lines present, it is not possible to
+construct a satisfactory response function. Since the inspiral search needs
+correctly calibrated data, a simple data quality cut checks for the presence of
+the calibration lines in the data. If they are absent the data is discarded.
+
+The full list of avaliable data quality cuts and their meanings for S2 are
+show in table \ref{t:dqflags}.
+
+\begin{table}
+\begin{center}
+\begin{tabular}{ll}
+Data Quality Cut Name & Description \\\hline
+OUTSIDE\_S2   &Data is outside of official S2 time interval \\
+MISSING\_RAW  &Raw data is missing \\
+MICH\_FILT    &One or more Michelson control loop \\
+&filters was not in its nominal state \\
+AS\_PD\_SATURATION & Antisymmetric port photodiode saturated \\
+ASQ\_LARGEP2P      & Large peak-to-peak range seen in AS\_Q \\
+&at end of lock \\
+DAQ\_DROPOUT       & Dropout in data acquisition system \\
+NONSTAND\_CTRLS    & Non-standard controls affecting calibration\\
+&and couplings \\
+MISSING\_RDS       & Data is unavailable for analysis \\
+INVALID\_TIMING    & Timing believed to be unreliable \\
+INVALID\_CALIB\_LINE  & Problem with calibration line strength \\
+CALIB\_LINE\_NO\_RDS\_V03 & Problem with accessing data for calibration \\
+ASQ\_OUTLIER\_CLUSTER     & Cluster of large AS\_Q outliers \\
+&in short time interval \\
+ASQ\_OUTLIER\_CORRELATED  & Large ASQ outlier correlated with \\
+&outlier in auxiliary IFO channel \\
+ASQ\_LOWBAND\_OUTLIER     & High noise below 100 Hz in AS\_Q \\
+ASQ\_UPPERBAND\_OUTLIER   & High noise in 100-7000 Hz in AS\_Q \\
+DAQ\_REBOOT               & One or more data aquisition system rebooted \\
+NO\_CALIB                 & Calibration line turned off \\
+LOW\_CALIB                & Calibration line strength too low
+\end{tabular}
+\end{center}
+\caption{\label{t:dqflags}%
+Data quality cuts available during the S2 science run and their meanings. 
+Some data quality flags monitor human error in the operation of the
+instrument that make the data unsuitable for analysis, such as NO\_CALIB and
+NONSTAND\_CTRLS. Others cuts identify hardware or software failures in the
+operation of the instrument, for example MISSING\_RAW and DAQ\_REBOOT.
+Additional cuts like AS\_PD\_SATURATION and ASQ\_UPPERBAND\_OUTLIER monitor
+the gravitational wave channel, AS\_Q, for unusable data.
+}
+\end{table}
 
 Further studies of the raw data yield a series of data quality cuts
 that are used to exclude anomalous data from the inspiral
