@@ -78,10 +78,7 @@ mean that one of them must occur. Now suppose $B$ is an event that
 can occur only if one of the $A_k$ occurs. Then the probability that $B$
 occurs is given by
 \begin{equation}
-\begin{split}
-P(B) &= P(A_1)P(B|A_1) + P(A_2)P(B|A_2) + \cdots + P(A_K)P(B|A_K) \\
-     &= \sum_{k=1}^K P(A_k)P(B|A_k).
-\end{split}
+P(B) = \sum_{k=1}^K P(A_k)P(B|A_k).
 \label{eq:totalprob}
 \end{equation}
 Equation (\ref{eq:totalprob}) is called the \emph{total probability formula}.
@@ -91,7 +88,7 @@ be obtained by substituting equation (\ref{eq:totalprob}) into equation
 (\ref{eq:protobayes}) to get
 \begin{equation}
 P(A_k|B) = \frac{P(A_k)P(B|A_k)}{P(B)} 
-= \frac{P(A_k)P(B|A_k)}{\sum_{k=1}^K P(A_k)P(B|A_k)}.
+= \frac{P(A_k)P(B|A_k)}{\sum_{j=1}^K P(A_j)P(B|A_j)}.
 \label{eq:bayeslaw}
 \end{equation}
 Equation (\ref{eq:bayeslaw}) is \emph{Bayes' theorem}. The probability
@@ -142,7 +139,7 @@ P(h|s) = \frac{\Lambda}{\Lambda + [P(0)/P(h)]}.
 \end{equation}
 Similarly, we find that the probability that the signal is absent is given by
 \begin{equation}
-P(0|s) = \frac{P(0)/P(h)}{\Lambda + [P(0)/P(h)]}.
+P(0|s) = 1 - P(h|s) = \frac{P(0)/P(h)}{\Lambda + [P(0)/P(h)]}.
 \label{eq:pofnothgivens}
 \end{equation}
 Using equations (\ref{eq:pofhgivens4}) and (\ref{eq:pofnothgivens}), we find
@@ -158,10 +155,10 @@ signal is present.  Conversely, if $P(h|s)$ is small (close to zero) then we
 may conclude that the signal is absent.  Therefore we may set a threshold
 $P_\ast$ on this posterior probability as our decision rule is
 \begin{alignat}{2}
-P(h|s) &\ge P_* &\quad&\text{the signal is present}, \\
-P(h|s) &< P_* &&\text{the signal is not present}.
+P(h|s) &\ge P_* &\quad&\text{decide the signal is present}, \label{eq:ney1} \\
+P(h|s) &< P_* &&\text{decide the signal is not present}.\label{eq:ney2} 
 \end{alignat}
-Given this decision rule there are two important outcomes.  If $P(h|s)
+Given this decision rule there are two erroneous outcomes.  If $P(h|s)
 \ge P_*$ and the signal is not present, we call this a \emph{false alarm}; our
 decision that the signal is present was incorrect. Conversely, if
 $P(h|s) < P_*$ and the signal is present, we have made a \emph{false
@@ -171,7 +168,7 @@ F  &&&\text{probability that we have a false alarm} \\
 F' &= 1 - D &&\text{probability that we have a false dismissal},
 \end{align}
 where $D$ is the probability of a correct detection.
-To construct the posterior probability, $P(h|s)$, and hence $P_\ast$, we need
+To construct the posterior probability, $P(h|s)$ we need
 the unknown \emph{a priori} probabilities, $P(h)$ and $P(0)$. We see from
 equation (\ref{eq:pofhgivens4}), however, that $P(h|s)$ is a monotonically
 increasing function of the likelihood. The ratio of the \emph{a priori}
@@ -179,7 +176,8 @@ probabilities, $P(h)/P(0)$, is a constant that does not involve the result of
 our experiment. Therefore we can define the output of our optimum receiver to be
 the device which, given the input data $s(t)$, returns the likelihood ratio
 $\Lambda$.  For the receiver to be optimal in the Neyman-Pearson sense the
-detection probability should be maximized for $F$.  
+detection probability should be maximized for a given false alarm rate, $F$.
+Rule (\ref{eq:ney1})--(\ref{eq:ney2}) is optimal in the Neyman-Pearson sense.
 
 We now consider the construction of $\Lambda$ for the interferometer data
 $s(t)$ and the gravitational wave signal $h(t)$. Assume that the noise
@@ -232,10 +230,11 @@ becomes
 &= \frac{\exp\left[-\frac{1}{2} (s-h|s-h)\right]}{\exp\left[-\frac{1}{2} (s|s)\right]} \\
 &= \exp\left\{-\frac{1}{2}\left[(s|s) - 2(s|h) - (h|h)\right] + \frac{1}{2}(s|s)\right\} \\
 &= \exp\left[(s|h) - \frac{1}{2}(h|h)\right]
+\label{eq:like1}
 \end{split}
 \end{equation}
 where $(s|h)$ depends on the detector output and $(h|h)$ is constant for a
-particular $S_n(|f|)$. Since the likelihood ratio is a monotonically
+particular $S_n(|f|)$ and $h$. Since the likelihood ratio is a monotonically
 increasing function of $(s|h)$ we can threshold on $(s|h)$ instead of the
 posterior probabilities. Our optimal receiver is involves the construction of
 $(s|h)$ followed by a test
@@ -293,14 +292,12 @@ a signal is
 where we have used the definition of the one sided power spectral density from
 equation (\ref{eq:ospsddef}).  In the presence of signal and noise, then the
 mean of $(s|h)$ is
-% FIXME check this
 \begin{equation}
 \left\langle (n+h|h) \right\rangle = (\langle n \rangle + h|h) = (h|h).
 \end{equation}
-We can also show that the variance of $(s|h)$ in the presence of signal is
+We can also show that the variance of $(s|h)$ in the presence of a signal is
 \begin{equation}
-\left\langle (s|h)^2 \right\rangle 
-= \left\langle \left[ (s|h) - (h|h) \right]^2 \right\rangle
+\left\langle \left[ (s|h) - (h|h) \right]^2 \right\rangle
 = \left\langle \left[ (n|h) \right]^2 \right\rangle
 = (h|h).
 \end{equation}
@@ -313,7 +310,7 @@ receiver, $(s|h)$, and we denote it by
 
 Now suppose that the signal we wish to recover has an unknown amplitude,
 $\mathcal{A}$. The above discussion holds with $h(t) \rightarrow
-\mathcal{A}h(t)$ and the likelihood ratio becomes
+\mathcal{A}h(t)$ and, from equation (\ref{eq:like1}), the likelihood ratio becomes
 \begin{equation}
 \Lambda = \exp\left[\mathcal{A}(s|h) - \frac{1}{2}\mathcal{A}^2(h|h)\right]
 \end{equation}
@@ -324,7 +321,7 @@ gravitational wave inspiral signal of the form given in equation
 $\theta$
 \begin{equation}
 \Lambda'(\theta) = 
-p(\theta) \exp\left\{D^{-1}(s|A(t)\cos\left[\phi(t) - \theta\right] -
+p(\theta) \exp\left\{D^{-1}(s|A(t)\cos\left[\phi(t) - \theta\right]) -
 \frac{1}{2}D^{-2}(h|h)\right\}.
 \end{equation}
 Now consider the first inner product in the above exponential. Using
@@ -355,15 +352,17 @@ p(\theta) = \frac{1}{2\pi},
 and integrate $\Lambda'$ over the angle $\theta$ to obtain
 \begin{equation}
 \begin{split}
-\Lambda &= \int_0^{2\pi} \Lambda'(\theta) 
+\Lambda &= \int_0^{2\pi} \Lambda'(\theta) \,d\theta
 = \frac{1}{2\pi}\int_0^{2\pi}\exp\left[D^{-1}|z|\cos(\Phi - \theta) -
 \frac{D^{-2}}{2}(h|h)\right] \,d\theta \\
 &= I_0(D^{-1}|z|) e^{-D^{-2}\frac{1}{2}(h|h)}
 \end{split}
 \end{equation}
-where $I_0$ is a modified Bessel function of the first kind. Once again, we
-note that the function $I_0(D^{-1}|z|)$ is a monotonically increasing function
-of $|z|$ and so we can threshold on $|z|$ instead of $\Lambda$. 
+where $I_0$ is the modified Bessel function of the first kind of order zero.
+Once again, we note that the function $I_0(D^{-1}|z|)$ is a monotonically
+increasing function of $|z|$ and so we can threshold on $|z|$ instead of
+$\Lambda$. Note that $s$ appears in the expression for the likelihood through
+$|z|$ only.
 
 %To compute the optimal receiver for a binary inspiral signal, we compute the
 %two inner products $x = (s|A(t)\cos\phi(t))$ and $y = (s|A(t)\sin\phi(t))$. We
@@ -385,10 +384,11 @@ and so for inspiral waveforms we can compute $|z|$ by
 z = \sqrt{(s|h_c)^2 + (s|h_s)^2}.
 \end{equation}
 The threshold on $|z|$ would be determined to achieve a given false alarm
-probability. We note that $|z|^2$ is the sum of squares of two Gaussian random
-variables of zero means and variance $\sigma^2 = (h_c|h_c) = (h_s|h_s)$. It is
-therefore convenient to work with a normalized signal-to-noise ratio
-defined by
+probability. We note that in the absence of signal $|z|^2$ is the sum of
+squares of two independent Gaussian random variables of zero means and
+variance $\sigma^2 = (h_c|h_c) = (h_s|h_s)$. $x$ and $y$ are independent
+random variables since $(h_c|h_s) = 0$. It is therefore convenient to work
+with a normalized signal-to-noise ratio defined by
 \begin{equation}
 \rho^2 = \frac{|z|^2}{\sigma^2}
 \label{eq:snrrootdef}
@@ -439,16 +439,17 @@ Fourier transforms of the form in equation (\ref{eq:ipift}).
 
 Now the statistic $\rho(t)$ derived from the likelihood is a function of a
 time parameter. For Neyman-Pearson optimal detection, we would integrate over
-all possible arrival times and threshold on this value. As well as making a
-statement about the presence or absence of a signal in the data we also want
-to measure the time that the signal occurs. To do this, we use the method of
-\emph{maximum likelihood}\cite{helstrom:1995}.  The maximum likelihood
-estimator states that the most probable value for the location of the signal
-is the time at which the likelihood ratio is maximized.  So to find a single
-inspiral signal in a segment of interferometer data, we search for the maximum
-of $\rho(t)$. If $\max_t\left[\rho(t)\right] > \rho_\ast$ then we decide that
-we have detected a signal at the time of the maximum. When there is more than
-one inspiral in the data segment the maximization is not over all times.
+all possible arrival times and threshold on this value. However, as well as
+making a statement about the presence or absence of a signal in the data we
+also want to measure the time that the signal occurs. To do this, we use the
+method of \emph{maximum likelihood}\cite{helstrom:1995}.  The maximum
+likelihood estimator states that the most probable value for the location of
+the signal is the time at which the likelihood ratio is maximized.  So to find
+a single inspiral signal in a segment of interferometer data, we search for
+the maximum of $\rho(t)$. If $\max_t\left[\rho(t)\right] > \rho_\ast$ then we
+decide that we have detected a signal at the time of the maximum. When there
+is more than one inspiral in the data segment the maximization is not over all
+times.
 
 We have now completely specified the solution to the problem of finding a
 waveform of unknown amplitude and phase at an unknown time in the data;
@@ -494,26 +495,28 @@ frequency range $-f_\mathrm{Ny} \le f \le f_\mathrm{Ny}$, where
 \begin{equation}
 f_\mathrm{Ny} = \frac{1}{2\Delta t}
 \end{equation}
-is the \emph{Nyquist critical frequency}. Any signals of frequency higher than
-$f_\mathrm{Ny}$ in the interferometer output are removed using analog low-pass
-filters before the signal is digitized. Therefore $v(t_j)$ completely
-determines the signal $v(t)$ in the band of interest. We may approximate the
-Fourier transform of this band limited signal $v(t_j)$ by
+is the \emph{Nyquist critical frequency}. Any power in $v(t)$ at frequencies
+above $f_\mathrm{Ny}$ will be aliased into the rangle $-f_\mathrm{Ny} \le f
+\le f_\mathrm{Ny}$, corrupting the signal. To prevent this, signals of
+frequency higher than $f_\mathrm{Ny}$ in the interferometer output are removed
+using analog low-pass filters before the signal is digitized. Therefore
+$v(t_j)$ completely determines the signal $v(t)$ in the band of interest. We
+may approximate the Fourier transform of this band limited signal $v(t_j)$ by
 \begin{equation}
-\tilde{v}(f_k) \approx \sum_{j=0}^{N-1} \Delta t\, v(t_j) e^{-2 \pi i f_k t_j}
+\tilde{v}(f_k) \rightsquigarrow \sum_{j=0}^{N-1} \Delta t\, v(t_j) e^{-2 \pi i f_k t_j}
 = \Delta t \sum_{j=0}^{N-1} v_j e^{-2 \pi i j k / N},
 \label{eq:fftapprox}
 \end{equation}
-where $-(N/2 + 1) \le k \le N/2$.
-Notice that the approximation to the Fourier transform is periodic in $k$ with
-period $N$ and so 
+where $-(N/2 + 1) \le k \le N/2$ and the symbol $\rightsquigarrow$ means
+equal to under discretization.  Notice that the approximation to the
+Fourier transform is periodic in $k$ with period $N$ and so 
 \begin{equation}
-\tilde{v}_{-k} = \tilde{v}_{N-k}\quad k = 0, \ldots, N.
+\tilde{v}_{-k} = \tilde{v}_{N-k}\quad k = 1, \ldots, N - 1.
 \end{equation}
 Thus we let $k$ vary from $0$ to $N-1$ where zero frequency (DC) corresponds
 to $k=0$, positive frequencies $0 < f < f_\mathrm{Ny}$ to values in the range
-$0 < k < N/2-1$ and negative frequencies $-f_\mathrm{Ny} < f < 0$ correspond
-to values in the range $N/2+1 < k < N-1$. The value $k = N/2$ approximates the
+$0 < k < N/2$ and negative frequencies $-f_\mathrm{Ny} < f < 0$ correspond
+to values in the range $N/2 < k < N$. The value $k = N/2$ approximates the
 value of the Fourier transform at both $-f_\mathrm{Ny}$ and $f_\mathrm{Ny}$;
 both these values are equal due to the periodicity of the discrete transform 
 defined by\cite{Anderson:2001a}
@@ -557,9 +560,10 @@ $\tilde{n}_k = \tilde{n}(f_k)$, we obtain
 \frac{N}{2\Delta t}\ospsd\delta_{kk'}
 \label{eq:ospsddisc}
 \end{equation}
-where $\delta_{kk'}$ is the dimensionless $\delta$-function defined by
+where $\delta_{kk'}$ is the dimensionless Kronecker $\delta$-function,
+obtained by discretization of the continuous $\delta$-function:
 \begin{equation}
-\delta(f-f') \approx N\Delta t\delta_{kk'}
+\delta(f-f') \rightsquigarrow N\Delta t\delta_{kk'}
 \end{equation}
 Equation (\ref{eq:ospsddisc}) defines \ospsd in terms of the discrete
 frequency domain quantities.  The definition in equation (\ref{eq:ospsddisc}) is
@@ -567,15 +571,15 @@ equivalent to
 \begin{equation}
 \ospsd =
 \begin{cases}
-\frac{\Delta t}{N} | \tilde{n}_0 |^2 & k = 0, \\
-\frac{\Delta t}{N} | \tilde{n}_{N/2} |^2 & k = \frac{N}{2}, \\
-\frac{\Delta t}{N} \left[ | \tilde{n}_k |^2 + | \tilde{n}_{N-k} |^2 \right] & \text{otherwise}
+\frac{\Delta t}{N} \left\langle | \tilde{n}_0 |^2 \right\rangle & k = 0, \\
+\frac{\Delta t}{N} \left\langle| \tilde{n}_{N/2} |^2\right\rangle & k = \frac{N}{2}, \\
+\frac{\Delta t}{N} \left\langle \left( | \tilde{n}_k |^2 + | \tilde{n}_{N-k} |^2 \right)\right\rangle & \text{otherwise}
 \end{cases}
 \end{equation}
 where the normalization is chosen so that the power spectral
 density satisfies the discrete form of Parseval's theorem
 \begin{equation}
-\sum_{j=0}^{N-1} |v_j|^2 = \frac{1}{N} \sum_{k=0}^{N-1} |\tilde{v}_k|^2,
+\Delta t \sum_{j=0}^{N-1} |v_j|^2 = \sum_{k=0}^{N/2} S_v(f_k).
 \end{equation}
 Parseval's theorem states that the total power in a signal is independent of
 whether it is calculated in the time domain or the frequency domain.
@@ -585,16 +589,23 @@ compute it here. If the noise $n(t)$ is zero mean, white noise with variance
 $\varsigma^2$, then
 \begin{equation}
 \begin{split}
-\langle n^2(t) \rangle &= \varsigma^2 = \frac{1}{N} \sum_{j=0}^{N-1} |n_j|^2 \\
-&= \sum_{k=0}^{N-1} \frac{1}{2} \ospsd \Delta f \\
-&= 2N \frac{1}{2} \ospsd \frac{1}{N\Delta t} = \varsigma^2
+\left\langle \tilde{n}_k \tilde{n}_{k'}^\ast \right\rangle 
+&= \sum_{j=0}^{N-1} \sum{j'=0}^{N-1} e^{2\pi i \left(jk - j'k'\right) / N}
+\left\langle n_j n_{j'} \right\rangle \\
+&= \sum_{j=0}^{N-1} \sum{j'=0}^{N-1} e^{2\pi i \left(jk - j'k'\right) / N}
+\varsigma^2 \delta{jj'} \\
+&= \sum_{j=0}^{N-1} e^{2\pi i j \left(k - k'\right) / N} \varsigma^2 \\
+&= N \delta{kk'} \varsigma^2
 \end{split}
 \end{equation}
-and we have
+Substituting this into equation (\ref{eq:ospsddisc}), we obtain
 \begin{equation}
-\ospsd = 2\varsigma^2\Delta t 
+\frac{N}{2\Delta t}\ospsd\delta_{kk'} = N \delta{kk'} \varsigma^2
 \end{equation}
-for white Gaussian noise.
+and so the power spectrum of white Gaussian noise is a constant with value
+\begin{equation}
+\ospsd = 2\Delta t \varsigma^2.
+\end{equation}
 
 \section{Digital Matched Filtering}
 \label{s:matchedfilter}
@@ -641,7 +652,7 @@ approximation to the Fourier transform of the restricted post$^2$-Newtonian
 binary inspiral waveform to be
 \begin{align}
 \label{eq:spcos}
-\tilde{h}_c(f)&=\frac{2GM_\odot c}{(1\,\mathrm{Mpc})c^2}
+\tilde{h}_c(f)&=\frac{2GM_\odot}{(1\,\mathrm{Mpc})c^2}
 \left(\frac{5\mu}{96M_\odot}\right)^\frac{1}{2}
 \left(\frac{M}{\pi^2M_\odot}\right)^\frac{1}{3}
 f^{-\frac{7}{6}}\, \left( \frac{GM_\odot}{c^3} \right)^{-\frac{1}{6}}\,
@@ -670,7 +681,7 @@ where $x=(\pi M f G/c^3)^{1/3}$. The coalescence phase $\phi_0$ is the orbital
 phase, determined by the binary ephemeris, and the coalescence time $t_c$ is
 the time at which the bodies collide. The overall value coalescence phase
 $\phi_0$ is part of the unknown phase of the matched filter and we set
-$\phi_0=0$.  respectively.  We set the coalescence time $t_c = 0$, since it is
+$\phi_0=0$, respectively.  We set the coalescence time $t_c = 0$, since it is
 accounted for by the Fourier transform in equations (\ref{eq:xcts}) and
 (\ref{eq:ycts}).  The validity of the stationary phase approximation for
 inspiral templates is well established\cite{Droz:1999qx}.
@@ -739,18 +750,18 @@ Now we may write the cosine phase of the filter given in equation
 x_j &= 
 2\frac{\Delta t}{N}
 \left[
-  \sum_{k=N/2}^{N-1} e^{2\pi ijk/N} 
+  \sum_{k=N/2+1}^{N-1} e^{2\pi ijk/N} 
   \frac{\tilde{s}_k \tilde{h}_{ck}^\ast}{\ospsd}
   +
-  \sum_{k=0}^{N/2} e^{2\pi ijk/N} 
+  \sum_{k=1}^{N/2-1} e^{2\pi ijk/N} 
   \frac{\tilde{s}_k \tilde{h}_{ck}^\ast}{\ospsd}
 \right] \\
 &= 2\frac{\Delta t}{N}
 \left[
-  \sum_{k=0}^{N/2} e^{-2\pi ijk/N} 
+  \sum_{k=1}^{N/2-1} e^{-2\pi ijk/N} 
   \frac{\tilde{s}_k^\ast \tilde{h}_{ck}}{\ospsd}
   +
-  \sum_{k=0}^{N/2} e^{2\pi ijk/N} 
+  \sum_{k=1}^{N/2-1} e^{2\pi ijk/N} 
   \frac{\tilde{s}_k \tilde{h}_{ck}^\ast}{\ospsd}
 \right] \\
 &= 2\frac{\Delta t}{N}(Q_j^\ast + Q_j)
@@ -759,7 +770,7 @@ x_j &=
 where we have used the fact that $f_k = f_{N-k}$. $Q_j$ is defined to be
 \begin{equation}
 \label{eq:Qdef}
-Q_j = \sum_{k=0}^{N/2} e^{2\pi ijk/N} 
+Q_j = \sum_{k=1}^{N/2-1} e^{2\pi ijk/N} 
   \frac{\tilde{s}_k \tilde{h}_{ck}^\ast}{\ospsd}.
 \end{equation}
 The sine phase of the filter given in equation (\ref{eq:ydisc}) can similarly
@@ -770,19 +781,19 @@ be written as
 y_j &=
 2\frac{\Delta t}{N}
 \left[
-  \sum_{k=N/2}^{N-1} e^{2\pi ijk/N} 
+  \sum_{k=N/2+1}^{N-1} e^{2\pi ijk/N} 
   \frac{\tilde{s}_k \tilde{h}_{sk}^\ast}{\ospsd}
   +
-  \sum_{k=0}^{N/2} e^{2\pi ijk/N} 
+  \sum_{k=1}^{N/2-1} e^{2\pi ijk/N} 
   \frac{\tilde{s}_k \tilde{h}_{sk}^\ast}{\ospsd}
 \right] \\
 &= 
 2\frac{\Delta t}{N}
 \left[
-  \sum_{k=0}^{N/2} e^{-2\pi ijk/N} 
+  \sum_{k=1}^{N/2-1} e^{-2\pi ijk/N} 
   \frac{\tilde{s}_k^\ast \tilde{h}_{sk}}{\ospsd}
   +
-  \sum_{k=0}^{N/2} e^{2\pi ijk/N} 
+  \sum_{k=1}^{N/2-1} e^{2\pi ijk/N} 
   \frac{\tilde{s}_k \tilde{h}_{sk}^\ast}{\ospsd}
 \right].
 \end{split}
@@ -793,19 +804,19 @@ Using $\tilde{h}_s = i \tilde{h}_c$, equation (\ref{eq:yinter}) becomes
 y_j &= 
 2\frac{\Delta t}{N}
 \left[
-  \sum_{k=0}^{N/2} e^{-2\pi ijk/N} 
+  \sum_{k=1}^{N/2-1} e^{-2\pi ijk/N} 
   \frac{\tilde{s}_k^\ast i\tilde{h}_{ck}}{\ospsd}
   +
-  \sum_{k=0}^{N/2} e^{2\pi ijk/N} 
+  \sum_{k=1}^{N/2-1} e^{2\pi ijk/N} 
   \frac{\tilde{s}_k (-i)\tilde{h}_{ck}^\ast}{\ospsd}
 \right] \\
 & = 
 -2i\frac{\Delta t}{N}
 \left[
-  - \sum_{k=0}^{N/2} e^{-2\pi ijk/N} 
+  - \sum_{k=1}^{N/2-1} e^{-2\pi ijk/N} 
   \frac{\tilde{s}_k^\ast \tilde{h}_{ck}}{\ospsd}
   +
-  \sum_{k=0}^{N/2} e^{2\pi ijk/N} 
+  \sum_{k=1}^{N/2-1} e^{2\pi ijk/N} 
   \frac{\tilde{s}_k \tilde{h}_{ck}^\ast}{\ospsd}
 \right] \\
 & = 
@@ -814,14 +825,14 @@ y_j &=
 \end{equation}
 Thus the outputs of the filter for the two phases are
 \begin{align}
-x_j &= 4 \Re z_j, \\
-y_j &= 4 \Im z_j.
+x_j &= \Re z_j, \\
+y_j &= \Im z_j.
 \end{align}
 The quantity $z_j$ is defined to be
 \begin{equation}
 \begin{split}
 \label{eq:zdef}
-z_j &= \frac{\Delta t}{N}\sum_{k=0}^{N/2} e^{2\pi ijk/N} 
+z_j &= 4 \frac{\Delta t}{N}\sum_{k=1}^{N/2-1} e^{2\pi ijk/N} 
 \frac{\tilde{s}_k \tilde{h}_{ck}^\ast}{\ospsd}  \\
 &= \frac{\Delta t}{N}\sum_{k=0}^{N-1} e^{2\pi ijk/N} \tilde{z}_k
 \end{split}
@@ -831,7 +842,7 @@ where
 \label{eq:ztildedef}
 \tilde{z}_k = \left\{
 \begin{array}{ll}
-\frac{\tilde{s}_k \tilde{h}_{ck}^\ast}{\ospsd} 
+4 \frac{\tilde{s}_k \tilde{h}_{ck}^\ast}{\ospsd} 
   \quad\quad & 0 < k < \frac{N}{2},\\
 \\
 0 & \mathrm{otherwise}.
@@ -840,7 +851,7 @@ where
 \end{equation}
 We can now compute the square of the signal-to-noise ratio
 \begin{equation}
-\rho^2(t_j) = \frac{x_j^2 + y_j^2}{\sigma^2} = \frac{16}{\sigma^2}|z_j|^2
+\rho^2(t_j) = \frac{x_j^2 + y_j^2}{\sigma^2} = \frac{1}{\sigma^2}|z_j|^2
 \end{equation}
 by a single complex inverse Fourier transform and threshold on $\rho^2 \ge
 \rho^2_\ast$.  Since we choose the template $\tilde{h}_c(f)$ to be at a
@@ -850,10 +861,10 @@ detected with signal to noise ratio $\rho^2$ can be established as
 D = \frac{\sigma}{\rho} \,\mathrm{Mpc}.
 \label{eq:effdistdef}
 \end{equation}
-Recall that $\sigma$ is a measure of the noise in the interferometer output.
-Larger values of $\sigma$ correspond to a quieter detector (due to the
-$1/\ospsd$ term in the expression for $\sigma$) and smaller values to a
-noisier detector. 
+Recall that $\sigma$ is a measure of the noise in the interferometer output;
+it is a measure of the sensitivity of the detector.  Larger values of $\sigma$
+correspond to a quieter detector (due to the $1/\ospsd$ term in the expression
+for $\sigma$) and smaller values to a noisier detector. 
 %We can see that at a constant signal strength (i.e. a fixed
 %value of $\rho$),
 %\begin{equation}
@@ -1423,7 +1434,7 @@ Now, let
 \end{align}
 and define
 \begin{equation}
-\chi^2 = \frac{p}{\sigma^2} \sum_{l=1}^p \left[ (\Delta x_l)^2 + (\Delta x_l)^2 \right]
+\chi^2 = \frac{p}{\sigma^2} \sum_{l=1}^p \left[ (\Delta x_l)^2 + (\Delta y_l)^2 \right]
 \end{equation}
 In the presence of Gaussian noise $s=n$ this statistic is $\chi^2$ distributed
 with $\nu=2p-2$ degrees of freedom.  Furthermore, if a signal $h=Au+Bv$ (with signal
@@ -1513,7 +1524,7 @@ The waveform of an inspiral depends on the masses parameters $M,\eta$ of the two
 objects in the binary. If the template being used in the
 matched filter does not exactly match the true signal
 $h'(M',\eta')$ then the output of the matched filter will be smaller than if
-the template was correct. The mismatch can arise for any number of reasons,
+the template was correct. The mismatch can arise for any number of reasons;
 for example errors in the theoretical
 template mean that the post$^2$-Newtonian waveform does not match the true
 inspiral signal (which becomes important at high masses, $M > 3 M_\odot$) or
