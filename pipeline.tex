@@ -27,8 +27,8 @@ pair of interferometers labeled IFO$1$ and IFO$2$.
 We only use data that comes from interferometers in stable operation. Running
 an interferometer is a complex process that requires human \emph{operators}
 who are trained to \emph{lock} the interferometers. Locking the interferometer
-is the process of bringing it from a state where the optics are freely
-swinging to a state where light is resonant in the interferometer.  From a
+is the process of bringing it from an uncontrolled state 
+to a state where light is resonant in the interferometer.  From a
 state in which the interferometer optics are freely swinging, the operators
 manually align the optics of the interferometer using the interferometer
 control systems. They then direct the automated lock acquisition
@@ -53,7 +53,7 @@ earthquake in China has caused loss of lock). Poor data quality in the
 interferometer may also require a break in lock to remedy.  Continuous
 locked operation has been maintained for up to $66.2$~hours in
 the Hanford 4km interferometer. Seismic noise in the Livingston interferometer
-limited the longest lock to $6.93$~hours.
+limited the longest lock to $6.93$~hours during S2.
 
 It is possible that the operators or scimons may make mistakes in deciding
 that data should be flagged as science mode; they may forget to enable
@@ -215,13 +215,13 @@ inspiral code on data which is flagged as suspect by the cut.
 
 Figure \ref{f:s1loudest} shows the signal-to-noise ratio and $\chi^2$ time
 series of the loudest candidate event that was produced by the LIGO S1
-inspiral search. Also shown is the filter output for a simulated inspiral
+inspiral search\cite{LIGOS1iul}. Also shown is the filter output for a simulated inspiral
 with similar parameters that was injected into well behaved
 interferometer data.  Notice that the time series of $\rho(t)$, $\chi^2(t)$
 and the raw data are very noisy around the time of the S1 loudest candidate.
 In contrast, the time series for the simulated signal is very clean. On
 further investigation, it was determined that the photodiode that records the
-light at the anti-symmetric port has saturated at the time of the S1 loudest
+light at the anti-symmetric port had saturated at the time of the S1 loudest
 event. The system that converts the light into an electronic signal for the
 length sensing and control servo had exceeded its dynamic range causing a
 noise transient in the data.  The saturation is a symptom of poor
@@ -264,7 +264,7 @@ Chapter \ref{ch:findchirp} describes the algorithms that we use to determine
 if an inspiral from a binary of masses ${m_1,m_2}$ is present in a single data
 segment. The input to trigger generation is:
 \begin{enumerate}
-\item The template, $\tilde{h}_{ck}$, drawn from the template bank.
+\item The template, $\tilde{h}_{ck}$, drawn from a \emph{template bank}.
 
 \item The \emph{data segment} to be filtered, $\{v_j\}$ $j \in [0,N]$, where
 $v_j$ is the raw (uncalibrated) interferometer output channel,
@@ -275,19 +275,80 @@ is a subset of a science segment.
 \texttt{LSC-AS\_Q},
 
 \item The instrumental response function, $R(f_k)$, which is required to
-calibrate the data. 
+calibrate the data and the power spectrum. 
 \end{enumerate}
 In this section, we describe how these quantities are constructed and used to
 generate inspiral triggers.
 
+\subsection{Template Banks}
+\label{ss:templatebank}
+
+The matched filtering described in chapter \ref{ch:findchirp} has been used to
+detect the inspiral waveforms from binary neutron stars in the mass range
+$1\,M_\odot\le m_1, m_2\le 3\,M_\odot$ and binary black hole MACHOs in the
+mass range $0.2\,M_\odot\le m_2, m_1\le 1\,M_\odot$. Since each mass pair
+$\{m_1,m_2\}$ in the space produces a different waveform, we construct a {\em
+template bank}, a discrete subset of the continuous family of waveforms that
+belong to the parameter space. The placement of templates in the bank is
+determined by the \emph{mismatch} of the bank, $\mathbb{M}$. The mismatch is
+the fractional loss in signal to noise that results when an inspiral signal,
+$s$, is not exactly correlated with a template in the bank, $h$. In terms of
+the inner product defined in equation \ref{eq:innerproduct} of section
+\ref{s:detectiontheory} it is
+\begin{equation}
+\mathbb{M} = 1 - \frac{(h|s)} {\sqrt{(h|h)(s|s)}}.
+\end{equation}
+If we consider the distribution of binaries to be uniform in space, then the
+fraction of events lost due to the mismatch of the template from a population
+is approximately $\mathbb{M}^3$, i.e the range is decreased by a factor of
+$\mathbb{M}$. A mismatch of $3\%$, i.e. a $10\%$ loss of event rate, is
+conventionally accepted as a reasonable goal for binary neutron stars. For
+binary black hole MACHOs, we reduce the minimal match of the template bank to
+$5\%$. This is due to the fact that the number of templates in the bank for a
+given interferometer noise curve scales as approximately
+$m_\mathrm{min}^{-8/3}$, where $m_\mathrm{min} = m_1 = m_2$ is the mass of the
+lowest mass equal mass template in the bank\cite{Owen:1998dk}. If we lowering
+the minimal match then the computational cost decreases as $\mathbb{M}^{-1}$.
+The loss in signal-to-noise ratio is balanced by the fact that we are
+searching for a population of binary black hole MACHOs in the galactic halo.
+This population is far from homogeneous with almost all signals expected to
+produce a signal-to-noise ratio far above threshold, so this $5\%$ loss in
+signal-to-noise ration will hardly constitute any loss in observed event
+rate.
+
+The scaling in the number of templates as a function of the lower mass of the
+bank parameter space is due to the fact that the number of templates required
+to achieve a given minimal match is a function of the number of cycles that the
+inspiral waveforms spends in the sensitive band of the interferometer. The
+more cycles the matched filter correlates against, the greater its
+discriminating power and so the loss in signal-to-noise ratio for a mismatched
+template increases. A pair of inspiralling $1.4\,M_\odot$ neutron stars have
+$347$ cycles in the S2 sensitive band (between $100$~Hz and $2048$~Hz),
+compared to $1960$ cycles for a pair of $0.5\,M_\odot$ binary black hole
+MACHOs; a pair of $0.1\,M_\odot$ binary black hole MACHOs have nearly
+$28\,500$ cycles.
+
+Since the number of templates is a function of the number of cycles of an
+inspiral in the sensitive band of the interferometer, it also depends on the
+shape of the power spectral density of the noise curve. In fact location of
+the templates in the bank is also a function of the PSD, as described in
+\cite{Owen:1998dk}. The power spectrum of the instrument changes over time and
+so we must also change the template bank. We accomplish this by using the
+power spectral density for an analysis chunk to generate a template bank that
+is unique to that chunk. The PSD is calibrated and the template bank
+generated. Figure \ref{f:s2_banks} shows binary neutron star and binary
+black hole MACHO template banks generated for a typical stretch of S2 data.
+The smallest and largest number of templates in a bank during S2 was $589$ and
+$857$ binary neutron star templates and $11\,588$ and $17\,335$ binary black
+hole MACHO templates.
+
 \subsection{Data Management}
 \label{ss:datamanagement}
 
-Corruption due to the wrap-around of the matched filter discussed in section
-\ref{s:wraparound} means that not all the time in a data segment can be
-searched for triggers. As mentioned in chapter \ref{ch:findchirp}, we simplify
-the process of selecting uncorrupted data by only searching for triggers in
-the signal-to-noise ratio, $\rho^2(t_j)$, when 
+Corruption due to the wrap-around of the matched filter means that not all the
+time in a data segment can be searched for triggers. As described  in chapter
+\ref{ch:findchirp}, we simplify the process of selecting uncorrupted data by
+only searching for triggers in the signal-to-noise ratio, $\rho^2(t_j)$, when 
 \begin{equation}
 \frac{N}{4} \le j < \frac{3N}{4},
 \end{equation}
@@ -396,67 +457,6 @@ run, S3, which was completed before the seismic upgrade, exhibits the problem
 of short science segments, so a redesign of the filtering code may still be
 required.
 
-\subsection{Template Banks}
-\label{ss:templatebank}
-
-The matched filtering described in chapter \ref{ch:findchirp} has been used to
-detect the inspiral waveforms from binary neutron stars in the mass range
-$1\,M_\odot\le m_1, m_2\le 3\,M_\odot$ and binary black hole MACHOs in the
-mass range $0.2\,M_\odot\le m_2, m_1\le 1\,M_\odot$. Since each mass pair
-$\{m_1,m_2\}$ in the space produces a different waveform, we construct a {\em
-template bank}, a discrete subset of the continuous family of waveforms that
-belong to the parameter space. The placement of templates in the bank is
-determined by the \emph{mismatch} of the bank, $\mathbb{M}$. The mismatch is
-the fractional loss in signal to noise that results when an inspiral signal,
-$s$, is not exactly correlated with a template in the bank, $h$. In terms of
-the inner product defined in equation \ref{eq:innerproduct} of section
-\ref{s:detectiontheory} it is
-\begin{equation}
-\mathbb{M} = 1 - \frac{(h|s)} {\sqrt{(h|h)(s|s)}}.
-\end{equation}
-If we consider the distribution of binaries to be uniform in space, then the
-fraction of events lost due to the mismatch of the template from a population
-is approximately $\mathbb{M}^3$, i.e the range is decreased by a factor of
-$\mathbb{M}$. A mismatch of $3\%$, i.e. a $10\%$ loss of event rate, is
-conventionally accepted as a reasonable goal for binary neutron stars. For
-binary black hole MACHOs, we reduce the minimal match of the template bank to
-$5\%$. This is due to the fact that the number of templates in the bank for a
-given interferometer noise curve scales as approximately
-$m_\mathrm{min}^{-8/3}$, where $m_\mathrm{min} = m_1 = m_2$ is the mass of the
-lowest mass equal mass template in the bank\cite{Owen:1998dk}. If we lowering
-the minimal match then the computational cost decreases as $\mathbb{M}^{-1}$.
-The loss in signal-to-noise ratio is balanced by the fact that we are
-searching for a population of binary black hole MACHOs in the galactic halo.
-This population is far from homogeneous with almost all signals expected to
-produce a signal-to-noise ratio far above threshold, so this $5\%$ loss in
-signal-to-noise ration will hardly constitute any loss in observed event
-rate.
-
-The scaling in the number of templates as a function of the lower mass of the
-bank parameter space is due to the fact that the number of templates required
-to achieve a given minimal match is a function of the number of cycles that the
-inspiral waveforms spends in the sensitive band of the interferometer. The
-more cycles the matched filter correlates against, the greater its
-discriminating power and so the loss in signal-to-noise ratio for a mismatched
-template increases. A pair of inspiralling $1.4\,M_\odot$ neutron stars have
-$347$ cycles in the S2 sensitive band (between $100$~Hz and $2048$~Hz),
-compared to $1960$ cycles for a pair of $0.5\,M_\odot$ binary black hole
-MACHOs; a pair of $0.1\,M_\odot$ binary black hole MACHOs have nearly
-$28\,500$ cycles.
-
-Since the number of templates is a function of the number of cycles of an
-inspiral in the sensitive band of the interferometer, it also depends on the
-shape of the power spectral density of the noise curve. In fact location of
-the templates in the bank is also a function of the PSD, as described in
-\cite{Owen:1998dk}. The power spectrum of the instrument changes over time and
-so we must also change the template bank. We accomplish this by using the
-power spectral density for an analysis chunk to generate a template bank that
-is unique to that chunk. The PSD is calibrated and the template bank
-generated. Figure \ref{f:s2_banks} shows binary neutron star and binary
-black hole MACHO template banks generated for a typical stretch of S2 data.
-The smallest and largest number of templates in a bank during S2 was $589$ and
-$857$ binary neutron star templates and $11\,588$ and $17\,335$ binary black
-hole MACHO templates.
 
 \subsection{Trigger Generation Parameters}
 \label{ss:triggerparameters}
@@ -485,11 +485,11 @@ in an analysis chunk.
 \item Sample Rate, $1/\Delta t$. The sample rates used in LIGO data analysis
 are integer powers of two Hertz.
 
-\item Number of points non-zero points in the square root of inverse power
-spectrum length in the time domain, $N_\mathrm{invspectrunc}$. This
+\item Number of non-zero points in the square root of inverse power
+spectrum  in the time domain, $N_\mathrm{invspectrunc}$. This
 parameter was described in detail in section \ref{ss:invspec}.
 \end{itemize}
-We set $N_\mathrm{invspectrunc} \Delta t = 16$~seconds for the S2 analysis
+We set $\Delta t\, N_\mathrm{invspectrunc} = 16$~seconds for the S2 analysis
 based on the length of wraparound corruption allowed. A systematic study of
 the value of $N_\mathrm{invspectrunc}$ has not been carried out for the S1
 or S2 data, but is planned for future analysis.
@@ -506,7 +506,7 @@ N_\mathrm{stride} = N - N_\mathrm{overlap}.
 \end{equation}
 The length of the analysis chunk, in seconds, is therefore
 \begin{equation}
-T_\mathrm{chunk} = N_\mathrm{chunk} \times \Delta t.
+T_\mathrm{chunk} = \Delta t\, N_\mathrm{chunk} .
 \end{equation}
 The choice of these parameters is governed by the class of waveforms searched
 for and the low frequency sensitivity of the interferometer. The longest
@@ -533,8 +533,8 @@ estimation and inspiral trigger generation.
 parameter allows us to exclude frequencies below a certain value from the
 correlations in the matched filter and $\chi^2$ veto. A non-zero value of
 $f_\mathrm{low}$ sets the value of the data in all frequency bins $k <
-k_\mathrm{min} = f_\mathrm{low} / (N \Delta t)$ to zero. This excludes this
-data from the correlations. Note that $f_\mathrm{low} \ge f_\mathrm{hp}$ to
+k_\mathrm{min} = f_\mathrm{low} / (N \Delta t)$ to zero which excludes this
+data from the correlation. Note that $f_\mathrm{low} \ge f_\mathrm{hp}$ to
 prevent data used in the correlation being attenuated by the high pass
 filter.
 \end{itemize}
@@ -567,8 +567,8 @@ $\mathbb{M}$ when filtering with the signal against its exact waveform
 compared to filtering the signal against the template in the bank with yields
 the highest signal-to-noise ratio.
 \end{itemize}
-As described the previous section, the values chosen for the S2 search are
-$\mathbb{M}_\mathrm{BNS} = 3\%$ and $\mathbb{M}_\mathrm{BBHMACHO} = 5\%$.
+As described above, the value chosen for the S2 search is
+$\mathbb{M}_\mathrm{BBHMACHO} = 5\%$.
 Note that we do not truncate the power spectrum used for generating the
 template bank, as there is no issue with wrap-around in the bank generation
 algorithm.
@@ -613,7 +613,7 @@ $0$~seconds, if the gravitational wave is propagating perpendicular to a line
 joining the detectors, to $10$~ms if the gravitational wave is propagating
 parallel to a line joining the detectors. The maximum time difference comes
 from the time it takes a gravitational wave to propagate between the
-observatories, given by $t = \frac{d}{c}$, where $d \approx 3000$~km is the
+observatories, given by $t = \frac{d}{c}$, where $d = 3002$~km is the
 distance between the observatories and $c$ is the speed of light
 (the propagation speed of gravitational waves).  Monte Carlo analysis with
 simulated signals suggests that we cannot measure the time of the trigger to
@@ -659,12 +659,7 @@ in the S2 analysis.
 
 In the case of triggers from the H1 and H2 interferometers that are coincident
 in time and mass, we can apply an amplitude cut that tests that the effective
-distances of the triggers are coincident. 
-
-
-
-
-In this test we must allow for the
+distances of the triggers are coincident.  In this test we must allow for the
 relative sensitivity of the detectors while allowing for error in the distance
 measurement, as determined by Monte Carlo simulations. The amplitude cut for
 triggers from H1 and H2 is given by 
@@ -693,8 +688,8 @@ LHO-LHO coincidence and $11$~ms for LHO-LLO coincidence.
 
 \item The mass coincidence window, $\delta m$.
 
-\item The error on the measured effective distance to the instrumental noise,
-$\epsilon$, in the amplitude test.
+\item The error on the measured effective distance due to the instrumental
+noise, $\epsilon$, in the amplitude test.
 
 \item The systematic error in measured effective distance, $\kappa$, in the
 amplitude test.
@@ -705,9 +700,10 @@ of the amplitude of the signal arriving at the Hanford site by coherently
 combining the filter outputs from the two gravitational wave channels, 
 \begin{equation}
 \rho_H = \sqrt{ \frac{|z_{H1} + z_{H2}|^2}{\sigma_{H1}^2 +
-     \sigma_{H2}^2} } \; .
+     \sigma_{H2}^2} },
 \label{eq:rhoH}
 \end{equation}
+where $z$ is the matched filter output given by equation (\ref{eq:zdef}).
 In this combination, the more sensitive interferometer receives more weight in
 the combined signal-to-noise ratio.  If a trigger is found in only one of the
 Hanford interferometers, then $\rho_H$ is simply taken to be the $\rho$ from
@@ -744,19 +740,26 @@ channels that were unaffected by the hardware injections were considered
 safety with hardware injections is described in more detail in chapter
 \ref{ch:hardware}.
 
-We used a computer program, {\it glitchMon} \cite{glitchMon}, to examine the
+We used a computer program, {\it glitchMon}\cite{glitchMon}, to examine the
 data and identify large amplitude transient signals in auxiliary channels.
 Numerous channels, with various filters and threshold settings, were examined
-with glitchMon. The program produces a list of times when the glitches
-occurred. The glitch event list was compared with times generated by triggers
-from the inspiral search; all of these preliminary studies were conducted on
-the playground data.  A time window around a glitch was defined, and any
-inspiral event within this window was rejected. One can associate the veto
-with inspiral event candidates and evaluate a veto efficiency (percentage of
-inspiral events eliminated), use percentage (percentage of veto triggers which
-veto at least one inspiral event), and dead-time (percentage of science-data
-time eliminated by the veto). Tuning of the vetoes for binary black hole
-MACHOs is described in chapter \ref{ch:result}.
+and which produced a list of times when the glitches occurred. The glitch
+event list was compared with times generated by triggers from the inspiral
+search (Note that these studies were all conducted on the playground
+data.)  A time window around a glitch was defined, and any inspiral event
+within this window was rejected. One can associate the veto with inspiral
+event candidates and evaluate a veto efficiency (percentage of inspiral events
+eliminated), use percentage (percentage of veto triggers which veto at least
+one inspiral event), and dead-time (percentage of science-data time eliminated
+by the veto). A ``good'' veto will have a large veto efficiency and use
+percentage with a small dead time suggesting that it is well correlated with
+events in the gravitational wave channel that produce inspiral triggers.
+Followup studies are performed on such candidate vetoes to determine the
+physical coupling between the auxiliary channel and the gravitational wave
+channel. If a sound coupling mechanism is found, then the veto will be used.
+
+Tuning of the vetoes for binary black hole MACHOs is described
+in chapter \ref{ch:result}.
 
 \section{Background Estimation}
 \label{s:background}
@@ -768,17 +771,17 @@ by introducing an artificial time offset, or {lag}, $\mathbb{T}$ to the
 triggers coming from the Livingston detector relative to the Hanford detector.
 We call this ``sliding the triggers by $\mathbb{T}$.'' After generating
 triggers for each interferometer, we slide the triggers from the LHO
-interferometers to the LLO interferometers and look for coincidences between
-the offset and zero lag triggers.  The triggers which emerge from the end of
-the pipeline are then considered a single trial representative of an output
-from a search if no signals are present in the data.   By choosing a lag of
-more than 20~ms, we ensure that a true gravitational wave will not be
+interferometers relative to the LLO interferometer and look for coincidences
+between the offset and zero lag triggers.  The triggers which emerge from the
+end of the pipeline are then considered a single trial representative of an
+output from a search if no signals are present in the data.   By choosing a
+lag of more than 20~ms, we ensure that a true gravitational wave will not be
 coincident in the time-shifted data streams.  In fact, we use lags longer than
-the durations of all templates to avoid correlation issues.  Note that we do
+this to avoid correlation issues; the minimum lag is $17$~seconds.  Note that we do
 not time-shift the two Hanford detectors relative to one another since there
 may be real correlations due to environmental disturbances.  If the times of
 background triggers are not correlated in the two interferometers then the
-background rate can be measured. We assume that there is no such correlation
+background rate can be measured; we assume that there is no such correlation
 between LHO and LLO triggers.
 
 \section{Detection Efficiency}
@@ -806,7 +809,7 @@ through the full analysis pipeline to produce a list of inspiral triggers.
 We may combine the signal-to-noise rations from coincident triggers from
 several interferometers into a single \emph{coherent} signal-to-noise ratio,
 \begin{equation}
-\hat{\rho} = f(\rho_\mathrm{L1},\rho_\mathrm{H1},\rho_\mathrm{H2})
+\hat{\rho} = f(\rho_\mathrm{L1},\rho_\mathrm{H})
 \end{equation}
 where the form of $f$ is chosen based on studies of the playground and
 background triggers. We can then construct a final threshold,
