@@ -4,7 +4,8 @@
 
 Linarized GR, review of gravitational waves.
 
-\section{Generation Of Gravitational Waves By Binary Inspiral}
+\section{Waveforms from inspiraling compact binaries}
+\label{s:waveforms}
 
 \subsection{Quadrupole Emission of Gravitational Waves}
 
@@ -12,9 +13,93 @@ Peter's and Matthew's calculation
 
 \subsection{Post-Newtonian Corrections to the Waveform}
 
+
+
+Although the binary systems are expected to be highly eccentric and widely
+separated when they form\cite{bkb}, the emission of gravitational radiation at
+twice the orbital frequency of the binary system causes the orbit to
+circularize much faster than it shrinks\cite{peters}. By the time the
+frequency of the gravitational radiation enters the sensitive band of the 
+detector the orbit is nearly circular, so we neglect eccentricity in the
+template waveforms. The effect of spin on the detectability of the waveforms
+is not expected to be a significant for low mass binaries\cite{apos} and we
+neglect it in the templates used here.
+
+We use restricted post-Newtonian (PN) waveforms to construct the filters. The
+amplitude evolution is computed from the quadrupole-formula\cite{petersmath}
+and the phase evolution is computed to second PN order ($\mathcal{O}(v/c)^4$
+where $v$ is the orbital velocity).  For a binary system the gravitational 
+wave strain is
+\begin{equation}
+h(t) = \frac{1\,\mathrm{Mpc}}{\mathcal{D}}\left(F_{+}h_{+}(t) +
+F_{\times}h_{\times}(t)\right),
+\end{equation}
+where $\mathcal{D}$ is the actual distance to the chirp in Mpc. $h_{+}(t)$
+and $h_{\times}(t)$ are the two polarizations of the gravitational wave signal
+and $F_{+}$ and $F_{\times}$ are the detector beam pattern functions. The
+``$+$'' (plus) polarization is given by
+\begin{equation}
+h_{+}(t) = -\frac{1 + \cos^2 i}{2}\,h_c(t)
+\end{equation}
+and the ``$\times$'' (cross) polarization is given by
+\begin{equation}
+h_{\times}(t) = -\cos i\,h_s(t).
+\end{equation}
+where $i$ is the inclination angle (radians) of the angular momentum axis
+relative to the line-of-sight. The waveforms $h_c(t)$ and $h_s(t)$ are referred
+to as the cosine and sine polarizations of the inspiral signal~\cite{biww}.
+
+The template waveforms $h_c(t)$ and $h_s(t)$ are computed for a binary
+system that is {\it optimally oriented}. An optimally oriented binary system
+lies on the $z$-axis with its orbital plane parallel to the $x$-$y$ plane,
+which is defined by the arms of the interferometer. The detector has a
+non-uniform response over the sky due to its quadrupolar antenna pattern,
+given by $F_{+,\times}$. If the source is not optimally oriented (i.e., not on the
+$z$-axis or the orbital plane is tipped), then the effective distance to the
+binary will be greater than the source-detector distance. Since the search
+records the effective distance to a candidate signal, when we discuss
+distances to candidate events found by the search code we always quote
+effective distance, that is, distance to an optimally oriented event.
+
 Higher order corrections in $v/c$.
 
 \subsection{The Stationary Phase Inspiral Waveform}
+
+Since the matched filter is performed in the frequency domain, we use the
+stationary phase approximation to the Fourier transform of the 2~PN
+waveform\cite{poissonwill}. The stationary phase approximations to the Fourier
+transforms of $h_c(t)$ and $h_s(t)$ are given by
+\begin{eqnarray}
+\label{eq:spcos}
+\tilde{h}_c(f)&=&\frac{2T_\odot c}{1\,\mathrm{Mpc}}
+\left(\frac{5\mu}{96M_\odot}\right)^\frac{1}{2}
+\left(\frac{M}{\pi^2M_\odot}\right)^\frac{1}{3}%\\
+%&&\quad\quad\times 
+f^{-\frac{7}{6}}\,T_\odot^{-\frac{1}{6}}\,
+e^{i\Psi(f;M,\eta)},\\%\nonumber \\
+\label{eq:hsorthog}
+\tilde{h}_s(f)&=&i\tilde{h}_c(f),
+\end{eqnarray}
+where $f$ is the gravitational wave frequency in Hz, $M = m_1+m_2$ 
+is the total mass of the binary, $\mu = m_1 m_2 / M$ is the reduced mass and
+$\eta = \mu/M$.  Note that $\tilde{h}_{c,s}(f)$ have dimensions of 1/Hz.  The
+instrument strain per Hz, $\tilde{h}(f)$, is obtained from a linear
+superposition of $\tilde{h}_{c,s}(f)$ in exactly the same way as $h(t)$ is
+obtained from $h_{c,s}(t)$. The phase evolution to 2~PN order is given by
+\begin{eqnarray}
+\Psi(f;M,\eta) = 2\pi ft_c-2\phi_c-\pi/4+\frac{3}{128\eta}\biggl[x^{-5}+
+\left(\frac{3715}{756}+\frac{55}{9}\eta\right)x^{-3}
+-16\pi x^{-2} \nonumber\\
++\left(\frac{15\,293\,365}{508\,032}+\frac{27\,145}{504}\eta
++\frac{3085}{72}\eta^2\right)x^{-1}\biggr],
+\end{eqnarray}
+where $x=(\pi MfT_\odot/M_\odot)^{1/3}$, the coalescence phase
+$\phi_c$ is determined by the binary ephemeris, and the coalescence
+time $t_c$ is the time at which the bodies collide.  The chirps
+$\tilde{h}_c$ and $\tilde{h}_s$ are given $\phi_c=0$ and
+$\phi_c=-\pi/4$, respectively. The validity of the stationary phase
+approximation for inspiral templates is well established\cite{spvalid}.
+
 
 To detect the waveforms decribed above we use matched filtering in the
 frequency domain. The Fourier transform of chirp signal $h(t)$, as defined in
@@ -144,7 +229,33 @@ and so
 Equation (\ref{eq:sp:template}) is the stationary phase binary inspiral
 template that we will use in the matched filter.
 
+
+The 2~PN waveform is a sweeping sinusoid which is computed from a specified 
+low frequency cutoff which is chosen based on the characteristic noise in the
+detector. It sweeps through the sensitive band of the detector with increasing
+frequency and amplitude.  The upper frequency cutoff of the waveform is
+determined by the frequency at which the post-Newtonian approximation breaks
+down and we no longer trust the waveforms. For post-Newtonian chirps computed
+in the time domain, the frequency at which the frequency evolution becomes
+non-monotonic is a good indication of this.  In the stationary phase
+approximation there is no equivalent measure of the breakdown.  Therefore to
+set a high frequency cutoff for the inspiral waveforms, we choose the
+frequency of the Schwartzchild innermost stable orbit (ISCO). This can be
+computed exactly and is given by
+\begin{equation}
+f_{\mathrm{max}} = \left( 6M\pi\sqrt{6}T_\odot \right)^{-1}\,\mathrm{Hz}
+\label{eq:isco}
+\end{equation} where $M$ is the total mass of the binary system in solar
+masses. Since the ISCO frequency is currently not known for a pair of
+comparably massive objects, it is something of a kludge to use this, however
+we find in practice that this yields a maximum frequency which is close to that
+given by the frequency at which the time domain waveforms are cut off.  The
+upper frequency cutoff for the waveform of a $2\times 1.4 \> M_\odot$ binary
+system is thus $1570$~Hz.
+
+
 Discussion of validity of SP waveform.
+
 
 \section{Interferometric Gravitational Wave Detectors}
 \label{s:ifo}
@@ -152,3 +263,20 @@ Discussion of validity of SP waveform.
 \section{Previous Searches for Compact Binary Inspiral}
 
 40m, TAMA, S1. Plot of rate vs time.
+
+
+The Laser Interferometric Gravitational Wave Observatory (LIGO)\cite{barish}
+has completed three ``science runs'' during which all three interferometers
+were collecting data simultaneously under stable operation. Analysis of the
+data for gravitational waves from coalescing compact binaries has been
+completed for the first two runs\cite{bns1,bns2,macho} and is in progress for
+the third run. Two of the target populations in these searches are binary
+neutron stars\cite{300yrs} and binary black hole
+MACHOs\cite{sammacho,nakamura}. For these low mass systems, which have
+component masses below $3 M_\odot$, the waveforms of the gravitational
+radiation emitted are well known\cite{bdiww,biww}.  Matched filtering is a
+common and effective technique for extracting known signals from
+noise\cite{wz}. We have implemented a matched filter to extract inspiral
+signals from interferometer noise in the package \emph{findchirp} which can be
+found in the LIGO Algorithm Library (LAL)\cite{lal}.
+

@@ -1,45 +1,19 @@
 % $Id$
 
-The Laser Interferometric Gravitational Wave Observatory (LIGO)\cite{barish}
-has completed three science data taking runs. Analysis of the data for
-gravitational waves from coalescing compact binaries has been completed for
-the first two runs\cite{bns1,bns2} and is in progress for the third run. Two
-of the target populations in these searches are binary neutron
-stars\cite{300yrs} and binary black hole MACHOs\cite{sammacho,nakamura}. For
-these low mass systems, which have component massed below $3 M_\odot$, the
-waveforms of the gravitational radiation emitted are well
-known\cite{bdiww,biww}.  Matched filtering is a common and effective technique
-for extracting known signals from noise\cite{wz}. We have implemented a
-matched filter search gravitational wave interferometer data in the package
-\emph{findchirp} which can be found in the LIGO Algorithm Library
-(LAL)\cite{lal}.
-
-We describe in detail the algorithms used in findchirp. In section
-\ref{s:conventions} we define the conventions that are used for analysis
-quantities; in particular the definition of the Fourier transform and the
-power spectral density. Section \ref{s:waveforms} gives a brief description of
-the the waveforms used and section \ref{s:matchedfilter} describes the
-implementation of the matched filter.  Spurious noise may cause the output of
-the matched filter to be large and so in section \ref{s:chisq} we describe our
-implementation of the $\chi^2$ time--frequency discriminator proposed in
-in~\cite{allen}. Section \ref{s:practical} contains details of the aspects of
-the search particular to our implementation such as the computation of the
-inverse power spectrum and the trigger selection algorithm. This is followed
-by a brief conclusion which summarized the methods used and outlines some
-future directions for improvement.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Conventions}
 \label{s:conventions}
 
-The raw (uncalibrated) output of the detector is denoted $v(t)$. In order to
-construct a digital matched filter, we sample the output at $N$ consecutive
-points with sampling interval $\Delta t$, that is $v_j \equiv v(t_j)$ where
-$t_j = j\Delta t$. We reserve the subscript $j$ for discretely sampled time
-domain quantities and the subscript $k$ for discretely sampled frequency
-domain quantities. For a frequency domain quantity $v(f_k)$ denotes the
-value quantity samples at a particular frequency $f_k$ whereas $v_k = v(f_k)
-/ \Delta t$ denotes the same quantity divided by the sampling interval.
+The raw (uncalibrated) output of the detector is a time series denoted $v(t)$.
+In practice, this is discretely sampled data with sampling interval $\Delta
+t$, that is $v_j \equiv v(t_j)$ where $t_j = j\Delta t$.  In order to
+construct a digital matched filter, we take $N$ consecutive samples of
+$v(t_j)$. We will always follow the convention that the subscript $j$ refers to
+discretely sampled time domain quantities and the subscript $k$ to discretely
+sampled frequency domain quantities. Other subscripts, such as $i$, refer to
+iteration over other quantities such as inspiral template index. Foe a
+frequency domain quantity $\tilde{v}(f_k)$ denotes the value quantity samples
+at a particular frequency $f_k$ whereas $\tilde{v}_k = \tilde{v}(f_k) / \Delta
+t$ denotes the same quantity divided by the sampling interval.
 
 \subsection{The Fourier Transform}
 \label{ss:ftconv}
@@ -116,117 +90,6 @@ k\neq 0.
 \right.
 \end{equation}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Waveforms from inspiraling compact binaries}
-\label{s:waveforms}
-
-Although the binary systems are expected to be highly eccentric and widely
-separated when they form\cite{bkb}, the emission of gravitational radiation at
-twice the orbital frequency of the binary system causes the orbit to
-circularize much faster than it shrinks\cite{peters}. By the time the
-frequency of the gravitational radiation enters the sensitive band of the 
-detector the orbit is nearly circular, so we neglect eccentricity in the
-template waveforms. The effect of spin on the detectability of the waveforms
-is not expected to be a significant for low mass binaries\cite{apos} and
-neglect it in the templates used here.
-
-We use restricted post-Newtonian (PN) waveforms to construct the filters. The
-amplitude evolution is computed from the quadrupole-formula\cite{petersmath}
-and the phase evolution is computed to second PN order ($\mathcal{O}(v/c)^4$
-where $v$ is the orbital velocity).  For a binary system (circular orbits, no
-spin) with masses $m_1$ and $m_2$ solar masses the gravitational wave strain
-is
-\begin{equation}
-h(t) = \frac{1\,\mathrm{Mpc}}{\mathcal{D}}\left(F_{+}h_{+}(t) +
-F_{\times}h_{\times}(t)\right),
-\end{equation}
-where $\mathcal{D}$ is the actual distance to the chirp in Mpc. $h_{+}(t)$
-and $h_{\times}(t)$ are the two polarizations of the gravitational wave signal
-and $F_{+}$ and $F_{\times}$ are the detector beam pattern functions. The
-``$+$'' (plus) polarization is given by
-\begin{equation}
-h_{+}(t) = -\frac{1 + \cos^2 i}{2}\,h_c(t)
-\end{equation}
-and the ``$\times$'' (cross) polarization is given by
-\begin{equation}
-h_{\times}(t) = -\cos i\,h_s(t).
-\end{equation}
-where $i$ is the inclination angle (radians) of the angular momentum axis
-relative to the line-of-sight. The waveforms $h_c(t)$ and $h_s(t)$ are referred
-to as the cosine and sine polarizations of the inspiral signal~\cite{biww}.
-
-The template waveforms $h_c(t)$ and $h_s(t)$ are computed for a binary
-system that is {\it optimally oriented}. An optimally oriented binary system
-lies on the $z$-axis with its orbital plane parallel to the $x$-$y$ plane,
-which is defined by the arms of the interferometer. The detector has a
-non-uniform response over the sky due to its quadrupolar antenna pattern,
-given by $F_\pm$. If the source is not optimally oriented (i.e., not on the
-$z$-axis or the orbital plane is tipped), then the effective distance will be
-greater than the source-detector distance. Since the search code records the
-effective distance to a trigger, when we discuss distances to candidate events
-found by the search code we always quote effective distance, that is, distance
-to an optimally oriented event.
-
-Since the matched filter is performed in the frequency domain, we use the
-stationary phase approximation to the Fourier transform of the 2~PN
-waveform\cite{poissonwill}. The stationary phase approximations to the Fourier
-transforms of $h_c(t)$ and $h_s(t)$ are given by
-\begin{eqnarray}
-\label{eq:spcos}
-\tilde{h}_c(f)&=&\frac{2T_\odot c}{1\,\mathrm{Mpc}}
-\left(\frac{5\mu}{96M_\odot}\right)^\frac{1}{2}
-\left(\frac{M}{\pi^2M_\odot}\right)^\frac{1}{3}%\\
-%&&\quad\quad\times 
-f^{-\frac{7}{6}}\,T_\odot^{-\frac{1}{6}}\,
-e^{i\Psi(f;M,\eta)},\\%\nonumber \\
-\label{eq:hsorthog}
-\tilde{h}_s(f)&=&i\tilde{h}_c(f),
-\end{eqnarray}
-where $f$ is the gravitational wave frequency in Hz, $M = m_1+m_2$ 
-is the total mass of the binary, $\mu = m_1 m_2 / M$ is the reduced mass and
-$\eta = \mu/M$.  Note that $\tilde{h}_{c,s}(f)$ have dimensions of 1/Hz.  The
-instrument strain per Hz, $\tilde{h}(f)$, is obtained from a linear
-superposition of $\tilde{h}_{c,s}(f)$ in exactly the same way as $h(t)$ is
-obtained from $h_{c,s}(t)$. The phase evolution to 2~PN order is given by
-\begin{eqnarray}
-\Psi(f;M,\eta)&=&2\pi ft_c-2\phi_c-\pi/4\nonumber\\
-&&+\frac{3}{128\eta}\biggl[x^{-5}+
-\left(\frac{3715}{756}+\frac{55}{9}\eta\right)x^{-3}
--16\pi x^{-2}\nonumber\\
-&&+\left(\frac{15\,293\,365}{508\,032}+\frac{27\,145}{504}\eta
-+\frac{3085}{72}\eta^2\right)x^{-1}\nonumber\biggr],
-\end{eqnarray}
-where $x=(\pi MfT_\odot/M_\odot)^{1/3}$, the coalescence phase
-$\phi_c$ is determined by the binary ephemeris, and the coalescence
-time $t_c$ is the time at which the bodies collide.  The chirps
-$\tilde{h}_c$ and $\tilde{h}_s$ are given $\phi_c=0$ and
-$\phi_c=-\pi/4$, respectively. The validity of the stationary phase
-approximation for inspiral templates is well established\cite{spvalid}.
-
-The 2~PN waveform is a sweeping sinusoid which is computed from a specified 
-low frequency cutoff which is chosen based on the characteristic noise in the
-detector. It sweeps through the sensitive band of the detector with increasing
-frequency and amplitude.  The upper frequency cutoff of the waveform is
-determined by the frequency at which the post-Newtonian approximation breaks
-down and we no longer trust the waveforms. For post-Newtonian chirps computed
-in the time domain, the frequency at which the frequency evolution becomes
-non-monotonic is a good indication of this.  In the stationary phase
-approximation there is no equivalent measure of the breakdown.  Therefore to
-set a high frequency cutoff for the inspiral waveforms, we choose the
-frequency of the Schwartzchild innermost stable orbit (ISCO). This can be
-computed exactly and is given by
-\begin{equation}
-f_{\mathrm{max}} = \left( 6M\pi\sqrt{6}T_\odot \right)^{-1}\,\mathrm{Hz}
-\label{eq:isco}
-\end{equation} where $M$ is the total mass of the binary system in solar
-masses. Since the ISCO frequency is currently not known for a pair of
-comparably massive objects, it is something of a kludge to use this, however
-we find in practice that this yields a maximum frequency which is close to that
-given by the frequency at which the time domain waveforms are cut off.  The
-upper frequency cutoff for the waveform of a $2\times 1.4 \> M_\odot$ binary
-system is thus $1570$~Hz.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{The matched filter}
 \label{s:matchedfilter}
 
@@ -274,12 +137,18 @@ thesis.} We define an inner product $(\cdot|\cdot)$ by
   \frac{\tilde{a}^\ast(f)\tilde{b}(f)+\tilde{a}(f)\tilde{b}^\ast(f)}
        {S_h(|f|)}.
 \end{equation}
+Since the chirp waveforms are are real time series, we have $h(f) =
+h^\ast(-f)$ and the inner product (\ref{eq:innerproduct}) becomes
+\begin{equation}
+\left(a\mid b\right) = 2 \int_{-\infty}^{\infty}df\,
+\frac{\tilde{a}^\ast(f)\tilde{b}(f)}{S_h\left(\left|f\right|\right)}.
+\end{equation}
 
 The sine and cosine polarizations of the inspiral signal are orthogonal,
 $\left(h_c\mid h_s\right) = 0$. We define the normalization constant
 $\sigma^2$ to be
 \begin{equation}
-\sigma^2 = \left(h_c\mid h_c\right) = \left(h_s\mid h_s\right).
+\sigma^2 \equiv \left(h_c\mid h_c\right) = \left(h_s\mid h_s\right).
 \end{equation}
 
 The inspiral signals that we wish to receive are much shorter than the
@@ -302,15 +171,8 @@ For each observation period, we construct the statistic
 \rho(t) = \frac{1}{\sigma}\sqrt{x^2(t) + y^2(t)}
 \end{equation}
 and threshold on this statistic, which we call the signal-to-noise ratio
-(SNR).
-
-Since the chirp waveforms are are real time series, we have $h(f) =
-h^\ast(-f)$ and the inner product (\ref{eq:innerproduct}) becomes
-\begin{equation}
-\left(a\mid b\right) = 2 \int_{-\infty}^{\infty}df\,
-\frac{\tilde{a}^\ast(f)\tilde{b}(f)}{S_h\left(\left|f\right|\right)}
-\end{equation}
-so the normalization constant $\sigma$ is
+(SNR). The normalization constant $\sigma$ is defined in terms of the
+waveforms by
 \begin{equation}
 \label{eq:sigmasqcts}
 \sigma^2 = 2 \int_{-\infty}^{\infty}df\,
@@ -329,7 +191,7 @@ $\left\langle \rho^2 \right\rangle = \left\langle x^2 + y^2 \right\rangle = 2$.
 
 Since the two chirp waveforms $\tilde{h_c}$ and $\tilde{h_s}$ are 
 orthogonal, it is possible to increase the efficiency of the algorithm by
-constructing the single time $\rho(t)$ directly using a single complex inverse
+constructing the time series $\rho(t)$ directly using a single complex inverse
 FFT rather than computing it from $x(t)$ and $y(t)$ which requires two real
 inverse FFTs. We may further increase efficiency when using stationary phase
 chirps by dividing the filter into a part that depends on the data and a part
@@ -345,7 +207,7 @@ x_j &=& \frac{2}{\sigma} \frac{1}{N\Delta t} \sum_{k=0}^{N-1} e^{2\pi ijk/N}
 \frac{\tilde{s}_k \tilde{h}_{ck}^\ast} {\ospsd}
 \end{eqnarray}
 where we have used $\tilde{s}(f_k) = \Delta t\, \tilde{s}_k$ and
-$\times{h}_c(f_k) \equiv \Delta t\, \tilde{h}_{ck}$. From equation
+${h}_c(f_k) \equiv \Delta t\, \tilde{h}_{ck}$. From equation
 (\ref{eq:ycts}) we obtain
 \begin{equation}
 \label{eq:ydisc}
@@ -363,13 +225,13 @@ The normalization constant $\sigma^2$ defined in equation
 \frac{\tilde{h}_{ck}\tilde{h}_{ck}^\ast}{\ospsd} \\
 &=&
 4 \frac{\Delta t}{N} \sum_{k=0}^{N/2}
-\frac{\tilde{h}_{ck}\tilde{h}_{ck}^\ast}{\ospsd}
+\frac{\tilde{h}_{ck}\tilde{h}_{ck}^\ast}{\ospsd}.
 \end{eqnarray}
 Now we may use the fact that $s(t)$ is a real signal and so $\tilde{s}(f) = 
 \tilde{s}(-f)^\ast$ to write equation the cosine phase of the filter 
 (\ref{eq:xdisc}) as
 \begin{eqnarray}
-x_j &=& 
+x_j = 
 \frac{2}{\sigma}\frac{\Delta t}{N}
 \left[
   \sum_{k=N/2}^{N-1} e^{2\pi ijk/N} 
@@ -377,18 +239,16 @@ x_j &=&
   +
   \sum_{k=0}^{N/2} e^{2\pi ijk/N} 
   \frac{\tilde{s}_k \tilde{h}_{ck}^\ast}{\ospsd}
-\right] \\
-&=& 
-\frac{2}{\sigma}\frac{\Delta t}{N}
+\right] \nonumber \\
+= \frac{2}{\sigma}\frac{\Delta t}{N}
 \left[
   \sum_{k=0}^{N/2} e^{-2\pi ijk/N} 
   \frac{\tilde{s}_k^\ast \tilde{h}_{ck}}{\ospsd}
   +
   \sum_{k=0}^{N/2} e^{2\pi ijk/N} 
   \frac{\tilde{s}_k \tilde{h}_{ck}^\ast}{\ospsd}
-\right] \\
-&=&
-\frac{2}{\sigma}\frac{\Delta t}{N}(Q_j^\ast + Q_j)
+\right] \nonumber \\
+= \frac{2}{\sigma}\frac{\Delta t}{N}(Q_j^\ast + Q_j)
 \end{eqnarray}
 where
 \begin{equation}
@@ -399,7 +259,7 @@ Q_j = \sum_{k=0}^{N/2} e^{2\pi ijk/N}
 The sine phase of the filter (\ref{eq:ydisc}) can be written as
 \begin{eqnarray}
 \label{eq:yinter}
-y_j &=&
+y_j =
 \frac{2}{\sigma}\frac{\Delta t}{N}
 \left[
   \sum_{k=N/2}^{N-1} e^{2\pi ijk/N} 
@@ -407,8 +267,8 @@ y_j &=&
   +
   \sum_{k=0}^{N/2} e^{2\pi ijk/N} 
   \frac{\tilde{s}_k \tilde{h}_{sk}^\ast}{\ospsd}
-\right] \\
-&=& 
+\right] \nonumber \\
+= 
 \frac{2}{\sigma}\frac{\Delta t}{N}
 \left[
   \sum_{k=0}^{N/2} e^{-2\pi ijk/N} 
@@ -420,7 +280,7 @@ y_j &=&
 \end{eqnarray}
 Using (\ref{eq:hsorthog}), equation (\ref{eq:yinter}) becomes
 \begin{eqnarray}
-y_j &=& 
+y_j = 
 \frac{2}{\sigma}\frac{\Delta t}{N}
 \left[
   \sum_{k=0}^{N/2} e^{-2\pi ijk/N} 
@@ -428,8 +288,8 @@ y_j &=&
   +
   \sum_{k=0}^{N/2} e^{2\pi ijk/N} 
   \frac{\tilde{s}_k (-i)\tilde{h}_{ck}^\ast}{\ospsd}
-\right] \\
-&=& 
+\right] \nonumber \\
+= 
 \frac{-2i}{\sigma}\frac{\Delta t}{N}
 \left[
   - \sum_{k=0}^{N/2} e^{-2\pi ijk/N} 
@@ -437,8 +297,8 @@ y_j &=&
   +
   \sum_{k=0}^{N/2} e^{2\pi ijk/N} 
   \frac{\tilde{s}_k \tilde{h}_{ck}^\ast}{\ospsd}
-\right] \\
-&=& 
+\right] \nonumber \\
+= 
 \frac{2}{\sigma}\frac{\Delta t}{N}i(Q_j^\ast - Q_j).
 \end{eqnarray}
 This the outputs of the filter for the two phases are
@@ -499,11 +359,11 @@ Typical values of the variance of $v(t)$ for initial LIGO data are $10^3$,
 however the response function, $R(f)$, has magnitude $\sim 10^{-22}$ in the
 sensitive band of the instrument. Although we only need floating point (4
 byte) precision to store the calibrated interferometer data, $\tilde{s}(f)$
-and power spectral density, $S_n(|f|)$, the calibrated time domain data bay
+and the power spectral density, $S_n(|f|)$, the calibrated time domain data may
 overflow the dynamic range of floating point variables. Therefore when we
 implement the digital filter, we multiply the response function $R(f)$ by a
 scaling variable, $d$, which typically has values of $d = 2^{64}$ for initial
-LIGO data, This scales all frequency domain quantities to of order $\sim$ 
+LIGO data. This scales all frequency domain quantities to of order $\sim$ 
 unity.  Therefore equation (\ref{eq:zdef}) becomes
 \begin{equation}
 \label{eq:zdefcal}
@@ -527,16 +387,15 @@ We now return to the definition of $\tilde{h}_{ck}$.  From equation
 (\ref{eq:spcos}) we define the dimensionless quantity
 \begin{eqnarray}
 \label{eq:hck}
-d\,\tilde{h}_{ck} &=& \frac{d \tilde{h}_c(f_k)}{\Delta t} \\
-&=& 
+d\,\tilde{h}_{ck} = \frac{d \tilde{h}_c(f_k)}{\Delta t} \nonumber \\
+= 
 \frac{2dT_\odot c}{1\,\mathrm{Mpc}}
 \left(\frac{5\mu}{96M_\odot}\right)^\frac{1}{2}
 \left(\frac{M}{\pi^2M_\odot}\right)^\frac{1}{3}
-\left(\frac{T_\odot}{\Delta t}\right)^{-\frac{1}{6}}\\
-&&\quad\quad\times
+\left(\frac{T_\odot}{\Delta t}\right)^{-\frac{1}{6}}
 \left( f\,\Delta t \right)^{-\frac{7}{6}}
-\exp\,[i\Psi(f_k;M,\eta)], \nonumber \\
-&=&
+\exp\,[i\Psi(f_k;M,\eta)] \nonumber \\
+=
 \sqrt{\mathcal{T}(M,\mu)}\left(\frac{k}{N}\right)^{-\frac{7}{6}}
 \exp\left[i\Psi\left(f_k;M,\eta\right)\right]
 \end{eqnarray}
@@ -554,7 +413,7 @@ constant}. It depends on the masses of the template and as such must be
 recomputed once per template. If we substitute equation (\ref{eq:hck}) 
 into equation (\ref{eq:sigmasqdisccal}) we obtain
 \begin{equation}
-\sigma^2 = 4 \frac{\Delta t}{N} \sum_{k=0}^{N/2} \mathcal{T} 
+\sigma^2 = 4 \frac{\Delta t}{N} \mathcal{T} 
 \sum_{k=0}^{N/2} 
 \frac{\left({k}/{N}\right)^{-\frac{7}{3}}}
 {d^2|R|^2S_v\left(\left|f_k\right|\right)}
@@ -564,32 +423,33 @@ where $\mathcal{S}$ is defined to be
 \begin{equation}
 \mathcal{S} = 
 \sum_{k=0}^{N/2} 
-\frac{\left({k}/{N}\right)^{-7/3}}{d^2|R|^2S_v\left(\left|f_k\right|\right)}.
+\frac{\left({k}/{N}\right)^{-\frac{7}{3}}}{d^2|R|^2S_v\left(\left|f_k\right|\right)}.
 \end{equation}
 $\mathcal{S}$ is refered to as the \emph{segment dependent normalization} and
 needs to be computed only once for a given power spectral density.
 
 The signal-to-noise ratio squared is then
-\begin{eqnarray}
-\rho^2(t_j) &=& 
-\frac{16}{\sigma^2}\left(\frac{\Delta T}{N}\right)^2 \mathcal{T} \nonumber \\
-&&\quad\quad\times
+\begin{equation}
+\rho^2(t_j) = 
+\frac{16}{\sigma^2}\left(\frac{\Delta t}{N}\right)^2 \mathcal{T}
 \left| 
   \sum_{k=0}^{N/2} e^{2\pi ijk/N} 
-  \frac{dR\tilde{v}_k (k/N)^{-7/6} e^{-i\Psi(f_k;M,\eta)}}
+  \frac{dR\tilde{v}_k (k/N)^{-\frac{7}{6}} \exp\left[-i\Psi(f_k;M,\eta)\right]}
        {d^2|R|^2 S_v\left(\left|f_k\right|\right)}
 \right|^2 
-\end{eqnarray}
+\label{eq:signaltonoisesq}
+\end{equation}
 where $\sigma^2$ is simply
 \begin{equation}
 \sigma^2 = \frac{4\Delta t}{N} \mathcal{T}\mathcal{S}.
+\label{eq:sigmasqts}
 \end{equation}
 Let us define $\tilde{q}_k$ by
 \begin{equation}
 \label{eq:qtildedef}
 \tilde{q}_k = \left\{
 \begin{array}{ll}
-\frac{d\tilde{v}_k (k/N)^{-7/6} e^{-i\Psi(f_k;M,\eta)}}
+\frac{d\tilde{v}_k (k/N)^{-\frac{7}{6}} \exp\left[-i\Psi(f_k;M,\eta)\right]}
      {d^2|R|^2S_v\left(\left|f_k\right|\right)} 
   \quad\quad & 0 < k < \frac{N}{2},\\
 \\
@@ -606,7 +466,7 @@ the signal-to-noise ration squared is
 The computation of $\tilde{q}_k$ can further be split into the template
 independent computation of
 \begin{equation}
-\tilde{F}_k = \frac{d\tilde{v}_k (k/N)^\frac{-7}{6}}
+\tilde{F}_k = \frac{d\tilde{v}_k (k/N)^{-\frac{7}{6}}}
 {d^2|R|^2S_v\left(\left|f_k\right|\right)}
 \end{equation}
 and the computation of
@@ -633,15 +493,55 @@ then store these quantities re-use them, computing $\mathcal{T}$ and
 $\tilde{T}_k$ once per template. We also save some computational effort by
 computing
 \begin{equation}
-|q_j|^2_\ast = \rho^2_\ast \left/
-\frac{16}{\sigma^2}\left(\frac{\Delta t}{N}\right)^2 \mathcal{T} \right.
+|q_j|^2_\ast = \frac{\rho^2_\ast} 
+{\frac{16}{\sigma^2}\left(\frac{\Delta t}{N}\right)^2 \mathcal{T}}
 \end{equation}
 and thresholding on $|q_j|^2 \ge |q_j|^2_\ast$. \textcolor{red}{Note that we
 now compute the template normalization correctly for chirps with different
 high frequency cutoffs. This needs to be added to this section.}
 
+\subsection{Testing the Filter Normalization}
+
+Consider the case when the filter input is 
+Gaussian noise, i.e. $\tilde{s}_k = \tilde{n}_k$. 
+We will also set $R\equiv 1$ and $d = 1$.
+Then the expectation value of the signal-to-noise ratio squared, $\langle \rho^2
+\rangle$ is
+\begin{eqnarray}
+\langle \rho^2(t_j) \rangle =
+\frac{16}{\sigma^2}\left(\frac{\Delta t}{N}\right)^2 \mathcal{T}
+  \sum_{k=0}^{N/2} \sum_{k'=0}^{N/2} 
+  e^{2\pi ij(k-k')/N} 
+  \frac{\left\langle \tilde{n}_k \tilde{n}_{k'}^{\ast} \right\rangle 
+        \frac{k}{N}^{-\frac{7}{6}} \frac{k'}{N}^{-\frac{7}{6}}
+        e^{-i\Psi(f_k)} e^{i\Psi(f_{k'})}}
+       {S_n\left(\left|f_k\right|\right)S_n\left(\left|f_{k'}\right|\right)} \nonumber \\
+= 
+\frac{16}{\sigma^2}\left(\frac{\Delta t}{N}\right)^2 \mathcal{T}
+  \sum_{k=0}^{N/2} \sum_{k'=0}^{N/2} 
+  e^{2\pi ij(k-k')/N} \left(\frac{1}{2} \frac{N}{\Delta t}  \delta_{kk'} \right)\nonumber \\
+\times \frac{ S_n\left(\left|f_k\right|\right)
+        \frac{kk'}{N^2}^{-\frac{7}{6}}
+        e^{i ( \Psi(f_{k'})} - \Psi(f_k) )}
+       {S_n\left(\left|f_k\right|\right)S_n\left(\left|f_{k'}\right|\right)} \nonumber \\
+= 
+\frac{8}{\sigma^2} \frac{\Delta t}{N} \mathcal{T}
+  \sum_{k=0}^{N/2}
+  \frac{ (k/N)^{-7/3} }
+       {S_n\left(\left|f_k\right|\right)} \nonumber \\
+= 
+\frac{8N}{4\Delta t\, \mathcal{T}\mathcal{S}} 
+\frac{\Delta t}{N} \mathcal{T} \mathcal{S} \nonumber \\
+= 2,
+\end{eqnarray}
+where we have used the defintion of $\sigma^2$ from equation
+(\ref{eq:sigmasqts}) and the definition of the one-sided power spectral
+density from equation (\ref{eq:psddef}).
+
 \section{The $\chi^2$ veto}
 \label{s:chisq}
+
+
 
 Let $u$ and $v$ be two orthonormal time series representing the two phases of a
 binary inspiral signal, $h_c(t_j)$ and $h_s(t_j)$.  We divide these waveforms
@@ -666,6 +566,37 @@ distributed with $\nu=2p-2$ degrees of freedom.  Furthermore, if a signal
 $s=Au+Bv$ (with signal to noise squared of $\rho^2_{\mathrm{signal}}=A^2+B^2$) 
 is present along with Gaussian noise, $h=s+n$, then $\chi^2=pr^2$ is still
 chi-squared distributed with $\nu=2p-2$ degrees of freedom.
+
+
+
+\subsection{Implementation of the Digital $\chi^2$ Veto}
+
+Recall that the templates $\tilde{h}_c$ and $\tilde{h}_s$ are normalized such
+that
+\begin{equation}
+\frac{\sigma^2}{2} = \frac{\Delta t}{N} \sum_{k=-\frac{N}{2}}^{\frac{N}{2}}
+\frac{\tilde{h}_{ck} \tilde{h}_{ck}^\ast } {\ospsd} \nonumber \\
+= 2 \frac{\Delta t}{N} \sum_{k=0}^{\frac{N}{2}}
+\frac{\tilde{h}_{ck} \tilde{h}_{ck}^\ast } {\ospsd}.
+\end{equation}
+We construct the $p$ templates $\left\{ \tilde{h}_{cl} \right\}$ and 
+$\left\{ \tilde{h}_{sl} \right\}$, where $l = 1,\ldots,p$, with
+\begin{eqnarray}
+\frac{4\Delta t}{N} \sum_{k=0}^{\frac{N}{2}} 
+\frac{\tilde{h}_{clk} \tilde{h}_{cmk}^\ast}{\ospsd} &=& \frac{1}{p}\delta{lm}\sigma^2 \\
+\frac{4\Delta t}{N} \sum_{k=0}^{\frac{N}{2}} 
+\frac{\tilde{h}_{slk} \tilde{h}_{smk}^\ast}{\ospsd} &=& \frac{1}{p}\delta{lm}\sigma^2 \\
+\frac{4\Delta t}{N} \sum_{k=0}^{\frac{N}{2}} 
+\frac{\tilde{h}_{clk} \tilde{h}_{smk}^\ast}{\ospsd} &=& 0
+\end{eqnarray}
+and
+\begin{eqnarray}
+\tilde{h}_{c} &=& \sum_{l=1}{p} \tilde{h}_{cl}, \\
+\tilde{h}_{s} &=& \sum_{l=1}{p} \tilde{h}_{sl}
+\end{eqnarray}
+
+
+
 
 \subsubsection{Mismatched signal.}
 Suppose a signal that is not exactly matched by $u$ or $v$ is present in
@@ -754,6 +685,7 @@ The number of frequency bands is chosen to be 8. Increasing the number of
 frequency bands increases the computational overhead for the $\chi^2$ veto and
 this number was chosen as a compromise between computational and detection
 efficiencies. $ds^2 = 0.03$ is set by the template bank mismatch. 
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -929,4 +861,3 @@ one data segment. The coalescence times for the different triggers must be
 separated by \textit{at least} the length of the template.  The list of
 triggers for each template and data segment are then stored in the database. 
 \end{enumerate}
-
