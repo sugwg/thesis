@@ -77,13 +77,25 @@ for l = 1:length(coinc)
     end
 end
 
-figure;
-plot(bkg.l1h1.l.snr,bkg.l1h1.h.snr,'+', bkg.l1h2.l.snr,bkg.l1h2.h.snr,'+',  bkg.l1h1h1.l.snr,bkg.l1h1h1.h.snr,'+');
-legend('L1H1','L1H2','L1H1H2 (H1 only)');
+trig.l1h2.l = readMeta('box/l1-inca_l1h2_box_clust.xml','sngl_inspiral');
+trig.l1h2.h = readMeta('box/h2-inca_l1h2_box_clust.xml','sngl_inspiral');
+trig.l1h1h1.l = readMeta('box/l1-inca_l1h1h2_box_clust.xml','sngl_inspiral');
+trig.l1h1h1.h = readMeta('box/h1-inca_l1h1h2_box_clust.xml','sngl_inspiral');
+
+f = figure;
+plot(bkg.l1h1.l.snr,bkg.l1h1.h.snr,'+', bkg.l1h2.l.snr,bkg.l1h2.h.snr,'+',  bkg.l1h1h1.l.snr,bkg.l1h1h1.h.snr,'+',...
+    trig.l1h2.l.snr, trig.l1h2.h.snr,'o', trig.l1h1h1.l.snr, trig.l1h1h1.h.snr,'o');
+legend('L1H1 background','L1H2 background','L1H1H2 background (H1 only)','L1H2 Triggers','L1H1H2 Triggers (H1 only)');
 xlabel('\rho_{L1}');
 ylabel('\rho_H');
-title('Background MACHO Triggers');
+title('Full Data Set MACHO Triggers');
 grid on;
+axis([7 14 7 14]);
+saveas(f,'figures/bkg_fgd','pdf');
+saveas(f,'figures/bkg_fgd','png');
+axis([7 8 7 8]);
+saveas(f,'figures/bkg_fgd_zoom','pdf');
+saveas(f,'figures/bkg_fgd_zoom','png');
 
 for l = 1:length(coinc)
     %    bkg.(char(coinc(l))).co_snr = 1.0 ./ ( ( bkg.(char(coinc(l))).l.chisq ./ (15 + bkg.(char(coinc(l))).l.snr.^2 .* 0.2) ) + ...
@@ -97,12 +109,14 @@ for l = 1:length(coinc)
     end
 end
 
-figure;
+f = figure;
 hist(bkg_co_snr);
 title('Background MACHO Triggers');
 grid on;
-xlabel('( (\chi^2_{L1} / 15 + 0.2 * \rho^2_{L1}) + (\chi^2_{H} / 15 + 0.2 * \rho^2_{H}) )^{-1}');
+xlabel('\rho^2_{L1} + \rho^2_{H} / 4');
 ylabel('N');
+saveas(f,'figures/bkg_hist','pdf');
+saveas(f,'figures/bkg_hist','png');
 
 clear sire_files;
 
@@ -139,6 +153,26 @@ for ifo = 1:length(ifonames)
                 cand.(char(ifonames(ifo))).h = tmp;
             end
             
+            tmp = readMeta( sprintf( 'injections/%s/%s_inj_clust.xml', char(inj_dirs(i)), char(sire_files.(char(ifonames(ifo)))(j)) ), 'sim_inspiral' );
+            try
+                names = fieldnames(tmp);
+                for k = 1:length(names)
+                    found.(char(ifonames(ifo))).l.(char(names(k))) = vertcat(found.(char(ifonames(ifo))).l.(char(names(k))),tmp.(char(names(k))));
+                end
+            catch
+                found.(char(ifonames(ifo))).l = tmp;
+            end
+            
+            tmp = readMeta( sprintf( 'injections/%s/%s_inj_clust.xml', char(inj_dirs(i)), char(sire_files.(char(ifonames(ifo)))(j+1)) ), 'sim_inspiral' );
+            try
+                names = fieldnames(tmp);
+                for k = 1:length(names)
+                    found.(char(ifonames(ifo))).h.(char(names(k))) = vertcat(found.(char(ifonames(ifo))).h.(char(names(k))),tmp.(char(names(k))));
+                end
+            catch
+                found.(char(ifonames(ifo))).h = tmp;
+            end
+            
         end
     end
 end
@@ -148,7 +182,14 @@ for l = 1:length(coinc)
     %    cand.(char(coinc(l))).co_snr = 1.0 ./ ( ( cand.(char(coinc(l))).l.chisq ./ (15 + cand.(char(coinc(l))).l.snr.^2 .* 0.2) ) + ...
     %        ( cand.(char(coinc(l))).h.chisq ./ (15 + cand.(char(coinc(l))).h.snr.^2 .* 0.2) ) );   
     
-    cand.(char(coinc(l))).co_snr = cand.(char(coinc(l))).l.snr.^2 + ( cand.(char(coinc(l))).h.snr.^2 ./ 4) ;   
+    cand.(char(coinc(l))).co_snr = ...
+        cand.(char(coinc(l))).l.snr(   found.(char(coinc(l))).l.mass1 > 0.2 &  found.(char(coinc(l))).l.mass2 > 0.2   ).^2 +...
+        ( cand.(char(coinc(l))).h.snr(  found.(char(coinc(l))).h.mass1 > 0.2 &  found.(char(coinc(l))).h.mass2 > 0.2   ).^2 ./ 4) ;   
+    
+%    cand.(char(coinc(l))).co_snr = ...
+%        cand.(char(coinc(l))).l.snr.^2 +...
+%        ( cand.(char(coinc(l))).h.snr.^2 ./ 4) ;   
+
     
     try
         cand_co_snr = vertcat( cand_co_snr, cand.(char(coinc(l))).co_snr );
@@ -157,28 +198,51 @@ for l = 1:length(coinc)
     end
 end
 
-figure;
+f = figure;
 plot(cand.l1h1.l.snr,cand.l1h1.h.snr,'+', cand.l1h2.l.snr,cand.l1h2.h.snr,'+',  cand.l1h1h1.l.snr,cand.l1h1h1.h.snr,'+');
 legend('L1H1','L1H2','L1H1H2 (H1 only)');
 xlabel('\rho_{L1}');
 ylabel('\rho_H');
 title('Playground MACHO Injections');
 grid on;
+saveas(f,'figures/inj_snr','png');
+saveas(f,'figures/inj_snr','pdf');
 
-figure;
+f = figure;
 hist(cand_co_snr(cand_co_snr>=1000),100);
 title('Playground MACHO Injections');
 grid on;
-xlabel('( (\chi^2_{L1} / 15 + 0.2 * \rho^2_{L1}) + (\chi^2_{H} / 15 + 0.2 * \rho^2_{H}) )^{-1}');
+xlabel('\rho^2_{L1} + \rho^2_{H} / 4 >= 1000');
 ylabel('N');
+saveas(f,'figures/inj_hist_hi','png');
+saveas(f,'figures/inj_hist_hi','pdf');
 
-figure;
-hold on;
-plot(cand.l1h1.l.snr,cand.l1h1.h.snr,'b+', cand.l1h2.l.snr,cand.l1h2.h.snr,'b+',  cand.l1h1h1.l.snr,cand.l1h1h1.h.snr,'b+');
-plot(bkg.l1h1.l.snr,bkg.l1h1.h.snr,'rx', bkg.l1h2.l.snr,bkg.l1h2.h.snr,'rx',  bkg.l1h1h1.l.snr,bkg.l1h1h1.h.snr,'rx');
+f = figure;
+hist(cand_co_snr(cand_co_snr<1000),100);
+title('Playground MACHO Injections');
+grid on;
+xlabel('\rho^2_{L1} + \rho^2_{H} / 4 < 1000');
+ylabel('N');
+saveas(f,'figures/inj_hist_lo','png');
+saveas(f,'figures/inj_hist_lo','pdf');
+
+f = figure;
+plot(cand.l1h1.l.snr(   found.l1h1.l.mass1 > 0.2 &  found.l1h1.l.mass2 > 0.2   ),...
+    cand.l1h1.h.snr(   found.l1h1.h.mass1 > 0.2 &  found.l1h1.h.mass2 > 0.2   ),'b+',...
+    bkg.l1h1.l.snr,bkg.l1h1.h.snr,'rx',...
+    cand.l1h2.l.snr(   found.l1h2.l.mass1 > 0.2 &  found.l1h2.l.mass2 > 0.2   ),...
+    cand.l1h2.h.snr(   found.l1h2.h.mass1 > 0.2 &  found.l1h2.h.mass2 > 0.2   ),'b+',...
+    cand.l1h1h1.l.snr(   found.l1h1h1.l.mass1 > 0.2 &  found.l1h1h1.l.mass2 > 0.2   ),...
+    cand.l1h1h1.h.snr(   found.l1h1h1.h.mass1 > 0.2 &  found.l1h1h1.h.mass2 > 0.2   ),'b+',...
+    bkg.l1h2.l.snr,bkg.l1h2.h.snr,'rx',...
+    bkg.l1h1h1.l.snr,bkg.l1h1h1.h.snr,'rx');
+legend('Injections','Background');
 xlabel('\rho_{L1}');
 ylabel('\rho_H');
 axis([7 30 7 30]);
+title('MACHO Playground Injections and Background');
 grid on;
+saveas(f,'figures/inj_bkg_snr','png');
+saveas(f,'figures/inj_bkg_snr','pdf');
 
 clear i j k l coinc sire_files names slide_dirs tmp;
