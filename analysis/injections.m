@@ -15,7 +15,7 @@ for ifo = 1:length(ifonames)
     for i = 1:length(inj_dirs)
         for j = 1:length(sire_files.(char(ifonames(ifo))))
             
-            tmp = readMeta( sprintf( 'injections/%s/%s_inj.xml', char(inj_dirs(i)), char(sire_files.(char(ifonames(ifo)))(j)) ), 'sim_inspiral');
+            tmp = readMeta( sprintf( 'injections/%s/%s_inj_clust.xml', char(inj_dirs(i)), char(sire_files.(char(ifonames(ifo)))(j)) ), 'sim_inspiral');
             try
                 names = fieldnames(tmp);
                 for k = 1:length(names)
