@@ -112,9 +112,13 @@ trig.l1h1h1.l = readMeta('box/l1-inca_l1h1h2_box_clust.xml','sngl_inspiral');
 trig.l1h1h1.h = readMeta('box/h1-inca_l1h1h2_box_clust.xml','sngl_inspiral');
 
 f = figure;
-plot(bkg.l1h1.l.snr,bkg.l1h1.h.snr,'+', bkg.l1h2.l.snr,bkg.l1h2.h.snr,'+',  bkg.l1h1h1.l.snr,bkg.l1h1h1.h.snr,'+',...
-    trig.l1h2.l.snr, trig.l1h2.h.snr,'o', trig.l1h1h1.l.snr, trig.l1h1h1.h.snr,'o');
-legend('L1H1 background','L1H2 background','L1H1H2 background (H1 only)','L1H2 Triggers','L1H1H2 Triggers (H1 only)');
+%plot(bkg.l1h1.l.snr,bkg.l1h1.h.snr,'+', bkg.l1h2.l.snr,bkg.l1h2.h.snr,'+',  bkg.l1h1h1.l.snr,bkg.l1h1h1.h.snr,'+',...
+%    trig.l1h2.l.snr, trig.l1h2.h.snr,'o', trig.l1h1h1.l.snr, trig.l1h1h1.h.snr,'o');
+%legend('L1H1 background','L1H2 background','L1H1H2 background (H1 only)','L1H2 Triggers','L1H1H2 Triggers (H1 only)');
+
+plot(bkg.l1h1.l.snr,bkg.l1h1.h.snr,'+', bkg.l1h2.l.snr,bkg.l1h2.h.snr,'+',  bkg.l1h1h1.l.snr,bkg.l1h1h1.h.snr,'+');
+legend('L1H1 background','L1H2 background','L1H1H2 background (H1 only)');
+
 xlabel('\rho_{L1}');
 ylabel('\rho_H');
 title('Full Data Set MACHO Triggers');
