@@ -357,6 +357,31 @@ acceptable looking results, but it may be omitted to get smaller print.
 %    {\rule{\z@}{\footnotesep}\ignorespaces
 %      #1\strut}}}
 
+\long\def\@makecaption#1#2{%
+  \vskip\abovecaptionskip
+  \sbox\@tempboxa{\protect\parbox[t]{\linewidth}{\footnotesize #1 : #2 \relax\baselineskip=14pt}}%
+  \ifdim \wd\@tempboxa >\hsize
+    #1 : #2\par
+  \else
+    \global \@minipagefalse
+    \hb@xt@\hsize{\hfil\box\@tempboxa\hfil}%
+  \fi
+  \vskip\belowcaptionskip}
+
+\long\def\@caption#1[#2]#3{%
+  \par
+  \addcontentsline{\csname ext@#1\endcsname}{#1}%
+    {\protect\numberline{\csname the#1\endcsname}{\ignorespaces #2}\medskip}%
+  \begingroup
+    \@parboxrestore
+    \if@minipage
+      \@setminipage
+    \fi
+    \footnotesize
+    \@makecaption{\csname fnum@#1\endcsname}{\ignorespaces #3}\par
+  \endgroup}
+
+
 
 \def\majorprof#1{\gdef\@majorprof{#1}}
 \def\advis@r{Adviser}
