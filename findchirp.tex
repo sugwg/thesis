@@ -8,16 +8,16 @@ h(t) = \frac{A(t)}{D} \cos\left( \phi(t) - \theta \right),
 \end{equation}
 where
 \begin{equation}
-A(t) = -2 \mu (\pi M f)^\frac{2}{3} \frac{2G}{c^2\,(1\,\mathrm{Mpc})}
+A(t) = - \frac{2G\mu}{c^4 r} \left[ \pi GM f(t) \right]^\frac{2}{3}
+%-2 \mu (\pi M f)^\frac{2}{3} \frac{2G}{c^2\,(1\,\mathrm{Mpc})}
 \end{equation}
-and $D$ is the effective distance, given by
+and $D$ is the \emph{effective distance}, given by
 \begin{equation}
-D = \frac{(1\,\mathrm{Mpc}) \sqrt{ (1 + \cos^2 \iota F_+^2 + 4\iota^2
-F_\times^2}}{r}.
+D = \sqrt{F_+^2 (1 + \cos^2 \iota)^2 + F_\times^2 4 \cos^2 \iota} r
 \end{equation}
 The phase angle $\theta$ is
 \begin{equation}
-\tan \theta = \frac{2\cos \iota F_\times}{(1 + \cos^2 \iota) F_+}
+\tan \theta = \frac{F_\times 2\cos \iota}{F_+(1 + \cos^2 \iota)}
 \end{equation}
 and $\phi(t)$ is given by equation (\ref{eq:biwwphase}).
 %We can write the gravitational wave signal of an inspiral arriving at the
@@ -196,10 +196,19 @@ defined by
 where $\tilde{n}(f)$ is the Fourier transform of $n(t)$. We wish to compute
 the quantity
 \begin{equation}
-\Lambda = \frac{p(s|h)}{p(s|0)}
+\Lambda = \frac{P(s|h)}{P(s|0)},
 \end{equation}
-where $p(s|h)$ and $p(s|0)$ are the conditional probability densities. The
-probability density of obtaining a particular instantiation of detector noise
+however since the probabilities $P(s|h)$ and $P(s|0)$ are usually zero, so in
+calculating the likelihood ratio, we must get rid of the indeterminacy by
+writing
+\begin{equation}
+\Lambda = \frac{P(s|h)}{P(s|0)}
+= \frac{p(s|h)\,ds}{p(s|0)\,ds}
+= \frac{p(s|h)}{p(s|0)}.
+\end{equation}
+Instead of using the zero probabilities where $P(s|h)$ and $P(s|0)$, we use the
+corresponding probability densities $p(s|h)$ and $p(s|0)$. The probability
+density of obtaining a particular instantiation of detector noise
 is\cite{Finn:1992wt}
 \begin{equation}
 p(n) = \mathcal{K} \exp\left[-\frac{1}{2} (n|n)\right]
@@ -496,7 +505,7 @@ frequency range $-f_\mathrm{Ny} \le f \le f_\mathrm{Ny}$, where
 f_\mathrm{Ny} = \frac{1}{2\Delta t}
 \end{equation}
 is the \emph{Nyquist critical frequency}. Any power in $v(t)$ at frequencies
-above $f_\mathrm{Ny}$ will be aliased into the rangle $-f_\mathrm{Ny} \le f
+above $f_\mathrm{Ny}$ will be aliased into the range $-f_\mathrm{Ny} \le f
 \le f_\mathrm{Ny}$, corrupting the signal. To prevent this, signals of
 frequency higher than $f_\mathrm{Ny}$ in the interferometer output are removed
 using analog low-pass filters before the signal is digitized. Therefore
@@ -663,7 +672,8 @@ e^{i\Psi(f;M,\eta)},\\
 where $f$ is the gravitational wave frequency in Hz, $M = m_1+m_2$ 
 is the total mass of the binary measured in solar masses, $\mu = m_1 m_2 / M$
 is the reduced mass and $\eta = \mu/M$.  Note that $\tilde{h}_{c,s}(f)$ have
-units of 1/Hz.  The instrument strain per Hz $\tilde{h}(f)$ is 
+units of 1/Hz and we have chosen the chirp to be at a canonical distance of
+$r = 1\,\mathrm{Mpc}$.  The instrument strain per Hz $\tilde{h}(f)$ is 
 a linear superposition of $\tilde{h}_{c,s}(f)$ in the same way as
 $h(t)$ is obtained from $h_{c,s}(t)$. The phase evolution to
 post$^2$-Newtonian order is given by
@@ -911,7 +921,7 @@ sensitive frequencies of the instrument.  This means that $\ospsd \sim
 numbers\footnote{The smallest non-zero value that can be stored in an IEEE~754
 floating point number is $1.17549435\times 10^{-38}$.}. We may store such
 values as 8-byte floating point numbers, but this is wasteful of memory since
-the extra precison of an 8-byte number is not needed. Therefore when we
+the extra precision of an 8-byte number is not needed. Therefore when we
 implement the digital filter, we multiply the response function $R(f)$ by a
 scaling variable $d$ which typically has values of $d = 2^{69}$ for initial
 LIGO data. This scales all frequency domain quantities to have approximately
