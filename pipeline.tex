@@ -11,7 +11,7 @@ We then describe the building blocks of the pipeline in more detail. Section
 \ref{s:dq} describes data quality cuts, which are used to discard unstable
 data. The application of trigger generation to the data is explained in
 section \ref{s:pipetemplate}. The use of data from multiple interferometers is
-decribed in section \ref{s:coincidence}. In section \ref{s:vetoes} we
+described in section \ref{s:coincidence}. In section \ref{s:vetoes} we
 show how data from the interferometer that does not measure the gravitational
 wave signal can be used.  Finally in section \ref{s:s2pipeline} we describe
 the pipeline that has been constructed to search for binary neutron stars and
@@ -60,7 +60,7 @@ second order post-Newtonian stationary phase templates described in chapter
 \ref{ch:inspiral} and the search algorithms described in chapter
 \ref{ch:findchirp}. The inspiral signals from a class of sources will lie in
 some region of the template parameter space described by the component masses
-$m_1$ and $m_2$. This means that a single template is not sufficent to search
+$m_1$ and $m_2$. This means that a single template is not sufficient to search
 for signals from the population, as template for a given pair of mass
 parameters may not produce a hight signal-to-noise ratio when used to filter a
 signal with different mass parameters. To search a region in parameter space
@@ -189,7 +189,7 @@ provided by the operators can contain times when the interferometer is not
 operating correctly. Unstable interferometer data can produce false triggers
 that may survive both the $\chi^2$ test and coincidence.  Data quality cuts
 evaluate the interferometer data over relatively long time intervals, using
-several different tests, or look for specific behaviour in the interferometer
+several different tests, or look for specific behavior in the interferometer
 to exclude science mode data that is unsuitable for analysis.  To decide if we
 should exclude science mode data based on a particular data quality cut, we
 can examine the performance of the inspiral code on data which is flagged as
@@ -210,7 +210,7 @@ Notice that the time series of $\rho(t)$, $\chi^2(t)$ and the raw data are
 very noisy around the time of the S1 loudest candidate. In contrast, the time
 series for the simulated signal is very clean. On further investigation, we
 determined that at the time of the S1 loudest event, the photodiode that
-records the light at the anti-symmertic port has saturated. The system that
+records the light at the anti-symmetric port has saturated. The system that
 converts the light into an electronic signal for the length sensing an control
 servo had exceeded its dynamic range causing a noise transient in the data.
 As well as the saturation itself being problematic, it was determined that
@@ -232,13 +232,13 @@ correctly calibrated data, a simple data quality cut checks for the presence
 of the calibration lines in the data. If they are absent the data is
 discarded.
 
-\subsection{Data Quality Cuts Avaliable in S2}
+\subsection{Data Quality Cuts Available in S2}
 \label{ss:s2dq}
 
-The full list of avaliable data quality cuts and their meanings for S2 are
+The full list of available data quality cuts and their meanings for S2 are
 show in table \ref{t:dqflags}. The table is divided into two sections,
 mandatory and discretionary data quality cuts. Mandatory cuts represent
-unrecoverable problems in data aquisition or calibration and so we must exlude
+unrecoverable problems in data acquisition or calibration and so we must exclude
 these times from the list of science mode segments. Discretionary data cuts
 are optional for a particular search. For the inspiral search we can decide
 whether or not to use a cut based on the performance of the trigger generation
@@ -257,7 +257,7 @@ the noise in the interferometer and \emph{(iv)} the instrumental response
 function, $R(f)$, which is required to calibrate the data. We have described
 how we select the data to be filtered by applying data quality cuts to science
 mode data. The times remaining after we apply data quality cuts are called
-\emph{science segments}. Section \ref{ss:datamanagement} decribes how we
+\emph{science segments}. Section \ref{ss:datamanagement} describes how we
 obtain data segments, power spectra and response functions from the science
 segments. We then describe the process of template bank generation in section
 \ref{ss:templatebank} and finally enumerate the various parameters that can be
@@ -281,43 +281,43 @@ near the data segment being filtered so that a good estimate of the noise can
 be obtained; the power spectral estimate also requires overlapping data
 segments. We combine these two requirements by bundling several overlapping
 data segments together in an \emph{analysis chunk}. The length of an analysis
-chunk is bounded above by the amount of memory avaliable in the computers
-performing the filtering and bounded below by required a sufficently large
+chunk is bounded above by the amount of memory available in the computers
+performing the filtering and bounded below by required a sufficiently large
 number of segments in the computation of the average power spectrum. In the S2
 pipeline, we construct analysis chunks of length $2048$~seconds from $15$ data
 segments of length $256$~seconds. The data segments are overlapped by
 $128$~seconds, with the first and last $64$ seconds of data segment ignored
 when searching for triggers. 
 
-The interferometer records data at $16\,384$~Hz, so we downsample the analysis
+The interferometer records data at $16\,384$~Hz, so we down sample the analysis
 chunk to a sample rate of $4096$~Hz after reading it from disk to decrease the
 computational resources required by the filtering code.  We do this by
 applying a finite impulse response (FIR) low pass filter to remove power above
-the Nyquist frequncy of the desired sample rate, $2048$~Hz. The low passed
+the Nyquist frequency of the desired sample rate, $2048$~Hz. The low passed
 data is then decimated the to the desired sample rate. The highest frequency
 of gravitational radiation we are filtering in the binary neutron star is
 $\sim 2080$~Hz, so we do not lose signal to noise ratio due to the lower
-Nyqist frequency. The maximum frequency of most of the MACHO signals is
+Nyquist frequency. The maximum frequency of most of the MACHO signals is
 greater than $2048$~Hz and so we do lose some signal-to-noise ratio by
-resampling. We can neglect this loss, however, becuase most of the
+resampling. We can neglect this loss, however, because most of the
 signal-to-noise is accumulated at frequencies lower than $2048$~Hz, as
 described in chapter \ref{ch:inspiral}. Figure \ref{f:macho_snr_loss} shows
 the loss in signal-to-noise ratio in the worst case for MACHO binary search.
 The inspiral waveform of a pair of $0.2\,M_\odot$ black holes an effective
-distance of $25$~kpcis generated at a sample rate of $16\,384$~Hz. The maximum
+distance of $25$~kpc is generated at a sample rate of $16\,384$~Hz. The maximum
 frequency of this waveform is $10\,112$~Hz. The waveform is injected into raw
 (un-resampled) data with a typical S2 noise curve which is then filtered at
 $16\,384$~Hz and $4096$~Hz. The maximum of the signal-to-noise ratio is $\rho
 = 73.67$ for the raw data and $\rho = 73.58$ for the resampled data, giving a
 difference in signal-to-noise ratio of $0.1\%$. The MACHO search is much more
-compulationally intensive than the binary neutron star search, for reasons
+computationally intensive than the binary neutron star search, for reasons
 explained in the next section, so this small loss of signal-to-noise is
-greatly outweighed by gains in computational efficency due to resampling.
+greatly outweighed by gains in computational efficiency due to resampling.
 
 The interferometer data contains a large amount of power of seismic origin at
 low frequencies.  This power is several orders of magnitude higher than the
 noise in the sensitive frequency band of the interferometer. This amplitude of
-the siesmic noise is sufficently large to overwhelm the windowing used to
+the seismic noise is sufficiently large to overwhelm the windowing used to
 prevent power in the power spectral estimation from bleeding into adjacent
 bins. In order to remove this noise, we apply an infinite impulse response
 (IIR) high pass filter to the resampled data. The high pass frequency and
@@ -349,7 +349,7 @@ science segments are ignored, as there is not enough data to generate a power
 spectral density. We note here that this lead to a significant amount of data
 being discarded in the S2 analysis. As we will describe below, the S2 pipeline
 requires the L1 interferometer to be operating in order to analyze the data.
-L1 is the least stable of the inteferometers as it is very sensitive to
+L1 is the least stable of the interferometers as it is very sensitive to
 seismic noise. High seismic noise can saturate the length sensing and control
 servo and cause the loss of lock, which terminates a science segment.
 Modification of the filtering to overcome this limitation requires significant
@@ -358,7 +358,7 @@ implement and test these changes within the time allowed to perform the S2
 analysis. Fortunately, it is expected that after the installation of addition
 seismic isolation at the Livingston observatory after the S3, the lengths of
 science segments will be significantly improved, so the number of short
-segments discarded will decrease. Unfortuatly S3 data exhibits the
+segments discarded will decrease. Unfortunately S3 data exhibits the
 problem of short science segments, so a redesign of the filtering code may
 still be required.
 
@@ -370,7 +370,7 @@ waveforms from binary neutron stars in the mass range $1\,M_\odot\le m_1,
 m_2\le 3\,M_\odot$ and binary black hole MACHOs in the mass range
 $0.2\,M_\odot\le m_2, m_1\le 1\,M_\odot$. Since each mass pair $\{m_1,m_2\}$
 in the space produces a different waveform, we construct a {\em template
-bank}, a discrete subset of the continuus family of waveforms that belong to
+bank}, a discrete subset of the continuous family of waveforms that belong to
 the parameter space. The placement of templates in the bank is determined by
 the \emph{minimal match} of the bank, $\mathbb{M}$. The minimal match is the
 fractional loss in signal to noise that results when an inspiral signal, $s$,
@@ -380,22 +380,23 @@ inner product defined in equation \ref{eq:innerproduct2} of section
 \begin{equation}
 \mathbb{M} = \frac{(h|t)} {\sqrt{(h|h)(t|t)}}.
 \end{equation}
-If we consider the distrubution of binaries to be uniform in space, then the
-fraction of events detected from a population is approximately the cube of the
-minimal match. A minimal match of $0.97$, i.e. a $10\%$ loss of event rate, is
-conventionally accepted as a reasonable goal for binary neutron stars. For
-binary black hole MACHOs, we reduce the minimal match of the template bank to
-$0.95$. This is due to the fact that the number of templates in the bank
-scales as approximately $m_\mathrm{min}^{-8/3}$. Lower the minimal match to
-decrease the computational cost as $(1 - \mathbb{M})^{-1}$. The
-loss in signal-to-noise ratio is balanced by the fact that we are searching
-for a population of binary black hole MACHOs in the galactic halo which will,
-on average, produce higher signal-to-noise ratios than a population of binary
-neutron stars in Andromeda and beyond.
+If we consider the distribution of binaries to be uniform in space, then the
+fraction of events detected from a population is approximately
+$(1-\mathbb{M})^3$. A minimal match of $0.97$, i.e. a $10\%$ loss of event
+rate, is conventionally accepted as a reasonable goal for binary neutron
+stars. For binary black hole MACHOs, we reduce the minimal match of the
+template bank to $0.95$. This is due to the fact that the number of templates
+in the bank for a given interferometer noise curve scales as approximately
+$m_\mathrm{min}^{-8/3}$, where $m_\mathrm{min}$ is the mass of the lowest
+template in the bank. Lowering the minimal match to decrease the computational
+cost as $(1 - \mathbb{M})^{-1}$. The loss in signal-to-noise ratio is balanced
+by the fact that we are searching for a population of binary black hole MACHOs
+in the galactic halo which will, on average, produce higher signal-to-noise
+ratios than a population of binary neutron stars in Andromeda and beyond.
 
 This scaling in the number of templates as a function of the lower mass of the
 bank parameter space is due to the fact that the number of templates required
-to achive a given minimal match is a function of the number of cycles that the
+to achieve a given minimal match is a function of the number of cycles that the
 inspiral waveforms spends in the sensitive bank of the interferometer. The
 more cycles the matched filter correlates against, the greater its
 discriminating power and so the loss in signal-to-noise ratio for a mismatched
@@ -408,10 +409,10 @@ cycles.
 Since the number of templates is a function of the number of cycles of an
 inspiral in the sensitive band of the interferometer, it also depends on the
 shape of the power spectral density of the noise curve, since it is the PSD
-that decribes the senstivity. In fact location of the templates in the bank is
+that describes the sensitivity. In fact location of the templates in the bank is
 also a function of the PSD, as described in \cite{Owen:1998dk}. The power
 spectrum of the instrument changes over time and so we must also change the
-template bank. We acomplish this by using the power spectral density for an
+template bank. We accomplish this by using the power spectral density for an
 analysis chunk to generate a template bank that is unique to that chunk. The
 PSD is calibrated and the template bank generated. Figure \ref{f:s2_banks}
 shows a binary neutron star and binary black hole MACHO template banks
@@ -429,10 +430,10 @@ enumerate all of the tunable parameters for bank and inspiral trigger
 generation.
 
 Both template bank and inspiral trigger generation require a calibrated power
-spectral density. In the inspiral trigger genration described above,
+spectral density. In the inspiral trigger generation described above,
 construction of the PSD is coupled to the length of the data segments and
 analysis chunks. The following \emph{data conditioning} parameters are used to
-constuct the data segments, and so determine the characteristics of the PSD:
+construct the data segments, and so determine the characteristics of the PSD:
 \begin{itemize}
 \item Number of sample points in a data segment, $N$. This
 determines the length of the segments correlated in the matched filter and the
@@ -451,7 +452,7 @@ Once these parameters have be specified, it follows that the length of an
 analysis chunk, in seconds, is given by
 \begin{equation}
 T_\mathrm{chunk} = (N \times N_\mathrm{segments} - ( N_\mathrm{segments} - 1 )
-\times N_\mathrm{overlap} \times \delta T.
+\times N_\mathrm{overlap} \times \Delta T.
 \end{equation}
 The choice of these parameters is governed by the class of waveforms searched
 for and the low frequency sensitivity of the interferometer. The longest
@@ -495,7 +496,7 @@ injected into the interferometer revealed a very small loss of efficiency for
 binary neutron star inspiral and BBHMACHO signal detection resulting from the
 increase in the low frequency cutoff.
 
-Once we have defined the data conditioning parameters and a paremeter space
+Once we have defined the data conditioning parameters and a parameter space
 for the search, the only remaining free parameter for template bank generation
 is:
 \begin{itemize}
@@ -506,7 +507,7 @@ $(1 - \mathbb{M})\, \%$ when filtering with the signal against its exact
 waveform compared to filtering the signal against the template in the bank
 with yields the highest signal-to-noise ratio.
 \end{itemize}
-As descrived the previous section, the values chosen for the S2 search are
+As described the previous section, the values chosen for the S2 search are
 $\mathbb{M}_\mathrm{BNS} = 0.96$ and $\mathbb{M}_\mathrm{BBHMACHO} = 0.95$. 
 
 For a given template we use matched filtering to construct the signal-to-noise
@@ -516,10 +517,10 @@ with $p$ bins. Small values of $\chi^2$ indicate that the signal-to-noise was
 accumulated in a manner consistent with an inspiral signal. If the value of
 the $\chi^2$ veto is below a threshold, $\chi^2 < \chi^2_\ast (p + \delta^2
 \rho^2)$, then an inspiral trigger is recorded at the maximum value of $\rho$.
-The parameters used avaliable in trigger generation are therefore:
+The parameters used available in trigger generation are therefore:
 \begin{itemize}
 \item Number of points non-zero points in the square root of inverse power
-spectrum length in the time domain, $N_\mathrm{inv-spec-trunc}$. This
+spectrum length in the time domain, $N_\mathrm{invspectrunc}$. This
 parameter was described in detail in section \ref{s:invspectrunc}.
 
 \item The signal to noise threshold, $\rho_\ast$.
@@ -528,41 +529,54 @@ parameter was described in detail in section \ref{s:invspectrunc}.
 
 \item The number of bins used in the $\chi^2$ veto, $p$.
 
-\item The parameter $\delta^2$ used to acount for this mismatch of a signal
+\item The parameter $\delta^2$ used to account for this mismatch of a signal
 and template in the $\chi^2$ veto, as described in section
 \ref{ss:mismatchedchisq}.
 \end{itemize}
-We set $N_\mathrm{inv-spec-trunc} = 16 / \Delta t$~seconds for the S2 analysis
+We set $N_\mathrm{invspectrunc} = 16 / \Delta t$~seconds for the S2 analysis
 based on the length of wraparound corruption allowed. A systematic study of
-the value of $N_\mathrm{inv-spec-trunc}$ has not been carried out for the S1
+the value of $N_\mathrm{invspectrunc}$ has not been carried out for the S1
 or S2 data, but is planned for future analysis. Tuning of the other inspiral
-trigger generation parameters is particluar to the class of search used. A
-detailed discussion of this can be found in chapted \ref{ch:bns} for binary
+trigger generation parameters is particular to the class of search used. A
+detailed discussion of this can be found in chapter \ref{ch:bns} for binary
 neutron stars and chapter \ref{ch:result} for binary black hole MACHOs.
 
 \section{Trigger Coincidence}
 \label{s:coincidence}
 
-The time difference between gravitational wave arrival time
-may be between $0$~seconds, if the gravitational wave is propagating
-perpendicular to a line joining the detectors, or $10$~ms if the gravitational
-wave is propagating parallel to a line joining the detectors. The maximum
-time difference comes from the time it takes a gravitational wave to propagate
-between the observatories, given by $t = \frac{d}{c}$, where $d = x$~km is the
-distance between the observatories and $c$ is the speed of light.
+Coincidence is a powerful tool for reducing the number of false event
+candidates surviving a pipeline. The simplest test of coincidence is time
+coincidence of triggers between two or more interferometers.  For a trigger to
+be considered coincident in two interferometers, we demand that it is observed
+in both interferometers within a temporal coincidence window, $\delta t$. The
+coincidence window must allow for the error in measurement of the time of the
+trigger. It must also allow for the difference in gravitational time of
+arrival if the interferometers are not located at the same observatory.  The
+time difference between gravitational wave arrival time varies from
+$0$~seconds, if the gravitational wave is propagating perpendicular to a line
+joining the detectors, to $10$~ms if the gravitational wave is propagating
+parallel to a line joining the detectors. The maximum time difference comes
+from the time it takes a gravitational wave to propagate between the
+observatories, given by $t = \frac{d}{c}$, where $d = x$~km is the distance
+between the observatories and $c$ is the speed of light.  Monte Carlo analysis
+with simulated signals suggests that we cannot measure the time of the trigger
+to an accuracy of less than $1$~ms. The time coincidence window is therefore
+$\delta t = 1$~ms if the interferometers are located at the same observatory.
+If the detectors are not co-located, we set $\delta t = 11$~ms. Any triggers
+that fail this test are discarded. 
 
-
-For a trigger to be considered coincident in two interferometers, we demand
-that it is observed in both interferometers within a temporal coincidence
-window, $\delta t$, that allows for the error in measurement of the time of
-the trigger. Monte Carlo analysis with simulated signals suggests that we
-cannot measure the time of the trigger to an accuracy of less than $1$~ms, so
-we demand $\delta t = 1$~ms if the interferometers are located at the same
-observatory. If the detectors are not co-located, we allow for the $10$~ms
-light travel time between the LIGO observatories by demanding $\delta t =
-11$~ms. We also demand that the waveform of the triggers are consistent by
-requiring that the two mass parameters, $m_1$ and $m_2$, of the binary are
-identical to within an error of $\delta m$.
+If an signal found in temporal coincidence is generated by real inspiral, it
+should have the same waveform in both interferometers, up to issues of the
+detector antenna pattern attenuating the signal. This suggests that we apply a
+waveform parameter test to triggers candidate that survive the time
+coincidence test. We cannot exactly extract the parameters of the waveform,
+however, since we filter the interferometer data with a template bank which
+may not contain the true waveform. In addition to this, the template banks
+will, in general, differ between detectors and detector noise may cause error
+in the measurement of the signal parameters, even if the template banks are
+the same. To account for these sources of error, we can apply waveform
+parameter coincidence by requiring that the two mass $m_1$ and $m_2$, of the
+templates are identical to within an error of $\delta m$.
 
 We now consider an amplitude cut on the signals. The Livingston and Hanford
 detectors are not co-aligned. There is a slight misalignment of the detectors
@@ -570,8 +584,8 @@ due to the curvature of the earth and so the antenna patterns of the detectors
 differ. This causes the measured amplitude of a gravitational wave to differ
 between the sites. In the extreme case, it is possible for a binary to be
 completely undetectable by the L1 detector, but still detectable by the H1 and
-H2 detectors. For a given inspiral trigger, we measure the \emph{effective
-distance} of the binary system. This is the distance at which an optimally
+H2 detectors. For a given inspiral trigger, we measure the effective
+distance of the binary system. This is the distance at which an optimally
 oriented binary would produce the observed signal-to-noise ratio.
 Figure~\ref{f:gmst_dist_ratio} shows the ratio of effective distances between
 the two LIGO observatories for the population of binary neutron stars
@@ -582,49 +596,57 @@ sites to construct a more complicated amplitude cut, but this has not be used
 in the S2 analysis.
 
 In the case of triggers from the H1 and H2 interferometers that are coincident
-in time and mass, we apply an amplitude cut that tests that the effective
-distance of the triggers is coincident given the relative sensitivity of the
-detectors, while allowing for error in this measurement which is determined by
-Monte Carlo simulations.  When testing for triple coincident triggers we 
+in time and mass, we can apply an amplitude cut that tests that the effective
+distances of the triggers are coincident. In this test we must allow for the
+relative sensitivity of the detectors while allowing for error in the distance
+measurement, as determined by Monte Carlo simulations. The amplitude cut for
+triggers from H1 and H2 is given by 
+\begin{equation}
+\label{eq:eff_dist_test}
+\frac{\left|D_\mathrm{1} - D_\mathrm{2}\right|}{D_\mathrm{1}}
+< \frac{\epsilon}{\rho_\mathrm{2}} + \kappa,
+\end{equation}
+where $D_1$ ($D_2$) is the effective distance of the trigger in the first
+(second) detector and $\rho_{2}$ is the signal-to-noise ratio of the trigger
+in the second detector. $\epsilon$ and $\kappa$ are tunable parameters.
+In order to disable the amplitude cut when comparing triggers from LLO and
+LHO, we set $\kappa = 1000$.  When testing for triple coincident triggers we
 accept triggers that are coincident in the L1 and H1 detectors that are
 \emph{not} present in the H2 detector \emph{if} the effective distance of the
-trigger is further than the maximum distance of H2 at signal-to-noise ratio
-$6$ at the time of the candidate trigger. Figure \ref{f:coinc_test} summarizes
-the time, mass and distance coincidence test.  The final step of the pipeline
-is to apply and auxiliary interferometer vetoes described in
-section~\ref{s:vetoes}. 
-
-The list of surviving candidate triggers is followed up by examining the raw
-gravitational wave data, auxiliary interferometer channels and physical
-environment monitoring channels to determine if the triggers are truly of
-astrophysical origin.
-
+trigger is further than the maximum distance of H2 at the signal-to-noise
+ratio threshold at the time of the candidate trigger.  Figure
+\ref{f:coinc_test} summarizes the algorithm for the time, mass and distance
+coincidence tests used in S2. 
 
 \section{Auxiliary and Environmental Channel Vetoes}
 \label{s:vetoes}
 
-The other method was to look for signatures in environmental monitoring
-channels and auxiliary interferometer channels which would indicate an
-external disturbance or instrumental ``glitch'', allowing us to {\it veto} any
-triggers recorded at that time.
-
-Auxiliary interferometer channels (which monitor the light in the
+In addition to data quality cuts, another method to exclude false alarms is to
+look for signatures in environmental monitoring channels and auxiliary
+interferometer channels which would indicate an external disturbance or
+instrumental glitches. This allows us to {\it veto} any triggers recorded at
+that time.  Auxiliary interferometer channels (which monitor the light in the
 interferometer at points other than the antisymmetric port---where a
-gravitational wave would be most evident) were examined, with the aim being to
+gravitational wave would be most evident) are examined, with the aim being to
 look for correlations between glitches found in the readouts of these channels
 and inspiral event triggers found in the playground data.  By doing so, we are
 capable of identifying instrumental artifacts that directly affect the light
 that is measured in the gravitational wave channel, so these vetoes are
-potentially very powerful.  However, we had to consider the possibility that a
-gravitational wave itself could produce the observed glitches in the auxiliary
-channel due to some physical or electronic coupling.  This possibility was
-tested by means of {\em hardware} injections, in which a simulated inspiral
-signal is injected into the interferometer by physically moving one of the end
-mirrors of the interferometer. Hardware injections allow us to establish a
-limit on the effect that a true signal would have on the auxiliary channels.
-Only those channels that were unaffected by the hardware injections were
-considered ``safe'' for use as potential veto channels. Hardware injections
-are described in more detail in chapter \ref{ch:hardware}.
+potentially very powerful. Figure \ref{f:vetoes} demonstrates the the use of
+auxiliary channels to identify the source of an inspiral trigger in the
+gravity wave channel.
+
+When choosing vetoes, we must consider the possibility that a gravitational
+wave itself could produce the observed glitches in the auxiliary channel due
+to some physical or electronic coupling.  This possibility was tested by means
+of hardware injections, in which a simulated inspiral signal is injected into
+the interferometer by physically moving one of the end mirrors of the
+interferometer. Hardware injections allow us to establish a limit on the
+effect that a true signal would have on the auxiliary channels.  Only those
+channels that were unaffected by the hardware injections were considered
+``safe'' for use as potential veto channels. The process of testing veto
+safety with hardware injections is described in more detail in chapter
+\ref{ch:hardware}.
 
 We used a computer program, {\it glitchMon} \cite{glitchMon}, to examine the
 data and identify large amplitude transient signals in auxiliary channels.
@@ -632,30 +654,35 @@ Numerous channels, with various filters and threshold settings, were examined
 with glitchMon. The program produces a list of times when the glitches
 occurred. The glitch event list was compared with times generated by triggers
 from the inspiral search; all of these preliminary studies were conducted on
-the playground data. A time window around a glitch was defined, and any
+the playground data.  A time window around a glitch was defined, and any
 inspiral event within this window was rejected. One can associate the veto
 with inspiral event candidates and evaluate a veto efficiency (percentage of
 inspiral events eliminated), use percentage (percentage of veto triggers which
 veto at least one inspiral event), and dead-time (percentage of science-data
-time eliminated by the veto). The results of the veto investigations for
-binary neutron stars are described in section \ref{s:} and for binary black
-hole MACHOs in section \ref{s:}.
-
+time eliminated by the veto). Tuning of the vetoes for binary neutron stars
+are described in chapter \ref{ch:bns} and for binary black hole MACHOs in
+chapter \ref{ch:macho}.
 
 \section{Background Estimation}
 \label{s:background}
 
 Since we restrict the S2 analysis to coincident data and require that at least
 two of the interferometers must be located at different observatories, we may
-measure a background rate for our analysis. After generating triggers for each
-interferometer, we slide the triggers from one observatory relative to the
-other observatory and look for coincidences between the shifted and zero lag
-triggers. The minimum slide length is chosen to be greater than the length of
-the longest filter ($20$~seconds) so any coincident triggers detected must be due to background and
-not astrophysical events. By examining the distribution of background events
-in the $(\rho_\mathrm{H},\rho_\mathrm{L})$ plane we can attempt to determine
-contours of constant false alarm rate in order to construct a combined
-effective signal-to-noise ratio for a coincident trigger\cite{abbott2004a}.
+measure a background rate for our analysis.  We estimate the background rate
+by introducing an artificial time offset, or {lag}, $\mathbb{T}$ to the
+triggers coming from the Livingston detector relative to the Hanford detector.
+After generating triggers for each interferometer, we slide the triggers from
+one observatory relative to the other observatory and look for coincidences
+between the shifted and zero lag triggers.  The triggers which emerge from the
+end of the pipeline are then considered a single trial representative of an
+output from a search if no signals are present in the data.   By choosing a
+lag of more than 20~ms, we ensure that a true gravitational wave will not be
+coincident in the time-shifted data streams.  In fact, we use lags longer than
+the durations of all templates to avoid correlation issues.  Note that we do
+not time-shift the two Hanford detectors relative to one another since there
+may be real correlations due to environmental disturbances.  If the times of
+background triggers are not correlated in the two interferometers then the
+background rate can be measured.
 
 \section{Detection Efficiency}
 \label{s:eff}
@@ -724,7 +751,7 @@ ensure that a data quality cut is not triggered by a real signal in the data.
 For this reason we always use caution when selecting a cut base on noise in
 AS\_Q.  The second constraint is to not exclude large amounts of data from the
 analysis as the signals that we are looking for are rare. Finally we base our
-choice on reccomendations from the experiemental team. They may decide that a
+choice on advice from the experimental team. They may decide that a
 cut should be used, even if it does not correlate with inspiral triggers, as
 any detection made in such a time could not be trusted. Table
 \ref{t:s2dqchoice} shows the final choice of discretionary data quality cuts
@@ -747,41 +774,39 @@ this interferometer do we search for a coincident trigger in the less
 sensitive interferometers. This approach reduces the computational power
 necessary to perform the search.
 
-
 The power spectral density (PSD) of the noise in the Livingston detector is
 estimated independently for each L1 chunk that is coincident with operation of
 a Hanford detector (denoted $\mathrm{L1} \cap (\mathrm{H1} \cup
-\mathrm{H2}$)).  The PSD is used to lay out a template bank for filtering that
+\mathrm{H2})$).  The PSD is used to lay out a template bank for filtering that
 chunk, according to the parameters for mass ranges and minimal
 match\cite{Owen:1998dk}. The data from the L1 interferometer for the chunk is
 then filtered, using that bank, with a signal-to-noise threshold
-$\rho_{\mathrm{L}}^\ast$ and $\chi^2$ veto threshold
-$\chi^2_{\ast\mathrm{L}}$ to produce a list of triggers as described in
-section~\ref{s:triggers}.  For each chunk in the Hanford interferometers, a
-{triggered bank} is created by adding a template if it produced at least one
-trigger in L1 during the time of the Hanford chunk.  This is used to filter
-the data from the Hanford interferometers with signal-to-noise and $\chi^2$
-thresholds specific to the interferometer, giving a total of six thresholds
-that may be tuned.  For times when only the H2 interferometer is operating in
-coincidence with L1 (denoted $\mathrm{L1} \cap (\mathrm{H2} - \mathrm{H1}$)
-the triggered bank is used to filter the H2 chunks that overlap with L1 data;
-these triggers are used to test for L1/H2 double coincidence.  All H1 data
-that overlaps with L1 data (denoted $\mathrm{L1} \cap \mathrm{H1}$) is
-filtered using the triggered bank for that chunk. For H1 triggers produced
-during times when all three interferometers are operating, a second triggered
-bank is produced for each H2 chunk by adding a template if it produced at
-least one trigger found in coincidence in L1 and H1 during the time of the H2
-chunk and the H2 chunk is filtered with this bank.  These triggers are used to
-search for triple coincident triggers in H2.  The remaining triggers from H1
-when H2 is not available are used to search for L1/H1 double coincident
-triggers.
+$\rho_{\mathrm{L}}^\ast$ and $\chi^2$ veto threshold $\chi^2_{\ast\mathrm{L}}$
+to produce a list of triggers as described in section~\ref{s:pipetemplate}.
+For each chunk in the Hanford interferometers, a \emph{triggered bank} is
+created by adding a template if it produced at least one trigger in L1 during
+the time of the Hanford chunk.  This is used to filter the data from the
+Hanford interferometers with signal-to-noise and $\chi^2$ thresholds specific
+to the interferometer, giving a total of six thresholds that may be tuned.
+For times when only the H2 interferometer is operating in coincidence with L1
+(denoted $\mathrm{L1} \cap (\mathrm{H2} - \mathrm{H1}$) the triggered bank is
+used to filter the H2 chunks that overlap with L1 data; these triggers are
+used to test for L1/H2 double coincidence.  All H1 data that overlaps with L1
+data (denoted $\mathrm{L1} \cap \mathrm{H1}$) is filtered using the triggered
+bank for that chunk. For H1 triggers produced during times when all three
+interferometers are operating, a second triggered bank is produced for each H2
+chunk by adding a template if it produced at least one trigger found in
+coincidence in L1 and H1 during the time of the H2 chunk and the H2 chunk is
+filtered with this bank.  These triggers are used to search for triple
+coincident triggers in H2.  The remaining triggers from H1 when H2 is not
+available are used to search for L1/H1 double coincident triggers.
 
 \subsection{A Directed Acyclic Graph for the S2 Pipeline}
 \label{ss:dag}
 
 In this section we demonstrate how the S2 pipeline in figure \ref{f:pipeline}
 can be turned into a DAG to execute the analysis. We illustrate the
-construction of the dag with the short list of science segments shown in table
+construction of the DAG with the short list of science segments shown in table
 \ref{t:fakesegslist}. For simplicity, we only describe the construction of the
 DAG for zero time lag data. The DAG we construct filters more than the
 absolute minimum amount of data needed to cover all the double and triple
@@ -792,11 +817,11 @@ A DAG consists of \emph{nodes} and \emph{edges}. The nodes are the programs
 which are executed to perform the inspiral search pipeline. In the S2
 pipeline, the possible nodes of the DAG are:
 \begin{enumerate}
-\item \textbf{datafind} locates data for a specified time interfval on the compute
-cluster and creates a file contining the paths to the input data that other
+\item \textbf{datafind} locates data for a specified time interval on the compute
+cluster and creates a file containing the paths to the input data that other
 programs can read.
 
-\item\textbf{tmpltbank} genrates an average power spectral density for a chunk and
+\item\textbf{tmpltbank} generates an average power spectral density for a chunk and
 computes a template bank for a given region of mass parameter space and
 minimal match.
 
@@ -809,25 +834,25 @@ inspiral code.
 \item\textbf{inca} implements the coincidence analysis described in section
 \ref{s:coincidence} and figure \ref{f:s2_coinc_test}.
 \end{enumerate}
-The edges in the dag define the relations between programs; these relations
+The edges in the DAG define the relations between programs; these relations
 are determined in terms of parents and children. A node in the DAG will not be
-executed until all of its parents have been sucessfully executed. There is no
+executed until all of its parents have been successfully executed. There is no
 limit to the number of patents a node can have; it may be zero or many. In
 order for the DAG to be acyclic, no node cannot be a child of any node that
 depends on the execution of that node. By definition, there must be at least
-one node in the DAG with no parents. This node is executed first, follwed by
+one node in the DAG with no parents. This node is executed first, followed by
 any other nodes who have no parents or whose parents have previously executed.
 The construction of a DAG allow us to ensure that inspiral triggers for two
-interferometers have been genrated before looking for coincidence between
+interferometers have been generated before looking for coincidence between
 the triggers, for example.
 
-The S2 dag is generated by a program called the \emph{pipeline script}, which
+The S2 DAG is generated by a program called the \emph{pipeline script}, which
 is an implementation of the logic of the S2 pipeline in the Python programming
 language. The pipeline script takes as input the list of science segments for
 each interferometer, with data quality cuts applied. The script reads in all
 science segments longer than $2048$~seconds and divides them into \emph{master
 analysis chunks}. If there is data at the end of a science segment that is
-shorter than $2048$~seconds, the chunk is overlaped with the previous one, so
+shorter than $2048$~seconds, the chunk is overlapped with the previous one, so
 that the chunk ends at the end of the science segment. An option named
 \verb|trig-start-time| is set and passed to the inspiral code. No triggers are
 generated before this time and so no triggers are duplicated between chunks.
@@ -880,7 +905,7 @@ This produces two intermediate data products for each master chunk, which are
 stored as XML data. The intermediate data products are the template bank file,
 \verb|L1-TMPLTBANK-730000000-2048.xml|, and the inspiral trigger file,
 \verb|L1-INSPIRAL-730000000-2048.xml|. The GPS time in the filename
-corresponds to the start time of the master chunk filtered and the nunber
+corresponds to the start time of the master chunk filtered and the number
 before the \verb|.xml| file extension is the length of the master chunk.
 
 All H2 master chunks that overlap with the L1/H2 double coincident data to
@@ -891,7 +916,7 @@ chunk. The triggered bank file generated is called
 start time of the master H2 chunk to filter. All L1 master chunks that overlap
 with the H2 master chunk are used as input to the triggered bank generation to
 ensure that all necessary templates are filtered.  The H2 master chunks are
-filted using the triggered template bank for that master chunk to produce H2
+filtered using the triggered template bank for that master chunk to produce H2
 triggers in files named \verb|H2-INSPIRAL_L1-730002500-2048.xml|. The GPS
 start time in the file name is the start time of the H2 master chunk.
 
@@ -902,10 +927,10 @@ template bank is stored in a file names
 \verb|H1-TRIGBANK_L1-730004000-2048.xml| and the triggers in a file named
 \verb|H1-INSPIRAL_L1-730004000-2048.xml| where the GPS time in the file name
 is the GPS start time of the H1 master chunk. The H2 master chunks that
-overlap with the L1/H1/H2 triple coincident data are decribed below.
+overlap with the L1/H1/H2 triple coincident data are described below.
 
 For each L1/H1 double coincident segments to search, an inca process is run to
-perform the coincdence test. The input to inca is all L1 and H1 master chunks
+perform the coincidence test. The input to inca is all L1 and H1 master chunks
 that overlap the segment to search. The GPS start and stop times passed to
 inca are the start and stop times of the double coincident segment to search.
 The output is a file names \verb|H1-INCA_L1H1-730007936-2000.xml|. The GPS
@@ -916,7 +941,7 @@ segment to search. The output files from inca are names
 
 For each L1/H1/H2 triple coincident segment, an inca process is run to create
 the L1/H1 coincident triggers for this segment. The input files are all L1 and
-H1 master chunks that overlap with the segmnent. The start and end times to
+H1 master chunks that overlap with the segment. The start and end times to
 inca are the start and end times of the segment. This creates a file named
 \begin{verbatim}
 \verb|H1-INCA_L1H1T-730004064-3872.xml
@@ -927,7 +952,7 @@ interferometer, we only check for time, $dt$, and mass, $dm$, coincidence.
 The parameter $\kappa$ in the effective distance cut is set to $1000$, so the
 amplitude cut is disabled.
 
-For each H2 master chunk that overlaps with triple coincident data, a triggerd
+For each H2 master chunk that overlaps with triple coincident data, a triggered
 template bank is generated. The input file to the triggered bank generation is
 the inca file for the segment to filter that contains the master chunk. The
 start and end times of the triggered bank generation are the start and end
@@ -948,7 +973,7 @@ allowed in effective distance).
 
 \item Compute the maximum range of H2 for the trigger mass.
 
-\item If the lower bound on the H1 trigger is futher away than can be seen in
+\item If the lower bound on the H1 trigger is further away than can be seen in
 H2, keep the trigger.
 
 \item If the lower bound on the effective distance of the H1 trigger is less
@@ -956,7 +981,7 @@ than the range of H2, but the upper bound is greater, keep the trigger in H1.
 If a H2 trigger is found within the interval, store it as well.
 
 \item If upper bound on the distance of the H1 trigger is less than the range
-of H2, check for coincidence. A coincidence check is performed in dt, dm,
+of H2, check for coincidence. A coincidence check is performed in $dt$, $dm$,
 epsilon and kappa. If there is no coincident trigger discard the H1 trigger.
 \end{enumerate}
 This coincidence step creates two files
@@ -967,7 +992,7 @@ H2-INCA_L1H1H2-730004064-3872.xml
 where the GPS start time and duration of the files are the start and duration
 of the triple coincident segment.  The L1/H1 coincidence step is then executed
 again to discard any L1 triggers coincident with a H1 triggered that has been
-discared by H2. The input to the inca are the files
+discard by H2. The input to the inca are the files
 \begin{verbatim}
 L1-INCA_L1H1T-730004064-3872.xml
 H1-INCA_L1H1H2-730004064-3872.xml
@@ -1079,7 +1104,7 @@ DAQ\_DROPOUT       & Dropout in data acquisition system \\
 MISSING\_RDS       & Data is unavailable for analysis \\
 INVALID\_TIMING    & Timing believed to be unreliable \\
 CALIB\_LINE\_NO\_RDS\_V03 & Problem with accessing data for calibration \\
-DAQ\_REBOOT               & One or more data aquisition system rebooted \\
+DAQ\_REBOOT               & One or more data acquisition system rebooted \\
 INVALID\_CALIB\_LINE  & Problem with calibration line strength \\
 NO\_CALIB                 & Calibration line turned off \\
 LOW\_CALIB                & Calibration line strength too low \\
@@ -1095,8 +1120,8 @@ NONSTAND\_CTRLS    & Non-standard controls affecting calibration\\
 &and couplings \\
 ASQ\_OUTLIER\_CLUSTER     & Cluster of large AS\_Q outliers \\
 &in short time interval \\
-ASQ\_OUTLIER\_CORRELATED  & Large ASQ outlier correlated with \\
-&outlier in auxiliary IFO channel \\
+ASQ\_OUTLIER\_CORRELATED  & Large ASQ outliers correlated with \\
+&outliers in auxiliary IFO channel \\
 ASQ\_LOWBAND\_OUTLIER     & High noise below 100 Hz in AS\_Q \\
 ASQ\_UPPERBAND\_OUTLIER   & High noise in 100-7000 Hz in AS\_Q \\
 \hline\hline
@@ -1124,7 +1149,7 @@ $16\,384$~Hz and injected into data with a typical S2 noise curve. The end
 time of the waveform is at $72.74525$~seconds, shown by the vertical line in
 both plots. The top panned shows the signal-to-noise ratio for the data
 segment when using data at the full bandwidth and data resampled to 
-$4096$~Hz. The botton pannel shows the same data close to the end time of the
+$4096$~Hz. The bottom panel shows the same data close to the end time of the
 injection. The loss in signal-to-noise ratio for the inspiral trigger 
 generated at $4096$~Hz is $0.1\%$.
 }
@@ -1211,6 +1236,37 @@ a trigger we keep the H1 trigger without searching for coincidence.}
 \begin{figure}[p]
 \vspace{5pt}
 \begin{center}
+\begin{tabular}{cc}
+(i) & (ii) \\
+\includegraphics[width=0.475\linewidth]{figures/pipeline/trigger_730592784_as_q} &
+\includegraphics[width=0.475\linewidth]{figures/pipeline/trigger_734153360_as_q}\\
+(iii) & (iv) \\
+\includegraphics[width=0.475\linewidth]{figures/pipeline/trigger_730592784_pob_i} &
+\includegraphics[width=0.475\linewidth]{figures/pipeline/trigger_734153360_pob_i}\\
+\end{tabular}
+\end{center}
+\caption{\label{f:vetoes}%
+An auxiliary channel veto investigation of two candidate triggers. Panel (i)
+shows the gravitational wave channel, L1:LSC-AS\_Q, high passes above 100 Hz
+for a an inspiral trigger at GPS time 730592784 with a signal-to-noise ratio
+$\rho = 10.6$. The vertical line shows the time of the inspiral trigger.
+Panels (iii) shows the auxiliary interferometer channel L1:LSC-POB\_I high
+passed above 70 Hz. The vertical lines with circles show the location of
+glichMon triggers produced by the noise in L1:LSC-POB\_I. By excluding
+inspiral triggers within a time window of these glitchMon triggers, we can
+reduce the number of false event candidates in the pipeline. For contrast,
+panel (ii) shows an gravitational wave channel high passed above 100 Hz for
+an inspiral trigger at GPS time 734153360. This trigger has a similar
+signal-to-noise ratio, $\rho = 10.9$, as the trigger in panel (i). For this
+trigger there does not seem to be a correlated noise source in the auxiliary
+channel L1:LSC-POB\_I shown high passed above 70 Hz in panel (iv).  
+}
+\end{figure}
+
+
+\begin{figure}[p]
+\vspace{5pt}
+\begin{center}
 \includegraphics[width=\textwidth]{figures/pipeline/G030379-00}    
 \end{center}
 \caption{\label{f:s2noisecurve}%
@@ -1252,8 +1308,8 @@ NONSTAND\_CTRLS          &   4020 &   843 &    18  &    0 &    0  &    0 \\
 \end{center}
 \caption{\label{t:s2dqresults}%
 The table shows the inspiral triggers generate from science mode data with the
-mandatory data quality cuts applied. For each descretionary data quality cut
-applied a given inteferometer (1), the amount of time that would be excluded
+mandatory data quality cuts applied. For each discretionary data quality cut
+applied a given interferometer (1), the amount of time that would be excluded
 from the total science mode data by the cut is given (2). Since we tune data
 quality cuts on playground data, the amount of playground time excluded is
 also shown (3) and the amount of playground data analyzed for triggers (4).
@@ -1306,7 +1362,7 @@ ASQ\_LOWBAND\_OUTLIER     & No \\
 \multicolumn{2}{l}{\parbox{\linewidth}{\footnotesize Gaby.\baselineskip=14pt}} \\
 \\
 ASQ\_UPPERBAND\_OUTLIER   & Yes \\
-\multicolumn{2}{l}{\parbox{\linewidth}{\footnotesize Times with high upperband
+\multicolumn{2}{l}{\parbox{\linewidth}{\footnotesize Times with high upper band
 noise in H1 are clearly correlated with high signal-to-noise ratio triggers.
 In order to prevent the cut from begin triggered by real signals we also
 require that the cut is on for more that $180$ seconds. The longest inspiral
@@ -1339,7 +1395,7 @@ two double coincident data sets or to the triple coincident data set.}
 \hspace*{-0.2in}\includegraphics[width=\linewidth]{figures/pipeline/fake_segs_dag}
 \end{center}
 \caption{\label{f:fake_segs_dag}%
-The DAG generated from the pipeline shown in figure ref{f:pipeline} and the
+The DAG generated from the pipeline shown in figure \ref{f:pipeline} and the
 fake science segment list described in section \ref{ss:dag}. The figure shows
 the structure of the DAG with all job dependencies needed to execute the S2
 pipeline. Note that it appears that there are several LHO master chunks
