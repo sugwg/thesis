@@ -1,7 +1,7 @@
 % $Id$
 
-\section{Motivation for Hardware Injections}
-\label{s:motivation}
+%\section{Motivation for Hardware Injections}
+%\label{s:motivation}
 Gravitational radiation incident on the LIGO interferometers from an
 inspiralling binary will cause the test masses to move relative to each other.
 This produces a differential change in length of the arms as described in
@@ -10,46 +10,53 @@ interferometer data to simulate the presence of a signal in the noise. We use
 injections to measure the performance of the binary inspiral analysis
 pipeline as described in section \ref{s:eff}.  \emph{Software injections},
 which add a simulated signal to the data after it has been recorded, are used
-for efficiency measurements. Since this they performed \emph{a posteriori}
+for efficiency measurements. Since they performed \emph{a posteriori} the
 interferometer is not affected while it is recording data.  Alternatively, a
 simulated signal can be added to the interferometer control system to make the
-instrument behave as if an inspiral signal is present. We call this
-\emph{hardware injection}; the data recorded from the instrument contains the
-simulated signal.
+instrument behave as if an inspiral signal is present.  The interferometer
+Length Sensing and Control system has excitation points which allow arbitrary
+signals to be added into the servo control loops or to the drives that control
+the motion of the mirrors\cite{LIGOS1instpaper}.  We call this \emph{hardware
+injection}; the data recorded from the instrument contains the simulated
+signal. Figure \ref{f:ifo_inj} shows the hardware injection points on a
+schematic diagram of the interferometer and length sensing and control loop.
 
-Analysis of hardware injections ensures that the analysis pipeline is
-sensitive to real inspiral signals and validates the software injections used
-to test the pipeline efficiency.  In order to perform an accurate upper limit
-analysis for binary neutron stars, we must measure the efficiency of our
+Analysis of hardware injections allows us to ensure that the analysis pipeline
+is sensitive to real inspiral signals and validates the software injections
+used to test the pipeline efficiency.  In order to perform an accurate upper
+limit analysis for binary inspirals, we must measure the efficiency of our
 pipeline. That is, we inject a known number of signals into the pipeline and
 determine the fraction of these detected.  Injecting signals into the
-interferometer for the duration of a run is not practical, so we use the
-analysis software to inject inspiral signals in software.  By comparing
-software and hardware injections we confirm that software injections are
-adequate to measure the efficiency of the upper limit pipeline.
+interferometer for the duration of a run is not practical and would
+contaminate the data, so we use the analysis software to inject inspiral
+signals into the data.  By comparing software and hardware injections we
+confirm that software injections are adequate to measure the efficiency of the
+upper limit pipeline.
 
 Hardware injections provide a very complete method of testing the inspiral
 detection pipeline. By recovering the physical parameters of an injected
 signal, we test our understanding of all aspects of the pipeline, including
-the instrument calibration, filtering algorithm and veto safety. We injected
-inspiral signals immediately after the first LIGO science run (S1) in
-August---September 2002. The data taken during this time was analyzed using
-with the software tools used to search for real signals.  In this chapter, we
-describe the results of analysis of the S1 hardware injections. The analysis
-pipeline used in S1 differs from that used in S2\cite{LIGOS1iul}. Here we
-are examining the response of the filtering code to the hardware injections,
-however, and so the differences between so the differences between the S1 and
-S2 pipelines are unimportant.
+the instrumental calibration, the filtering algorithm and veto safety. We
+injected inspiral signals immediately after the first LIGO science run (S1) in
+September 2002. The resulting data was analyzed using the
+software tools used to search for real signals.  In this chapter, we describe
+the results of analysis of the S1 hardware injections. The analysis pipeline
+used in S1 differs from that used in S2\cite{LIGOS1iul}. Here we are examining
+the response of the filtering code to the hardware injections, however, and so
+the differences between the S1 and S2 pipelines are unimportant.
 
 \section{Injection of the Inspiral Signals}
 \label{s:injecting}
 
-To inject the signals, we generate the interferometer strain, $h(t)$, produced
+To inject the signals, we generate the interferometer strain $h(t)$ produced
 by an inspiralling binary using the restricted second order post-Newtonian
 approximation in the time domain\cite{Blanchet:1996pi}.  The LSC calibration group
-supplies a transfer function, $T(f)$, which allows us to construct a signal,
-$v(t)$, that produces the desired strain when it is injected into the
-interferometer.  The transfer function, $T(f)$, is given by 
+supplies a transfer function $T(f)$ which allows us to construct a signal
+$g(t)$ that produces the desired strain when it is injected into the
+interferometer.  The transfer function $T(f)$ should be identical to the
+actuation function $A(f)$ described in section \ref{ss:calibration}, however
+in S1 this was simplfied to contain only the pendulum response of the mirrors,
+given by 
 \begin{equation}
 T(f) = \frac{L}{C}\frac{f^2}{f_0^2}
 \end{equation}
@@ -57,21 +64,16 @@ where $L$ is the length of the interferometer, $C$ is the calibration of the
 excitation point in nm/count and $f_0$ is the pendulum frequency of the test
 mass. Damping is neglected as it is unimportant in the LIGO frequency band.
 The code used to generate the hardware injections is the same as that used
-for software injections; only the the transfer function used to generate the
-injected signal differs.
+for software injections; only the transfer function used to generate the
+injected signal differs since we are injecting into the control signal $g$
+rather then the error signal $v$.
 
-The interferometer \emph{Length Sensing and Control} system
-has excitation points which allow arbitrary signals to be added into the servo
-control loops or to the drives that control the motion of the
-mirrors\cite{LIGOS1instpaper}. 
 During S1, we injected signals corresponding to an optimally oriented binary.
 Injections of two $1.4\,M_\odot$ neutron stars at distances from $10$ kpc to
 $80$ kpc were used to test the neutron star analysis. 
 We also injected signals from a $1.4,\,4.0\,M_\odot$ binary and several
 $1.4,1.4\,M_\odot$ binaries at closer distances.  These signals were injected
 into the differential mode servo and directly into an end test mass drive.
-Figure \ref{f:ifo_inj} shows the injection points on a schematic diagram of
-the interferometer and it's control loop.
 
 \section{Detection of the Injected Signals}
 \label{s:detection}
@@ -83,8 +85,8 @@ during the post-run hardware injections.
 The first set of injections were large amplitude signals used to verify the
 inspirals were being correctly injected. We ignore these and concentrate on
 the second set, which were at more appropriate distances.  We only consider
-the two 1.4 solar mass inspiral injection, as the 1.4,4.0 injection lies
-outside the template bank space.
+the 1.4 solar mass inspiral injections, as the 1.4,4.0 injection lies
+outside the template bank space used in the S1 binary neutron star analysis.
 
 It can be seen that all of the hardware injections are identified as candidate
 events since they have high signal-to-noise ratios and values of the $\chi^2$
@@ -111,14 +113,14 @@ signals.
 Calibration measurements of the interferometers were performed before and
 after the run; these are the reference calibrations. In general, the
 calibration changes due to changes in the alignment on time scales of minutes.
-This variation can be encoded in a single parameter $\alpha$ which is
+This variation is encoded in the parameter $\alpha$ which is
 monitored using a sinusoidal signal injected into the
-detector (the calibration line)\cite{Adhikari:2003}. $\alpha$ is used as input
+detector (see section \ref{ss:calibration}). $\alpha$ is used as input
 to the data analysis pipeline and varied between $0.4$ and $1.4$ during S1.
-Data is analyzed in 256 second segments.  For each 256 seconds of data
+Data in S1 was analyzed in 256 second segments.  For each 256 seconds of data
 starting at time $t_0$, we construct the calibration, $R(f;t_0)$ by using
 $\alpha(t_0)$ and a reference calibration.  $R(f;t_0)$ is then used to
-calibrate 256 seconds of data.
+calibrate the 256 seconds of data.
 
 Figure \ref{f:calibration} shows a set of injections into the Livingston
 interferometer analyzed with different calibrations generated by varying the
@@ -140,12 +142,12 @@ the gravitational wave channel. Concern was raised that a real inspiral signal
 may couple between these channels and a real signal may be inadvertently
 vetoed.  To check this, we examined coupling between the channels at the time
 of an injection.  Figure \ref{f:veto_safe} shows the power spectra of the
-gravity wave channel, \texttt{AS\_Q}, and the auxiliary channels that we
-considered using as vetoes during S1: \texttt{AS\_I}, \texttt{REFL\_I} and
-\texttt{REFL\_Q}.  The injected inspiral signal can clearly be seen coupling
-to the auxiliary channel \texttt{AS\_Q}, but there is no obvious coupling
-between the injected signal and \texttt{REFL\_I} or \texttt{REFL\_Q}. This
-led us to discard \texttt{AS\_I} as a possible veto channel in the S1
+gravitational wave channel, LSC-AS\_Q, and the auxiliary channels that we
+considered using as vetoes during S1: LSC-AS\_I, LSC-REFL\_I and
+LSC-REFL\_Q.  The injected inspiral signal can clearly be seen coupling
+to the auxiliary channel LSC-AS\_Q, but there is no obvious coupling
+between the injected signal and LSC-REFL\_I or LSC-REFL\_Q. This
+led us to discard LSC-AS\_I as a possible veto channel in the S1
 analysis. Similar studies have been performed for the S2 data when auxiliary
 channels are proposed as veto channels.
 
@@ -209,7 +211,7 @@ of the $\chi^2$ veto is shown next to the candidate event.
   \end{flushright}
   \caption[Study of Calibration Using Hardware Injections]{%
   Each curve corresponds to a hardware injection at the given GPS time. We
-  re-analyst each injection with different calibrations to show how the
+  re-analyse each injection with different calibrations to show how the
   detected quantities vary with $\alpha$. The upper plot shows the ratio of
   signal-to-noise ratio, $\rho$, to its maximum value, $\rho_{\mathrm{max}}$.
   The lower plot shows ratio of the detected distance to the known distance of
@@ -224,8 +226,8 @@ of the $\chi^2$ veto is shown next to the candidate event.
     \includegraphics[width=\textwidth]{figures/hardware/veto_safe}    
   \end{flushright}
   \caption[Study of Veto Safety Using Hardware Injections]{%
-  Power spectra of the gravity wave channel \texttt{AS\_Q} and the auxiliary
-  channels \texttt{AS\_I}, \texttt{REFL\_I} and \texttt{REFL\_Q} during a 
+  Power spectra of the gravitational wave channel LSC-AS\_Q and the auxiliary
+  channels LSC-AS\_I, LSC-REFL\_I and LSC-REFL\_Q during a 
   hardware injection. The broad peak in the spectrum is the inspiral signal
   and the two power spectra taken at subsequent times show it sweeping across
   the band as the frequency of the inspiral signal increases with time.
