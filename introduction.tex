@@ -15,20 +15,326 @@ implementation: the computation of the inverse power spectrum and the trigger
 selection algorithm. This is followed by a brief conclusion which summarized
 the methods used and outlines some future directions for improvement.
 
-\section{Fourier Transform Conventions}
-\label{s:ftconv}
 
-There are two possible sign conventions for the Fourier transform of a time
-domain quantity $v(t)$. In this thesis, we define the Fourier transform
-$\tilde{v}(f)$ of a $v(t)$ to be
+
+\section{The Effect of Gravitational Waves on Freely Falling Particles}
+
+In this section we briefly the effect of gravitational waves on a pair of
+freely falling particles in order to introduce some of the concepts that we
+need to discuss the detection of gravitational waves from binary inspirals.
+For a detailed decription of the propagation and effect of gravitational
+waves, we refer to \cite{MTW73,Thorne:1982cv}. Consider first a single
+particle moving in curved spacetime. If the particle is freely falling, its
+4-velocity, $\vec{u}$, satisfues the geodessic equation
 \begin{equation}
-\label{eq:ft}
-\tilde{v}(f)=\int_{-\infty}^\infty dt\,v(t)\, e^{- 2 \pi i f t}
+\label{eq:geodessic}
+\nabla_{\vec{u}} \vec{u} = \tensor{u}{^\alpha_{;\mu}}u^{\mu} = 0
 \end{equation}
-and the inverse Fourier transform to be 
+where $;$ denotes the covariant derivative, that is
 \begin{equation}
-\label{eq:ift}
-v(t)=\int_{-\infty}^\infty df\,\tilde{v}(f)\, e^{2 \pi i f t}.
+\tensor{u}{^\alpha_{;\mu}}\tensor{u}{^{\mu}} = \left(\tensor{u}{^\alpha_{,\mu}} +
+\Gamma^\alpha_{\mu\nu}u^\nu\right)
 \end{equation}
-This convention differs from that used in some gravitational wave literature,
-but is the adopted convention in the LIGO Scientific Collaboration.
+where $,$ denotes the ordinary derivative and $\Gamma\alpha_{\mu\nu}$ is the
+connection coefficent of the metric, $g_{\alpha\beta}$. Now suppose that we have
+two particles $A$ and $B$ as shown in figure \ref{f:particles}. The separation
+between the particles is $\vec{\xi}$ and the particles are initally at rest
+with respect to each other, so
+\begin{align}
+\nabla_{\vec{u}} \vec{u} &= 0 \\
+\vec{u} \cdot \vec{\xi} & = 0 
+\end{align}
+If the spacetime is curved, the second derivative of $\vec{\xi}$ along
+$\vec{u}$ is non-zero, however. It is given by the equation of geodessic
+deviation
+\begin{equation}
+\nabla_{\vec{u}}\nabla_{\vec{u}} \vec{\xi} = - R(_,\vec{u},\vec{\xi},\vec{u})
+\end{equation}
+where $R(_,\vec{u},\vec{\xi},\vec{u}$ is the Riemann curvature tensor. We now
+introduce a \emph{Local Lorentz Frame} (LLF) for particle $A$, that is a
+cartesian coordinate system defined by three orthogonally pointing giroscopes
+carried by particle $A$. The curvature of spacetime means that the coordinate
+system is not exactly cartesian, but it can be shown that this deviation is
+second order in the spatial distance from the particle. This means that along
+the worldline of particle $A$ the metric is
+\begin{equation}
+g_{\alpha\beta} = \eta_{\alpha\beta} + \frac{\mathcal{O}\left(|\vec{x}|^2\right)}{R^2}
+\end{equation}
+where $\eta_{\alpha\beta}$ is the flat Minkowski metric, $\vec{x}$ is the
+distance from the particle and $R \sim |R_{\alpha\beta\gamma\delta}|$ In the
+Local Lorentz frame of particle $A$, the equation of geodessic deviation
+becomes
+\begin{equation}
+\frac{\partial^2 u^{j}}{\partial t^2} = -
+\tensor{R}{^j_{\alpha\beta\gamma}}u^\alpha\xi^\beta u^\gamma =
+-\tensor{R}{^j_{0k0}} \xi^k
+\end{equation}
+We assume further that the spacetime is globally flat, so $g_{\alpha\beta} =
+\eta_{\alpha\beta}$, with weak gravitational waves propagating in it. We
+describe the gravitational waves by $R_{\alpha\beta\gamma\delta}$ which
+satisfies the wave equation
+\begin{equation}
+\eta^{\mu\nu}R_{\alpha\beta\gamma\delta,\mu\nu} = 0
+\end{equation}
+What is the effect of these gravitational waves on our test particles $A$ and
+$B$? In the Local Lorentz frame, $\vec{\xi}$ is just the coordinates of $B$.
+Let the two particles lie on the $x$-axis of the LLF and write
+\begin{equation}
+\label{eq:bcoords}
+\xi^j = x_{(0)}^j + \delta x^j
+\end{equation}
+where $x_{(0)}^j$ is the unperterbed location of particle $B$ and $\delta x^j$
+is the change is the position of $B$ caused by the gravitational wave.
+Substituting equation (\ref{eq:bcoords}) into the equation of geodessic
+deviation, we obtain
+\begin{equation}
+\label{eq:particledev}
+\frac{\partial^2 \delta x^j}{\partial t^2} = - \tensor{R}{^j_{0k0}} x_{(0)}^j =
+-R_{j0k0} x_{(0)}^j
+\end{equation}
+where we have used $\eta_{\alpha\beta}$ to lower the spatial index $j$ of the
+Riemann tensor. For a weak gravitational wave, all the components of
+$R_{\alpha\beta\gamma\delta}$ are completely determined by $R_{j0k0}$.
+Furthermore, it can be shown that the $3\times3$ symmetric matrix $R_{j0k0}$,
+which we would expect to have $6$ independent componets, has only $2$
+independent components due to the Einstein equations and the Biancci identity.
+
+Let us define the (transverse traceless) gravitational wave field,
+$h_{jk}^\mathrm{TT}$, by
+\begin{equation}
+-\frac{1}{2} \frac{\partial^2 h_{jk}^\mathrm{TT}}{\partial t^2}
+\end{equation}
+and so equation (\ref{eq:particledev}) becomes
+\begin{equation}
+\delta x^j = \frac{1}{2} h_{jk}^\mathrm{TT} x_{(0)}^j.
+\end{equation}
+If we orient our coordinates so the gravitational waves propagate in the
+$z$-direction, so $h_{jk}^\mathrm{TT}(t-z)$, then the only non-zero components
+of $h_{jk}^\mathrm{TT}$ are $h_{xx}^\mathrm{TT}$, $h_{yy}^\mathrm{TT}$,
+$h_{xy}^\mathrm{TT}$ and $h_{yx}^\mathrm{TT}$. Since $h_{jk}^\mathrm{TT}$ is
+transverse and traceless, these components satisfy
+\begin{align}
+h_{xx}^\mathrm{TT} &= - h_{yy}^\mathrm{TT} \\
+h_{xy}^\mathrm{TT} &= h_{yx}^\mathrm{TT}
+\end{align}
+and we define the two independent components of the gravitational wave to be
+\begin{align}
+h_{+} &= h_{xx}^\mathrm{TT} = - h_{yy}^\mathrm{TT}, \\
+h_{\times} &= h_{xy}^\mathrm{TT} = h_{yx}^\mathrm{TT}
+\end{align}
+which we call the ``plus'' and ``cross'' polarizations of the gravitational
+wave respectively.
+
+Now consider two more particles $C$ and $D$ lying on the $y$-axis of the LLF
+separated by 
+\begin{equation}
+\zeta^j = y^j_{(0)} + \delta y^j
+\end{equation}
+as shown in figure \ref{f:rings}. A linearly polarized gravitational wave is
+one that only contains the $+$ or the $\times$ polarization. The influence of
+a linearly $+$-polarized gravitational wave propagating in the $z$-direction
+is
+\begin{align}
+\delta x &= \frac{1}{2} h_{xx}^\mathrm{TT} x_{(0)}\\
+\delta y &= -\frac{1}{2} h_{yy}^\mathrm{TT} y_{(0)}
+\end{align}
+and for the and for a linearly $\times$-polarized gravitational wave
+propagating in the $z$-direction is
+\begin{align}
+\delta x &= \frac{1}{2} h_{xy}^\mathrm{TT} y_{(0)}\\
+\delta y &= \frac{1}{2} h_{yx}^\mathrm{TT} x_{(0)}.
+\end{align}
+Figure \ref{f:rings} shows the effect of $h_{+}$ and $h_{\times}$ on a ring
+of particles that lie in the $xy$ plane. We can see for the plus polarization
+that the that the effect of a gravitational wave is to stretch the particles
+in the $x$ direction, while squeezing them in the $y$ direction for the first
+half of a cycle and then squeeze in the $x$ direction and stretch in the $y$
+direction for latter half of the cycle.  There is therefore a relative change
+in length between the two particles $AB$ and $CD$ over the course of a cycle.
+For a circularly polarized gravitational wave (which contains both plus and
+cross polarizations) propagating in the $z$ direction, $h(t-z) =
+h_{+}(t-z) + h_{\times}(t-z)$, the overall effect is
+\begin{align}
+\delta x &= \frac{1}{2}\left(h_{+}(t-z) x_{(0)} + h_{\times}(t-z) y_{(0)}\right),
+\delta y &= \frac{1}{2}\left(-h_{+}(t-z) y_{(0)} + h_{\times}(t-z) x_{(0)}\right).
+\end{align}
+It is this relative change in the lengths of two perpendicular pairs of
+particles that we attempt to detect with LIGO. 
+
+\section{Gravitational Waves from Binary Inspiral}
+
+\subsection{The post$^2$-Newtonian Waveform}
+
+\subsection{The Stationary Phase Approximation}
+\label{ss:stationaryphase}
+
+The inspiral waveforms that we need in the matched filter are $\tilde{h}_c(f)$
+and $\tilde{h}_s(f)$, rather than the waveforms $h_c(t)$ and $h_t(t)$ computed
+in chapter \ref{ch:inspiral}. There are two ways of obtaining $\tilde{h_c}(f)$.
+The first is to compute $h_c(t)$ then Fourier transform the signal. This is
+compulationally expensive, however, as it requires an additional FFT for each
+template that we wish to filter. The second method is to use the stationary phase
+approximation\cite{Mathews:1992} to express the chirp directly in the frequency
+domain\cite{WillWiseman:1996,Cutler:1994}. Given a function
+\begin{equation}
+B(t) = A(t) \cos \phi(t)
+\end{equation}
+where
+\begin{equation}
+\frac{d\ln A}{dt} \ll \frac{d\phi}{dt}
+\end{equation}
+and
+\begin{equation}
+\frac{d^2\ln A}{dt^2} \ll \left(\frac{d\phi}{dt}\right)^2
+\end{equation}
+then the stationary phase approximation to the Fourier transform of $B(t)$ is
+given by
+\begin{equation}
+\tilde{B}(f) = \frac{1}{2} A(t) \left(\frac{df}{dt}\right)^{-\frac{1}{2}}
+\exp\left[ -i \left(2\pi f t' - \phi(f) - \frac{\pi}{4} \right)\right]
+\end{equation}
+where $t'$ is the time at which
+\begin{equation}
+\frac{d\phi(t)}{dt} = 2\pi f
+\end{equation}
+and
+\begin{equation}
+\phi(f) = \phi\left[t(f)\right].
+\end{equation}
+
+For the restricted post$^2$-Newtonian chirps discussed in chapter
+\ref{ch:inspiral}, the orbital frequency at any instant is given by
+\begin{equation}
+\Omega = \frac{M^{\frac{1}{2}}}{r^{\frac{3}{2}}}.
+\end{equation}
+The inspiral rate for circular orbits is given by
+\begin{equation}
+\frac{dr}{dt} = - \frac{r}{E} \frac{dE}{dt} = 
+- \frac{64}{5} \frac{\mu M^2}{r^3}.
+\end{equation}
+Thus
+\begin{align}
+r^3 \, dr &= - \frac{64}{5} \mu M^2 \, dt \\
+\frac{r^4}{4} &= \frac{64}{5} \mu M^2 (t - t_c)
+\end{align}
+and so
+\begin{equation}
+r(t) = \left(\frac{256}{5} \mu M^2 \right)^{\frac{1}{4}}
+       \left(t_c - t\right)^{\frac{1}{4}}.
+\end{equation}
+Since the emitted radiation is quadrupolar
+\begin{equation}
+f = \frac{\Omega}{\pi}.
+\end{equation}
+The gravitational wave strain is
+\begin{equation}
+h(t) = \frac{Q}{D} \left(\frac{384}{5}\right)^\frac{1}{2} \pi^\frac{2}{3} \mu M
+r^{-1}(t) \cos \left( \int 2\pi f(t) \, dt \right).
+\end{equation}
+Now
+\begin{align}
+\frac{df}{dt} 
+     &= \frac{d}{dt} \left(\frac{\Omega}{\pi}\right) 
+      = \frac{d}{dt} \left(\frac{M^\frac{1}{2}}{\pi} r^{-\frac{3}{2}}\right) \\
+     &= \frac{M^\frac{1}{2}}{\pi} \frac{dr}{dt} \left(-\frac{3}{2} r^{-frac{5}{2}}\right) \\
+     &= \frac{M^\frac{1}{2}}{\pi} \left(-\frac{64}{5} \frac{\mu M^2}{r^3}\right)
+        \left(-\frac{3}{2} r^{-frac{5}{2}}\right) \\
+     &= \frac{96}{5} \frac{M^\frac{5}{2} \mu}{\pi} r^{-\frac{11}{2}}. 
+     \label{eq:sp:dfdt}
+\end{align}
+Now
+\begin{equation}
+f = \frac{M^\frac{1}{2}}{\pi} r^{-\frac{3}{2}}.
+\end{equation}
+Solving this for $r$, we obtain
+\begin{equation}
+r = \frac{M^\frac{1}{3}}{\pi^\frac{2}{3} f^\frac{2}{3}}
+\end{equation}
+which we can substitute into equation (\ref{eq:sp:dfdt}) and obtain
+\begin{align}
+\frac{df}{dt} &= \frac{96}{5} \pi^\frac{8}{3} \mu M^\frac{2}{3} f^\frac{11}{3} \\
+&= \frac{96}{5} \pi^\frac{8}{3} \mathcal{M}^\frac{5}{3} f^\frac{11}{3}
+\end{align}
+where we have defined the \emph{chirp mass} by
+\begin{equation}
+\mathcal{M} = \mu^\frac{3}{5} M^\frac{2}{5}.
+\end{equation}
+Now the phase is given to post$^2$-Newtonian order by\cite{Blanchet:1996pi}
+\begin{equation}
+\phi(t) = \int^t 2\pi f(t') \, dt'
+\end{equation}
+we won't worry about this yet.
+
+Therefore using the stationary phase approximation, we obtain
+\begin{align}
+\tilde{h}(f) &= \frac{1}{2} \frac{Q}{D} \left(\frac{384}{5}\right)^\frac{1}{2} \pi^{2}{3} \mu M
+                r^{-1}(t) \left(\frac{df}{dt}\right)^{-\frac{1}{2}} \exp\left[-i \Psi\right] \\
+             &= \frac{1}{2} \frac{Q}{D} \left(\frac{384}{5}\right)^\frac{1}{2} \pi^{2}{3} \mu M
+                \frac{\pi^\frac{2}{3} f^\frac{2}{3}}{M^\frac{1}{3}}
+                \left(\frac{df}{dt}\right)^{-\frac{1}{2}} \exp\left[-i \Psi\right] \\
+             &= \frac{1}{2} \frac{Q}{D} \left(\frac{384}{5}\right)^\frac{1}{2} \pi^{4}{3} \mu
+                M^\frac{2}{3} r^\frac{2}{3}
+                \left(\frac{df}{dt}\right)^{-\frac{1}{2}} \exp\left[-i \Psi\right].
+\end{align}
+Now
+\begin{equation}
+\left(\frac{df}{dt}\right)^{-\frac{1}{2}} =
+\left(\frac{5}{96}\right)^\frac{1}{2} \pi^{-\frac{4}{3}} 
+\mu^{-\frac{1}{2}} M^{-\frac{1}{3}} f^{-\frac{11}{6}}
+\end{equation}
+and so 
+\begin{align}
+\tilde{h}(f) &= \frac{1}{2} \frac{Q}{D} \left(\frac{384}{5} \frac{5}{96}\right)^\frac{1}{2}
+                \mu^\frac{1}{2} M^\frac{1}{3} f^{-\frac{7}{6}} \exp\left[-i \psi\right] \\
+             &= \frac{Q}{D} \mathcal{M}^\frac{5}{6} f^{-\frac{7}{6}} \exp\left[-i \psi\right].
+             \label{eq:sp:template}
+\end{align}
+Equation (\ref{eq:sp:template}) is the stationary phase binary inspiral
+template that we will use in the matched filter.
+
+Discussion of validity of SP waveform.
+
+\begin{equation}
+t = \frac{5m}{256\eta} 
+  x^{-8}\left(1 + \alpha x^2 + \beta x^3 + \gamma x^4 \right)
+ \label{eq:chirplength}
+\end{equation}
+where
+\begin{eqnarray}
+x & = & \left(\pi m T_\odot f_{\mathrm{low}}\right)^{\frac{1}{3}}, \\
+\alpha & = & \frac{743}{252} + \frac{11}{3}\eta, \\
+\beta & = & -\frac{32\pi}{3}, \\
+\gamma & = & \frac{3058673}{508032}+\frac{5429}{504}\eta+\frac{617}{71}\eta^2,
+\end{eqnarray}
+$m$ is the mass of the more massive object and $f_{\mathrm{low}}$ is the low
+frequency cutoff of the inspiral template.
+
+
+\subsection{The Innermost Stable Circular Orbit of Schwartzchild}
+
+\section{Interferometric Gravitational Wave Detectors}
+
+\subsection{Calibration of the Data}
+\label{ss:calibration}
+
+\section{Previous Searches for Compact Binary Inspiral}
+
+40m, TAMA, S1. Plot of rate vs time.
+
+
+The Laser Interferometric Gravitational Wave Observatory (LIGO)\cite{barish}
+has completed three ``science runs'' during which all three interferometers
+were collecting data simultaneously under stable operation. Analysis of the
+data for gravitational waves from coalescing compact binaries has been
+completed for the first two runs\cite{bns1,bns2,macho} and is in progress for
+the third run. Two of the target populations in these searches are binary
+neutron stars\cite{300yrs} and binary black hole
+MACHOs\cite{sammacho,nakamura}. For these low mass systems, which have
+component masses below $3 M_\odot$, the waveforms of the gravitational
+radiation emitted are well known\cite{bdiww,biww}.  Matched filtering is a
+common and effective technique for extracting known signals from
+noise\cite{wz}. We have implemented a matched filter to extract inspiral
+signals from interferometer noise in the package \emph{findchirp} which can be
+found in the LIGO Algorithm Library (LAL)\cite{lal}.
+
+
