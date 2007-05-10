@@ -76,9 +76,7 @@ figures/result/s2_times.png
 
 BIBFILES=papers.bib references.bib
 
-UWMFILES=uwmthesis.sty
-
-STYFILES=bibunits.sty
+STYFILES=bibunits.sty uwmthesis.sty tensor.sty
 
 BSTFILES=vita.bst
 
@@ -86,13 +84,13 @@ BBLFILES=thesis.1.bbl thesis.bbl
 
 default: thesis.pdf
 
-thesis.pdf: $(TEXFILES) $(BIBFILES) $(STYFILES) $(BSTFILES) $(UWMFILES)
+thesis.pdf: $(TEXFILES) $(BIBFILES) $(STYFILES) $(BSTFILES)
 	pdflatex thesis && bibtex thesis && bibtex thesis.1 && pdflatex thesis && pdflatex thesis
 
 gr-qc: thesis.tgz
 
 thesis.tgz: thesis.pdf
-	tar -zcvf grqc.tgz $(TEXFILES) $(PNGFILES) $(BBLFILES) $(UWMFILES)
+	tar -zcvf grqc.tgz $(TEXFILES) $(PNGFILES) $(BBLFILES) $(STYFILES)
 
 clean:
 	rm -f thesis.pdf *.aux *.bbl *.blg *.log *.lot *.toc *.lof *.bak *.tgz
