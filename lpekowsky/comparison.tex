@@ -55,47 +55,49 @@
 \section{Introduction}
 \label{sec:Introduction} %
 
-In chapter~ref{ch:pipeline} we outlined the CBC pipeline which is used
-to search LIGO/Virgo data for gravitational waves resulting from 
-the inspiral of compact binaries composed of neutron stars and/or
-black holes.  In particular we noted the use of post-Newtonian
-templates of the form~\ref{eqn:pn} to filter the data.  Such waveforms
-may be trusted so long as the velocities of the component masses are
-small compared to the speed of light, or equivalently when the orbital
-frequencies are small.  A rule of thumb frequently used is that these
-waveforms may be trusted up the Schwarzschild ISCO frequency, after
-which the inspiral transitions to a plunge.
+In chapter~\ref{ch:search} we outlined the CBC pipeline used to search
+LIGO/Virgo data for gravitational waves resulting from the inspiral of
+compact binaries composed of neutron stars and/or black holes.  In
+particular we noted the use of post-Newtonian templates of the form
+discussed in section ~\ref{sec:PNWaveforms} to filter the data up to a
+total mass of $25 \msun$.  Such waveforms may be trusted so long as
+the velocities of the component masses are small compared to the speed
+of light, or equivalently when the orbital frequencies are small.
+Frequently the cutoff is taken to be the Schwarzschild ISCO frequency,
+after which the inspiral transitions to a plunge, although this is
+only strictly correct in the point-mass limit.
 
 For systems containing two neutron stars this frequency is above 1000
-Hz, even for a hypothetical system composed of two copies of the
+Hz, even for a hypothetical system composed of two instances of the
 heaviest-known neutron star.  This is well outside LIGO's most
 sensitive band, where most of the SNR will be accumulated, and we may
 therefore trust these waveforms for a BNS search.  However, for
 systems including at least one black hole the ISCO frequency will be
-lower, and the merger may even occur in the sensitive band.  It is
+lower and the merger may even occur in the sensitive band.  It is
 therefore important to test the ability of these templates to detect
-such systems and where possible optimize their use.
-
-In order to evaluate the effectiveness of templates it is necessary to
-compare them against complete waveforms including the inspiral, merger
-and ringdown phases.  This necessitates the use of hybrid pN/NR
-waveforms as described in section~\ref{s:hybrids}.  This chapter uses
+such systems and where possible optimize their use.  In order to
+evaluate the effectiveness of templates it is necessary to compare
+them against complete waveforms including the inspiral, merger and
+ringdown phases.  This necessitates the use of hybrid pN-NR waveforms
+as described in section~\ref{sec:HybridWaveforms}.  This chapter uses
 high-accuracy waveforms developed at Caltech and Cornell~\footnote{The
 code used to produce these waveforms, SpEC, is now being developed and
 used by a collaboration including scientists at Caltech, Cornell and
-the Canadian Institute for Theoretical Astrophysics (CITA).}
+the Canadian Institute for Theoretical Astrophysics (CITA).} 
 
-The most robust test would consider the ability of the pipeline as a
-whole to detect BBH signals; this is the goal of the NINJA project
-introduced in the following chapter.  Here we focus on a simpler
-issue, the overlap between post-Newtonian and hybrid waveforms and
-hence the ability of these waveforms to capture full physical signals.
-A similar study has been performed by Pan~\etal using numerical data
-from Pretorius and the Goddard groups~\cite{Pan2007}.  Our main
-results are in agreement with their conclusion that a simple extension
-of the existing stationary-phase approximation to the adiabatic
-post-Newtonian waveforms (called \textit{TaylorF2} in
-Ref.~\cite{Damour2001}) yields high overlaps with numerical waveforms.
+The most robust test would consider the ability of the full pipeline
+to detect BBH signals; this is the goal of the NINJA project
+introduced in the following chapter.  Here we focus on a subset of
+this question, the ability of pN waveforms to capture full physical
+signals.  The tool for doing this will be the overlap
+(equation~\ref{eq:OverlapDefinition}).  Clearly if no instance of a
+waveform in the chosen pN model provides a high overlap with the
+hybrid signal then the pipeline as a whole will be unable to detect
+such signals.  A similar study has been performed by Pan~\etal using
+numerical data from Pretorius and the Goddard groups~\cite{Pan2007}.
+Our main results are in agreement with their conclusion that a simple
+extension of the TaylorF2 waveforms currently in use by the CBC
+low-mass search yields high overlaps with numerical waveforms.
 
 Throughout this chapter we use only the $(l,m)=(2,2)$ component of the
 waveform $\Psi_{4}^{2,2}$ (as defined, e.g., in~\cite{Boyle2008a}).
@@ -104,8 +106,9 @@ dimensionless quantities, like $r\,M\,\lvert \Psi_{4} \rvert$, where
 $r$ is the areal radius of the observation sphere, and $M$ is the
 total apparent-horizon mass of the holes in the initial data.
 However, for any calculation involving the LIGO noise curve, we have a
-physical scale, and thus use standard mks units.  We use the overlap
-defined in~\ref{eqn:overlap}.  To weight the inner product we use the
+physical scale, and thus use standard mks units.  
+
+To weight the inner products in the overlap we use the
 following PSDs for Initial and Advanced LIGO: for Initial LIGO we use
 an analytic approximation to the LIGO design PSD given by
 \begin{eqnarray}
@@ -132,111 +135,6 @@ magnitude above its minimum, as also shown in
 Fig.~\ref{fig:StildesAndInitialPSD}.
 
 
-
-
-% \subsection{Discretization}
-% \label{sec:Discretization}
-
-% The direct and inverse Fourier transforms are defined (using the
-% standard LIGO conventions~\cite{T010095}) as
-% \begin{align}
-%   \label{eq:FourierTransform}
-%   \tilde{s}(f) &\equiv \int_{-\infty}^{\infty}\, s(t)\, \e^{-2\pi\i
-%     f t}\,
-%   \d t\ , \\
-%   \label{eq:InverseFourierTransform}
-%   s(t) &= \int_{-\infty}^{\infty}\, \tilde{s}(f)\, \e^{2\pi\i f t}
-%   \, \d f\ .
-% \end{align}
-% In transferring these and the continuum expressions of preceding
-% sections to computer, we need to introduce two changes.
-
-% First, the ranges of integration must be restricted to finite
-% intervals.  We need to assume that the physical signal contains
-% nothing of interest at frequencies higher than $\fNy$ or,
-% considering negative frequencies, lower than $-\fNy$.  For
-% notational simplicity, we define the discretized Fourier transform
-% to be periodic, with period $2\fNy$.  Similarly, we will assume that
-% the signal $s$ is periodic, with period $T$.  Thus, we can restrict
-% each of the integrals given above to one period of the relevant
-% quantity.
-
-% Second, the quantities must be given on a discrete grid.  We will
-% assume that the signal $s$ is sampled at $N$ uniform intervals of
-% $\Delta t=T/N$.  This will give rise to a frequency discretization
-% of $\Delta f = 1/T = 1/N\Delta t$.  We define the quantities
-% \begin{equation}
-%   t_{j} = j\Delta t \quad \text{and} \quad f_{k} = k\Delta f\ ,
-% \end{equation}
-% for \emph{all} integers $j$ and $k$.  It is not hard to see that the
-% highest frequency that can be represented on this discrete set is
-% bounded by the Nyquist frequency $\fNy=1/2\Delta t$.
-
-% The combined operation of discretizing and restricting to finite
-% range will be denoted by $\discretize$, so
-% \begin{align}
-%   \label{eq:DiscreteFourierTransform}
-%   \tilde{s}(f_{k}) &\discretize \sum_{t_{j}>-N\Delta t/2}^{N\Delta
-%     t/2}\, s(t_{j})\, \e^{-2\pi\i f_{k} t_{j}}\, \Delta t
-%   \\
-%   \label{eq:DiscreteFourierTransformTwo}
-%   &\discretize \Delta t\, \sum_{j=0}^{N-1}\, s(t_{j})\, \e^{-2\pi\i
-%     j k/N}\ ,
-%   \\
-%   \label{eq:DiscreteInverseFourierTransform}
-%   s(t_{k}) &\discretize \sum_{f_{j} > -\fNy} ^{\fNy}\,
-%   \tilde{s}(f_{j})\, \e^{2\pi\i f_{k} t_{j}}\, \Delta f
-%   \\
-%   \label{eq:DiscreteInverseFourierTransformTwo}
-%   &\discretize \Delta f\, \sum_{j=0}^{N-1}\, \tilde{s}(f_{k})\,
-%   \e^{2\pi\i j k/N}\ .
-% \end{align}
-% Note that in the second step of each of these expressions, we have
-% used the periodic character of $s$ to re-express negative times as
-% positive, and the periodic character of $\tilde{s}$ to re-express
-% negative frequencies as positive.  We have also used the relation
-% $f_{k}t_{j} = j k/N$.
-
-% A notational subtlety arises when using the frequency-domain
-% quantity.  The symbol $\tilde{s}_{k}$ is defined as the sum in
-% Eq.~\eqref{eq:DiscreteFourierTransformTwo}, without the factor of
-% $\Delta t$~\cite{DBrownThesis}.  In particular, we have
-% $\tilde{s}(f_{k}) \discretize \Delta t\, \tilde{s}_{k}$.  The
-% expressions given above for $\tilde{s}(f_{k})$ and $s(t_{j})$ should
-% not depend strongly on the fineness of the discretization (for
-% sufficiently fine discretizations).  Clearly, then, $\tilde{s}_{k}$
-% \emph{will} depend strongly on the discretization.  Though the
-% factor of $\Delta t$ should drop out for calculations using
-% normalized quantities, for calculations of the signal-to-noise
-% ratio, or demonstrations of $\tilde{s}(f_{k})$, it is an important
-% distinction that needs to be kept in mind.  For example, the
-% \software{FFTW} and \software{Matlab} software packages use
-% $\tilde{s}_{k}$ as their standard frequency-domain quantity.
-% Throughout the remainder of this paper, we will use
-% $\tilde{s}(f_{k})$ exclusively.
-
-% For completeness, we include the expressions
-% \begin{align}
-%   \InnerProduct{s|h} &\discretize 2\, \Re \sum_{k=0}^{N-1}\,
-%   \frac{\tilde{s}(f_{k})\, \tilde{h}^{\ast}(f_{k})}{S_{n}(\lvert
-%     f_{k} \rvert)}\, \Delta f
-%   \\
-%   &\discretize 4\, \Re \sum_{k=0}^{\lfloor N/2 \rfloor}\,
-%   \frac{\tilde{s}(f_{k})\, \tilde{h}^{\ast}(f_{k})}{S_{n}(f_{k})}\,
-%   \Delta f\ ,
-%   \\
-%   \Overlap{s|h} &\discretize 2 \max_{\ta}\, \left\lvert
-%     \sum_{k=0}^{N-1}\, \frac{\tilde{s}(f_{k})\,
-%       \tilde{h}^{\ast}(f_{k})}{S_{n}(\lvert f_{k} \rvert)}\,
-%     \e^{2\pi \i f_{k}\ta}\, \Delta f \right\rvert
-%   \\
-%   &\discretize 4 \max_{\ta}\, \left\lvert \sum_{k=0}^{\lfloor N/2
-%       \rfloor}\, \frac{\tilde{s}(f_{k})\,
-%       \tilde{h}^{\ast}(f_{k})}{S_{n}(f_{k})}\, \e^{2\pi \i
-%       f_{k}\ta}\, \Delta f \right\rvert\ .
-% \end{align}
-% The notation $\lfloor N/2 \rfloor$ denotes the greatest integer less
-% than or equal to $N/2$.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -446,7 +344,7 @@ templates with terms up to order 2.0, order 3.5, and a ``pseudo-4.0
 pN-order'' term recommended in Ref.~\cite{Pan2007}.  Overlaps are
 calculated using the techniques of Sec.~\ref{sec:MatchedFiltering},
 with the signal $s$ being the hybrid waveform described in
-Sec.~\ref{sec:PNNRHybridWaveform} scaled to a range of masses.  We
+Sec.~\ref{sec:HybridWaveform} scaled to a range of masses.  We
 consider both the Initial- and Advanced-LIGO noise curves.
 % We consider mass ranges up to the value where the ISCO frequency is
 % roughly at the lower limit of sensitivity set by the seismic wall:
@@ -648,7 +546,10 @@ around 90 $\MSun$.
       \hline \hline
     \end{tabular}
   \end{center}
-  \caption{Maximum overlaps between Caltech--Cornell hybrid waveforms
+  \caption[Overlaps between Caltech--Cornell hybrid waveforms and pN
+waveforms in initial LIGO]{
+  \label{tab:ThreeParamOverlapDetailInitial}
+    Maximum overlaps between Caltech--Cornell hybrid waveforms
     and restricted stationary-phase pN templates using the
     Initial-LIGO noise curve.  The first number in each block is the
     overlap; subsequent numbers are the template parameters that
@@ -657,7 +558,6 @@ around 90 $\MSun$.
     parameter, while leaving others fixed.  We restrict the search to
     $0 \leq \eta \leq 1.000$, so the upper error bounds when $\eta\sim
     1.000$ may be artificially small.}
-  \label{tab:ThreeParamOverlapDetailInitial}
 \end{table*}
 % \addtolength{\tabcolsep}{-3.25mm} \renewcommand{\arraystretch}{1}
 
@@ -730,7 +630,10 @@ around 90 $\MSun$.
     $152.16^{+19.00}_{-19.00}$ \\
     \hline \hline
   \end{tabular}
-  \caption{Maximum overlaps between Caltech--Cornell hybrid waveforms
+  \caption[Overlaps between Caltech--Cornell hybrid waveforms and pN
+waveforms in advanced LIGO]{
+  \label{tab:ThreeParamOverlapDetail}
+    Maximum overlaps between Caltech--Cornell hybrid waveforms
     and restricted stationary-phase pN templates using the
     Advanced-LIGO noise curve.  The first number in each block is the
     overlap; subsequent numbers are the template parameters that
@@ -739,7 +642,6 @@ around 90 $\MSun$.
     parameter, while leaving others fixed.  We restrict the search to
     $0 \leq \eta \leq 1.000$, so the upper error bounds when $\eta\sim
     1.000$ may be artificially small.}
-  \label{tab:ThreeParamOverlapDetail}
 \end{table*}
 % \addtolength{\tabcolsep}{-3.25mm} \renewcommand{\arraystretch}{1}
 
@@ -759,7 +661,7 @@ optimal value.
   % \includegraphics[width=\linewidth]{figures/comparison/ThreeParamOverlapSummary}
   \includegraphics[width=0.5\linewidth]{figures/comparison/ThreeParamOverlapSummaryInitial}
   \includegraphics[width=0.5\linewidth]{figures/comparison/ThreeParamOverlapSummaryAdvanced}
-  \caption[ Overlaps between Caltech--Cornell hybrid waveforms and pN waveforms]{
+  \caption[Overlaps between Caltech--Cornell hybrid waveforms and pN waveforms]{
   \label{fig:ThreeParamOverlapSummaries}
     Left: Overlaps between Caltech--Cornell hybrid waveforms,
     scaled to various masses, and restricted stationary-phase pN
