@@ -1,0 +1,81 @@
+
+% from Boyle et al.
+\subsection{Matched filtering}
+\label{sec:MatchedFiltering}
+
+Current searches for gravitational waves from binary black-hole
+coalescence use matched filtering to search for a waveform buried in
+noise.  The matched filter is the optimal filter for detecting a
+signal in stationary Gaussian noise.  Suppose that $n(t)$ is a
+stationary Gaussian noise process with one-sided power spectral
+density $S_n(f)$ given by $\langle \tilde{n}(f) \tilde{n}^\ast(f')
+\rangle=\frac{1}{2} S_n(|f|)\delta(f-f')$.  For long integration
+times, the data stream $s(t)$ output by the detector will always be
+dominated by the noise.  Thus, we can simply approximate $n \approx s$
+to calculate $S_{n}(f)$.
+
+Using this power spectral density (PSD), we can define the inner
+product between two real-valued signals---the data stream $s$ and the
+filter template $h$---by
+\begin{eqnarray}
+  \label{eq:InnerProduct}
+  \InnerProduct{s|h} &\equiv 2\, \Re \int_{-\infty}^{\infty}\,
+  \frac{\tilde{s}(f)\, \tilde{h}^{\ast}(f)}{S_{n}(\lvert f
+    \rvert)}\, d f \\ &= 4\, \Re \int_{0}^{\infty}\,
+  \frac{\tilde{s}(f)\, \tilde{h}^{\ast}(f)}{S_{n}(f)}\, d f\ .
+\end{eqnarray}
+Then, given data $s$ which may contain either noise $n$ or noise and a
+gravitational wave signal $h$,
+\begin{equation}
+  s = \left\{\begin{array}{l}
+      n  \\
+      n+h
+    \end{array} \right.\ ,
+\end{equation}
+the matched-filter signal-to-noise ratio (SNR) is defined as
+\begin{equation}
+  \label{eq:InnerProductSNR}
+  \rho = \frac{1}{\sqrt{\InnerProduct{h|h}}} \InnerProduct{s|h}\ .
+\end{equation}
+
+
+The SNR can then be used to construct a detection statistic (directly
+or in combination with other statistics).  It is therefore important
+to ensure that the templates used in searches accurately model the
+expected waveforms to avoid reduction in the value of $\rho$. The
+\emph{overlap} between two templates $h$ and $h'$ is defined as
+\begin{equation}
+  \label{eq:OverlapDefinition}
+  \Overlap{h|h'} \equiv \frac{\InnerProduct{h|h'}}{
+    \sqrt{\InnerProduct{h|h} \InnerProduct{h'|h'}}}\ .
+\end{equation}
+The overlap encodes the fractional loss in SNR that results from using
+the template $h'$ rather than the true waveform $h$.  In a search that
+uses $\rho$ as a detection statistic this corresponds to the
+fractional loss in distance to which the search is sensitive.
+
+The filter template includes arbitrary time and phase offsets, encoded
+by the arrival time and phase, $\ta$ and $\phia$.  Under a change of
+these quantities, the Fourier transform behaves as
+\begin{equation}
+  \label{eq:EffectOfTimeAndPhaseOffset}
+  \tilde{h}(f) \to \tilde{h}(f)\, \e^{-2\pi i f \ta - i \phia}\ .
+\end{equation}
+We maximize over these two variables by calculating the inner product
+as
+
+\begin{eqnarray}
+  \max_{\ta, \phia}\, \InnerProduct{s|h}
+  &= \max_{\ta, \phia}\, 4\, \Re \int_{0}^{\infty}\,
+  \frac{\tilde{s}(f)\, \tilde{h}^{\ast}(f)}{S_{n}(f)}\, \e^{2\pi i
+    f\ta + i \phia}\, d f
+  \\
+  & = 4 \max_{\ta}\, \left\lvert \int_{0}^{\infty}\,
+    \frac{\tilde{s}(f)\, \tilde{h}^{\ast}(f)}{S_{n}(f)}\, \e^{2\pi i
+      f\ta}\, d f \right\rvert\ .
+\end{eqnarray}
+Note that this integral is just the (inverse) Fourier transform of the
+quantity $\tilde{s}(f)\, \tilde{h}^{\ast}(f) / S_{n}(f)$ evaluated at
+$\ta$.  Thus finding the maximum over $\ta$ involves taking the
+Fourier transform and selecting the largest element of the finite set
+that results from discretization.
