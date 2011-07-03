@@ -52,45 +52,50 @@
 \makeatother
 
 
+\Note{Numbers in this chapter are subject to change after 
+completing the reruns to fix the sign error in the 
+3pN term}
+
 \section{Introduction}
 \label{sec:Introduction} %
 
 In chapter~\ref{ch:search} we outlined the CBC pipeline used to search
 LIGO/Virgo data for gravitational waves resulting from the inspiral of
-compact binaries composed of neutron stars and/or black holes.  In
+binary systems composed of neutron stars and/or black holes.  In
 particular we noted the use of post-Newtonian templates of the form
-discussed in section ~\ref{sec:PNWaveforms} to filter the data up to a
-total mass of $25 \msun$.  Such waveforms may be trusted so long as
-the velocities of the component masses are small compared to the speed
-of light, or equivalently when the orbital frequencies are small.
-Frequently the cutoff is taken to be the Schwarzschild ISCO frequency,
-after which the inspiral transitions to a plunge, although this is
-only strictly correct in the point-mass limit.
+discussed in section~\ref{sec:PNWaveforms} to filter the data up to a
+total mass of $25 \msun$.  The post-Newtonian approximation is valid
+so long as the velocities of the component masses are small compared
+to the speed of light, or equivalently so long as the orbital
+frequencies are small.  Frequently the cutoff is taken to be the
+Schwarzschild ISCO frequency, after which the inspiral transitions to
+a plunge, although this is only strictly correct in the point-mass
+limit.
 
 For systems containing two neutron stars this frequency is above 1000
 Hz, even for a hypothetical system composed of two instances of the
 heaviest-known neutron star.  This is well outside LIGO's most
-sensitive band, where most of the SNR will be accumulated, and we may
-therefore trust these waveforms for a BNS search.  However, for
-systems including at least one black hole the ISCO frequency will be
-lower and the merger may even occur in the sensitive band.  It is
-therefore important to test the ability of these templates to detect
-such systems and where possible optimize their use.  In order to
-evaluate the effectiveness of templates it is necessary to compare
-them against complete waveforms including the inspiral, merger and
-ringdown phases.  This necessitates the use of hybrid pN-NR waveforms
-as described in section~\ref{sec:HybridWaveforms}.  This chapter uses
+sensitive band where most of the SNR will be accumulated, and we may
+therefore trust pN waveforms for a BNS search.  However, for systems
+including at least one black hole the ISCO frequency will be lower and
+the merger may even occur in the sensitive band.  It is therefore
+important to test the ability of pN templates to detect such systems
+and where possible optimize their use.  In order to evaluate the
+effectiveness of templates it is necessary to compare the waveforms
+against complete waveforms including the inspiral, merger and ringdown
+phases.  This necessitates the use of hybrid pN-NR waveforms as
+described in section~\ref{sec:HybridWaveforms}.  This chapter uses
 high-accuracy waveforms developed at Caltech and Cornell~\footnote{The
 code used to produce these waveforms, SpEC, is now being developed and
 used by a collaboration including scientists at Caltech, Cornell and
-the Canadian Institute for Theoretical Astrophysics (CITA).} 
+the Canadian Institute for Theoretical Astrophysics (CITA).}. 
 
 The most robust test would consider the ability of the full pipeline
 to detect BBH signals; this is the goal of the NINJA project
 introduced in the following chapter.  Here we focus on a subset of
 this question, the ability of pN waveforms to capture full physical
 signals.  The tool for doing this will be the overlap
-(equation~\ref{eq:OverlapDefinition}).  Clearly if no instance of a
+(eqn.~\ref{eq:OverlapDefinition}).  Clearly if no instance of a
 waveform in the chosen pN model provides a high overlap with the
 hybrid signal then the pipeline as a whole will be unable to detect
 such signals.  A similar study has been performed by Pan~\etal using
@@ -292,13 +297,13 @@ masses) will naturally have the highest overlap between resolutions.
 As the simulation progresses, numerical error accumulates---notably in
 the phase---so the overlap decreases with masses for which later
 segments dominate the overlap (higher masses).  When the overlap is
-optimized over arrival time and phase, we can see that the overlap
-becomes much better, as shown in the lower panel, indicating
-sufficient accuracy within any frequency band for which phase
-coherence is required.  In either case, the medium and
-highest resolutions are much more nearly the same.  Without
-optimization, their overlap is within a few tenths of a percent of 1;
-after optimization, the overlap is within $10^{-6}$ of 1.
+optimized over arrival time and phase (sec.~/ref{sec:overlap}) we can
+see that the overlap becomes much better, as shown in the lower panel,
+indicating sufficient accuracy within any frequency band for which
+phase coherence is required.  In either case, the medium and highest
+resolutions are much more nearly the same.  Without optimization,
+their overlap is within a few tenths of a percent of 1; after
+optimization, the overlap is within $10^{-6}$ of 1.
 
 In the rest of our analysis we use the highest-resolution waveform.
 Because we always optimize over arrival time and phase, the lower
@@ -306,7 +311,7 @@ panel of Fig.~\ref{f:accuracy} is the most relevant, and shows that
 the waveform has converged to very high accuracy.  The overlaps we
 quote below will only be given to three decimal places at most,
 because this is roughly the accuracy of the single-precision numerical
-methods used in the rest of the paper.  This accuracy is also
+methods used in the rest of the chapter.  This accuracy is also
 sufficient for searches of gravitational-wave data.  Thus, the
 truncation error of the simulated waveform is irrelevant for those
 purposes.
@@ -343,12 +348,9 @@ restricted, stationary phase \textit{TaylorF2} post-Newtonian
 templates with terms up to order 2.0, order 3.5, and a ``pseudo-4.0
 pN-order'' term recommended in Ref.~\cite{Pan2007}.  Overlaps are
 calculated using the techniques of Sec.~\ref{sec:MatchedFiltering},
-with the signal $s$ being the hybrid waveform described in
-Sec.~\ref{sec:HybridWaveform} scaled to a range of masses.  We
-consider both the Initial- and Advanced-LIGO noise curves.
-% We consider mass ranges up to the value where the ISCO frequency is
-% roughly at the lower limit of sensitivity set by the seismic wall:
-% $110 \MSun$ for Initial LIGO; $440 \MSun$ for Advanced LIGO.
+with the signal $s$ being the hybrid waveform described in the
+previous section, scaled to a range of masses.  We consider both the
+Initial- and Advanced-LIGO noise curves.
 
 Plots of the hybrid waveforms in comparison to the Initial-LIGO noise
 curve are shown in Fig.~\ref{fig:StildesAndInitialPSD}.
@@ -424,7 +426,7 @@ For each template family we initially optimize over signal mass $M$,
 symmetric mass ratio $\eta = m_1 m_2 / (m_1 + m_2)^2$, and upper
 cutoff frequency $f_c$.  The optimization is performed using a
 Nelder--Mead (``amoeba'') algorithm~\cite{numrec_cpp}.  The amoeba
-starts with a simplex in the parameter space, and proceeds through a
+starts with a simplex in the parameter space and proceeds through a
 series of steps, each of which will improve the value of the function
 at at least one vertex.  The algorithm terminates when all vertices
 have converged to the same point to within a specified tolerance.
@@ -445,21 +447,20 @@ The results of optimizing over all of $M, \eta$ and $f_c$ for selected
 masses for Initial LIGO are given in
 Table~\ref{tab:ThreeParamOverlapDetailInitial} and summarized in
 Fig.~\ref{fig:ThreeParamOverlapSummaries}.  For Initial LIGO, in the
-range covered by the current Compact Binary Coalescence (CBC) low-mass
-search $(M < 35 \MSun)$~\cite{Abbott:2008}, the pseudo-4.0 pN
-\textit{TaylorF2} waveforms achieve the highest overlaps, exceeding
-those obtained with 3.5 pN waveforms by $\sim 1\%$.  Above $35 \MSun$
-the 3.5 pN waveforms produce overlaps as much as 4\% greater than
-those obtained with pseudo-4.0 pN waveforms over a range from
-$40$--$80 \MSun$. With the Advanced-LIGO noise curve, in the CBC
-low-mass range, the 3.5 pN and pseudo-4.0 pN waveforms produce
-overlaps within 2\% of each other, with 3.5 pN producing higher
-overlaps below 20 $\MSun$ and pseudo-4.0 pN producing higher overlaps
-in the range $20$--$35 \MSun$.  Pseudo-4.0 pN continues to give the
-highest overlaps up to $60 \MSun$, producing overlaps as much as 4\%
-greater than those obtained with 3.5 pN waveforms.  Above $60 \MSun$
-3.5 pN waveforms again yield the best overlaps, by as much as 6\%
-around 90 $\MSun$.
+range covered by the current CBC low-mass search $(M < 35
+\MSun)$~\cite{Abbott:2008}, the pseudo-4.0 pN \textit{TaylorF2}
+waveforms achieve the highest overlaps, exceeding those obtained with
+3.5 pN waveforms by $\sim 1\%$.  Above $35 \MSun$ the 3.5 pN waveforms
+produce overlaps as much as 4\% greater than those obtained with
+pseudo-4.0 pN waveforms over a range from $40$--$80 \MSun$. With the
+Advanced-LIGO noise curve, in the CBC low-mass range, the 3.5 pN and
+pseudo-4.0 pN waveforms produce overlaps within 2\% of each other,
+with 3.5 pN producing higher overlaps below 20 $\MSun$ and pseudo-4.0
+pN producing higher overlaps in the range $20$--$35 \MSun$.
+Pseudo-4.0 pN continues to give the highest overlaps up to $60 \MSun$,
+producing overlaps as much as 4\% greater than those obtained with 3.5
+pN waveforms.  Above $60 \MSun$ 3.5 pN waveforms again yield the best
+overlaps, by as much as 6\% around 90 $\MSun$.
 
 % We see from Tables~\ref{tab:ThreeParamOverlapDetailInitial}
 % and~\ref{tab:ThreeParamOverlapDetail} that the parameters of the
