@@ -1,17 +1,27 @@
-Using General Relativity we were able to write down an expression for the strain induced in an interferometer from a passing gravitational wave. In this chapter we detail how to detect gravitational-wave signals from \acp{CBC} in the interferometer data in the presence of noise. We begin by deriving the matched filter for a single template, which is the optimal filter is the detector noise is stationary and Gaussian. Next, we show how matched filtering can be done for a bank of templates in order to recover the parameters of a signal. This is followed by a discussion of the $\chi^2$ test, which can be used to suppress triggers from non-Gaussian transients that are present in real detector data. Finally, we detail how a coincidence test can be done across multiple detectors to further decrease the number of false noise triggers produced by a search.
+Using General Relativity we were able to write down an expression for the strain induced in an interferometer from a passing gravitational wave. In this chapter we detail how to detect gravitational-wave signals from \acp{CBC} in the interferometer data in the presence of noise. We begin by deriving the \emph{matched filter} for a single template, which is the optimal filter if the detector noise is stationary and Gaussian. Next, we show how matched filtering can be done for a bank of templates in order to recover the parameters of a signal. This is followed by a discussion of the $\chi^2$ test, which can be used to suppress triggers from non-Gaussian transients that are present in real detector data. Finally, we detail how a coincidence test can be done across multiple detectors to further decrease the number of false noise triggers produced by a search.
 
 \section{Detecting a Gravitational Wave Using a Matched Filter}
 \label{sec:matched_filter}
 
-Equation \ref{eqn:non_spin_template} gave the strain, $h(t)$, induced in an \ac{IFO} when a gravitational-wave from an inspiraling compact binary with non-spinning component masses passes through. The strain was a function of chirp mass, $\mchirp$, and symmetric-mass ratio, $\eta$. For varying pairs of $\mchirp$ and $\eta$ we can generate a waveform, or template, that characterizes the \ac{GW}. However, in this section we will assume that $\mchirp$ and $\eta$ of our template is the same as the gravitational wave we are looking for. We now address the question: if a gravitational wave exists in the \ac{IFO} data, how do we find it?
+Equation \ref{eqn:non_spin_template} gave the strain, $h(t)$, induced in an \ac{IFO} when a gravitational-wave from an inspiraling compact binary with non-spinning component masses passes through. The strain was a function of chirp mass, $\mchirp$, and symmetric-mass ratio, $\eta$. If we wish to search for a gravitational wave that came from a binary with given $\mchirp$ and $\eta$, we can generate a waveform, or template, that characterizes it. We now address the question: if a gravitational wave that matches our template exists in the \ac{IFO} data, how do we find it?
 
-Let the output of the detector be the time series $s(t)$, which is a measure of the displacement of the \ac{IFO}'s mirrors as a function of time. If a gravitational-wave with waveform $h(t)$ exists in the data, then:
+Let the output of the detector be the time series $s(t)$, which is a measure of the displacement of the \ac{IFO}'s mirrors as a function of time. If a gravitational wave with waveform $h(t)$ exists in the data, then:
 
 \begin{equation}
 \label{eqn:ifo_data}
 s(t) = h(t) + n(t)
 \end{equation}
-where $n(t)$ is the strain induced by all other, non gravitational-wave,  sources, or ``noise," as a function of time. If no signal exists in the data, then $s(t) = n(t)$. We do not know \emph{a priori} if $h$ exists in the data; further, even if $h$ does exist, we do not know \emph{when} it occurs --- that is, we do not know its coalescence time.\footnote{Note that the exact time when $h$ occurs is somewhat arbitrary. We could choose any point in the evolution of the waveform and label that as the point that $h$ occurs. For \ac{CBC} templates, we chose to use the time of coleascence since it is easily identifiable: it is the point that the \ac{PN} approximation goes to infinite frequency.} Our goal, then, is to find a filter that takes $s$ as input and returns a time series that is proportional to the probability that $h$ is in $s$, $P(h|s)$. We additionally require that, if $h$ is in $s$, this filter is maximized at the point that $h$ occurs. The problem of finding an optimal filter to extract signals from (Gaussian) noise is well studied, and has been applied to radar analysis for decades. Here, we follow the method outlined in \cite{ref:Finn,ref:Finn_Chernoff,ref:Brown} --- all of which use methods detailed in Wanstein and Zubakov \cite{ref:Wanstein_Zubakov} --- to derive the filter.
+where $n(t)$ is the strain induced by all other, non gravitational-wave,  sources, or ``noise," as a function of time. If no signal exists in the data, then $s(t) = n(t)$. We do not know \emph{a priori} if $h$ exists in the data; further, even if $h$ does exist, we do not know \emph{when} it occurs --- that is, we do not know its coalescence time, $\tau_c$.\footnote{Note that the exact time when $h$ occurs is somewhat arbitrary. We could choose any point in the evolution of the waveform and label that as the point that $h$ occurs. For \ac{CBC} templates, we chose to use the time of coleascence since it is easily identifiable: it is the point that the \ac{pN} approximation goes to infinite frequency.} Our goal, then, is to find a filter that takes $s(t)$ and $h(t-\tau)$ as input and returns a number, $\rho(\tau)$, that is proportional to the probability that $h$ is in $s$ with coalescence time $\tau$, $P(h(t-\tau)|s(t))$. We additionally require that, if $h$ is in $s$, this filter is at a maximium at the point that $h$ occurs; i.e., we demand that:
+\begin{equation}
+\left.\frac{\d \rho}{\d \tau}\right|_{\tau=\tau_c} = 0
+\end{equation}
+and
+\begin{equation}
+\left.\frac{\d^{2} \rho}{\d \tau^2}\right|_{\tau=\tau_c} < 0
+\end{equation}
+If we have such a filter --- known as the \emph{optimal filter} --- then we can determine that a signal exists in the data if $\rho(\tau)$ exceeds some pre-determined threshold $\rho^{*}$. Further, we can determine the coalescence time of $h$ by simply incrementing $\tau$ and evaluating $\rho$ at each increment, selecting points when $\rho$ is at a maximum. (This is known as the mthod of maximum likelihood \cite{ref:Brown}.)
+
+We begin by assuming that $\tau = \tau_c = 0$ and looking for the filter that maximizes $P(h|s)$ (for now, we will drop the ``$(t)$" for clarity). The problem of finding an optimal filter to extract signals from (Gaussian) noise is well studied, and has been applied to radar analysis for decades. Here, we follow the method outlined in \cite{ref:Finn,ref:Finn_Chernoff,ref:Brown} --- all of which use methods detailed in Wanstein and Zubakov \cite{ref:Wanstein_Zubakov} --- to derive the filter.
 
 Using Bayes' theorem \cite{ref:Sivia} we can write $P(h|s)$ as:
 \begin{equation}
@@ -42,25 +52,32 @@ P(s|h) & = & \frac{ P(s|h) P(h) }{ P(s|0)P(0) + P(s|h)P(h) } \nonumber \\
 \end{eqnarray}
 where
 \begin{equation}
-\label{eqn:likelihood_ration}
+\label{eqn:likelihood_ratio}
 \Lambda \equiv \frac{ P(s|h) }{ P(s|0) }
 \end{equation}
-is the \emph{likelihood ratio}. $P(0)$ and $P(h)$ are known as \emph{priors}: they represent our \emph{a priori} belief that a signal does or does not exist, irrespective of the detector's ability to detect it. We do not need to concern oursevles with assigning values to them, however. Instead we note that $P(s|h)$ is a monotonically increasing function of $\Lambda$. Since we are only interested in a filter that maximizes $P(s|h)$, and not the exact value of $P(s|h)$, we can therefor limit our focus to evaluating $\Lambda$, and threshold on the point that it reaches a maximum.
+is the \emph{likelihood ratio}. $P(0)$ and $P(h)$ are known as \emph{priors}: they represent our \emph{a priori} belief that a signal does or does not exist, irrespective of the detector's ability to detect it. We do not need to concern oursevles with assigning values to them, however. Instead we note that $P(s|h)$ is a monotonically increasing function of $\Lambda$. Since we are only interested in a filter that maximizes $P(s|h)$, and not the exact value of $P(s|h)$, we can therefore limit our focus to evaluating $\Lambda$, and threshold on the point that it reaches a maximum. We further note that the natural logarithm of $\Lambda$ also increases monotonically with $P(s|h)$. Since we will be interested in evaluating the likelihood in the region that $\Lambda$ is a maximum, it is common practice to instead evaluate the \emph{log-likelihood}, $\ln \Lambda$, instead, as it is less ``peaky" around the region of interest \cite{ref:Sivia}.
 
-To calculate the likelihood ratio, we need the \acp{PDF} $P(s|h)$ and $P(s|0)$. We focus first on $P(s|0)$. Let us assume that the noise is a stationary Gaussian process with zero mean. For our purposes it will be useful to characterize the noise by its \ac{PSD}, $S_n(|f|)$, instead of the variance. The \ac{PSD} is defined as the Fourier Transform of the autocorrelation of the noise \cite{ref:Wainstein_Zubakov}:
+Before calculating the log-likelihood, we note that we do not know \emph{a priori} the phase of the binary, $\theta$. Therefore, we treat $\theta$ as a \emph{nuisance} parameter, which we marginalize over \cite{ref:Sivia}. Thus, we write the likelihood ratio as:
+\begin{eqnarray}
+\Lambda & = & \int_0^{2 \pi} p(\theta) \lambda(\theta) \d\theta \nonumber \\
+ & = & \frac{1}{2\pi P(s|0)} \int_0^{2 \pi} p(s|h(\theta)) \d\theta
+\end{eqnarray}
+Here, $\lambda(\theta)$ is the likelihood ratio at a given $\theta$, $p(\theta)$ is the prior probability of getting $\theta$, and we have written $P(s|h)$ as the \ac{PDF} $p(s|h(\theta))$; $P(s|0)$ remains outside of the integral as it has no $\theta$ dependence. Assuming any phase is eqaully likely, we set $p(\theta) = 1/2\pi$ and also pulled it out of the integral.
+
+To calculate the likelihood ratio, we need $p(s|h(\theta))$ and $P(s|0)$. We focus first on $P(s|0)$. If $s(t)$ has no signal in it then it is simply $n(t)$. $P(s|0)$ is therefore the probability of getting a particular realization of the noise. Let us assume that the noise is a stationary Gaussian process with zero mean. For our purposes it will be useful to characterize the noise by its \ac{PSD}, $S_n(|f|)$ rather than its variance. The \ac{PSD} is defined as the Fourier Transform of the autocorrelation of the noise \cite{ref:Wainstein_Zubakov}:
 \begin{equation}
-S_n(|f|) \equiv \int_{-\infty}^{\infty} R(\tau)e^{-i 2\pi ft} \d t
+S_n(|f|) \equiv \int_{-\infty}^{\infty} R(\tau)e^{-i 2\pi ft} \d t = \overline{\widetilde{n}^{*}(f)\widetilde{n}(f)}
 \end{equation}
 where,
 \begin{equation}
 R(\tau) = \overline{n(t)n(t-\tau)}
 \end{equation}
-is the autocorrelation function. Note that $R(0) = \overline{n(t)^2}$, which is the variance since $\overline{n(t)} = 0$. We write $S_n(|f|)$ instead of $S_n(f)$ because the frequency must be positive for real noise; thus $S_n(|f|)$ is a one-sided \ac{PSD}. It is shown in \cite{ref:Finn} that with these assumptions, the probability of getting $s$ without a signal is:
+is the autocorrelation function. Note that $R(0) = \overline{n(t)^2}$, which is the variance since $\overline{n(t)} = 0$. We restrict our analysis to positive frequencies; thus we will use the one-sided \ac{PSD} $S_n(|f|) = S_n(f)/2$. It is shown in \cite{ref:Finn} that with these assumptions, the probability of getting a given realization of the noise, $n = s$, is:
 \begin{equation}
 \label{eqn:p_no_sig}
 P(s|0) = \alpha \exp[ - \frac{1}{2} (s|s) ]
 \end{equation}
-where $\alpha$ is an arbitrary constant and the inner-product $(\cdot|\cdot)$ is defined as:
+where $\alpha$ is a normalization constant and the inner-product $(\cdot|\cdot)$ is defined as:
 \begin{eqnarray}
 \label{eqn:inner_product1}
 (a|b) & \equiv & \int_{-\infty}^{\infty} \frac{ \widetilde{a}^{*}(f)\widetilde{b}(f) + \widetilde{a}(f)\widetilde{b}^{*}(f) }{S_n(|f|)} \d f \\
@@ -69,15 +86,153 @@ where $\alpha$ is an arbitrary constant and the inner-product $(\cdot|\cdot)$ is
 \end{eqnarray}
 In going from \ref{eqn:inner_product1} to \ref{eqn:inner_product2} we have used the fact that for real functions of time (which both $h$ and $s$ are), $\widetilde{g}^{*}(f) = \widetilde{g}(-f)$.
 
-Using this result we can also find $P(s|h)$. If $h$ is in the data, then $n(t) = s(t) - h(t)$. Thus,
+Using this result we can also find $p(s|h(\theta))$. If $h$ is in the data, then $n(t) = s(t) - h(t, \theta)$. Thus,
 \begin{eqnarray}
 \label{eqn:p_sig}
-P(s|h) & = & \alpha \exp\{ -\frac{1}{2} (s - h | s - h ) \} \nonumber \\
- & = & \alpha \exp\{ -\frac{1}{2} [ (s|s) - 2(s|h) + (h|h) ] \} \nonumber \\
- & = & P(s|0) \exp\{ (s|h) - (h|h)/2 \}
+p(s|h) & = & \alpha \exp\{ -\frac{1}{2} (s - h | s - h ) \} \nonumber \\
+ & = & \alpha \exp\{ -\frac{1}{2} [ (s|s) - 2(h|s) + (h|h) ] \} \nonumber \\
+ & = & P(s|0) \exp\{ (h|s) - (h|h)/2 \}
 \end{eqnarray}
-Plugging \ref{eqn:p_no_sig} and \ref{eqn:p_sig} into \ref{eqn:likelihood_ratio}, the log-likelihood becomes:
+Plugging \ref{eqn:p_no_sig} and \ref{eqn:p_sig} into \ref{eqn:likelihood_ratio}, the likelihood ratio becomes:
+\begin{eqnarray}
+\label{eqn:lambda1}
+\Lambda & = & \frac{1}{2\pi} \int_0^{2\pi} \exp\{ (h|s)- \frac{(h|h)}{2} \} \d\theta \\
+\label{eqn:lambda2}
+ & = & \frac{1}{2\pi} e^{-(h|h)/2} \int_0^{2\pi} \exp\{ (~C(t)\cos(2\phi(t) - \theta)~|~s~) \} \d\theta
+\end{eqnarray}
+In going from \ref{eqn:lambda1} to \ref{eqn:lambda2} we have plugged in the general form of $h(t, \theta)$, which is given in equation \ref{eqn:general_h}. We have also pulled the $(h|h)$ term out of the integral as it is simply a number --- it is the inner product of $h$ with itself --- and has no phase dependence. In order to evaluate the integral, we re-write the inner product of $s$ with $h$ as follows:
+\begin{eqnarray}
+\label{eqn:sh_in_z}
+(h|s) & = &  (~C(t) \cos(2\phi(t) - \theta)~|~s(t)~) \nonumber \\
+ & = & (~C(t)\cos(2\phi(t))~|~s(t)~) \cos(\theta) + (~C(t)\sin(2\phi(t))~|~s(t)~) \sin(\theta) \nonumber \\
+ & = & x \cos(\theta) + y\sin(\theta) \nonumber \\
+ & = & |z|\cos(\Phi)\cos(\theta) + |z|\sin(\Phi)\sin(\theta) \nonumber \\
+ & = & |z|\cos(\Phi - \theta)
+\end{eqnarray}
+where:
+\begin{align}
+\label{eqn:matchf_x}
+x &= (~C(t)\cos(2\phi(t))~|~s(t)~) \equiv (h\pls|s) \\
+\label{eqn:matchf_y}
+y &= (~C(t)\sin(2\phi(t))~|~s(t)~) \equiv (h\crs|s) \\
+|z| &= \sqrt{ x^2 + y^2 } \\
+\Phi &=  \tan^{-1}\left( \frac{y}{x} \right) 
+\end{align}
+(Note that $x$ nor $y$, and therfore $z$, have no time dependence. This is because the time is integrated out in the inner-products.) Since the \ac{GW} phase, $\phi(t)$, is $90^{\circ}$ out of phase in equations \ref{eqn:matchf_x} and \ref{eqn:matchf_y}, we have identified $x$ and $y$ as the inner products of the plus and cross polarizations, respectively, with the data. Plugging equation \ref{eqn:sh_in_z} into the likelihood ratio, we have:
+\begin{eqnarray}
+\Lambda & = & \frac{1}{2\pi} e^{-(h|h)/2} \int_0^{2\pi} \exp\{ |z|\cos(\Phi - \theta) \} \d \theta \nonumber \\
+ & = & e^{-(h|h)/2} I_0(|z|) \nonumber \\
+\label{eqn:modBessel}
+ & = & e^{-(h|h)/2} \sum_{k=0}^{\infty} \frac{(|z|^{2}/4)^{k}}{(k!)^2} \\
+ \label{eqn:posDef}
+ & \leq & e^{-(h|h)/2} \left( \sum_{k=0}^{\infty} \frac{ (|z|^{2}/4)^k }{k!} \right) \left(\sum_{m=0}^{\infty} \frac{1}{m!}\right) \\
+ & \leq & e^{-(h|h)/2} e^{|z|^{2}/4 - 1}
+\end{eqnarray}
+where $I_0(|z|)$ is the modified Bessel function of the first kind, which is equal to the sum in equation \ref{eqn:modBessel} \cite{ref:Wolfram}. To go from equation \ref{eqn:modBessel} to \ref{eqn:posDef} we have used the fact that $(|z|^{2}/4)^{k}/k!$ and $1/k!$ are positive definite for all $k$. Thus, the likelihood ratio is maximized when it is equal to $\exp\{ |z|^2/4 + 1 - (h|h)/2 \}$, and so we can threshold when the log-likelihood is:
 \begin{equation}
-\ln(\Lambda) = 2 \frac{(s|h)}{(h|h)}
+\ln \Lambda = \frac{1}{4}|z|^2 + 1 - \frac{1}{2}(h|h)
+\end{equation}
+The factor of $1/4$ and the $+1$ term on the right-hand side of the equation only scale and offset $\ln\Lambda$ by constants. We can therefore threshold on:
+\begin{equation}
+4 \ln \Lambda - 4 = |z|^2 - 2(h|h)
+\end{equation}
+instead, without any loss in ability to detect $h$. The $(h|h)$ term, however, causes the log-likelihood to be template dependent. Since we will be filtering multiple templates, we prefer to use a quantity that is independent of the template used. Therefore, we normalize both sides by $(h|h)$. Dropping the remaining $-2$ offset, we are left with:
+\begin{equation}
+\frac{|z|^2}{(h|h)} \equiv \rho^{2}
+\end{equation}
+The quantity $\rho^2$ is our detection statistic.
+
+In the absence of a signal, $(h|h)$ is the variance of the filter. To see this, first note that the mean of $(h|n)$ is zero:
+\begin{eqnarray}
+\overline{(h|n)} & = & 2 \overline{\int_{-\infty}^{\infty} \frac{\widetilde{h}^{*}(f)\widetilde{n}(f)}{S_n(|f|)} \d f} \nonumber \\
+ & = & 2 \int_{-\infty}^{\infty} \frac{\widetilde{h}^{*}(f)\overline{\widetilde{n}(f)}}{S_n(|f|)} \d f \nonumber \\
+ & = & 0
+\end{eqnarray}
+since $\overline{n(t)} = \overline{\widetilde{n}(f)} = 0$. The mean of the square of $(h|n)$ is:
+\begin{eqnarray}
+\overline{(h|n)^2} & = & \overline{\left| 2 \int_{-\infty}^{\infty} \frac{\widetilde{h}^{*}(f)\widetilde{n}(f)}{S_n(|f|)} \d f \right|^2 } \nonumber \\
+ & = & 4 \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} \frac{\widetilde{h}(f')\widetilde{h}^{*}(f)\overline{\widetilde{n}^{*}(f')\widetilde{n}(f)}}{S_n(|f'|)S_n(|f|)} \d f' \d f \nonumber \\
+ & = & 4 \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} \frac{\widetilde{h}(f')\widetilde{h}^{*}(f) S_n(|f'|)\delta(f'-f)}{2 S_n(|f'|)S_n(|f|)} \d f' \d f \nonumber \\
+ & = & 2 \int_{-\infty}^{\infty} \frac{\widetilde{h}(f)\widetilde{h}(f)}{S_n(|f|)} \d f \nonumber \\
+ & = & (h|h)
+\end{eqnarray}
+Thus the variance is:
+\begin{equation}
+\sigma^2 = \overline{(h|n)^2} - \overline{(h|n)}^2 = (h|h)
+\end{equation}
+and we can write:
+\begin{equation}
+\label{eqn:SNR}
+\rho^2 = \frac{|z|^2}{\sigma^2}
+\end{equation}
+We therefore identify $\rho$ as the \emph{\ac{SNR}} of the template.
+
+In order to evaluate $\rho$ for arbitrary values of $\tau \neq \tau_c \neq 0$, we note that the Fourier Transform of $h(t-\tau)$ is: 
+\begin{eqnarray}
+\widetilde{h}(f) & = & \int_{-\infty}^{\infty} h(t-\tau) e^{-i 2\pi f t} \d t \nonumber \\
+& = & e^{i 2\pi f \tau} \int_{-\infty}^{\infty} h(t') e^{-i 2\pi ft'} \d t' \nonumber \\
+& = & e^{i 2\pi f \tau} \widetilde{h}(f')
+\end{eqnarray}
+$\widetilde{h}(f')$ is the Fourier Transform of $h(t)$ independent of the coalescence time. We can thereby account for the unknown coalescence time by filtering:
+\begin{equation*}
+e^{-i 2\pi f\tau} \widetilde{h}(f)
+\end{equation*}
+This introduces a time-dependence to $\rho$:
+\begin{align}
+\rho(\tau)^2 &= \frac{|z(\tau)|^2}{\sigma^2} \nonumber \\
+ &= \frac{1}{\sigma^2}\left( (h\pls(\tau)|s)^2 + (h\crs(\tau)|s)^2 \right) \nonumber \\
+\label{eqn:snr_full_form}
+ &= \frac{1}{\sigma^2}\left\{ \left( \int_{-\infty}^{\infty} \frac{\widetilde{h}\pls^{*}(f)\widetilde{s}(f)}{S_n(|f|)} e^{i 2\pi f\tau} \d f \right)^2 + \left( \int_{-\infty}^{\infty} \frac{\widetilde{h}\crs^{*}(f)\widetilde{s}(f)}{S_n(|f|)} e^{i 2\pi f\tau} \d f \right)^2 \right\}
+\end{align}
+To carry out the maximum likelihood operation, we create a \ac{SNR} time series by incrementing $\tau$ and filtering using equation \ref{eqn:snr_full_form} at each step. We then select points where $\rho(t)$ is a maximum; if the \ac{SNR} of a maximum point exceeds our pre-determined threshold we save it. Each of the saved events is a \emph{trigger}.
+
+Now that we have established the \ac{SNR} as our detection statistic, let us examine a few important properties of it. In the absence of a signal ($s = n$) $\rho$ is $\chi^2$ distributed with two degrees of freedom; the mean squared is:
+\begin{align}
+\overline{\rho^2} &= \frac{1}{\sigma^2}\left( \overline{(h\pls|n)^2} + \overline{(h\crs|n)^2} \right) \nonumber \\
+ &= \frac{ \left( (h\pls|h\pls) + (h\crs|h\crs) \right)}{(h|h)} \nonumber \\
+ &= 2
+\end{align}
+since $(h\pls|h\pls) = (h\crs|h\crs) = (h|h)$. If we had only filtered one of the phases, $\overline{\rho^2}$ in noise would be 1. While filtering both $h\pls$ and $h\crs$ allowed us to account for the unknown phase, we have paid for our ignorance by doubling the noise floor. Our threshold for keeping triggers must therefore be larger than $\rho^{2} = 2$, as it is impossible to distinguish noise from triggers at or below this value.
+
+As seen in equation \ref{eqn:h_general}, $h$ is inversely proportional to the effective distance to the binary, $\effD$. We can exploit this to relate $\effD$ to the \ac{SNR}. Assume the data only contains a signal (and no noise), i.e., $s = h'\pls$, from a binary that has an effective distance of $\effD'\Mpc$. For simplicity we also assume the signal is plus-polarized with coalesence time $\tau_c = 0$. The templates we filter with are generated at a canonical distance of $1\Mpc$; therefore $h'\pls = \effD'^{-1}h\pls$. The \ac{SNR} would be:
+\begin{align*}
+\rho &= \frac{1}{\sigma^2}\left( (h\pls|h'\pls)^2 + (h\crs|h'\pls)^2 \right) \\
+ &= \frac{1}{\sigma^2} \left( \effD^{-2}(h\pls|h\pls)^2 + \effD^{-2}(h\crs|h\pls) \right) \\
+ &= \frac{1}{\sigma^2} \effD^{-2} \sigma^4
+\end{align*}
+(Here we have used the fact that $(h\crs|h\pls) = 0$, which is due to the orthogonality of the polarizations). Therefore:
+\begin{equation}
+\label{eqn:DtoRho}
+\effD = \frac{\sigma}{\rho}
+\end{equation}
+Since $\sigma$ is inversely proportional to $\sqrt{S_n(|f|)}$, we see that it is a measure of the sensitivity of the detector. The noisier the detector is, the smaller $\sigma$ is, and so for a given \ac{SNR}, the range that we can detect will be smaller.
+
+If the detector output is Gaussian, as we have assumed above, then we could relate \ac{SNR} directly to false alarm rate, and we could simply set the \ac{SNR} threshold based on some desired false alarm rate. Any trigger with a \ac{SNR} above that threshold would be considered a gravitational wave. However, as we will see in section \ref{sec:chisq}, the real detectors have high rates of non-Gaussian transients (``glitches") for which we have no model. We therefore have to measure the false alarm rate directly. How this is done is discussed in chapter \ref{ch:far}.
+
+\section{Filtering with Multiple Templates}
+\label{sec:multiple_templates}
+In the above section we assumed that the signal we were looking for had the same parameters as the template we used to search for it. We now address how to search for signals across a range of chirp masses and symmetric-mass ratios --- collectively known as \emph{instrinsic} parameters --- so that we can search for signals from many types of systems. Alternatively, if one signal exists in the data, we can think of this question as addressing how to estimate its parameters.
+
+In order to find the \emph{intrinsic} parameters we use a discreet \emph{bank} of templates. The templates are laid out in the bank by computing how quickly the inner product --- or \emph{overlap}, $\mathcal{O}$ --- between a template with intrinsic parameters $\theta_\mu$ and one with parameters $\theta_\mu + \Delta\theta_\mu$ falls off with increasing $\Delta\theta_\mu$. This is done by expanding the overlap around $\Delta\theta_\mu = 0$:
+
+\begin{eqnarray}
+\label{eqn:OverlapSeries}
+\mathcal{O} & \equiv & \left( h(\theta_\mu) | h(\theta_\mu + \Delta\theta_\mu) \right)  \\
+        & = & 1 + \frac{1}{2} \left.\frac{\partial^2\mathcal{O}}{\partial \Delta\theta^\mu \partial \Delta\theta^\nu} \right|_{\Delta\theta^\kappa = 0} \Delta\theta^\mu \Delta\theta^\nu + \ldots \nonumber \\
+        & \approx & 1 - g_{\mu \nu}\Delta\theta^\mu\Delta\theta^\nu
+\end{eqnarray}
+
+where 
+
+\begin{equation}
+\label{eqn:templateMetric}
+g_{\mu \nu} = -\frac{1}{2} \left.\frac{\partial^2\mathcal{O}}{\partial \Delta\theta^\mu \partial \Delta\theta^\nu} \right|_{\Delta\theta^\kappa = 0}
 \end{equation}
 
+$g_{\mu\nu}$ is the metric on the parameter space around the point $\theta_\mu$; it gives the ``distance" between two templates with slightly different parameters in terms of how much \ac{SNR} will be lost from their mis-match. Using the metric we can determine how many templates to place in a region of parameter space for an acceptable loss in \ac{SNR} due to the discretization. What is acceptable can be determined from equation \ref{eqn:DtoRho}. For example, if we discretize the bank such that the maximum loss in \ac{SNR} for a signal that falls between two templates is $3\%$, the loss in effective range will be also be $3\%$. This translates to a loss in volume of $(\delta \effD)^3 \sim10\%$. The loss in sensitive volume must be weighed against false alarm rate: the more templates we filter with, the higher the probability of getting accidental triggers from noise. This also decreses the sensitive volue as the \ac{SNR} at which we could claim a confident detection would have to increase. A loss of $3\%$ is the currently used limit in \ac{CBC} searches, which translates to a desired overlap of $94\%$ between neighboring templates.
+
+If an analytic solution exists for the waveform in terms of the parameters $\theta_\mu$, then the metric can be evaluated directly to figure out how many templates are needed in the bank and where they should be placed to keep the \ac{SNR} loss within the desired limit. Laying the templates so that the overlap remains the same across the bank requires computing the metric in a coordinate system which is largely flat across the parameter space. This limits the number of parameters that can be accounted for, and it makes it more difficult to lay templates using higher-order \ac{pN} expansions, as the terms become larger and more complex. Currently, the metric has been computed for $2\,$\ac{pN} non-spinning templates, which are laid out on a hexagonal grid in $\tau_0$ and $\tau_3$ space. We use $\tau_0$ and $\tau_3$ because the metric at $2\,$\ac{pN} is roughly flat in these coordinates. Once the templates are laid out we can convert to $\mchirp/\eta$ or $m_1/m_2$, as desired. See chapter \ref{ch:ihope_pipeline} for a plot of a typical template bank used in \ac{S5} and \ac{S6}.
+
+Limiting the search to non-spinning templates means we cannot detect \acp{GW} from binaries with spinning component masses as well. In parameter space a spinning binary will live in a region above the non-spinning plane. This means the \ac{SNR} we obtain will be from the projection of the signal onto the non-spinning plane. The resulting loss in \ac{SNR} leads to a decrease in sensitivity to spinning signals. It has been shown that spin should not be much of a concern for \ac{BNS} systems \cite{ref:?}, as the component masses are too small to spin fast enough relative to the total angular momentum to have an affect on the \ac{GW}. However, spin does have a stronger effect on \ac{NSBH} and \ac{BBH} systems \cite{ref:?}. In \ac{S5} and \ac{S6} we estimated the effect of the spin of these systems on our ability to detect; see chapter \ref{ch:results} for details. Investigations into how to expand the template bank into non-spinning regions without substantially increasing the false alarm rate are on-going.
+
+\section{The $\chi^2$ Test}
