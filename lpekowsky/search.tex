@@ -1,4 +1,138 @@
 
+Let $n(t)$ be the noise, $h(t)$ a signal, and $s(t)=n(t)+h(t)$ data
+from the instrument.
+
+Consider the most general linear filter on the data, in the discrete
+case this would be
+
+\begin{equation}
+\hat{s} = \sum_i s_i K_i
+\end{equation}
+
+Since we will want a real result, we require the $K_i$ to be real.  In
+the continuum limit this becomes
+
+\begin{equation}
+\hat{s} = \int_{-\infty}^\infty s(t) K(t)\, dt
+\end{equation}
+
+We now define the signal strength $S$ as the expected value of
+$\hat{s}$ when the signal is present:
+
+\begin{align}
+S &= \langle \hat{s} \rangle \\
+&= \langle  \int_{-\infty}^\infty s(t) K(t)\, dt \rangle \\
+&= \int_{-\infty}^\infty \langle s(t) K(t)\rangle \, dt \\
+&= \int_{-\infty}^\infty \langle s(t) \rangle K(t) \, dt \\
+&= \int_{-\infty}^\infty \langle n(t) + h(t) \rangle K(t) \, dt \\
+&= \int_{-\infty}^\infty \left( \langle n(t) \rangle + \langle h(t)
+\rangle \right)  K(t) \, dt \\
+&= \int_{-\infty}^\infty \left( 0 + h(t) \right)  K(t) \, dt \\
+&= \int_{-\infty}^\infty h(t) K(t) \, dt \\
+\end{align}
+
+Now, since $K(t)$ is real we can replace it by its complex conjugate
+and then apply Parseval's theorem to write this as
+
+\begin{align}
+S &= \int_{-\infty}^\infty h(t) K^\star(t) \, dt \\
+&= \int_{-\infty}^\infty \tilde{h}(f) \tilde{K}^\star(f) \, df \\
+\end{align}
+
+We characterise the noise $N$ as the rms value of $\hat{s}$ when the
+signal is absent:
+
+
+\begin{align}
+N^2 &= \langle \hat{s}^2(t) \rangle - \langle \hat{s}(t) \rangle^2 \\
+&= \langle \hat{s}^2(t) \rangle  \\
+&= \int_{-\infty}^\infty K(t) K(t') \langle n(t) n(t')
+\rangle\,dt\,dt' \\
+&= \int_{-\infty}^\infty dt\,dt' K(t) K(t') 
+\int_{-infty}^\infty df\,df' e^{2\pi i f t}e^{-2\pi i f' t'} \langle
+\tilde{n}^\star(f) \tilde{n}(f')\rangle \\
+\end{align}
+
+\fake{fill in last step}
+
+From the definition of the PSD
+
+\begin{equation}
+N^2 = \int_{-infty}^\infty df\,\frac{1}{2} S_n(f) |\tilde{K}(f)|^2
+\end{equation}
+
+
+We now introduce a new function
+
+\begin{equation}
+\tilde{u}(f) = \frac{1}{2} S_n(f) \tilde{K}(f)
+\end{equation}
+
+In terms of which we can write the signal-to-noise ration $S/N$ as
+
+
+\begin{equation}
+\frac{S}{N} =
+\frac
+  {\int_{-\infty}^\infty df\,
+   \frac
+     {\tilde{h}(f) \tilde{u}^\star(f)}
+     {(1/2) S_n(f)}}
+  {\left[\int_{-\infty}^\infty df\,
+   \frac
+     {\tilde{u}(f) \tilde{u}^\star(f)}
+     {(1/2) S_n(f)}\right]^{1/2}}
+\end{equation}
+
+This motivates the definition of an operator mapping pairs of
+functions to real numbers
+
+\begin{equation}
+(A|B) = \int_{-\infty}^\infty df\,
+   \frac
+     {\tilde{A}(f) \tilde{B}^\star(f)}
+     {(1/2) S_n(f)}
+\end{equation}
+
+Using this the SNR becomes
+
+\begin{equation}
+\frac{S}{N} = \frac{(h|u)}{(u|u)^{1/2}}
+\end{equation}
+
+Now, the operator defined in ? has the following properties
+
+Conjugate symmetry, $(x|y) = (y|x)^\star$
+
+Linearity in the first argument $(ax + by|z) = a(x|z) + b(y|z)$ for
+$a,b$ numbers and $x,y,z$ functions.  This follows from the linearity
+of the Fourier transform.
+
+Positive-definiteness $(x|x) \geq 0$ and $(x|x) = 0$ iff $x=0$.  This
+follows from the positive-definiteness of the product $aa^\star$ for
+$a \in \mathcal{C}$.
+
+The operator therefore has all the properties of an inner product on
+the vector space of functions.  We may therefore consider
+
+\[
+\frac{u}{(u|u)}
+\]
+
+to be a normalized vector.
+
+We now seek a function $u$ (and hence $K$) that will maximize he SNR.
+In this form it is clear that $u$ and $h$ must be parallel, and
+therefore
+
+\begin{equation}
+\tilde{K}(f) \propto \frac{\tilde{h}}{S_n(f)}
+\end{equation}
+
+The constant cancels in the SNR, and may therefore be set to 1.
+
+
+\iffalse
 % from Boyle et al.
 \subsection{Matched filtering}
 \label{sec:MatchedFiltering}
@@ -84,3 +218,5 @@ quantity $\tilde{s}(f)\, \tilde{h}^{\ast}(f) / S_{n}(f)$ evaluated at
 $\ta$.  Thus finding the maximum over $\ta$ involves taking the
 Fourier transform and selecting the largest element of the finite set
 that results from discretization.
+\fi
+
