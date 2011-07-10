@@ -112,13 +112,48 @@ In going from \ref{eqn:lambda1} to \ref{eqn:lambda2} we have plugged in the gene
 where:
 \begin{align}
 \label{eqn:matchf_x}
-x &= (~C(t)\cos(2\phi(t))~|~s(t)~) \equiv (h\pls|s) \\
+x &= (~C(t)\cos(2\phi(t))~|~s(t)~) \equiv (h_{\pls}|s) \\
 \label{eqn:matchf_y}
-y &= (~C(t)\sin(2\phi(t))~|~s(t)~) \equiv (h\crs|s) \\
+y &= (~C(t)\sin(2\phi(t))~|~s(t)~) \equiv (h_{\crs}|s) \\
 |z| &= \sqrt{ x^2 + y^2 } \\
 \Phi &=  \tan^{-1}\left( \frac{y}{x} \right) 
 \end{align}
-(Note that $x$ nor $y$, and therfore $z$, have no time dependence. This is because the time is integrated out in the inner-products.) Since the \ac{GW} phase, $\phi(t)$, is $90^{\circ}$ out of phase in equations \ref{eqn:matchf_x} and \ref{eqn:matchf_y}, we have identified $x$ and $y$ as the inner products of the plus and cross polarizations, respectively, with the data. Plugging equation \ref{eqn:sh_in_z} into the likelihood ratio, we have:
+Since the \ac{GW} phase, $2\phi(t)$, is $90^{\circ}$ out of phase in equations \ref{eqn:matchf_x} and \ref{eqn:matchf_y}, we have identified $x$ and $y$ as the inner products of the plus and cross polarizations, respectively, with the data. Due to their orthogonality, note that:
+\begin{align}
+(h_\pls|h_\pls) &= (h_\crs|h_\crs) &= (h|h) \\
+(h_\pls|h_\crs) &= (h_\crs|h_\pls) &= 0
+\end{align}
+Also note that we can let $z$ be complex:
+\begin{equation}
+z = x + iy
+\end{equation}
+This will prove useful below.
+
+%Note that in this case we can write:
+%\begin{align*}
+%z &= (h_c|s) + i(h_s|s) \\
+%  &= (h_c|s) + (-ih_s|s) \\
+%  &= (h_c - ih_s|s) \\
+%  &= (H|s)
+%\end{align*}
+%where $H$ is the phasor:
+%\begin{equation}
+%H(t) = C(t)e^{-i2\phi(t)}
+%\end{equation}
+%
+%Using this formalism we can write:
+%\begin{align}
+%\label{eqn:matchf_xcmplx}
+%x &= \Re(h|s) \\
+%\label{eqn:matchf_ycmplx}
+%y &= \Re (ih|s) \\
+%\label{eqn:matchf_cmplx}
+%z &=  (h|s) + i(h|s) \\
+%\Rightarrow |z| &= \sqrt{2} (h|s)
+%\end{align}
+%Here $\Re$ denotes the real part of the functions. Using this complex notation will prove useful below.
+
+Plugging equation \ref{eqn:sh_in_z} into the likelihood ratio, we have:
 \begin{eqnarray}
 \Lambda & = & \frac{1}{2\pi} e^{-(h|h)/2} \int_0^{2\pi} \exp\{ |z|\cos(\Phi - \theta) \} \d \theta \nonumber \\
  & = & e^{-(h|h)/2} I_0(|z|) \nonumber \\
@@ -180,27 +215,27 @@ e^{-i 2\pi f\tau} \widetilde{h}(f)
 This introduces a time-dependence to $\rho$:
 \begin{align}
 \rho(\tau)^2 &= \frac{|z(\tau)|^2}{\sigma^2} \nonumber \\
- &= \frac{1}{\sigma^2}\left( (h\pls(\tau)|s)^2 + (h\crs(\tau)|s)^2 \right) \nonumber \\
+ &= \frac{1}{\sigma^2}\left( (h_{\pls}(\tau)|s)^2 + (h_{\crs}(\tau)|s)^2 \right) \nonumber \\
 \label{eqn:snr_full_form}
- &= \frac{1}{\sigma^2}\left\{ \left( \int_{-\infty}^{\infty} \frac{\widetilde{h}\pls^{*}(f)\widetilde{s}(f)}{S_n(|f|)} e^{i 2\pi f\tau} \d f \right)^2 + \left( \int_{-\infty}^{\infty} \frac{\widetilde{h}\crs^{*}(f)\widetilde{s}(f)}{S_n(|f|)} e^{i 2\pi f\tau} \d f \right)^2 \right\}
+ &= \frac{1}{\sigma^2}\left\{ \left( \int_{-\infty}^{\infty} \frac{\widetilde{h}_{\pls}^{*}(f)\widetilde{s}(f)}{S_n(|f|)} e^{i 2\pi f\tau} \d f \right)^2 + \left( \int_{-\infty}^{\infty} \frac{\widetilde{h}_{\crs}^{*}(f)\widetilde{s}(f)}{S_n(|f|)} e^{i 2\pi f\tau} \d f \right)^2 \right\}
 \end{align}
 To carry out the maximum likelihood operation, we create a \ac{SNR} time series by incrementing $\tau$ and filtering using equation \ref{eqn:snr_full_form} at each step. We then select points where $\rho(t)$ is a maximum; if the \ac{SNR} of a maximum point exceeds our pre-determined threshold we save it. Each of the saved events is a \emph{trigger}.
 
-Now that we have established the \ac{SNR} as our detection statistic, let us examine a few important properties of it. In the absence of a signal ($s = n$) $\rho$ is $\chi^2$ distributed with two degrees of freedom; the mean squared is:
+Now that we have established the \ac{SNR} as our detection statistic, let us examine a few important properties of it. In the absence of a signal ($s = n$) $\rho$ is $\chi^2$ distributed with two degrees of freedom; the squared mean is:
 \begin{align}
-\overline{\rho^2} &= \frac{1}{\sigma^2}\left( \overline{(h\pls|n)^2} + \overline{(h\crs|n)^2} \right) \nonumber \\
- &= \frac{ \left( (h\pls|h\pls) + (h\crs|h\crs) \right)}{(h|h)} \nonumber \\
+\overline{\rho^2} &= \frac{1}{\sigma^2}\left( \overline{(h_{\pls}|n)^2} + \overline{(h_{\crs}|n)^2} \right) \nonumber \\
+ &= \frac{ \left( (h_{\pls}|h_{\pls}) + (h_{\crs}|h_{\crs}) \right)}{(h|h)} \nonumber \\
  &= 2
 \end{align}
-since $(h\pls|h\pls) = (h\crs|h\crs) = (h|h)$. If we had only filtered one of the phases, $\overline{\rho^2}$ in noise would be 1. While filtering both $h\pls$ and $h\crs$ allowed us to account for the unknown phase, we have paid for our ignorance by doubling the noise floor. Our threshold for keeping triggers must therefore be larger than $\rho^{2} = 2$, as it is impossible to distinguish noise from triggers at or below this value.
+since $(h_{\pls}|h_{\pls}) = (h_{\crs}|h_{\crs}) = (h|h)$. If we had only filtered one of the phases, $\overline{\rho^2}$ in noise would be 1. While filtering both $h_{\pls}$ and $h_{\crs}$ allowed us to account for the unknown phase, we have paid for our ignorance by doubling the noise floor. Our threshold for keeping triggers must therefore be larger than $\rho^{2} = 2$, as it is impossible to distinguish noise from triggers at or below this value.
 
-As seen in equation \ref{eqn:h_general}, $h$ is inversely proportional to the effective distance to the binary, $\effD$. We can exploit this to relate $\effD$ to the \ac{SNR}. Assume the data only contains a signal (and no noise), i.e., $s = h'\pls$, from a binary that has an effective distance of $\effD'\Mpc$. For simplicity we also assume the signal is plus-polarized with coalesence time $\tau_c = 0$. The templates we filter with are generated at a canonical distance of $1\Mpc$; therefore $h'\pls = \effD'^{-1}h\pls$. The \ac{SNR} would be:
+As seen in equation \ref{eqn:h_general}, $h$ is inversely proportional to the effective distance to the binary, $\effD$. We can exploit this to relate $\effD$ to the \ac{SNR}. Assume the data only contains a signal (and no noise), i.e., $s = h'_{\pls}$, from a binary that has an effective distance of $\effD'\Mpc$. For simplicity we also assume the signal is plus-polarized with coalesence time $\tau_c = 0$. The templates we filter with are generated at a canonical distance of $1\Mpc$; therefore $h'_{\pls} = \effD'^{-1}h_{\pls}$. The \ac{SNR} would be:
 \begin{align*}
-\rho &= \frac{1}{\sigma^2}\left( (h\pls|h'\pls)^2 + (h\crs|h'\pls)^2 \right) \\
- &= \frac{1}{\sigma^2} \left( \effD^{-2}(h\pls|h\pls)^2 + \effD^{-2}(h\crs|h\pls) \right) \\
- &= \frac{1}{\sigma^2} \effD^{-2} \sigma^4
+\rho^2 &= \frac{1}{\sigma^2}\left( (h_{\pls}|h'_{\pls})^2 + (h_{\crs}|h'_{\pls})^2 \right) \\
+ &= \frac{1}{\sigma^2} \left( \effD'^{-2}(h_{\pls}|h_{\pls})^2 + \effD'^{-2}(h_{\crs}|h_{\pls})^2 \right) \\
+ &= \effD'^{-2} \sigma^2
 \end{align*}
-(Here we have used the fact that $(h\crs|h\pls) = 0$, which is due to the orthogonality of the polarizations). Therefore:
+Thus:
 \begin{equation}
 \label{eqn:DtoRho}
 \effD = \frac{\sigma}{\rho}
@@ -208,6 +243,14 @@ As seen in equation \ref{eqn:h_general}, $h$ is inversely proportional to the ef
 Since $\sigma$ is inversely proportional to $\sqrt{S_n(|f|)}$, we see that it is a measure of the sensitivity of the detector. The noisier the detector is, the smaller $\sigma$ is, and so for a given \ac{SNR}, the range that we can detect will be smaller.
 
 If the detector output is Gaussian, as we have assumed above, then we could relate \ac{SNR} directly to false alarm rate, and we could simply set the \ac{SNR} threshold based on some desired false alarm rate. Any trigger with a \ac{SNR} above that threshold would be considered a gravitational wave. However, as we will see in section \ref{sec:chisq}, the real detectors have high rates of non-Gaussian transients (``glitches") for which we have no model. We therefore have to measure the false alarm rate directly. How this is done is discussed in chapter \ref{ch:far}.
+
+Finally, we will find it useful to define the complex form of the \ac{SNR} using the complex form of $z$ given in equation \ref{eqn:complex_z}:
+\begin{align}
+\varrho &= \frac{z}{\sigma} \nonumber \\
+ &= \frac{(h_\pls|s) + i(h_\crs|s)}{(h|h)} \\
+\rho &= |\varrho|
+\end{align}
+We will use this complex form in the $\chi^2$ test, discussed below.
 
 \section{Filtering with Multiple Templates}
 \label{sec:multiple_templates}
@@ -234,14 +277,14 @@ $g_{\mu\nu}$ is the metric on the parameter space around the point $\theta_\mu$;
 \label{eqn:min_match}
 \underset{\theta^\mu}{\min}~\underset{i}{\max}~(h(\theta^{\mu}_{i})|h'(\theta^{\mu})) \geq MM
 \end{equation}
-where $i \in \{ 1, 2, \ldots N_{\mathrm{templates}} \}$, $\mu \in \{ 1, 2, \ldots N_{\mathrm{parameters}} \}$, and $h'(\theta^{\mu})$ is the waveform of the signal in the data. In other words, the bank should be constructed such that there exists at least one template for which the match between it and any signal with parameters $\theta^\mu$ be $\geq MM$. We can use equation \ref{eqn:DtoRhow} to determine an acceptable $MM$. For example, if $MM = 0.97$, then the maximum loss in \ac{SNR} for a signal that falls between two templates is $3\%$. The loss in effective range will be also be $3\%$, which translates to a loss in volume of $(\delta \effD)^3 = 9\%$. Choosing a larger $MM$ may appear to increase the range. However, a larger $MM$ increases the number of templates needed, and this must be weighed against computational cost and false alarm rate. The more templates we filter with, the higher the probability of getting accidental triggers from noise. This also decreses the sensitive volue as the \ac{SNR} at which we could claim a confident detection would have to increase. A $MM = 0.97$ is the currently used limit in \ac{CBC} searches.
+where $i \in \{ 1, 2, \ldots N_{\mathrm{templates}} \}$, $\mu \in \{ 1, 2, \ldots N_{\mathrm{parameters}} \}$, and $h'(\theta^{\mu})$ is the waveform of the signal in the data. In other words, the bank should be constructed such that there exists at least one template for which the match between it and any signal with parameters $\theta^\mu$ is $\geq MM$. We can use equation \ref{eqn:DtoRho} to determine an acceptable $MM$. For example, if $MM = 0.97$, then the maximum loss in \ac{SNR} for a signal that falls between two templates is $3\%$. The loss in effective range will be also be $3\%$, which translates to a loss in volume of $(\delta \effD)^3 = 9\%$. Choosing a larger $MM$ may appear to increase the range. However, a larger $MM$ increases the number of templates needed, and this must be weighed against computational cost and false alarm rate. The more templates we filter with, the higher the probability of getting accidental triggers from noise. This also decreses the sensitive volume as the \ac{SNR} at which we could claim a confident detection would have to increase. A $MM = 0.97$ is the currently used limit in \ac{CBC} searches.
 
 If an analytic solution exists for the waveform in terms of the parameters $\theta_\mu$, then the metric can be evaluated directly to figure out the number of templates needed and where to place them. Laying the templates so that the overlap remains the same across the bank is best done in a coordinate system which is largely flat across the parameter space. This limits the number of parameters that can be accounted for, and it makes it more difficult to lay templates using higher-order \ac{pN} expansions, as the terms become larger and more complex. Currently, the metric has been computed for $2\,$\ac{pN} non-spinning templates, which are laid out on a hexagonal grid in $\tau_0$ and $\tau_3$ space. These are given by \cite{ref:Babak.et.al:2006}:
 \begin{equation}
 \label{eqn:tau0tau3}
 \tau_0 = \frac{5}{256\pi f_0 \eta}(\pi \mtotal f_0)^{-5/3}, \quad \tau_3 = \frac{1}{8 f_0 \eta}(\pi \mtotal f_0)^{-2/3}
 \end{equation}
-where $f_0$ is the lower cutoff frequency of the template. We use $\tau_0$ and $\tau_3$ because the metric at $2\,$\ac{pN} is roughly flat in these coordinates \cite{ref:Babak.et.al:2006}. Hexagonal placement, as opposed to a square grid, allows the space to be covered efficiently using a minimal number of templates \cite{ref:Cokelaer:2007}. Once the templates are laid out we can convert to $\mchirp/\eta$ or $m_1/m_2$, as desired, by inverting equations \ref{eqn:tau0tau3} to obtain \cite{ref:Babak.et.al:2006}:
+where $f_0$ is the lower cutoff frequency of the template. We use $\tau_0$ and $\tau_3$ because the metric at $2\,$\ac{pN} is roughly flat in these coordinates \cite{ref:Babak.et.al:2006}. Hexagonal gridding --- as opposed to square gridding --- allows the space to be covered efficiently using a minimal number of templates \cite{ref:Cokelaer:2007}. Once the templates are laid out we can convert to $\mtotal$ and $\eta$ by inverting equations \ref{eqn:tau0tau3} to obtain \cite{ref:Babak.et.al:2006}:
 \begin{equation}
 \mtotal = \frac{5}{32\pi^2 f_0}\frac{\tau_3}{\tau_0}, \quad \eta = \frac{1}{8\pi f_0 \tau_3}\left(\frac{32\pi \tau_0}{5\tau_3}\right)^{2/3}
 \end{equation}
@@ -250,3 +293,104 @@ See chapter \ref{ch:ihope_pipeline} for a plot of a typical template bank used i
 Limiting the search to non-spinning templates means we cannot detect \acp{GW} from binaries with spinning component masses as well. In parameter space a spinning binary will live in a region above the non-spinning plane. This means the \ac{SNR} we obtain will be from the projection of the signal onto the non-spinning plane. The resulting loss in \ac{SNR} leads to a decrease in sensitivity to spinning signals. It has been shown that spin should not be much of a concern for \ac{BNS} systems \cite{ref:?}, as the component masses are too small to spin fast enough relative to the total angular momentum to have an affect on the \ac{GW}. However, spin does have a stronger effect on \ac{NSBH} and \ac{BBH} systems \cite{ref:?}. In \ac{S5} and \ac{S6} we estimated the effect of the spin of these systems on our ability to detect; see chapter \ref{ch:results} for details. Investigations into how to expand the template bank into non-spinning regions without substantially increasing the false alarm rate are on-going.
 
 \section{The $\chi^2$ Test}
+
+Up to this point we have assumed that the detector output in the absence of a signal is stationary Gaussian noise. Unfortunately, the real detectors have a number of non-Gaussian glitches due to various instrumental and environmental factors. For example, train tracks are close enough to the \ac{LIGO} Livingston Observatory that when a freight train passes through it causes transients in the noise through seismic up-conversion \cite{ref:?}. Although these glitches do not have the same morphology as a gravitational wave from a \ac{CBC}, they do cause the matched-filter to ``ring off" high-\ac{SNR} triggers. Figure \ref{fig:snrHist} shows a histogram of trigger counts as a function of \ac{SNR} ($\rho$) taken from H1 during two weeks of \ac{S6}.\footnote{The mass range used for this plot is $\mtotal \in [2,25)\Msun$; see chapter \ref{ch:ihope_pipeline} for details on the templates used. Note that this plot was created using a single-stage pipeline, as discussed in \ref{ch:future_developments}, rather than the two-stage pipeline discussed in \ref{ch:ihope_pipeline}. This was done so as to remove complications from the intermediate clustering stage.} For reference, the expected count from a Gaussian distribution is shown. Clearly, the distribution is far from Gaussian.
+
+To better discriminate betwen potential signals and noise, we employ a $\chi^2$ test \cite{ref:Allen:2006}. The basic idea of this test is relatively straight forward. Although a glitch can cause a trigger with the same (or larger) \ac{SNR} as a signal, the manner in which the \ac{SNR} is accumulated over time and frequency will most likely differ. For example, a delta function-like glitch will have a burst of power in a small window in the time domain, and the power will be smeared out across all frequencies. A \ac{CBC} \ac{GW}, on the other hand, will accumulate its power across the duration of the template, and it will do so in a ``chirping" manner. Therefore, if we break the template into frequency bins of equal power, filter each of these sub-templates, and compare the \ac{SNR} in each bin to the expected value, we can better discriminate glitch from signal.
+
+Define a set of $p$ matched filters such that the $i\th$ filter is carried out between the frequencies $f_i$ and $f_{i+1}$:
+\begin{equation}
+(h_i|s) = \int_{f_i}^{f_{i+1}} \frac{ \widetilde{h}^{*}(f) s(f) }{S_n(|f|)} \d f, \quad i \in \{0~ \ldots~ p-1\},~ f \in \left[ f_0, f_{\mathrm{isco}} \right]
+\end{equation}
+(Note that on the left-hand side of the equation we put the $i$ index on $h$. This is because we could equally as well have broken the template up into each frequency bin, then filter each sub-template across the entire frequency range.) Each frequency bin is chosen so that the template has equal amounts of power in each bin. The amount of \ac{SNR} accumulated in one bin is thus:
+\begin{align}
+\rho_i &= \sqrt{\frac{(h_{\pls \,i}|s)^2 + (h_{\crs \,i}|s)^2}{(h|h)}} \nonumber \\
+ &= \frac{1}{p} \rho
+\end{align}
+where $\rho$ is the total \ac{SNR}. We can therefore check how well the measured \ac{SNR} matches the expected \ac{SNR} in a single bin by:
+\begin{equation*}
+\Delta \rho_i = \rho_i - \frac{\rho}{p}
+\end{equation*}
+To check the match across the entire template, we define the $\chi^2$ test as \cite{ref:Allen}:
+\begin{equation}
+\label{eqn:basic_chisq}
+\chi^2 = p \sum_{i=1}^{p} \left|\varrho_i - \frac{\varrho}{p}\right|^2
+\end{equation}
+Note that we have used the complex form of the \ac{SNR}, defined in equation \ref{eqn:complex_rho}, and we took the modulus after the subtraction. This is done so we can directly compare each polarization of the phase between the measured and the expected \acp{SNR}.
+
+Let us examine what values of $\chi^2$ to expect for different situations. First, assume that the detector noise is Gaussian and that the data has a signal in it from a \ac{CBC} at an effective distance $\effD'$: $s(t) = n(t) + h'(t)$. For simplicity we will assume the signal is $\pls$ polarized. (Even if it was not, we could imagine doing a Gram-Schimdt orthogonalization of our templates to align one of the polarizations with that of the signal.) We will also assume, for now, that the signal matches one of our templates exactly. With these assumptions:
+\begin{align}
+(h_\pls|h') &= \effD'^{-1} (h_\pls|h_\pls) &= \sigma^2\effD'^{-1} \\
+(h_{\pls\,i}|h') &= \frac{1}{p\effD'}(h_\pls|h_\pls) &= \frac{\sigma^2}{p\effD'} \\
+(h_\crs|h') &= (h_{\crs\,i}|h') &= 0
+\end{align}
+Here, $h_{\pls\,i}$ and $h_{\crs\,i}$ are the plus and cross polarization templates, respectively, in the $i\th$ bin. We wish to know what the mean $\chi^2$ is in this case. In order to compute it, first note that:
+\begin{align}
+\overline{\varrho_i^{*}\varrho} &= \frac{\overline{z_i^*z}}{\sigma^2} \nonumber \\
+    &= \frac{ \overline{ (h_{\pls \,i}|n+h')(h_{\pls}|n+h')} + \overline{(h_{\crs \,i}|n+h')(h_{\crs}|n+h') }}{\sigma^2} \nonumber \\
+    &= \frac{ \overline{(h_{\pls\,i}|n)(h_\pls|n)} + \overline{(h_{\crs\,i}|n)(h_\crs|n)} + (h_{\pls\,i}|h')(h_{\pls}|h')}{\sigma^2} \nonumber \\
+\label{eqn:rhoi_rho}
+    &= \frac{2}{p} + \frac{1}{p}\xi'^2 \\
+\overline{\varrho_i^{*}\varrho_i} &= \frac{\overline{z_i^*z_i}}{\sigma^2} \nonumber \\
+\label{eqn:rhoi_rhoi}
+    & = \frac{2}{p} + \frac{1}{p^2}\xi'^2 \\
+\overline{\varrho^{*}\varrho} &= \frac{\overline{z^*z}}{\sigma^2} \nonumber \\
+\label{eqn:rho_rho}
+    &= 2 + \xi'^2
+\end{align}
+where:
+\begin{equation}
+\xi'^2 = \frac{\sigma^2}{\effD'^2}
+\end{equation}
+The mean $\chi^2$ is therefore:
+\begin{align}
+\overline{\chi^2} &= p \sum_{i=1}^{p} \overline{\left| \varrho_i - \frac{\varrho}{p} \right|^2} \nonumber \\
+ &= p \sum_{i=1}^{p} \left( \overline{ \varrho_i^*\varrho_i } - \frac{2}{p} \overline{\varrho_i^*\varrho} + \frac{1}{p^2}\overline{\varrho^*\varrho} \right) \nonumber \\
+ &= p \sum_{i=1}^{p} \left( \frac{2}{p} + \frac{\xi'^2}{p^2} - \frac{4}{p^2} - 2 \frac{\xi'^2}{p^2} + \frac{2}{p^2} + \frac{\xi'^2}{p^2} \right) \\
+\label{eqn:mean_chisq}
+ &= 2p - 2
+\end{align}
+Since $n$ is Gaussian, $(h_\pls|n)$ and $(h_\crs|n)$ will each be Gaussian also; we can therefore see that the $\chi^2$ test in this case forms a classic $\chi^2$ distribution (hence the name) with $2p -2$ degrees of freedom.\footnote{For a proof, see Appendix A of \cite{ref:Allen:2006}.} We will find it useful to define the \emph{reduced $\chi^2$}:
+\begin{equation}
+\label{eqn:reduced_chisq}
+\chi^2_{r} \equiv \frac{\chi^2}{2p - 2}
+\end{equation}
+so that
+\begin{equation*}
+\overline{\chi^2_{r}} = 1
+\end{equation*}
+in the case of Gaussian noise.
+
+The fact that the mean $\chi^2$ is independent of $\xi'$ is significant. It means that for a well mathced signal, $\chi^2_r$ will be one regardless of the parameters or distance to the source that emmitted the signal. It also means that if the detector contains only Gaussian noise, the $\chi^2$ test has no effect. That is expected, since in Gaussian noise the matched filter is the best discriminator, and their is no need for anything but \ac{SNR} to separate signal from noise. However, this result was dependent on the signal matching one of our templates exactly. In practice, that most likely will not be the case. For one, the discreetness of the template bank will mean that a signal will most likely not match a template exactly. Additionally, since the templates are calculated using truncated post-Newtonian expansions, there will be some difference in the template and what Nature provides.
+
+To investigate the effect of the mismatch, let us now assume that the signal does not match our best template perfectly. Without loss in generality, we again assume the signal has only plus polarization. In this case:
+\begin{align}
+(h_\pls|\widetilde{h}') &= \effD'^{-1}(h_\pls|h_\pls) &= \frac{\sigma^2}{\effD'} \\
+(h_{\pls\,i}|\widetilde{h}') &= (1 - \epsilon_i)\effD'^{-1}(h_\pls|h_\pls) &= (1 - \epsilon_i) \frac{\sigma^2}{p\effD'} \\
+(h_{\crs}|\widetilde{h}') &= (h_{\crs\,i}|\widetilde{h}') &= 0
+\end{align}
+where $\widetilde{h}'$ is the true signal (not to be confused with the Fourier Transform), and $(1-\epsilon_i)$ is the mismatch between the signal and the template in the $i\th$ bin. We have not defined an overall mismatch between the template and the signal because that cannot be distinguished from the effective distance. In other words, any overall mismatch will simply make the signal appear to be farther away. Note that the $\epsilon_i$ are not necessarily equal. For example, if the template models the signal well during the inspiral phase, but diverges as the binary merges (as is the case with the \ac{pN} approximation), $\epsilon_i$ will grow with frequency. Equations \ref{eqn:rhoi_rho} -- \ref{eqn:rho_rho} become:
+\begin{align}
+\overline{\varrho_i^{*}\varrho} &= \frac{2}{p} + \frac{(1-\epsilon_i)}{p} \xi'^2 \\
+\overline{\varrho_i^{*}\varrho_i} &= \frac{2}{p} + \frac{(1-\epsilon_i)^2}{p^2} \xi'^2 \\
+\overline{\varrho^{*}\varrho} &= 2 + \xi'^2 \\
+\end{align}
+$\overline{\chi^2}$ is therefore:
+\begin{equation}
+\label{eqn:chisq_mismatch}
+\overline{\chi^2} = 2p - 2 + \xi'^2 \sum_{i=1}^{p} \frac{\epsilon_i^2}{p}
+\end{equation}
+From equation \ref{eqn:DtoRho} we can see that $\xi'$ is like a \ac{SNR}: it is what the \ac{SNR} of the signal would be if Gaussian effects are neglected. The $\sum_{i=1}^{p} \epsilon_i^2/p$ term therefore couples the $\chi^2$ to the \ac{SNR} of the signal.
+
+Although we arrived at this solution by considering the mismatch between a signal and a template, we could equally as well have considered $\widetilde{h'}$ to be a glitch. In that case, $\epsilon_i$ gives the match between the glitch and the template. Note that the $\epsilon_i \in (-\infty,\infty)$; i.e., they can be postive \emph{or} negative, and they do not have to be less than one. An $\epsilon_i$ that is negative or greater than one means that the signal \emph{over matches} the template in a given frequency bin. This is what we would expect if the signal was a glitch, for example: a few of the $\epsilon_i$ would be large, while all the others would be close to one. Thus a glitch would lead to a large $\chi^2$. 
+
+The coupling between $\chi^2$ and \ac{SNR} means that both signals and glitches will have larger $\chi^2$ with larger \ac{SNR}. However, as we have set the minimal match to be $> 0.97$, $\epsilon_i < 0.3 \forall i$ due to the discreetness of the bank. Monte carlo simulations of non-spinning signals have shown that mismatches due to differences in post-Newtonian orders are also relatively small. Thus, for (non-spinning) signals, $\chi^2$ is weakly coupled to the \ac{SNR}. Glitches, on the other hand, are expected to have large mismatches, resulting in a strong coupling between $\chi^2$ and \ac{SNR}. The overall effect is that signals and glitches get increasingly separated with increasing \ac{SNR}. Indeed, this is borne out in the data. Figure \ref{fig:snr_chisq} shows the H1 triggers shown in figure \ref{fig:snr_hist} plotted in $\chi^2$ versus $\rho$. The black crosses are ``background" triggers --- they are what survived slide coincidence (see Chapter \ref{ch:far} for details); the red crosses are ``injections", i.e., simulated signals (see Chapter \ref{ch:ihope_pipeline} for details). The separation at high \ac{SNR} is clear; at low \ac{SNR} it becomes difficult to distinguish the two.
+
+\begin{figure}
+\label{fig:snr_chisq}
+\begin{center}
+\subfigure[Non-spinning injections]{\label{fig:snr_chisq-nonspin}\includegraphics[width=5in]{figures/H1-plotsnrchi_nospin_cat1_snr_chisq-967593543-1209744.png}} \\
+\subfigure[Spinning injections]{\label{fig:snr_chisq-spin}\includegraphics[width=5in]{figures/H1-plotsnrchi_spin_cat1_snr_chisq-967593543-1209744.png}}
+\end{center}
+\caption{$\chi^2$ versus \ac{SNR} of H1 triggers taken from two weeks of \ac{S6}. Black crosses indicate ``background" triggers, which are triggers that survived coincidence in time slides (see section \ref{sec:coincidence_test} and Chapter \ref{ch:far} for details). Red crosses indicate ``software injections" (see Chapter \ref{ch:ihope_pipeline} for details). Colored lines indicate points of constant New \ac{SNR}. The effect of the $r^2$ veto and $\chi^2$ threshold are marked.}
+\end{figure}
