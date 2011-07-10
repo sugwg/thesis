@@ -270,16 +270,33 @@ compared against each other and the literature.  This required several
 iterations, but resulted in a set of codes in various languages that
 produce waveforms that all agree in both phase and amplitude. 
 
-In the second stage the complete hybrid waveforms were examined.
-We first plotted the last 40 cycles of each waveform -- enough to
-include the full NR portion, the hybridization region, and some of the
-pN portion -- and looked for any anomalies such as those present in
-some of the NINJA-1 waveforms in figure~\ref{fig:NR-Reh22}.  A few such
-features were indeed visible, spotting them in this way allowed them
-to be corrected.  One example is shown in figure (\Note{show the dq4
-waveform before and after, note this was due to a problem integrating
-psi4, and discuss this stage a little in the NR section of chapter
-3}).
+In the second stage the complete hybrid waveforms were examined in the
+time and frequency domains.  In the time domain we plotted the final
+40 cycles of each waveform -- enough to include the full NR portion,
+the hybridization region, and some of the pN portion -- and looked for
+any anomalies such as those present in some of the NINJA-1 waveforms
+in figure~\ref{fig:NR-Reh22}.  A few such features were indeed
+visible, spotting them in this way allowed them to be corrected.  One
+example, the Llama dq4 waveform is shown in
+figure~\ref{f:ninja2_time_hybrids}.  In the initial version there is
+an unphysical rise in the amplitude after the ringdown.  This resulted
+at the stage where $h$ is obtained from $\Psi_4$ (see
+sec~\ref{sec:psi4}) and was due to problems with the constants of
+integration.  Once these had been set properly the unphysical feature
+was removed.
+
+\begin{figure}
+  \includegraphics[width=0.5\linewidth]{figures/ninja2/dq4_before}
+  \includegraphics[width=0.5\linewidth]{figures/ninja2/dq4_after}
+  \caption[Time-domain hybrid NINJA-2 waveforms]{
+  \label{f:ninja2_time_hybrids}
+The final 40 cycles of the $(2,2)$ mode of $h+(t)$ for the Llama
+DQ4 waveform \Note{parameters}.  In the intially submitted version (left)
+the amplitude does not go to zero after the ringdown.  This feature is
+removed after reintegrating $\Psi_4$. \Note{Remake plots scaled to $10
+\msun$}}
+\end{figure}%
+
 
 The amplitude of the Fourier transform of the complete waveforms were
 also plotted.  This analysis also revealed unphysical features, 
@@ -293,15 +310,16 @@ waveform was reconstructed.
   \includegraphics[width=0.5\linewidth]{figures/ninja2/bam_d125smm50nep_80_t1_hyb_n2_amp_v2.png}
   \caption[Frequency-domain hybrid NINJA-2 waveforms]{
   \label{f:ninja2_freq_hybrids}
-Fourier amplitude of the (2,2) mode of a sample NINJA-2 hybrid
-waveform from the BAM/AEI group.  The waveform has been scaled to 10
-$\msun$ and placed 1 Mpc from the detector to give it physical units.
-\Note{I need to dig up the old version of the waveform and remake it
-with the new code} The waveform on the left is the version
-initially submitted, note there is a visible ``kink'' in the waveform
-at the hybridization frequency.  The waveform on the right has been
-re-hybridized and there is no longer a visible kink.  This feature did
-not show up in the time domain view of the waveform.}
+Fourier amplitude of the $(2,2)$ mode of $h+$ for a sample NINJA-2
+hybrid waveform from the BAM/AEI group \Note{parameters}.  The
+waveform has been scaled to 10 $\msun$ and placed 1 Mpc from the
+detector to give it physical units.  \Note{I need to dig up the old
+version of the waveform and remake it with the new code} The waveform
+on the left is the version initially submitted, note there is a
+visible ``kink'' in the waveform at the hybridization frequency.  The
+waveform on the right has been re-hybridized and there is no longer a
+visible kink.  This feature did not show up in the time domain view of
+the waveform.}
 \end{figure}%
 
 Finally, the waveforms were compared against each other using standard
@@ -353,7 +371,7 @@ was accidentally omitted from the original runs.}
 \end{figure}%
 
 We also calculated the overlaps between waveforms with identical
-paramaters optimizing over mass as well as time and phase.  This gives
+parameters optimizing over mass as well as time and phase.  This gives
 a sense of the range over which parameter estimation pipelines could 
 be biased by unphysical features of the waveform.  Example plots
 using the equal-mass, non-spinning MayaKranc waveform as the signal and
@@ -387,22 +405,128 @@ with a low overlap.
 
 In the middle region these factors compete.  At higher masses the
 overlap is reduced less by changing the mass and so the recovered
-value can stray further from the injected value.  But as the
-hybridization passes out of band this adjustment is no longer needed.
+value can stray further from the injected value.  As the hybridization
+passes out of band this adjustment is no longer needed.
 
 
 \section{Construction of the NINJA-2 data set}
 
+In broad terms the plans for the NINJA-2 data sets followed those for
+NINJA-1 (ch.~\ref{ch:ninja1}).  Simulated Gaussian noise was generated
+to model the initial LIGO and Virgo noise curves, the spectra are
+identical to those in figure~\ref{f:ninjapsd}.  Injection parameters,
+including choice of waveform, were then selected randomly.  The
+injections were then added to the Gaussian noise and distributed to
+data analysis groups.  However, several key changes were made in the
+details of this process in order to correct shortcomings in NINJA-1.  
+
+The NINJA-2 data was sampled at 16384 Hz, rather than the 4096 Hz used
+by NINJA-1.  This was done because investigations showed that there is
+power above 4096 Hz in the waveforms, which would get aliased down to 
+lower frequencies if the sample rate is too low.  This problem is
+illustrated in figure~\ref{f:ninja2_aliasing}.
+
+\begin{figure}
+  \includegraphics[width=\linewidth]{figures/ninja2/ninja2_aliasing}
+  \caption[Aliasing of waveform power]{
+  \label{f:ninja2_aliasing}
+Frequency-domain amplitudes of a NINJA-2 waveform at different
+sampling rates.  At a sample rate of 4096 Hz the late portion of the
+waveform are distorted due to aliasing of power to lower frequencies.
+}%
+
+NINJA-1 consisted of only 127 injections in a day of data, this
+severely limited the ability to draw statistical conclusions on the
+behavior of the pipelines.  To correct this in NINJA-2 we extended the
+duration to eight weeks.  The density of injections was varied over
+this span:  weeks 1-3 had one injection on average every 2000 seconds,
+week 4-6 had one injection on average every 4 hours, and the final two
+weeks had one injection every on average every 2.5 days.  The intent
+is that data analysts can tune and test their pipelines on the dense
+weeks, and then optional perform a self-blinded test on the final two
+weeks.
+
+In NINJA-1 the SNR was not chosen a priori but was determined by the
+other parameters.  For NINJA-2 we draw the network SNR from a
+distribution and then scale the distance of the injection in order to
+achieve that SNR.  For the first three weeks the distribution is
+linear from 6 to 130 in order to allow pipelines to test and tune out
+to large SNRs on the densest set of injections.  For the remaining
+weeks the distribution fell as the reciprocal of the SNR (uniform in
+$\log(\mathrm{SNR})$) in order to better model the expected
+astrophysical distribution.
+
+The mass and waveform selection were also done slightly different in
+NINJA-2.  For each injection a mass was first selected uniformly over
+the specified range; for the full 2-month run this range is from
+$10-350 \msun$.  Then waveforms were selected at random until one was
+found that could be injected at the chosen mass such that the waveform
+turns on below 35 Hz.  In practice this condition never caused any
+waveform to be rejected, as all submitted waveforms were long enough
+to be injected down to the lowest mass in the range.  The mass ratio
+and spins are intrinsic to the waveforms, so choosing a submission
+amounts to a choice of these parameters as well.  A plot of the
+selected masses, spins, and distances is shown in
+figure~\ref{f:ninja2_dataset}.
+
+
+\end{figure}%
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/ninja2/ninja2_dataset.png}
   \caption[Parameters of the NINJA-2 two-month data set]{
   \label{f:ninja2_dataset}
-Distribution of mass, spin and distance paramters in the two-month,
+Distribution of mass, spin and distance parameters in the two-month,
 Gaussian-noise data set.
 }
 \end{figure}%
 
 
+As in NINJA-1 the sky localization and inclination were chosen
+uniformly at random.
+
+For NINJA-2, in sharp contrast to NINJA-1, we created several two-week
+test data sets in order to verify the waveforms and injection codes.
+These tests were broken into smaller mass regions, ``low mass'' from
+$10-40 \msun$, ``high-mass'' from $35-100 \msun$ and
+``burst/ringdown'' from $80-350 \msun$.  The original intend had been
+to create three full 2-month data sets along these same lines, but
+that proved to be infeasible due to the file size of the data sets.
+However, it was useful in the test sets as it allowed several
+pipelines to do sanity checks in the region to which they are most
+sensitive.  These tests exposed several bugs in the injection code
+which were fixed before generating the two-month data set.
+
+Real detector data is far from Gaussian, and real data analysis is
+concerned not only with foreground triggers from signals, but also
+background triggers from noise.  In order to comprehensively test the
+ability of pipelines to detect signals and recover their parameters it
+is necessary to perform injections into real detector noise.  As of
+this writing a memorandum of understanding (MoU) between the NINJA
+collaboration, the LIGO collaboration and the Virgo collaboration has
+been signed which will allow subsequent NINJA-2 data sets to use data
+from the previous (S5/VSR1) science runs as noise.  A key feature of
+this agreement is that NINJA is not a gravitational-wave search.  We
+will therefore use data from disjoint periods in each instrument.
+Details of this plan, such as which times to use, have yet to be
+decided.
+
+There are two motivations for constructing and distributing the data
+sets as NINJA-1 and NINJA-2 thus far have done.  The first is to
+ensure that every group is looking at the same set of injections so
+that results can be compared.  The second is due to the terms of the
+NINJA agreement, which restricted distribution of the raw NR
+waveforms.  However, distribution of such static sets limits the
+ability of individual groups to tune their pipelines in optimal ways,
+and conceptually distributing a set of parameters would be sufficient
+to compare results across pipelines.  In addition the size of the data
+sets makes distribution slow and complex.  The NR groups within NINJA
+have therefore relaxed the conditions on their use of their waveforms.
+Consequently, subsequent NINJA-2 data sets will be distributed as sets
+of parameters, and data analysis groups will use the available code to
+either create data sets locally, or perform the injections ``on the
+fly'' as the analysis is performed.  This will also allow groups to do
+special-purpose tuning runs or analyses, these may lead to
+short-author papers subject to the conditions of the NINJA agreement.
 
 
 \section{Data analysis}
@@ -433,7 +557,7 @@ UMD & CBC high-mass with EOBNRv2 templates \\
 The data-analysis contributions to the NINJA-2 project.}
 \end{table}
 
-\subsection{preliminary results}
+\subsection{CBC preliminary results}
 
 
 % TODO:
