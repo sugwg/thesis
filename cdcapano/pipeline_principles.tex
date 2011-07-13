@@ -294,9 +294,9 @@ Limiting the search to non-spinning templates means we cannot detect \acp{GW} fr
 
 \section{The $\chi^2$ Test}
 
-Up to this point we have assumed that the detector output in the absence of a signal is stationary Gaussian noise. Unfortunately, the real detectors have a number of non-Gaussian glitches due to various instrumental and environmental factors. For example, train tracks are close enough to the \ac{LIGO} Livingston Observatory that when a freight train passes through it causes transients in the noise through seismic up-conversion \cite{ref:?}. Although these glitches do not have the same morphology as a gravitational wave from a \ac{CBC}, they do cause the matched-filter to ``ring off" high-\ac{SNR} triggers. Figure \ref{fig:snrHist} shows a histogram of trigger counts as a function of \ac{SNR} ($\rho$) taken from H1 during two weeks of \ac{S6}.\footnote{The mass range used for this plot is $\mtotal \in [2,25)\Msun$; see chapter \ref{ch:ihope_pipeline} for details on the templates used. Note that this plot was created using a single-stage pipeline, as discussed in \ref{ch:future_developments}, rather than the two-stage pipeline discussed in \ref{ch:ihope_pipeline}. This was done so as to remove complications from the intermediate clustering stage.} For reference, the expected count from a Gaussian distribution is shown. Clearly, the distribution is far from Gaussian.
+Up to this point we have assumed that the detector output in the absence of a signal is stationary Gaussian noise. Unfortunately, the real detectors have a number of non-Gaussian glitches due to various instrumental and environmental factors. For example, train tracks are close enough to the \ac{LIGO} Livingston Observatory that when a freight train passes through it causes transients in the noise through seismic up-conversion \cite{ref:?}. Although these glitches do not have the same morphology as a gravitational wave from a \ac{CBC}, they do cause the matched-filter to ``ring off" high-\ac{SNR} triggers. Figure \ref{fig:snr_hist} shows a histogram of trigger counts as a function of \ac{SNR} ($\rho$) taken from H1 during two weeks of \ac{S6}. For reference, a $\chi^2$ distribution with two degrees of freedom --- expected if the detector noise is Gaussian --- is shown. Clearly, a large non-Gaussian tail is present in the data.
 
-To better discriminate betwen potential signals and noise, we employ a $\chi^2$ test \cite{ref:Allen:2006}. The basic idea of this test is relatively straight forward. Although a glitch can cause a trigger with the same (or larger) \ac{SNR} as a signal, the manner in which the \ac{SNR} is accumulated over time and frequency will most likely differ. For example, a delta function-like glitch will have a burst of power in a small window in the time domain, and the power will be smeared out across all frequencies. A \ac{CBC} \ac{GW}, on the other hand, will accumulate its power across the duration of the template, and it will do so in a ``chirping" manner. Therefore, if we break the template into frequency bins of equal power, filter each of these sub-templates, and compare the \ac{SNR} in each bin to the expected value, we can better discriminate glitch from signal.
+To better discriminate betwen potential signals and noise, we employ a $\chi^2$ test \cite{ref:Allen:2006}. The basic idea of this test is relatively straight-forward. Although a glitch can cause a trigger with the same (or larger) \ac{SNR} as a signal, the manner in which the \ac{SNR} is accumulated over time and frequency will most likely differ. For example, a delta function-like glitch will have a burst of power in a small window in the time domain, and the power will be smeared out across all frequencies. A \ac{CBC} \ac{GW}, on the other hand, will accumulate its power across the duration of the template, and it will do so in a ``chirping" manner. Therefore, if we break the template into frequency bins of equal power, filter each of these sub-templates, and compare the \ac{SNR} in each bin to the expected value, we can better discriminate glitch from signal.
 
 Define a set of $p$ matched filters such that the $i\th$ filter is carried out between the frequencies $f_i$ and $f_{i+1}$:
 \begin{equation}
@@ -384,7 +384,47 @@ From equation \ref{eqn:DtoRho} we can see that $\xi'$ is like a \ac{SNR}: it is 
 
 Although we arrived at this solution by considering the mismatch between a signal and a template, we could equally as well have considered $\widetilde{h'}$ to be a glitch. In that case, $\epsilon_i$ gives the match between the glitch and the template. Note that the $\epsilon_i \in (-\infty,\infty)$; i.e., they can be postive \emph{or} negative, and they do not have to be less than one. An $\epsilon_i$ that is negative or greater than one means that the signal \emph{over matches} the template in a given frequency bin. This is what we would expect if the signal was a glitch, for example: a few of the $\epsilon_i$ would be large, while all the others would be close to one. Thus a glitch would lead to a large $\chi^2$. 
 
-The coupling between $\chi^2$ and \ac{SNR} means that both signals and glitches will have larger $\chi^2$ with larger \ac{SNR}. However, as we have set the minimal match to be $> 0.97$, $\epsilon_i < 0.3 \forall i$ due to the discreetness of the bank. Monte carlo simulations of non-spinning signals have shown that mismatches due to differences in post-Newtonian orders are also relatively small. Thus, for (non-spinning) signals, $\chi^2$ is weakly coupled to the \ac{SNR}. Glitches, on the other hand, are expected to have large mismatches, resulting in a strong coupling between $\chi^2$ and \ac{SNR}. The overall effect is that signals and glitches get increasingly separated with increasing \ac{SNR}. Indeed, this is borne out in the data. Figure \ref{fig:snr_chisq} shows the H1 triggers shown in figure \ref{fig:snr_hist} plotted in $\chi^2$ versus $\rho$. The black crosses are ``background" triggers --- they are what survived slide coincidence (see Chapter \ref{ch:far} for details); the red crosses are ``injections", i.e., simulated signals (see Chapter \ref{ch:ihope_pipeline} for details). The separation at high \ac{SNR} is clear; at low \ac{SNR} it becomes difficult to distinguish the two.
+The coupling between $\chi^2$ and \ac{SNR} means that both signals and glitches will have larger $\chi^2$ with larger \ac{SNR}. However, as we have set the minimal match to be $> 0.97$, $\epsilon_i < 0.3~\forall i$ due to the discreetness of the bank. Monte carlo simulations of non-spinning signals have shown that mismatches due to differences in post-Newtonian orders are also relatively small. Thus, for (non-spinning) signals, $\chi^2$ is weakly coupled to the \ac{SNR}. Glitches, on the other hand, are expected to have large mismatches, resulting in a strong coupling between $\chi^2$ and \ac{SNR}. The overall effect is that signals and glitches get increasingly separated with increasing \ac{SNR}. Indeed, this is borne out in the data. Figure \ref{fig:snr_chisq-nospin} shows the H1 triggers shown in figure \ref{fig:snr_hist} plotted in $\chi^2$ versus $\rho$. The black crosses are ``background" triggers --- they are what survived slide coincidence (see Chapter \ref{ch:far} for details); the red crosses are ``injections", i.e., simulated signals (see Chapter \ref{ch:ihope_pipeline} for details). The separation at high \ac{SNR} is clear; at low \ac{SNR} it becomes difficult to distinguish the two.
+
+Since spinning signals do not match the template bank as well as non-spinning, they tend to couple more strongly to their \ac{SNR}. This can be seen in Figure \ref{fig:snr_chisq-spin}, in which all the injections are spinning. Although many of them still separate from the background, the separation is not as clear. Note that the range of \acp{SNR} of the spinning signals is as large as the non-spinning; i.e., spinning signals, though they do not match the templates as well, can still ring off large \acp{SNR}. Yet due to the strong coupling between \ac{SNR} and $\chi^2$, they are ``punished" by $\chi^2$. 
+
+\subsection{Applying $\chi^2$}
+
+$\chi^2$ is clearly a good descriminator between noise and signal for known waveforms. We now turn to the question of how to apply this test. Three methods are used in \ac{CBC} searches: a $\chi^2$ threshold is applied, along with the \emph{$r^2$ veto}, and triggers' \acp{SNR} are re-weighted based on their $\chi^2$ via ``New SNR."
+
+The most straight-forward use of $\chi^2$ is to veto triggers that have a $\chi^2$ value exceeding a given value. Due to the coupling between triggers and \ac{SNR}, the threshold is made to be \ac{SNR} dependent. Specifically, we threshold on \cite{ref:Brown}:
+\begin{equation}
+\chi^2 <  \chi_{*}^2\left(p + \rho^2\delta^2\right)
+\end{equation}
+where $\chi_{*}^2$ and $\delta^2$ are both tuneable parameters. Since the noise distribution is unknown these parameters can only be done using Monte Carlo techniques. Values are chosen conservatively so as to minimize the chance of vetoing \acp{GW}. The effect of the $\chi^2$ threshold can be seen in \ref{fig:snr_chisq}.
+
+We also make use of the \emph{$r^2$ veto}, defined as:
+\begin{equation}
+r^2 = \frac{\chi^2}{p}
+\end{equation}
+This is checked over a period of time: if $r^2$ is above a threshold value for a duration $\pm T$ of the trigger time, the trigger is vetoed. Both the threshold $r_{*}^2$ and the time checked, $T$, are tunable parameters that are determined from Monte Carlo studies. The $r^2$ veto can target triggers that have a statistical downward fluctuation in $\chi^2$ at the time of the veto. For this reason it can veto triggers that have lower $\chi^2$ values then the threshold; this effect can also be seen in Figure \ref{fig:snr_chisq}. 
+
+Perhaps the most effective use of $\chi^2$ has been the implementation of \emph{effective} and \emph{new} \ac{SNR}. Instead of using $\chi^2$ to veto triggers, we instead aim to re-weight their \acp{SNR} based on their respective $\chi^2$ values. Effective \ac{SNR} is defined as:
+\begin{equation}
+\label{eqn:effective_snr}
+\rho_{\mathrm{eff}} = \frac{\rho^2}{\sqrt{\chi_r^2\left(1 + \frac{\rho^2}{m}\right)}}
+\end{equation}
+where $\chi_r^2$ is the reduced $\chi^2$, defined above, and $m$ is a tunable parameter which is typically set to $250$. Effective \ac{SNR} was used as the detection statistic for \ac{S5}. However, it was found that some noise triggers were artificially promoted if they had statistical downward fluctuations in $\chi_r^2$. For this reason, new \ac{SNR} was developed for \ac{S6}, defined as:
+\begin{equation}
+\label{eqn:new_snr}
+\rhonew^2 = \begin{cases}
+ \rho^2, & \chi^2_{r} \leq 1, \\ 
+ \frac{\rho^2}{[(1+(\chi_r^2)^3)/2]^{1/6}}, \ & \chi^2_{r} > 1,  \end{cases}  
+\end{equation}
+Lines of constant $\rhonew$ are shown on Figure \ref{fig:snr_chisq}. As can be seen, they are particularily effective at separting noise triggers from injections. Figure \ref{fig:newsnr_hist} shows a histogram of the same triggers shown in figure \ref{fig:snr_hist}, this time plotted against New \ac{SNR}. Most of the non-Gaussian tail has been down-weighted, and moved below the \ac{SNR} threshold (in this case, 5.5). For reference, a $\chi^2$ distribution with two degrees of freedom is plotted. There is still some excess however; for this, we apply a coincidence test, described in the next section, and data-quality vetoes, discussed in chapter \ref{ch:ihope_pipeline}.
+
+\begin{figure}
+\label{fig:snr_hist}
+\begin{center}
+\includegraphics[width=6in]{figures/H1-snr_hist_cat1_veto.pdf}
+\end{center}
+\caption{Histogram of triggers as a function of \ac{SNR}. Data is taken from two weeks of H1 data taken during \ac{S6}. The mass range used for this plot is $\mtotal \in [2,25)\Msun$; see chapter \ref{ch:ihope_pipeline} for details on the templates used. This plot was created using a single-stage pipeline, as discussed in \ref{ch:future_developments}, rather than the two-stage pipeline discussed in \ref{ch:ihope_pipeline}. This was done so as to remove complications from the intermediate coincidence stage. A $\chi^2$ distribution with two degrees of freedom, expected if the detector output were Gaussian, is also plotted. Due to the \ac{SNR} cutoff, it is difficult to determine the proper normalization. Here, we have normalized the data so that the bin with the largest count was made to lay on the $\chi^2$ distribution. In this case, the data was multiplied by $\sim10^{-14}$. The bin boundaries used are given by the x-error bars.}
+\end{figure}
 
 \begin{figure}
 \label{fig:snr_chisq}
@@ -393,4 +433,12 @@ The coupling between $\chi^2$ and \ac{SNR} means that both signals and glitches 
 \subfigure[Spinning injections]{\label{fig:snr_chisq-spin}\includegraphics[width=5in]{figures/H1-plotsnrchi_spin_cat1_snr_chisq-967593543-1209744.png}}
 \end{center}
 \caption{$\chi^2$ versus \ac{SNR} of H1 triggers taken from two weeks of \ac{S6}. Black crosses indicate ``background" triggers, which are triggers that survived coincidence in time slides (see section \ref{sec:coincidence_test} and Chapter \ref{ch:far} for details). Red crosses indicate ``software injections" (see Chapter \ref{ch:ihope_pipeline} for details). Colored lines indicate points of constant New \ac{SNR}. The effect of the $r^2$ veto and $\chi^2$ threshold are marked.}
+\end{figure}
+
+\begin{figure}
+\label{fig:newsnr_hist}
+\begin{center}
+\includegraphics[width=6in]{figures/H1-newsnr_hist_cat1_veto.pdf}
+\end{center}
+\caption{Histogram of triggers as a function of New \ac{SNR}. Data is the same as in \ref{fig:snr_hist}. A $\chi^2$ distribution with two degrees of freedom is plotted. As in figure \ref{fig:newsnr_hist}, the normalization is chosen that the bin with the largest count lies along the distribution. In this case, the data was multiplied by $~10^{-13}$.}
 \end{figure}
