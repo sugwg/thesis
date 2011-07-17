@@ -150,6 +150,7 @@ that will be created. All programs that will be run are copied to the
 \texttt{executables} directory.
 
 \subsection{Science and Veto Segments Retrieval}
+\label{sec:science_segs_and_vetoes}
 
 The \ac{LIGO} and Virgo detectors can be in one of five different states at any
 given time. We are only interested in analyzing times in which the detectors
@@ -186,6 +187,7 @@ events. Hardware injections are left in the data after category 1 and 2, and
 are removed as a special veto prior to category 3 vetoes being applied.
 
 \begin{table}
+\label{tab:veto_cats}
 \center
 \begin{tabular}{c | p{5cm} | p{8cm}}
 Category    &    Description    &   Procedure    \\
@@ -199,7 +201,6 @@ Category    &    Description    &   Procedure    \\
     4       &    Positive, but weak, correlations with false alarms. Large dead times.    &     Not used in the analysis, but used as a guide in detailed followups of loud triggers. \\
 \end{tabular}
 \caption{The various veto categories used by the \ac{CBC} group. Vetoes are applied cumulatively; statistical significance of candidates and upper limits are calculated after category 1, 2, and 3 vetoes are applied.}
-\label{tab:vetocats}
 \end{table}
 
 Vetoes are triggered by environmental and instrumental channels that flag
@@ -223,21 +224,22 @@ files in the \texttt{segments} directory.
 
 
 \subsection{HIPE}
+\label{sec:hipe_overview}
 
 Once the analyzable Science segments and the veto segments that will be applied
 are obtained, \ihope runs \texttt{lalapps\_inspiral\_hipe}. This sets up the
 \ac{HIPE}, which is the pipeline that carries out the search. Figure
 \ref{fig:HIPEDiagram} shows the \ac{HIPE} \ac{DAG} for a single $2048\rm{s}$
-block of time. \ac{HIPE} can be run both with and without injections. If
-injections are being done, \texttt{lalapps\_inspinj} is run to create a list of
-injections to make, which are created and inserted into the data just prior to
-match filtering by \texttt{lalapps\_inspiral}.
+block of time. As can be seen in the diagram, \ac{HIPE} is a \emph{two-stage} pipeline. Data is matched-filtered, coincidence tests are applied, then the process is repeated. The reason for using two-stages is the $\chi^2$ test is computationally expensive. Therefore, to cut down on the number of triggers for which we need to compute $\chi^2$, an initial coincidence test is applied.\footnote{Using two stages complicates the pipeline, however, and makes it difficult to trace an event's progression through the various steps. It also hampers efforts to estimate \acp{FAR} from single-\ac{IFO} triggers. For this reason, a single-stage pipeline is being worked which takes advantage of advances in computational power. See Chapter \ref{ch:future_developments} for more details.}
 
-As can be seen in Figure \ref{fig:ihopeOverview}, \ihope runs \ac{HIPE} several
-times: once for zero-lag and time-slid data (which we label
-\texttt{FULL\_DATA}), and once for each desired injection run, which are
-specified in the configuration file. The details of the steps of this analysis
-are discussed in Section \ref{sec:HIPEdetail}.
+\ac{HIPE} can be run both with and without injections. If injections are
+desired, \texttt{lalapps\_inspinj} is run to create a list of injections to
+make, which are created and inserted into the data just prior to match
+filtering by \texttt{lalapps\_inspiral}. In order to create data with and
+without injections, \ihope runs \ac{HIPE} several times: once for zero-lag and
+time-slid data (which we label \texttt{FULL\_DATA}), and once for each desired
+injection run, which are specified in the configuration file. The details of
+the steps of this analysis are discussed in Section \ref{sec:HIPEdetail}.
 
 %
 %\if{false}
@@ -258,6 +260,7 @@ generate a list of injections to create, and time slides are not done.
 \end{figure}
 
 \subsection{Pipedown}
+\label{sec:pipedown_overview}
 
 After all the instances of \texttt{lalapps\_inspiral\_hipe} have run, \ihope
 run \texttt{lalapps\_cbc\_pipedown} which sets up the Pipedown \ac{DAG}.
@@ -271,7 +274,7 @@ by \ihope). In-depth details of Pipedown are discussed in Section
 
 \begin{figure}[p]
 \begin{center}
-\includegraphics[width=5in]{figures/PipedownDiagram.pdf}
+\includegraphics[width=6in]{figures/PipedownDiagram.pdf}
 \end{center}
 \caption{
 The Pipedown pipeline for a single veto category. Each block represents a single node. Double bordered blocks represent multiple nodes. Circles represent batches of files. Black arrows represent xml files; blue arrows, SQLite databases. Each arrow represents a single file.
@@ -280,6 +283,7 @@ The Pipedown pipeline for a single veto category. Each block represents a single
 \end{figure}
 
 \subsection{DAX}
+\label{sec:DAX}
 
 After pipedown has completed, \ihope writes a DAX that can be used to launch the pipeline. A DAX is an abstract workflow in which elements such as file locations are variables. The DAX is turned into a \ac{DAG} by the Pegasus Workflow Management Service.
 
@@ -288,26 +292,15 @@ After pipedown has completed, \ihope writes a DAX that can be used to launch the
 
 We now step through \ihope in detail, using a toy analysis of $10,240$s as an example. In this analysis we will use three interferometers: the 4-kilometer Hanford detector (H1), the 4-kilometer Livingston detector (L1), and the 3-kilometer Virgo detector (V1), and we will add one injection run, which we label \texttt{BNSINJ}. Figure \ref{fig:science-selected_segs} shows the segments that are available to analyze during this time. The \emph{selected segments} are Science segments minus CAT1 veto segments; they are what \ihope passes to \ac{HIPE} to analyze.
 
-\begin{figure}[p]
-\begin{center}
-\includegraphics[width=5in]{figures/segment_plot_science-selected.pdf}
-\end{center}
-\caption{
-The Science, category 1 vetoes, and selected segments of H1, L1, and V1 between GPS times 967228343 and 967238583.
-}
-\label{fig:science-selected_segs}
-\end{figure}
-
-
 \subsection{Data Find}
+\label{sec:data_find}
 
 As can be seen in Figure \ref{fig:HIPEDiagram}, the first step in \ac{HIPE} is to run \texttt{lalapps\_data\_find}. Data from all of the interferometers are stored in \emph{frame files} in central locations at every computer cluster. Frame files can contain multiple channels recorded from the interferometers. For analysis purposes, we are only interested in files containing the strain data channel, which is called \texttt{LDAS-STRAIN} in the \ac{LIGO} detectors and \texttt{h\_16384Hz} in Virgo. \texttt{lalapps\_data\_find} finds the files covering the selected segments on the cluster and creates cache files listing the location of each these files in the \texttt{datafind} directory. These cache files are passed to \texttt{lalapps\_tmpltbank} and \texttt{lalapps\_inspiral}, which use them to locate and open the frame files for analysis.
 
-\subsection{PSD Estimation and Data Segmentation}
+\subsection{From Continuous to Discreet Data}
+\label{sec:cont_to_discreet}
 
-\texttt{lalapps\_inspiral} is the program that constructs the \ac{SNR} time series for templates laid out in a bank by the program \texttt{lalapps\_tmpltbank}. The \ac{SNR} time series is constructed according to equation \ref{eqn:snr_full_form} and the templates are laid out using the metric defined in equation \ref{eqn:templateMetric}. Since both of these equations involve the inner product defined in equation \ref{eqn:inner_product}, both programs must compute the \ac{PSD}, $S_n(|f|)$, as well as the Fourier Transform of the data, $\widetilde{s}(f)$. (We do not Fourier Transform the templates. Instead, we generate the templates in the frequency domain directly by using the \ac{SPA}.)
-
-So far, all equations we have used involving Fourier Transforms and the inner product have assumed continuous time- and frequency-domain data series. Likewise, the integrals over frequency space have been from $-\infty$ to $+\infty$. In practice, of course, the data is discreetly sampled and is neither continuous nor infinite. Both the \ac{LIGO} and Virgo strain data are sampled at $16,384\,\mathrm{Hz}$. Since even the lowest mass templates (i.e., waveforms with the highest frequency components) used in current \ac{CBC} searches terminate at frequencies around a couple of kHz, this sampling rate is much finer than is needed for our purposes. To ease computational requirements the time series is therefore downsampled to $4096\,\mathrm{Hz}$ in both \texttt{lalapps\_inspiral} and \texttt{lalapps\_tmpltbank} prior to analysis. This sampling rate sets the Nyquist frequency, $f_{\mathrm{Nyquist}}$, at $2048\,\mathrm{Hz}$. To prevent aliasing, a low-pass time-domain digital filter with a cutoff at $f_{\mathrm{Nyquist}}$ is implemented to pre-condition the data. On the low-frequency end, seismic noise dominates the interferometers' power spectrum. We therefore also impose a high-pass digital filter in the time domain. The cutoff frequency of the high-pass filter, $f_c$, is set to be a several Hz lower than a low-frequency cutoff, $f_0$, that is determined by the characteristics of each \ac{IFO}'s power spectrum. These values are set in the configuration file. (For the values chosen for \ac{S5} and \ac{S6} see Chapters \ref{ch:s5_results} and \ref{ch:s6_results}, respectively.) Both the low and high-pass filters will ring at the start and end of a time series, corrupting the data. Thus we must remove the first and last $t_{\mathrm{pad}}$ of data after applying the filters and prior to analyzing. The duration of $t_{\mathrm{pad}}$ is also set in the configuration file; for both \ac{S5} and \ac{S6} we used $8\,$s.
+So far, all equations we have used involving Fourier Transforms and the inner product have assumed continuous time- and frequency-domain data series. Likewise, the integrals over frequency space have been from $-\infty$ to $+\infty$. In practice, of course, the data is discreetly sampled and is neither continuous nor infinite. Both the \ac{LIGO} and Virgo strain data are sampled at $16384\,\mathrm{Hz}$. Since even the lowest mass templates (i.e., waveforms with the highest frequency components) used in current \ac{CBC} searches terminate at frequencies around a couple of kHz, this sampling rate is much higher than is needed for our purposes. To ease computational requirements the time series is therefore downsampled to $4096\,\mathrm{Hz}$ prior to analysis. This sampling rate sets the Nyquist frequency, $f_{\mathrm{Nyquist}}$, at $2048\,\mathrm{Hz}$. To prevent aliasing, a low-pass time-domain digital filter with a cutoff at $f_{\mathrm{Nyquist}}$ is implemented to pre-condition the data. On the low-frequency end, seismic noise dominates the interferometers' power spectrum. We therefore also impose a high-pass digital filter in the time domain. The cutoff frequency of the high-pass filter, $f_c$, is set to be a several Hz lower than a low-frequency cutoff, $f_0$, that is determined by the characteristics of each \ac{IFO}'s power spectrum. These values are set in the configuration file. (For the values chosen for \ac{S5} and \ac{S6} see Chapters \ref{ch:s5_results} and \ref{ch:s6_results}, respectively.) Both the low and high-pass filters will ring at the start and end of a time series, corrupting the data. Thus we must remove the first and last $t_{\mathrm{pad}}$ of data after applying the filters and prior to analyzing. The duration of $t_{\mathrm{pad}}$ is also set in the configuration file; for both \ac{S5} and \ac{S6} we used $8\,$s.
 
 To Fourier Transform the data, we use the \ac{FFT} algorithm. The \ac{FFT} imposes two constraints on the data. First, the number of points in the data series must be a power of two. Second, the \ac{FFT} associates the last point of the data series with the first point; i.e., it wraps the data around on a loop. This means that as a template is slid toward the end of the time series, any points extending beyond the end of the series will be placed at the beginning. Additionally, because the last and first point of the time series are discontinuous, the wrap around essentially introduces a delta function at the end of the series. As the template passes past the discontinuity it will ring (i.e., the match filter will return the template's impulse response), and, due to the wrap around, this ringing will be placed at the beginning of the time series. Thus the first $t_{\mathrm{chirp}}$ points of the \ac{SNR} time series are corrupted, where $t_{\mathrm{chirp}}$ is the \emph{chirp length} of the template, and must be thrown out.
 
@@ -319,9 +312,171 @@ As was the case with the template, $S_n(|f|)$ will be corrupted by the discontin
 
 For more details on \ac{PSD} estimation and implementation of the matched filter with a discreet and finite time-series, see \cite{ref:Brown} and \cite{ref:FindChirp}.
 
-\subsection{Template Bank and Inspiral}
+\subsection{Data Segmentation}
+\label{sec:data_segmentation}
 
-We therefore identify \emph{triggers} by selecting points when $\rho(t)$ is maximum. This is done by using the \emph{max over chirp length} algorithm. Max over chirp length uses a sliding time window to select triggers: for every point in time, a point is only kept if there is no other point with a $\rho$ greater than it within the \emph{chirp length} of the template. $f_0$ is selected based on when the detector's \ac{PSD} effectively goes to infinity due to low-frequency seismic noise. In intial LIGO, $f_0$ is set to $40\,\mathrm{Hz}$; for advanced LIGO it is expected to be $10\,\mathrm{Hz}$. Once a trigger is identified, the time at which it occurs is associated with the \emph{coalescence}, or \emph{end-time}, $t_c$, of the binary.
+\texttt{lalapps\_inspiral} is the program that constructs the \ac{SNR} time series for templates laid out in a bank by the program \texttt{lalapps\_tmpltbank}. The \ac{SNR} time series is constructed according to equation \ref{eqn:snr_full_form} and the templates are laid out using the metric defined in equation \ref{eqn:templateMetric}. Since both of these equations involve the inner product defined in equation \ref{eqn:inner_product}, both programs must compute the \ac{PSD}, $S_n(|f|)$, as well as the Fourier Transform of the data, $\widetilde{s}(f)$. (We do not Fourier Transform the templates. Instead, we generate the templates in the frequency domain directly by using the \ac{SPA}.)
 
-For \ac{S5} and \ac{S6}, we laid out templates on a hexagonal grid using non-spinning 2\ac{pN} waveforms to calculate the metric \cite{?}. The gridding was chosen so that the overlap between two neighboring templates was $94\%$, giving a maximum \ac{SNR} loss of $3\%$. This resulted in a maximum loss in sensitive volume due to the discreetness of the bank of $\sim10\%$.
+The wrap around of the \ac{FFT} and the Welch median \ac{PSD} estimation method put limitations on how much data can be analyzed at once; they also require data to be overlapped due to corruption at the start and end of segments. These considerations require us to carefully segment the data for analysis. The things we must consider are:
+\begin{itemize}
+\item{The low-pass and high-pass digital filters corrupt the first $8\,$s of an analysis segment, or \emph{chunk}.}
+\item{In order to estimate the \ac{PSD} using the Welch median method, we must break the chunk up into several segments; data in each segment is transformed via the \ac{FFT} independently.}
+\item{The \ac{FFT} requires the number of points in each segment to be a power of two.}
+\item{The wrap around of the \ac{FFT} causes the first $t_{\mathrm{chirp}}$ seconds of each segment to be corrupted due to the template, and the first and last $8\,$s of the segment to be corrupted due to the inverse \ac{PSD}.}
+\item{Each segment must therefore overlap so as not to lose data from the corrupted parts of the \ac{FFT}.}
+\end{itemize}
+In initial \ac{LIGO} the low-frequency cutoff $f_0$ was set to $40\,$Hz. In the low-mass \ac{CBC} search, the longest template is therefore $\sim33\,$s in duration. The smallest power of two larger than $33$ is $64$; thus the first $64\,$s of each segment must be overlapped by a previous segment. The end of each segment only needs to be overlapped by $8\,$s to account for the \ac{PSD} corruption. However, for book-keeping simplicity, we chose to also discard the last $64\,$s of each segment. Thus, all the segments must overlap each other by $128\,$s. Since the segments must be a power of two, this means each segment must be $256\,$s in duration.
 
+In deciding upon the number of segments to use in the median \ac{PSD} estimate we must consider a few factors. The more segments we have, the more accurate the \ac{PSD} estimation will be. However, more segments also means that more time will be grouped together. If the \ac{PSD} changes over this period, our estimate will be off. Furthermore, the number of segments used sets a minimum period of time that we must have continuous data. If a selected segment is shorter than that period, we cannot analyze it. 
+
+In inital \ac{LIGO} we have chosen to use 15 overlapping segments for each \ac{PSD} estimation. Since each segment is $256\,$s long, with overlaps of $128\,$s, this means that each chunk must be $2048\,$s long. Add to this the needed $8\,$s pad at the start and end of the chunk to account for the corruption of the filters, and we find that we need a continous $2064\,$s of data in order to do the analysis. If a selected segment is longer than $2064\,$s, then it will be broken up into several chunks. Each chunk is overlapped by $72\,$s to account for the time thrown out at the beginning/end of the first/last segment in each chunk and the $8\,$s pad. If the selected segment is not a multiple of $2048$ (as it most likely will not be), then the last chunk in the segment is overlapped more so as to analyze the entire period. The segments in this last chunk that overlap with non-corrupted time in the previous chunk are simply not match filtered, although they are used for the \ac{PSD} estimation of the last chunk.
+
+The effects of this data segmentation on our toy analysis can be seen in Figure \ref{fig:segment_plot_full}. The top three lines show the selected segments. Each \texttt{TMPLTBANK} and \texttt{INSPIRAL} jobs corresponds to a single chunk in a single \ac{IFO}. As can be seen, every chunk overlaps by $72\,s$, except for the last one in each segment. Also note the first selected segment in V1. As seen in Figure \ref{fig:science-selected_segs}, a CAT 1 veto broke the V1 Science segment into two selected segments. Since the first selected segment is only $\sim900\,$s long, it cannot be analyzed. This can be seen in the \texttt{TMPLTBANK} and \texttt{INSPIRAL} lines: there are no V1 jobs covering this period. This is part of the reason why CAT 1 vetoes are only used for seriously compromised data. Overuse of CAT 1 vetoes could lead to large amounts of unanalyzed time if they broke the data up into selected segments that were shorter than $2064\,$s.
+
+\subsection{Template Bank}
+\label{sec:tmpltbank}
+
+The first step in the \ac{HIPE} pipeline after data find is to create a template bank. As stated above, \texttt{lalapps\_tmpltbank} is the program that constructs the bank. \ac{HIPE} creates one \texttt{tmpltbank} job for each \ac{IFO} and for each chunk. Since the \ac{PSD} is re-estimated for each chunk the metric will change from job-to-job, resulting in a different template bank for each chunk and for each \ac{IFO}. However, the changes in the \ac{PSD} are usually small, and so the bank stays roughly the same across an analysis period. In order to calculate the \ac{PSD} \texttt{lalapps\_tmpltbank} reads in the frame cache, loads the data, applies the low- and high-pass filters, downsamples to $4096\,$Hz, then computes the \ac{PSD} using the Welch median method.
+
+Variables such as what \ac{pN} order to use to lay out templates, what space to lay them out in, and what minimal match to use are command-line arguments to \texttt{lalapps\_tmpltbank} and can therefore be set in the configureation file. As stated in Chapter \ref{ch:pipeline_principles}, for \ac{S5} and \ac{S6} the bank was laid out in $\tau_0$ and $\tau_3$ space using $2.0$ restircted \ac{pN} templates to calculate the metric, with a minimal match $\geq 97\%$. The \ac{pN} order of the templates themselves do not have to be the same as the order used to compute the metric. Indeed, while $2\,$\ac{pN} templates were used for \ac{S5}, for \ac{S6} restricted $3.5\,$\ac{pN} templates were used. Since the metric and best coordinates to use is currently unknown for $3.5\,$\ac{pN} templates, we had to use the $2\,$\ac{pN} metric. Investigations are underway into obtaining the $3.5\,$\ac{pN} metric.
+
+Figure \ref{fig:template_bank} shows a typical template bank in both $\tau_0,~\tau_3$ space and in $m_1,m_2$ space for the low-mass \ac{CBC} search.\footnote{Note that the maximum total mass in these plots extends to $35\,\Msun$. This was reduced to $25\,\Msun$ for the last part of \ac{S6}. See Chapter \ref{ch:s6_results} for details.} The parameters of each of these templates are stored in a \texttt{sngl\_inspiral} table (see section \ref{sec:data_storage} for details), which is saved in an xml file. Also stored in the \texttt{sngl\_inspiral} table are the metric components around each template. Each \texttt{tmpltbank} job outputs one xml file, with naming convention:
+\begin{center}
+\texttt{\{IFO\}-TMPLTBANK-\{GPS-START\}-\{DURATION\}.xml}
+\end{center}
+All of the \texttt{tmpltbank} files created in our toy $10240\,$s analysis can be seen in Figure \ref{fig:segment_plot_full}.
+
+\subsection{Injections}
+\label{sec:inspinj}
+
+Software injections are the \ac{CBC} group's way to check that our pipeline is working.\footnote{As mentioned in section \ref{sec:PipelineRequirements} hardware injections exist too. These are also used to check that the pipeline is working. However, because we cannot perform the large number of hardware injections needed for Monte Carlo simulations --- as we can with software injections --- they are of limited use for tuning and efficiency studies.} Since the number we can perform is only limited by computational power, we can do a large number across a broad range of parameters and sky positions. Being able to do such Monte Carlo simulations allows us to test the efficiency of our pipeline, tune parameters, and calculate rate limits to compare to astrophysical expected rates.
+
+Injections are only performed in injection \ac{HIPE} runs; these are later combined with non-injection runs by Pipedown. For example, in our toy analysis, we have chosen to do one injection run, which we labeled \texttt{BNSINJ}. If we are on an injection run then, prior to launching first inspiral jobs, \ac{HIPE} runs \texttt{lalappps\_inspinj}. \texttt{Inspinj} generates a list of injections to perform based on the input arguments. It does not create the waveforms themselves; that is left to \texttt{lalapps\_inspiral} (see below).
+
+How the injections are distributed in mass, mass-ratio, sky-location, orientation, and time is determined by the configuration file. For a given injection run, a minimum and maximum component mass are specified, along with a maximum total mass. Additionaly, what mass parameter to distribute the injections in must be specified. For \ac{S5} and \ac{S6} injections were chosen to be distributed uniformly in component mass. How to distribute the location of injections is also required. In \ac{S5} a galaxy catalogue was used for the location distribution; random galaxies were chosen for an injection to occur in. For \ac{S6}, the range of the detectors was large enough to ignore inhomogenities in the universe; thus in \ac{S6} the location distribution was changed to be randomly distributed across the sky. The orientation of injections was distributed uniformly across inclination angles for both \ac{S5} and \ac{S6}.
+
+Injections are distributed randomly in time. However, to prevent too many injections from occuring in the same period, a time-step and time-interval argument are added. The time-step argument sets the average period of time between each injeciton, and the time-interval sets the interval around that time-step in which an injection is randomly placed. For example, in \ac{S6} the time-step was set to $837\,$s and the time-interval was set to $300\,$s. This means that if an injection occurs at time $t_0$, the next injection will be chosen to randomly occur in the interval $(t_0 + 837) \pm 300\,$s.
+
+We distribute injections in distance based on the range of the detectors. We are most interested in the region around the network's horizon distance, as this is where the efficiency quickly drops from $\sim1$ to $0$ (for a given false alarm rate). Since the detectors' sensitivity is mass dependent, we adjust the domain of distances in which to distribute injections according to the mass-range and type of injections being performed. Injections may be distributed uniformly in distance or in log distance. When we distribute uniformly in distance, we tend to over populate the outer regions of the range, since volume grows as $r^3$. If we distribute uniformly in log distance, we tend to over populate the inner regions of the range. For this reason, two injection sets are typically done for a single mass-range and injection type: one that is distributed linearly in distance and one distributed uniformly in log distance. Prior to analysis, the choice of injection ranges is based on a best-guess of what the range will be from \ac{PSD} estimations. Since we cannot know what the actual range of the network of detectors is until after the analysis is complete, extra injection runs are done after the analysis. These runs are set up to better target the range around the horizon distance so as to have good statistics for upper-limit calculations.
+
+The waveform generator used by \texttt{lalapps\_inspiral} --- called \texttt{FindChirpSP} --- has the ability to create waveforms from several different template families, not just restricted non-spinning \ac{pN} templates. Thus we check how well spinning waveforms are recovered using our non-spinning template bank. This was done for both \ac{S5} and \ac{S6} searches, as separate upper-limits were produced for spinning \ac{NSBH} and \ac{BBH} systems. Additionally, we can check how well various waveform families overlap with the \ac{pN} approximation we use for the templates in the template bank. For example, in the \ac{S6} low-mass \ac{CBC} search, \ac{NSBH} injections were generated using the EOBNR psuedo-4\ac{pN} model.
+
+Each injection \ac{HIPE} run will only draw from a single waveform family, with a give range of parameters, and with a given random-number-generator seed. To create a large number of injections, multiple injection runs are done; some of these will have the same range of parameter, with only the random seed changing. When \texttt{lalapps\_inspinj} runs in a given injection run, it saves the list of injections to perform to a \texttt{sim\_inspiral} table that lists the times, parameters, and waveform family of the injections to create. This table is saved to an xml file with naming convention:
+\begin{center}
+\texttt{HL-INJECTIONS\_\{SEED\}\_\{USER-TAG\}-\{GPS-START\}-\{DURATION\}.xml}\footnote{The \texttt{HL} prefix on the \texttt{INJECTIONS} file is an anachronism from when searches were only done between the two \ac{LIGO} sites. The \texttt{sim\_inspiral} table actually contains injection information for all the detectors in the search.}
+\end{center}
+\texttt{SEED} is the random seed given to \texttt{inspinj} in the given run. The \texttt{USER-TAG} is a unique identifier given to each \ac{HIPE} run by \ihope. The non-injection run will be named \texttt{FULL\_DATA} whereas each injection run will have a unique name to distinguish it from the other injection runs. Unlike the \texttt{FULL\_DATA} tag, the injections' \texttt{USER-TAG}s are set in the configuration file. For example, since we have done one injection run in our toy analysis, we have two unique user-tags: \texttt{FULL\_DATA} and \texttt{BNSINJ}. One \texttt{INJECTIONS} file exists for each injection run; this file is loaded by \texttt{lalapps\_inspiral} to insert the injections into the data.
+
+
+\subsection{First Inspiral}
+\label{sec:first_inspiral}
+
+With the template bank and (for injection runs) list of injections generated, \ac{HIPE} next runs \texttt{lalapps\_inspiral} to match filter the data. One inspiral job exists for each \texttt{tmpltbank} job; i.e., there is an inspiral job for each \ac{IFO} and for each analysis chunk. Inspiral loads the frame cache and the template bank corresponding to its chunk. Additionally, if \ac{HIPE} is analyzing an injection run, it will read in an \texttt{INJECTIONS} file.
+
+Inspiral carries out the same data conditioning as \texttt{tmpltbank} (in fact, they call the same code): data is read in, low- and high-pass filtered, and resampled. If \texttt{inspiral} is given an injections file it will create the waveforms that overlap its analysis time prior to data conditioning. Waveforms are generated in the time-domain using the parameters stored in the \texttt{sim\_inspiral} table and added directly to the data stream in memory. The data is then low- and high-pass filtered and resampled. Note that \texttt{tmpltbank} does not load injections. Instead, the same bank is used for both non-injection and injection runs. While this introduces a subtle difference from the real situaton, the effect on the template bank is negligible since the median estimator is used and since the number of injections in a chunk is limited by the time-step and time-interval arguments given to \texttt{lalapps\_inspinj}.
+
+After the data is conditioned and the \ac{PSD} estimated, \texttt{inspiral} reads in a template from the \texttt{TMPLTBANK} file, generates it (in the frequency domain), then match filters it with the data to create the (complex) \ac{SNR} time series for the given template. This is repeated for each template in the bank file. For injection runs, an optional argument \texttt{enable-inj-filter-only} can be turned out that causes the \texttt{inspiral} to only filter segments containing an injection. This cuts down on computational time and has no effect on the analysis, since we are only interested in times around an injection (all other times are assumed to return the same result as the non-injection run).
+
+As discussed in Chapter \ref{ch:pipeline_principles} we identify triggers by finding points where the \ac{SNR} ($\rho$) is at a maximum. Due to noise, however, there will be multiple local maxima across the duration of a template. We must therefore employ time-domain clustering on the \ac{SNR} so as to associate a single trigger with an event. This is done by using the \emph{max over chirp length} algorithm. Max over chirp length uses a sliding time window to select triggers: for every point in time, a point is only kept if there is no other point with a $\rho$ greater than it within the chirp length of the template. Once a trigger is identified, the time at which it occurs is associated with the \emph{coalescence}, or \emph{end-time}, $t_c$, of the binary. If the \ac{SNR} of the trigger exceeds our desired \ac{SNR} threshold, it is kept. The \ac{SNR} threshold is set in the configuration file; for both \ac{S5} and \ac{S6} it was set to 5.5.
+
+Due to the high overlap between templates in the bank, a single event can create triggers across multiple templates. In order to associate a single trigger with a single event, we also need to cluster across the bank. \texttt{lalapps\_inspiral} offers two options: hard-window clustering, and \emph{trigscan}. The hard-window clustering is the simplest of the two: the time-series is split up into windows with a set duration (determined in the configuration file). Within each window, the trigger with the largest \ac{SNR} is kept while all others are discarded. This method has the advantage of being simple, and it garauntees that the trigger rate in a single \ac{IFO} will not exceed one per the window duration. However, choosing the size of the window is difficult and somewhat arbitrary. Different templates have varying impulse responses and will ring for varying amounts of time depending on the strength of a signal or glitch. Thus the window is unlikely to cause only one trigger to be associated with one event. Additionally, a glitch that rings off some triggers at one end of the bank can cluster away a decent signal candidate that rang off some templates at the other end of the bank, even though the glitch and the signal candidate look nothing like each other.
+
+A more sophistcated approach is to use trigscan clustering \cite{ref:Keppel}. Rather than simply use the time-dimension, trigscan also pulls in information about the parameters of the templates to cluster. The method is similar to that of coincidence testing: for a given trigger, trigscan constructs an error ellipse with size $\epsilon_{ts}$ around the trigger using the bank metric computed by \texttt{tmpltbank}. (The value of $\epsilon_{ts}$ is determined from tuning studies and is set in the configuration file).) It then collects all triggers that fall within that ellipse. Ellipses are then constructed around each new trigger found, and more triggers are collected around them. This continues until no more triggers can be found within any ellipse. The trigger with the largest \ac{SNR} amongst the collected triggers is then kept. By involving parameter information this method has the advantage that it can cluster on a good candidate on one end of the bank without being affected by a glitch on the other end of the bank. Also, since time is incorporated in the construction of the error ellipse, the time window will adjust for each template and for the \ac{SNR} of the triggers. The disadvantage to this method is that it does not gaurauntee a maximum trigger rate. (This proved to be a problem for \ac{S6}; see Chapter \ref{ch:s6_results} for details.)
+
+All surviving triggers are saved to the \texttt{sngl\_inspiral} table with their template parameters, \ac{SNR}, and end-time. This table is stored in a xml file; the naming convention used is:
+\begin{center}
+\texttt{\{IFO\}-INSPIRAL\_FIRST\_\{USER-TAG\}-\{GPS-START\}-\{DURATION\}.xml}
+\end{center}
+All of the \texttt{FULL\_DATA INSPIRAL\_FIRST} files that are created in our analysis are shown in Figure \ref{fig:segment_plot_full}. There will be an equal number of \texttt{BNSINJ} files, the only difference in the names being the \texttt{USER-TAG}.
+
+\texttt{lalapps\_inspiral} is also used to calculate $\chi^2$ values for triggers. However, since this is not used until the second stage of the pipeline, we withold discussion of this until secton \ref{sec:second_inspiral}.
+
+\subsection{First Coincidence}
+\label{sec:first_thinca}
+
+Now that we have lists of single-\ac{IFO} triggers we can perform the coincidence test across detectors. This is done by \texttt{lalapps\_thinca}. Each \texttt{thinca} job reads in multiple \texttt{inspiral} files. The number and duration of \texttt{thinca} jobs is determined by coincidence times. One \texttt{thinca} job will be created for every contiguous coincidence time. This is illustrated in Figure \ref{fig:segment_plot_full}. Only H1 and L1 were analyzed for the first $\sim1700\,$s of the analysis. Thus, one \texttt{thinca} job is created for this period, known as H1L1 time. At GPS time $967230087$ Virgo turns on, and for the next $2176\,$s all three interferometers are analyzed. This results in another \texttt{thinca} job being created for this triple-coincidence time. Afterward, L1 turns off, and so an H1V1 job is created for the next $1755\,$s. This is again followed by a period of triple-coincidence time.
+
+Unlike \texttt{tmpltbank} and \texttt{inspiral} jobs, there is no minimum required duration of contiguous analysis time for \texttt{thinca}; in principle, a \texttt{thinca} job could be as short as one second. A maximum duration of $3600\,$s is imposed to protect against memory errors. If a period of coincidence time is greater than $3600\,$s and less than $7200\,$s, however, the time will be evenly split between two \texttt{thinca} jobs. This can be seen in the last triple-coincident segment in Figure \ref{fig:segment_plot_full}. Note that no overlap is needed between \texttt{thinca} jobs.
+
+In order to carry out the coincidence test \texttt{thinca} constructs an error ellipse around each trigger with size $\epsilon_{\mathrm{thinca}}$ using the metric components computed by \texttt{tmpltbank}. The size of $\epsilon_{\mathrm{thinca}}$ is a tunable parameter and is set in the configuration file. Triggers are considered coincident if their ellipses --- referred to in this case as \emph{ethinca ellipsoids} --- overlap. A single trigger can take part in multiple coincidences if it overlaps with multiple triggers. A triple (or higher) coincidence can only occur if all three triggers in each \ac{IFO} overlap with each other. If one trigger overlaps with the other two, but those two do not overlap with each other, two double coincidences will be created.
+
+Any triggers found to be in coincidence with a trigger with at least one other detector are saved to the \texttt{sngl\_inspiral} table in the output xml file. One xml file is created for each \texttt{thinca} job. Note that this means a single \texttt{thinca} xml file will contain triggers from multiple \acp{IFO}; how these are stored in the \texttt{sngl\_inspiral} table is discussed in section \ref{sec:data_storage}. The naming convention for first coincidence files is:
+\begin{center}
+\texttt{\{IFOS\}-THINCA\_FIRST\_\{USER-TAG\}-\{GPS-START\}-\{DURATION\}.xml}
+\end{center}
+\texttt{IFOS} is the coincidence time the \texttt{thinca} file covered; it is not necessarily the coincidence types stored in the file.\footnote{For example, an H1L1V1 triple-time file will have prefix \texttt{H1L1V1}, yet can contain up to four coincidence types: H1L1, H1V1, L1V1, and H1L1V1.} Any single-\ac{IFO} trigger that is not coincident with any other \ac{IFO} is discarded.
+
+\texttt{Thinca} also has the ability to apply higher-category vetoes and do time slides. As this is not done until the second stage, we withold discussion of this until section \ref{sec:second_thinca}.
+
+\subsection{Trigbank}
+\label{sec:tribank}
+
+The completion of first coincidence concludes the first stage of the \ac{HIPE} pipeline. To carry out the second stage of the pipeline, we must first gather all surviving triggers in preparation for the second run of \texttt{lalapps\_inspiral}. This is done by \texttt{lalapps\_trigbank}. The number of \texttt{trigbank} jobs is determined by the number of single-\ac{IFO} analysis chunks and the number of coincidence times. Within each analysis chunk, a separate \texttt{trigbank} job is created for each coincidence time that exists in that chunk and for each \ac{IFO}. For example, in our toy analysis, the first H1 analysis chunk overlaps H1L1 time and H1L1V1 time. Therefore, two \texttt{trigbank} jobs are created for H1 during this time, one for each coincidence time.
+
+Each \texttt{trigbank} job loads all first \texttt{thinca} files of a given coincidence time that overlap its analysis chunk. All triggers from a single \ac{IFO} are picked out of the \texttt{thinca} files and redundancies are removed (e.g., if a single template rang off multiple triggers in the \texttt{thinca} file, only one entry representing that template will be saved). The results are then saved to a \texttt{sngl\_inspiral} table in a single \texttt{TRIGBANK} file; the naming convention is:
+\begin{center}
+\texttt{\{IFO\}-TRIGBANK\_SECOND\_\{IFO-TIME\}\_\{USER-TAG\}-\{GPS-START\}-\{DURATION\}.xml}
+\end{center}
+\texttt{IFO-TIME} is the coincident time from which the triggers in the file came. By adding this tag we ensure that a different file exists for each coincidence time. Figure \ref{fig:segment_plot_full} shows all of the \texttt{FULL\_DATA TRIGBANK} files created in our toy analysis.
+
+\subsection{Second Inspiral}
+\label{sec:second_inspiral}
+
+After the trigbank files have been generated, \texttt{lalappps\_inspiral} is run again. As with first \texttt{inspiral}, the second run loads the strain data from the frame files, conditions the data, adds injections (for injection runs), and match filters the data. There are two important differences: first, rather than load a \texttt{TMPLTBANK} file, a \texttt{TRIGBANK} file is used. Second, $\chi^2$ is now computed along with \ac{SNR}, and a $\chi^2$ threshold and $r^2$ veto are applied to triggers.
+
+$\chi^2$ is computed for any trigger that exceeds the \ac{SNR} threshold. (Note that triggers have been defined before this happens; i.e. the max-over chirp-length algorithm is still based solely on \ac{SNR}.) As per the equations outlined in section \ref{sec:chisq} of Chapter \ref{ch:pipeline_principles}, this is done by breaking the template up into bins of equal power, match filtering each bin individually, and comparing the \ac{SNR} in each bin to the expected \ac{SNR} in a single bin. The number of bins used is set in the configuration file. For \ac{S5} and \ac{S6} 16 bins were used, making the number of degrees of freedom equal to 30. This process is computationally expensive; hence why it is only used for triggers that survive first coincidence. Once the $\chi^2$ value for a trigger is computed, the $\chi^2$ threshold is applied. While the exct value of the $\chi^2$ threshold is \ac{SNR} dependent, the value of $\chi_*^2$ (see equation \ref{eqn:chisq_threshold} in Chapter \ref{ch:pipeline_principles}) is a tuneable parameter that is set in the configuration file. If a trigger has a $\chi^2$ that exceeds the $\chi^2$ threshold, it is discarded. \texttt{Inspiral} also computes an $r^2$ value for each trigger across a period of time that is also set in the configuration file. If the $r^2$ value exceeds a threshold $r_*^2$ determined in the configuration file, the trigger is discarded. For values of $\chi_*^2$, $r_*^2$, and the size of the $r^2$ window used for \ac{S5} and \ac{S6}, see Chapters \ref{ch:s5_results} and \ref{ch:s6_results}. \texttt{Inspiral} does not compute effective \ac{SNR} nor new \ac{SNR}. Instead, the $\chi^2$ value for surviving triggers and the number of degrees of freedom are saved to the \texttt{sngl\_inspiral} table along with the triggers' other information (\ac{SNR}, template parameters, end-time). Later programs use this information to compute effective or new \ac{SNR} as needed.
+
+Clustering across the bank (either by the hard-window method or trigscan) is still based on \ac{SNR}. However, because this occurs after the $\chi^2$ and $r^2$ vetoes are applied, the trigger that survives bank clustering may not be the same as in first \texttt{inspiral}. For example, a glitch or signal may ring off a template with a large \ac{SNR} but a poor $\chi^2$. If this template had the largest \ac{SNR} across the bank, it would have been selected in the first stage. However, if the template's $\chi^2$ or $r^2$ value exceeds the veto threshold, it will not survive to the bank clustering phase, and so another template will be selected. 
+
+As can be seen in Figure \ref{fig:segment_plot_full}, one second \texttt{inspiral} job is run for every \texttt{trigbank} file. Since there are many more \texttt{trigbank} files then \texttt{tmpltbank} files, this may seem to defeat the purpose of limiting the number of triggers for which $\chi^2$ is calculated. However, templates in a given \texttt{trigbank} file are only filtered through segments that overlap with the corresponding \texttt{thinca} file  (the entire chunk is used for to compute the \ac{PSD}). For example, in our toy analysis, there are two \texttt{trigbank} files --- and therefore two second \texttt{inspiral} jobs --- for the first H1 analysis chunk. This was because part of the way through the chunk, V1 turned on, and so we switched from H1L1 time to H1L1V1 time. The second \texttt{inspiral} job that reads in the H1L1 \texttt{trigbank} file in this segment will only match filter the segments that overlap the H1L1 coincidence time (which is the first $1672$ seconds of the chunk). Likewise, the second second \texttt{inspiral} job in this chunk, which is associated with the H1L1V1 \texttt{trigbank} file, will only match filter the segments that overlap H1L1V1 time (which is the last $376$ seconds). For this reason, the naming convention for second \texttt{inspiral}'s output xml files is:
+\begin{center}
+\texttt{\{IFO\}-INSPIRAL\_SECOND\_\{IFO-TIME\}\_\{USER-TAG\}-\{GPS-START\}-\{DURATION\}.xml}
+\end{center}
+By limiting the filtering in this manner we minimize the number of triggers for which we need to compute a $\chi^2$ value.
+
+\subsection{Second Coincidence}
+\label{sec:second_thinca}
+
+Since many triggers will have failed the $\chi^2$ and $r^2$ vetoes in second \texttt{inspiral} (and since slightly different templates may have taken their place) we must again perform the coincidence test. This is again carried out by \texttt{lalapps\_thinca} with many of the same arguments as before. In fact, the CAT 1, zero-lag coincidence job will perform exactly the same operations as its first stage counterpart; even the start/end times (which correspond to the coincidence times) will be the same. The only difference is the second stage coincidence will read in the corresponding \texttt{INSPIRAL\_SECOND} files.
+
+It is at this point that we perform time-slides and apply higher-category (i.e., $>$ CAT1) vetoes. This results in several additional \texttt{thinca} jobs than were carried out at first stage. Specifically, for a non-injection run, there will one zero-lag and one slide \texttt{thinca} job for each category of veto analyzed.\footnote{Although there are, in principle, up to four categories of vetoes --- see table \ref{tab:veto_cats} --- not all of them have to be analyzed by \ac{HIPE}. The specific categories that we wish to analyze are determined by the configuration file.} We do not perform slides for injection runs, but we do apply higher vetoes.
+
+Higher category vetoes are applied by feeding \texttt{lalapps\_thinca} an ASCII file containing the list of veto segments to apply for a given \ac{IFO} (and by turning on an extra \texttt{--do-veto} argument). These ASCII files are created by \ihope at run-time from the veto xml files created by \texttt{ligolw\_segments\_from\_cats}\footnote{\texttt{Thinca} does not read the xml files directly because it was written several years before \texttt{ligolw\_segments\_from\_cats}. Rather than try to adjust \texttt{thinca} to read the new xml files, we found it easier to simply convert the xml to ASCII format.}, and are stored in the \texttt{segments} directory. A separate ASCII file is given to \texttt{thinca} for each \ac{IFO}. If a veto file for an \ac{IFO} is specified, \texttt{thinca} loads it, then removes all triggers from the given \ac{IFO} that have end times intersecting the veto segments. This is done prior to performing the coincidence test. As mentioned above, vetoes are applied cumulatively. Thus, the CAT2 veto file will contain the union of CAT 1 and 2 veto segments; CAT3, the union of 1, 2, and 3; etc. For this reason, \texttt{thinca} only needs to load one veto file per \ac{IFO} per job.
+
+Slides are carried out by giving \texttt{thinca} a \texttt{--num-slides} argument, followed by arguments giving the relative offset to apply for each \ac{IFO}. \texttt{Thinca} uses these arguments to construct offset vectors for each slide. The offset values for each \ac{IFO} in a given slide are determined by the slide number and the relative offsets of the \acp{IFO}. For example, if the H1 offset is 0 (set via the \texttt{--h1-slide} argument), the L1 offset is 5 (via \texttt{--l1-slide}), and V1 offset is 10 (\texttt{--v1-slide}), then for the third slide, the offset vector will be:
+\begin{equation*}
+\vec{\mathcal{O}}_3 = [\Delta t_{\mathrm{H1}} ~ \Delta t_{\mathrm{L1}} ~ \Delta t_{\mathrm{V1}}] = [0\,\mathrm{s} ~ 15\,\mathrm{s} ~ 30\,\mathrm{s}] 
+\end{equation*}
+The \texttt{num-slides} argument sets the total number of slides to perform. The number of slides will be twice the value given by this argument: one set of forward slides, and one set of backward slides. For example, if \texttt{num-slides} is 20, 40 total slides will be created: 20 slides with positive offsets and 20 slides with negative offsets. The number of slides to perform, and the offset for each \ac{IFO} is set in the configuration file. For values set for \ac{S5} and \ac{S6}, see Chapters \ref{ch:s5_results} and \ref{ch:s6_results}, respectively.
+
+Both the \texttt{num-slides} and offset arguments must be integers. This means that \texttt{thinca} cannot perform slides with offsets that are fractions of a second. Furthermore, due to the way \texttt{thinca} constructs the offset vectors, it is not possible to mix positive offsets with negative, nor is it possible to have two separate vectors in which two of the \acp{IFO} have the same offset (unless the two \acp{IFO} have the same relative offset). For example, \texttt{thinca} cannot create the vectors $[\mathrm{H1} = 0\,\mathrm{s} ~ \mathrm{L1} = 5\,\mathrm{s} ~ \mathrm{V1} = 10\,\mathrm{s}]$ and $[\mathrm{H1} = 0\,\mathrm{s} ~ \mathrm{L1} = 5\,\mathrm{s} ~ \mathrm{V1} = 20\,\mathrm{s}]$. This limits the total number of slides \texttt{thinca} can perform for times in which there are more than two coincident \acp{IFO}.
+
+For each slide, \texttt{thinca} adds the offsets to the end times of \acp{IFO} then performs the coincidence test. This is done after vetoes are applied, so that higher-category vetoes are effectively slid around with the offset, too. Slides are performed on a \emph{ring}: triggers that are slid past the end time of the \texttt{thiinca} job are placed at the beginning of the time. This means that a \texttt{thinca} slide job does not have to load triggers from any other segment. It also means that triggers occuring in single-\ac{IFO} time cannot be slid into coincidence time. Thus we are safe discarding triggers that occur during single-\ac{IFO} time after the first stage coincidence test. Since there is no minimum required duration for a \texttt{thinca} file, this can mean that some slides will be redundant if a file is too short. Studies have shown that this is rare, however, and so it has little effect on the background analysis.
+
+The naming conventions for second \texttt{thinca} output xml files are:
+\begin{center}
+\footnotesize{\texttt{\{IFO-TIME\}-THINCA\_SECOND\_\{IFO-TIME\}\_\{USER-TAG\}-\{GPS-START\}-\{DURATION\}.xml}}
+\end{center}
+for the CAT1 zero-lag files, and:
+\begin{center}
+\footnotesize{\texttt{\{IFO-TIME\}-THINCA\_SECOND\_\{IFO-TIME\}\_\{USER-TAG\}\_CAT\_\{N\}\_VETO-\{GPS-START\}-\{DURATION\}.xml}}
+\end{center}
+for the N$\th$-higher veto category.\footnote{Note that the second \texttt{IFO-TIME} in the naming convention is unnecessary; it is simply a relic of the \texttt{trigbank} and second \texttt{inspiral} naming conventions and has no other meaning.} Slide files follow the same convention, except that \texttt{THINCA\_SECOND} is replaced with \texttt{THINCA\_SLIDE\_SECOND}.
+
+One important final note: by definition, when an \ac{IFO} is vetoed, it is no longer considered to be ``on." This means that when we apply the higher-category vetoes, coincidence times will change. For instance, if a category-2 L1 veto comes on for $t$ seconds during H1L1V1 time, then at CAT2 (and all higher cumulative categories) that period of time is now H1V1 time. The same rule applies to time slides. Second \texttt{thinca} files, however, are grouped by whatever the coincidence time was at CAT1, and this does not change after vetoes are applied (we seen this in Figure \ref{fig:segment_plot_full}: all the \texttt{THINCA\_SECOND} files have the same start and end times across all veto categories). This means that for higher veto categories, a \texttt{THINCA\_SECOND} file will contain multiple coincidence times. Unfortunately, \texttt{thinca} does not store which triggers fall in which coincidence times, nor does it store the duration of each of the coincidence times in its output file. As discussed in Chapter \ref{ch:far}, knowing the start and end of coincidence times is important information: uncombined \acp{FAR} are computed for each coincidence type, and \acp{FAR} are not combined across coincidence time. Thus later programs must re-apply the vetoes to sort out the triggers and times. This is done by \texttt{ligolw\_thinca\_to\_coinc}, which is the first program to run in pipedown (see section \ref{sec:pipedown}).
+
+\begin{figure}[p]
+\label{fig:science-selected_segs}
+\begin{center}
+\includegraphics[width=6in]{figures/segment_plot_science-selected.pdf}
+\end{center}
+\caption{
+The Science, category 1 vetoes, and selected segments of H1, L1, and V1 between GPS times 967228343 and 967238583.}
+\end{figure}
+
+\begin{figure}[p]
+\label{fig:segment_plot_full}
+\includegraphics[width=6.5in]{figures/segment_plot_selected_segs-thinca_second.pdf}
+\caption{
+The selected segments and all zero-lag \texttt{FULL\_DATA} files created by \ac{HIPE} for the segments shown in Figure \ref{fig:science-selected_segs}.}
+\end{figure}
