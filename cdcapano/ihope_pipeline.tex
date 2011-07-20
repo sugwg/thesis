@@ -68,16 +68,18 @@ we can fill a bank of templates using the methods described in section \ref{sec:
 Environmental and instrumental factors can cause non-Gaussian transient noise
 (\emph{glitches}) in the data. To deal with this our pipeline must be able to
 distinguish between triggers resulting from glitches and triggers resulting
-from gravitational waves. Since the morhpology of the signals is known, the $\chi^2$ test discussed in \ref{ch:pipeline_principles} lends itself as a good method to do this. Checking for coincident triggers in multiple detectors will
-also filter out spurious triggers since we do not expect environmental
-correlations across great distances. After all filtering and tests have been
-applied, the statistical significance of a set of triggers has to be evaluated
-to determine the probability that a gravitational wave exists in the data. A
-pipeline must therefore be able to compute a background with which to compare
-triggers to. To avoid bias, this must be done in a {\it blind} fashion: the
-method by which background is chosen and triggers ranked must be chosen without
-knowledge of what is in the data, else the results will sway in the favor of the
-analysts' bias. 
+from gravitational waves. Since the morhpology of the signals is known, the
+$\chi^2$ test discussed in Chapter \ref{ch:pipeline_principles} lends itself as
+a good method to do this. Checking for coincident triggers in multiple
+detectors will also filter out spurious triggers since we do not expect
+environmental correlations across great distances. After all filtering and
+tests have been applied, the statistical significance of a set of triggers has
+to be evaluated to determine the probability that a gravitational wave exists
+in the data. A pipeline must therefore be able to compute a background with
+which to compare triggers to. To avoid bias, this must be done in a {\it blind}
+fashion: the method by which background is chosen and triggers ranked must be
+chosen without knowledge of what is in the data, else the results will sway in
+the favor of the analysts' bias. 
 
 Finally, the pipeline must be able to evaluate its sensitivity and efficiency
 to sources in the universe. Doing so allows tuning studies to be carried out
@@ -230,7 +232,17 @@ Once the analyzable Science segments and the veto segments that will be applied
 are obtained, \ihope runs \texttt{lalapps\_inspiral\_hipe}. This sets up the
 \ac{HIPE}, which is the pipeline that carries out the search. Figure
 \ref{fig:HIPEDiagram} shows the \ac{HIPE} \ac{DAG} for a single $2048\rm{s}$
-block of time. As can be seen in the diagram, \ac{HIPE} is a \emph{two-stage} pipeline. Data is matched-filtered, coincidence tests are applied, then the process is repeated. The reason for using two-stages is the $\chi^2$ test is computationally expensive. Therefore, to cut down on the number of triggers for which we need to compute $\chi^2$, an initial coincidence test is applied.\footnote{Using two stages complicates the pipeline, however, and makes it difficult to trace an event's progression through the various steps. It also hampers efforts to estimate \acp{FAR} from single-\ac{IFO} triggers. For this reason, a single-stage pipeline is being worked which takes advantage of advances in computational power. See Chapter \ref{ch:future_developments} for more details.}
+block of time. As can be seen in the diagram, \ac{HIPE} is a \emph{two-stage}
+pipeline. Data is matched-filtered, coincidence tests are applied, then the
+process is repeated. The reason for using two-stages is the $\chi^2$ test is
+computationally expensive. Therefore, to cut down on the number of triggers for
+which we need to compute $\chi^2$, an initial coincidence test is
+applied.\footnote{Using two stages complicates the pipeline, however, and makes
+it difficult to trace an event's progression through the various steps. It also
+hampers efforts to estimate \acp{FAR} from single-\ac{IFO} triggers. For this
+reason, a single-stage pipeline is being worked which takes advantage of
+advances in computational power. See Chapter \ref{ch:future_developments} for
+more details.}
 
 \ac{HIPE} can be run both with and without injections. If injections are
 desired, \texttt{lalapps\_inspinj} is run to create a list of injections to
@@ -238,14 +250,24 @@ make, which are created and inserted into the data just prior to match
 filtering by \texttt{lalapps\_inspiral}. In order to create data with and
 without injections, \ihope runs \ac{HIPE} several times: once for zero-lag and
 time-slid data (which we label \texttt{FULL\_DATA}), and once for each desired
-injection run, which are specified in the configuration file. The details of
-the steps of this analysis are discussed in Section \ref{sec:HIPEdetail}.
+injection run, which are specified in the configuration file.
 
-%
-%\if{false}
-%The playground run is done so we may tune the pipeline while keeping the analysis blind. We have designated 600 of every 6370 seconds of data as playground. This data is looked at prior to un-blinding the analysis (what we colliquoly call \emph{opening the box}) in order to tune vetoes and check for any spurious data that would indicate a bug in the analysis. Although playground data is included in the final open-box analysis, we exculde it for computing upper-limits. Note that playground zero-lag data can easily be retrieved from the \texttt{FULL\_DATA} analysis -- we can simply filter triggers based on their end-times for the playground times. The real difference between the \texttt{FULL\_DATA} analysis and the \texttt{PLAYGROUND} analysis is in the time-slides: \texttt{PLAYGROUND}...
-%\fi
-%
+As discussed in section \ref{sec:pipeline_requirements}, we must be able to
+estimate a background and calculate triggers in a blind fashion. However, we
+must also be able to tune the pipeline so as to improve the chances of
+detecting something. To satisfy these conflicting requirements, we have
+designated a subset of data as \emph{playground}. Playground is defined as data
+that occurs during the first $600$ seconds of every $6370\th$-second block of
+time, starting from February 14, 2003 at 16:00:00 UTC (GPS time $729273613$).
+It therefore consists of $\sim10\%$ of the full data. Playground is looked at
+prior to un-blinding the rest of the data (what we colliquoly call
+\emph{opening the box}) in order to tune vetoes and check for any spurious
+results that would indicate a bug in the analysis. Although playground is
+included in the final open-box analysis, we exculde it for computing
+upper-limits. It is possible to run \ac{HIPE} such that it only analyzes
+playground data; however, it is unnecessary, as we can easily retrieve
+playground triggers from the \texttt{FULL\_DATA} analysis using their
+end-times. Details of \ac{HIPE} are discussed in section \ref{sec:HIPEdetail}.
 
 \begin{figure}[p]
 \begin{center}
@@ -480,3 +502,264 @@ The Science, category 1 vetoes, and selected segments of H1, L1, and V1 between 
 \caption{
 The selected segments and all zero-lag \texttt{FULL\_DATA} files created by \ac{HIPE} for the segments shown in Figure \ref{fig:science-selected_segs}.}
 \end{figure}
+
+\section{Data Storage}
+\label{sec:data_storage}
+
+Before stepping through Pipedown, we pause to detail the table structure used to store triggers in files. Table structure is central to Pipedown: part of its purpose is to convert from older table structures to newer, more convenient ones, and all the programs Pipedown runs take advantage of these newer tables. We begin by reviewing the \texttt{sngl\_inspiral} table, and how this was used to store data up to this point.
+
+\subsection{The \texttt{sngl\_inspiral} Table}
+
+As discussed above, the \texttt{sngl\_inspiral} table is the table used to store data by nearly every \ac{HIPE} program: \texttt{lalapps\_tmpltbank}, \texttt{lalapps\_inspiral}, and \texttt{lalapps\_thinca} all use it to store template and trigger information. Consequently, the \texttt{sngl\_inspiral} table has a large number of columns to store all needed data. Table \ref{tab:sngl_inspiral} shows some of the relevant columns used for the \ac{CBC} analysis and their purpose. There are several extra columns not discussed here.
+
+Each row in the \texttt{sngl\_inspiral} table represents a single trigger or template in a single \ac{IFO}. Associated with each row is an \texttt{event\_id} to uniquely identify each event. This provides a convenient way to retrieve information about a template or single-\ac{IFO} trigger. Coincident information is more difficult to store, however, since coincidence requires grouping rows together. Since the \texttt{sngl\_inspiral} table was the only available way to store trigger data in a file when \texttt{lalapps\_thinca} was written, a method was devised to encode coincidence in the \texttt{event\_id}. The id was set to be 18 digits long. The first (starting from the left) 9 digits were the GPS time of the trigger. The next 4 digits gave the slide that the coincidence was from, where $0000$ was zero-lag. The last 5 digits formed a counter that assigned a unique number to each coincidence. For example, the first coincident trigger in H1L1 time in the first slide of our toy-analysis has \texttt{event\_id}:
+\begin{equation*}
+\underbrace{956735064}_{\text{GPS time}}\underbrace{0001}_{\text{slide number~}}\underbrace{00001}_{\text{~event counter}}
+\end{equation*}
+Any rows that had \texttt{event\_id}s with the same last 9 digits --- i.e., if the slide number and event counter matched --- were coincidences.
+
+\subsection{Coinc Tables}
+
+There were a few problems with using the \texttt{sngl\_inspiral} table to store coincident information. First, the number of coincident events in a single file could not exceed $99999$, else the event counter would spill over into the slide number. Likewise, no more than $9999$ slides could be stored in a single file. Third, it consumed more memory than necessary. If a single-\ac{IFO} trigger formed coincidences in multiple slides (as is often the case), multiple entries would have to be created in the table for it. The values in all columns (of which there are many) for these entries would be exactly the same, except for the last 9 digits of the \texttt{event\_id}. Finally, any coincident parameters, such as combined new \ac{SNR}, would have to be computed on the fly. For coincident statistics that could not be computed on the fly, such as \acp{FAR}, a \texttt{sngl\_inspiral} column (meant to store single information) had to be comandeered, and the same statistic would be stored repeatedly for each \ac{IFO} in the coincidence.
+
+To remedy the situation, \emph{coinc tables} were developed. The coinc tables consist of the \texttt{coinc\_inspiral}, \texttt{coinc\_event}, \texttt{coinc\_event\_map}, and the \texttt{coinc\_definer} table. Additionally, there is the \texttt{time\_slide} table, although this is considered to be apart of the \emph{experiment} tables (see the next section). The columns in each of these tables and their purpose is shown in tables \ref{tab:coinc_inspiral} -- \ref{tab:time_slide}.
+
+The \texttt{coinc\_inspiral} table is the coincident analog to the \texttt{sngl\_inspiral} table. Instead of storing single-\ac{IFO} information, the \texttt{coinc\_inspiral} table stores combined statistics and parameters. How information is combined depends on the parameter or statistic. Combined new \ac{SNR} is calculated by taking the quadruture sum of the constituent \ac{IFO}'s new \acp{SNR}, and is stored in the \texttt{snr} column.\footnote{Admittedly, storing combined new \ac{SNR}, not combined \ac{SNR}, in a column named \texttt{snr} is a little misleading. When the column names were defined, the \texttt{snr} column was intended to be a catch-all for whatever statistic was used to rank triggers. This way, multiple searches that may not use the same ranking statistic could use the same column. In retrospect, however, doing it in this manner was probably not needed, since SQLite allows columns to be added at will (see section \ref{sec:file_formats}). At the very least, the column probably should have been called something along the lines of \texttt{ranking\_stat}. Alas, hindsight is always 20/20.} Intrinsic parameters of the templates, such as chirp mass (stored in the \texttt{mchirp} column) and total mass (stored in the \texttt{mass} column), are combined by taking the mean of the of single-\ac{IFO} parameters. Coincident end times are computed by taking the end time from the first \ac{IFO} when sorted alphabetically. For example, in an H1L1 coincidence, the coincident end time will be whatever the H1 end time is. In an L1V1 coincidence, the L1 end time will be used. Similar to the original intent of the \texttt{event\_id}, a unique \texttt{coinc\_event\_id} is assigned to each coincidence in a file to provide a quick way to identify them. Additionaly, the \texttt{coinc\_event\_id} is used to map entries in the \texttt{coinc\_inspiral} table to entries in other tables. For every entry in the \texttt{coinc\_inspiral} table there is one entry in the \texttt{coinc\_event} table, as well as multiple entries in the \texttt{coinc\_event\_map} table with the same \texttt{coinc\_event\_id}.
+
+The \texttt{coinc\_event\_map} table is used to map the coincident events in the \texttt{coinc\_inspiral} table to their constituent events in the \texttt{sngl\_inspiral} table. As can seen in table \ref{tab:coinc_event_map}, the \texttt{coinc\_event\_map} table has three columns: a \texttt{coinc\_event\_id}, an \texttt{event\_id}, and a \texttt{table\_name}. To map a single-\ac{IFO} trigger in teh \texttt{sngl\_inspiral} table to a coincident event, the single event's \texttt{event\_id} is entered in the \texttt{coinc\_event\_map} table next to the \texttt{coinc\_event\_id} of the coincidence it is part of. Likewise, all other single-ac{IFO} events that are apart of the coincidence will have entries in the \texttt{coinc\_event\_map} table with the same \texttt{coinc\_event\_id}. In this way, one coincident event is mapped to multiple single events. Likewise, a single \texttt{event\_id} does not have to be associated with one \texttt{coinc\_event\_id}. If a single event takes part in multiple coincidences it can also be added to the \texttt{coinc\_event\_map} table, with each entry being associated with a different \texttt{coinc\_event\_id}. By using an intermediate table we have allowed for many-to-many mappings between coincidences and single events. As a result, multiple entries do not have to be added to the \texttt{sngl\_inspiral} table, and the \texttt{event\_id}s no longer need to encode coincident information. \texttt{Event\_ids} are therefore changed to simple counters used to index the \texttt{sngl\_inspiral} table, so that each row has a unique id. This fixes the problem of counter-overflow; the number of events that can be stored in a single file is now only limited by disk or memory space.
+
+Note that the table name from which a single event came --- in this case, the \texttt{sngl\_inspiral} table --- is also stored in the \texttt{coinc\_event\_map} table. This is done so that the \texttt{coinc\_event\_map} table can be used to draw multiple types of maps, e.g., it is also used to draw mappings between coincident events and injections. The manner in which injection mappings are drawn is more complicated, however; see section \ref{sec:inspinjfind} for details.
+
+By changing the \texttt{event\_id} to a simple counter, we have also freed it from storing time-slide information. What slide an event belongs to is instead stored in the \texttt{time\_slide} table. As listed in table \ref{tab:time_slide}, the \texttt{time\_slide} table has an \texttt{ifo}, an \texttt{offset}, and a \texttt{time\_slide\_id} column. Each slide is given a unique \texttt{time\_slide\_id}; each slide id is repeated in the \texttt{time\_slide} table for every \ac{IFO} that was analyzed, with each row giving the offset (in seconds) applied to that \ac{IFO} in that slide. For example, if H1, L1, and V1 are being analyzed, and one of the slides has the offset vector given in equation \ref{eqn:example_offset_vec}, then that slide will have three entries in the time slide table:
+\begin{center}
+\begin{tabular}{ c | c | c }
+time\_slide\_id & ifo & offset \\
+\hline\hline
+\texttt{time\_slide:time\_slide\_id:37} &   \texttt{H1}    & \texttt{0} \\
+\texttt{time\_slide:time\_slide\_id:37} &   \texttt{L1}    & \texttt{15} \\
+\texttt{time\_slide:time\_slide\_id:37} &   \texttt{V1}    & \texttt{30} \\
+\end{tabular}
+\end{center}
+where we have assigned the slide the arbitrary id \texttt{time\_slide:time\_slide\_id:37}.\footnote{All ids have the basic format \texttt{[originating\_table]:[id\_name]:[index\_number]}. The index number is what makes each id unique within a given class.} Storing time-slides in this manner makes it easier to find what offset was applied to each \ac{IFO}, and it allows for non-multiple slide vectors should a new version of \texttt{thinca} be written. Coincident events (and, via the \texttt{coinc\_event\_map} table, single events) are mapped to time slides through two parallel tracts. One path is through the \texttt{coinc\_event} table; the other is by way the \texttt{experiment\_map} and \texttt{experiment\_summary} tables, which are discussed in the next section.
+
+The \texttt{coinc\_event} table serves to store additional information about coincident events, as well as map events to other tables. Table \ref{tab:coinc_event} shows the \texttt{coinc\_event}'s columns. Every coincident event will have one entry in the \texttt{coinc\_event} table via their \texttt{coinc\_event\_id}. Since the table also has a \texttt{time\_slide\_id} column, it maps the events to their respective time-slides (a many-to-one mapping). The table additionally has an \texttt{instruments} column which gives the instrument time that the coincident event occurred in, which is important for computing \acp{FAR}. Instrument times are also stored in the \texttt{experiment} table, which is discussed in the next section. The \texttt{likelihood} column is used if a likelihood statistic is computed in a search. We do not do this in the low-mass \ac{CBC} search, however, and so it is unused. That it exists in the table is due to the fact that the \texttt{coinc\_event} table, along with the \texttt{coinc\_event\_map}, are search-independent tables. That is, they can be (and are) used by multiple search pipelines both within the \ac{CBC} group (such as the ringdown search) and outside of it; e.g., some burst searches use it. Contrast this with the \texttt{coinc\_inspiral} and \texttt{sngl\_inspiral} tables, which are specific to \ac{CBC} searches. An advantage of having search independent tables is that provides an easy way to store data if search is carried out that draws from multiple pipelines. Indeed, being able to combine results from multiple pipelines is an active field of research.
+
+The \texttt{coinc\_event} table also maps coincident events to the \texttt{coinc\_definer} table via the \texttt{coinc\_def\_id} column. The \texttt{coinc\_definer} table is used to group together various types of mappings; its columns are shown in table \ref{tab:coinc_definer}. A human-redable description of the type of mappings is given in the \texttt{description} column. For example, all coincident events that are mapped to single-inspiral triggers will be associated with a single \texttt{coinc\_def\_id}. The entry in the \texttt{description} column for this id will be \texttt{sngl\_inspiral<-->sngl\_inspiral coincidences}. Mappings between injections (which are stored in the \texttt{sim\_inspiral} table) and coincident events will have a different \texttt{coinc\_def\_id}, and the \texttt{description} column will be \texttt{sim\_inspiral<-->coinc\_event coincidences}. The \texttt{coinc\_definer} table is therefore useful to grab coincidences formed by a specific method. For example, if two types of injection finding were being experimented with (say, a time-based method and an ethinca-ellipsoid based method), the \texttt{coinc\_definer} table would be needed to pick out which mappings occurred from which method. However, since the current low-mass \ac{CBC} search only performs one type of coincidence test and one type of injection finding (see section \ref{sec:inspinjfind} for details), the \texttt{coinc\_definer} table is largely unused by Pipedown programs.
+
+\subsection{Experiment Tables}
+\label{sec:experiment_tables}
+
+The coinc tables solved many of the problems and difficulties of saving coincident information to a file. However, neither the older table structure nor the coinc tables provided a way to store information about the experiments performed. In particular, there was no way to store the live-time of a slide, nor the \emph{data type} of a trigger, i.e., whether the trigger came from playground data, data with playground excluded, time-slides, or an injection run. Initially, there was also no way to store what instrument time a trigger was in. This was amended by adding the \texttt{instruments} column to the \texttt{coinc\_event} table. However, this meant that information about an instrument time would only be stored in the file if an event occurred during it. If we perform an experiment and nothing happens during it, that is still information we want to keep. This is particularily true for computing false alarm rates: we need to know all the time that was observed in every slide, regardless of whether or not a slide produced an event. The only way to keep track of triggers' data types was to keep them in different files, and the only way to store livetimes was to store them in auxillary ASCII files. This could be confusing, and it forced meta-data to stored in file names.
+
+For these reasons, the \emph{experiment} tables were developed. The experiment tables consist of the \texttt{experiment}, \texttt{experiment\_summary}, and \texttt{experiment\_map} tables. Their columns are listed in tables \ref{tab:experiment} -- \ref{tab:experiment_map}. The \texttt{experiment} table lists the experiments that were performed as well as information about each one. The \texttt{gps\_start\_time} and \texttt{gps\_end\_time} columns give the period across which the experiment was performed. In \ihope, these columns are set whatever the start and stop times were that were given to \ihope to analyze. The \texttt{search\_group} and \texttt{search} columns define what group performed the search (e.g., the \ac{CBC} group, or the Burst group) and what type of search was performed (e.g., \texttt{lowmass}). Since different instrument times are mutually exclusive, and since we do not calculate \acp{FAR} across them, every instrument time that was analyzed in the \texttt{search} by the \texttt{search\_group} between the GPS start and end times is listed as an independent experiment in the \texttt{experiment} table. Evidently, \texttt{experiment} not only lists the experiments performed, it \emph{defines} what an experiment is.
+
+Within each experiment, we apply various vetoes, perform slides, and construct different data types (e.g., playground and injection runs). Each of these actions results in a different realization of an experiment. To define and list these realizations, we use the \texttt{experiment\_summary} table. Table \ref{tab:experiment_summary} shows the columns of the \texttt{experiment\_summary} table. Each row has its own \texttt{time\_slide\_id} and \texttt{experiment\_id} which maps it to the \texttt{experiment} and \texttt{time\_slide} table; thus, each row gives information about every slide that was performed in each instrument time. Additionally, there is a \texttt{datatype} column to enumerate each of the data types constructed in every experiment. This can have one of five entries: \texttt{all\_data}, \texttt{playground}, \texttt{exclude\_play}, \texttt{slide}, and \texttt{simulation}. The \texttt{all\_data}, \texttt{playground}, \texttt{exclude\_play}, and \texttt{simulation} are all zero-lag data types: \texttt{playground} is data consisting only of times occuring during playground seconds (defined above), \texttt{exclude\_play} is the converse, and \texttt{all\_data} consists of both. The \texttt{slide} data type is any non-zero lag data. We do not define a \texttt{slide} playground because playground slides are rarely used.\footnote{Looking at all-data slides is not considered opening the box.}
+
+The \texttt{simulation} data type describes zero-lag data that has software injections in it.\footnote{Note that we do not have a simulation slide data type. While it would be more realistic to do slides with injections in them, it would only be useful if the slides had one or two injections in them. This means we would have to re-do the slides for every software injection we create, which would result in an unwieldly amount of data.} This allows us to easily separate injection runs from non-injection runs. In order to separate various injection runs we additionally have the \texttt{sim\_proc\_id} column.
+
+\begin{table}[p]
+\label{tab:sngl_inspiral}
+\center
+\begin{tabular}{l | p{9cm}}
+Column      &   Purpose     \\
+\hline \hline
+\texttt{ifo}            &   Name of \ac{IFO} the trigger/template belongs to, e.g., \texttt{H1}. \\
+\hline
+\texttt{end\_time}      &   End time (in integer GPS seconds) of the trigger (not used by \texttt{tmpltbank}). \\
+\hline
+\texttt{end\_time\_ns}  & The fractional seconds of the end time, in nanoseconds. \\
+\hline
+\texttt{template\_duration} & The duration of the template (in seconds). \\
+\hline
+\texttt{eff\_distance}      & The effective distance to the binary (in $\Mpc$). For templates, this is set to 1; for triggers, this is calculated using equation \ref{eqn:DtoRho}. \\
+\hline
+\texttt{coa\_phase}     & The phase of the binary at coalescence. \\
+\hline
+\texttt{mass1}      & The component mass of one of the objects in the binary (in $\Msun$). \\
+\hline
+\texttt{mass2}      & The other component mass. \\
+\hline
+\texttt{mtotal}     & The total mass of the binary (in $\Msun$). \\
+\hline
+\texttt{mchirp}     & The chirp mass, $\mathcal{M}$, of the binary (in $\Msun$). \\
+\hline
+\texttt{eta}        & The symmetric mass ratio, $\eta$, of the binary. \\
+\hline
+\texttt{tau0}       & $\tau_0$ (see equation \ref{eqn:tau0tau3}) \\
+\hline
+\texttt{tau3}       & $\tau_3$ (see equation \ref{eqn:tau0tau3}) \\
+\hline
+\texttt{snr}        & The \ac{SNR}, $\rho$, of the trigger. \\
+\hline
+\texttt{chisq}      & The $\chi^2$ value of the trigger. \\
+\hline
+\texttt{chisq\_dof} & The number of $\chi^2$ degrees of freedom. \\
+\hline
+\texttt{Gamma[0-9]} & The components of the bank metric at the trigger/template. (There are 9 of these). \\
+\hline
+\texttt{process\_id}        &   Unique value used to map the trigger/template to the process that created it. \\
+\hline
+\texttt{event\_id}  & A unique value to identify the event. In \ac{HIPE} this is used to draw coincidences. In Pipedown it is used as an index of the table.
+\end{tabular}
+\caption{Commonly used columns of the \texttt{sngl\_inspiral} table. Not all columns are shown.}
+\end{table}
+
+\begin{table}[h]
+\label{tab:coinc_inspiral}
+\center
+\begin{tabular}{l | p{9cm}}
+Column      &   Purpose     \\
+\hline \hline
+\texttt{ifos}   &   The \acp{IFO} that took part in the coincidence. This is comma-separated, e.g. \texttt{H1,L1}. \\
+\hline
+\texttt{end\_time}  &   The coincident end time (in integer GPS seconds). \\
+\hline
+\texttt{end\_time\_ns} &    The fractional seconds of the coincident end time (in nanoseconds). \\
+\hline
+\texttt{mchirp} &   The combined chirp mass, $\mathcal{M}_c$, of the coincidence. \\
+\hline
+\texttt{minimum\_duration}  &   The duration of the shortest template in the coincidence (in seconds). \\
+\hline
+\texttt{snr}    &   The combined \emph{new \ac{SNR}}, $\rhonewc$, (not \ac{SNR}) of the coincidence. \\
+\hline
+\texttt{false\_alaram\_rate} & The uncombined \ac{FAR} of the coincidence (in $\yr^{-1}$). \\
+\hline
+\texttt{combined\_far}  & The combined \ac{FAR} of the coincidence (in $\yr^{-1}$). \\
+\hline
+\texttt{coinc\_event\_id}   & A unique value to identify the coincidence.
+\end{tabular}
+\caption{The columns of the \texttt{coinc\_inspiral} table and their purpose.}
+\end{table}
+
+\begin{table}[h]
+\label{tab:coinc_event_map}
+\center
+\begin{tabular}{l | p{9cm}}
+Column      &   Purpose     \\
+\hline \hline
+\texttt{coinc\_event\_id}   &   A unique value to identify coincidences and to map them to single-\ac{IFO} events. \\
+\hline
+\texttt{event\_id}  & The id of one of the coincident event's consituents. This may not necessarily point to a column named ``event\_id"; e.g., to map an injection to a coincident events, the injection's \texttt{simulation\_id} will be stored here. \\
+\hline
+\texttt{table\_name}    &   The name of the table that the \texttt{event\_id} is found in.
+\end{tabular}
+\caption{The columns of the \texttt{coinc\_event\_map} table and their purpose.}
+\end{table}
+
+\begin{table}
+\label{tab:coinc_event}
+\center
+\begin{tabular}{l | p{9cm}}
+Column      &   Purpose     \\
+\hline \hline
+\texttt{coinc\_event\_id}   &   Used to map entries to coincident events. \\
+\hline
+\texttt{time\_slide\_id}    &   Used to map entries to a slide (see \texttt{time\_slide} table). \\
+\hline
+\texttt{coinc\_def\_id}     &   Used to map entries to a coinc-definer entry (see \texttt{coinc\_definer} table). \\
+\hline
+\texttt{instruments}        &   Instruments that were on at the time of the coincidence. Also stored in the \texttt{experiment} table. \\
+\hline
+\texttt{likelihood}         &   Likelihood statistic of the coincidence. This is not used for low-mass \ac{CBC} searches. \\
+\hline
+\texttt{process\_id}        &   Unique value used to map coincidences to the process created them.
+\end{tabular}
+\caption{The columns of the \texttt{coinc\_event} table and their purpose.}
+\end{table}
+
+\begin{table}
+\label{tab:coinc_definer}
+\center
+\begin{tabular}{l | p{9cm}}
+Column      &   Purpose     \\
+\hline \hline
+\texttt{search}     &       Name of search that produced a class of coincidences, e.g., \texttt{inspiral}. \\
+\hline
+\texttt{description}    &   Human-readable entry describing the type of coincidence, e.g., \texttt{sim\_inspiral<-->coinc\_event coincidences}. \\
+\hline
+\texttt{search\_coinc\_type}    &   Integer to identify the type of coincidence. \\
+\hline
+\texttt{coinc\_def\_id}     &   Unique value used to index each row in the table.
+\end{tabular}
+\caption{The columns of the \texttt{coinc\_definer} table and their purpose.}
+\end{table}
+
+\begin{table}
+\label{tab:time_slide}
+\center
+\begin{tabular}{m{3.5cm} | p{9cm}}
+Column      &   Purpose     \\
+\hline \hline
+\texttt{instrument} &   One of the analyzed \acp{IFO}. \\
+\hline
+\texttt{offset}     &   The offset (in seconds) applied to the \ac{IFO}. \\
+\hline
+\texttt{time\_slide\_id}    &   Used to identify a slide; each slide has a unique id. \\
+\hline
+\texttt{process\_id}    &   Unique value used to map the slides to the process that created them.
+\end{tabular}
+\caption{The columns of the \texttt{time\_slide} table and their purpose.}
+\end{table}
+
+\begin{table}
+\label{tab:experiment}
+\center
+\begin{tabular}{l | p{9cm}}
+Column      &   Purpose     \\
+\hline \hline
+\texttt{experiment\_id}  &  Unique id to index the row. \\
+\hline
+\texttt{instruments}    &  The instruments that were on for the experiment, e.g., \texttt{H1,L1,V1}. If a coincident event happens during the experiment, then this is the instrument-time of the event.\\
+\hline
+\texttt{search\_group}  &  The search group that carried out the experiment, e.g., \texttt{cbc}. \\
+\hline
+\texttt{search}     &   The type of search done, e.g., \texttt{lowmass}. \\
+\hline
+\texttt{gps\_start\_time}   &   The GPS start time of the experiment. \\
+\hline
+\texttt{gps\_end\_time}     &   The GPS end time of the experiment. \\
+\hline
+\texttt{comments}   &  Add a comment to the experiment. (Not typically used.) \\
+\hline
+\texttt{lars\_id}   & The LARS id of the experiment. This is a number meant to index all searches. \\
+\end{tabular}
+\caption{The columns of the \texttt{experiment} table and their purpose.}
+\end{table}
+
+\begin{table}
+\label{tab:experiment_summary}
+\center
+\begin{tabular}{l | p{9cm}}
+Column      &   Purpose     \\
+\hline \hline
+\texttt{experiment\_summ\_id}   &   Unique id to index the row. \\
+\hline
+\texttt{experiment\_id}     &   Maps the row to an experiment in the \texttt{experiment} table. \\
+\hline
+\texttt{time\_slide\_id}    &   Maps the row to a slide in the \texttt{time\_slide} table. \\
+\hline
+\texttt{veto\_def\_name}    &   The name of the vetoes applied, e.g., \texttt{VETO\_CAT3\_CUMULATIVE}. This can be used to map the row to the collection of veto segments to the \texttt{segment\_definer} table. \\
+\hline
+\texttt{datatype}   &   The data type of the row. This can either be \texttt{all\_data}, \texttt{playground}, \texttt{exclude\_play}, \texttt{slide}, or \texttt{simulation}. \\
+\hline
+\texttt{sim\_proc\_id}  &   If the data type is \texttt{simulation}, this maps the row to an injection set in the \texttt{sim\_inspiral} table via the set's \texttt{process\_id}. \\
+\hline
+\texttt{duration}   &   The livetime of the slide. \\
+\hline
+\texttt{nevents}    &   The number of coincident events that occurred in the slide.
+\end{tabular}
+\caption{The columns of the \texttt{experiment\_summary} table and their purpose.}
+\end{table}
+
+\begin{table}
+\label{tab:experiment_map}
+\center
+\begin{tabular}{ l | p{9cm}}
+Column      &   Purpose     \\
+\hline \hline
+\texttt{experiment\_summ\_id}   &   Maps the row to a particular instantiation of an experiment in the \texttt{experiment\_summary} table. \\
+\hline
+\texttt{coinc\_event\_id}   &   Maps the row to a coincident event.
+\end{tabular}
+\caption{The columns of the \texttt{experiment\_summary} table and their purpose.}
+\end{table}
