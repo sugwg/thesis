@@ -1,0 +1,512 @@
+
+\section{General Relativity}
+\subsection{Elements of differential geometry}
+
+An n-dimensional ($C^\infty$) manifold $\mathcal{M}$ is a set plus a
+set of {\emph charts}, invertible maps $\{\phi_i\}$ which maps open
+subsets of $\mathcal{M}$ to open subsets of $\mathcal{R}^n$ such that
+
+\iffalse
+\begin{list}
+\item For all points $p \in \mathcal{M}$ there exists an $\phi_i$ 
+such that $p$ is in the domain of $\phi_i$.
+\item The composition $\phi_i \circ \phi_j^{-1}$ on the 
+intersections of the domains of $\phi_i$ and $\phi_j$ is a
+($C^\infty$) function from $\mathcal{R}^n \to \mathcal{R}^n$.
+\end{list} 
+\fi
+
+Two natural structures are curves, which are maps from
+$\mathcal{R}\to\mathcal{M}$, and scalar function which are maps from
+$\mathcal{M}\to\mathcal{R}$.  Compositing a function $f$ with a curve
+$\gamma(\lambda)$ gives a map from $\mathcal{R} to \mathcal{R}$ which
+may be differentiated in the usual way at a point $p$
+
+
+\begin{equation*}
+\frac{d}{d \lambda} fi \big|_p = 
+  \frac{d}{d\lambda} (f \circ \gamma) \big|_p
+\end{equation*}
+
+
+Expanding this in terms of a chart whose domain includes $p$ and then
+applying the chain rule
+ 
+\begin{align*}
+\frac{d}{d \lambda} fi \big|_p &= 
+ \frac{d}{d\lambda} ( (f \circ \phi^{-1}) \circ (\phi \circ
+\lambda) ) \\
+&= \frac{d(\phi^{-1} \circ \gamma)^\mu}{d\lambda} 
+\frac{\partial (f \circ \phi^{-1}) }{\partial x^\mu} \big|_p \\
+&= \frac{dx^\mu}{d\lambda} \partial_\mu f \big|_p
+\end{align*}
+
+where $x^\mu$ are the coordinates on $\mathcal{R}^n$.  Finally, since
+the function $f$ is arbitrary we can define
+
+\begin{equation}
+\frac{d}{d\lambda} = \frac{dx^\mu}{d\lambda} \partial_\mu
+\end{equation}
+
+Geometrically taking the derivative gives the tangent vector to the
+curve at the point $p$.  Equation~\ref{that one} identifies the set of
+such vectors with the set if directional derivatives, taking the
+partial derivatives along the coordinates as the basis.  Henceforth
+this basis will be denoted both $\partial_\mu$ and $\vec{e}_\mu$.
+
+Note that the tangent to a curve is defined at the point $p$.  Each
+point in the manifold posses its own space of tangent vectors defined
+by equivalence classes of curves passing through it.  These spaces are 
+distinct, which will be important in what follows.
+
+We next define \emph{one-forms} as linear maps from vectors to
+$\mathcal{R}$.  The set of one-forms at a point can be shown to form a
+vector space, a natural basis for which can be obtained by requiring
+
+\begin{equation*}
+\vec{e}_\mu \tilde{\omega}^\nu = \delta_\mu^\nu
+\end{equation*}
+
+and the components of an arbitrary form $\omega$ in this basis may be
+found by applying the form to the basis vectors
+
+\begin{align*}
+\omega(\vec{e}_\nu)
+&= \tilde{\omega}^\mu \omega_\mu (\vec{e}_\nu) \\
+&= \omega_\mu \tilde{\omega}^\mu (\vec{e}_\nu) \\
+&= \omega_\mu \delta^\nu_\mu \\
+&= \omega_\nu\\
+\end{align*}
+
+We can then build up arbitrary ${m \choose n}$ tensors as linear maps
+from tensor products of $m$ vectors and $n$ one-forms to
+$\mathcal{R}$.  The components of a tensor $T$ in some coordinates may
+found by applying it to combinations of the basis vectors and 1-forms:
+
+% T^..._... = 
+
+\subsection{The metric tensor}
+
+A particularly import tensor in General Relativity is the metric, a
+${2 \choose 0}$ tensor that is symmetric ($g_{\mu\nu} = g_{\nu\mu}$
+and non-degenerate (the determinant of $g$ taken as a matrix 
+$|g_{\mu\nu}| \neq 0$.  The latter features makes it possible to
+define the inverse metric $g^{\mu\nu}$ as
+
+\begin{equation*}
+g^{\mu_\rho} g_{\rho_\nu} = \delta^\mu_\nu
+\end{equation*}
+
+Given a vector $x^\mu$ the object $g_{\mu\nu} x^\mu$ maps another
+vector to a real number, and is therefore a one-form.  The metric
+therefore maps between the space of one-forms and the space of vectors
+at each point.  Most importantly, the metric defines a notion of
+distance on the manifold.  Infinitesimally
+
+\begin{equation}
+ds^2 = g_{\mu\nu} dx^\mu dx^\nu
+\end{equation}
+
+
+
+\subsection{Covariant derivatives}
+
+Since vectors are only defined at a point we need additional structure
+to define derivatives of vectors, as there is no natural way to
+compare vectors that live in different spaces.  We seek an operator
+$\nabla$ with the following properties
+
+\iffalse
+\begin{list}
+\item Maps ${m \choose n}$ tensors to ${m \choose {n+1}}$ tensors.
+This is so we may consider the directional derivative of a tensor $T$
+along a vector $x$ as $x^\mu \nabla_\mu T$.
+\item Reduces to partial differentiation when applies to a scalar
+field.
+\item Linear.
+\item Satisfies the Leibniz rule, $\nabla(a b) = a\nabla b + b \nabla a$.
+\end{list}
+\fi
+
+Such an operator applied to a vector field gives
+
+\begin{equation*}
+\nabla_\mu (x^\nu \vec{e}_\mu)
+= (\partial x^\nu) \vec{e}_\mu + x^\nu (\nabla_\nu \vec{e}_\mu)
+\end{equation*}
+
+In a flat space in Cartesian coordinates the basis vectors do not
+change and so the last term is zero.  But in a curved space, or even
+flat space in non-Cartesian coordinates, they may.  However, the new
+vector must be expressible as a linear combination of the original
+basis vectors  The components are called {\emph connection
+coefficients} and are denoted as $\Gamma^\rho_{\nu\mu}$ so
+
+\begin{align}
+\label{eq:covariant_derivative}
+\nabla_\mu (x^\nu \vec{e}_\mu) &= 
+(\partial x^\nu) \vec{e}_\mu + 
+x^\nu \Gamma^\rho_{\nu\mu} \vec{e}_\rho \\
+&= (\partial x^\nu + x^\rho \Gamma^\nu_{\mu\rho}) \vec{e}_\nu \\
+\nabla_\mu x^\nu &= \partial x^\nu + x^\rho \Gamma^\nu_{\mu\rho}
+\end{align}
+
+By considering the covariant derivative of a scalar constructed from a
+one-form acting on a vector, $\nabla (x^\nu \omega_nu)$, it can be shown
+that
+
+\begin{equation*}
+\nabla_\mu \omega_\nu = \partial_\mu \omega_\nu - 
+\Gamma^\rho_{\mu\nu} \omega_\rho
+\end{equation*}
+
+The covariant derivative of a ${m \choose n}$ tensor generalizes this
+and has a partial derivative term, $m$ positive therms in $\Gamma$ and
+$n$ negative terms in $\Gamma$.
+
+Covariant differentiation provides a way to ``move a vector without
+changing it.''  We can {\emph parallel transport} a vector $v^\mu$
+infinitesimally along a curve whose tangent vector is $u^\nu$ by
+requiring
+
+\begin{equation*}
+u^\nu \nabla_\nu v^\mu = 0
+\end{equation*}
+
+As an example of such transport, consider an arrow on the equator of
+the Earth pointing towards the north pole.  This arrow can be carried
+halfway around the equator without rotating it, so it ends up on the
+other side of the globe, still pointing north.  If the vector is then
+parallel transported northward to the pole and then continued until it
+returns to its starting point it will return pointing south.  Although
+the vector was never rotated locally it has returned rotated.  This is
+an indication that the underlying space is curved.
+
+Of particular interest is the case where a vector is
+parallel-transported along itself
+
+\begin{equation*}
+0 = v^\mu \nabla_mu v^\nu 
+= v^\mu (\partial_\mu v^\nu + \Gamma^\nu_{\mu\rho} v^\rho)
+\end{equation*}
+
+Now consider a curve $x(\lambda)$ such that $v$ is the tangent to this
+curve, $v^\mu = d x^\mu/d\lambda$, then
+
+\begin{equation}
+\label{eq:geodesic}
+\frac{d x^\mu}{d\lambda}
+  \frac{\partial }{\partial x^\mu}
+  \frac{d x^\nu}{d\lambda}  
++ \Gamma^\nu_{\mu\rho} 
+\frac{d x^\mu}{d\lambda}
+\frac{d x^\rho}{d\lambda} = 0
+\end{equation}
+
+\subsection{The Christoffel Symbols}
+
+If we now require that scalars do not change under parallel transport
+we have, for arbitrary vectors $u^\alpha, v^\beta$ and $x^\mu$
+
+\begin{align*}
+0 &= x^\mu \nabla_\mu (g_{\alpha\beta} u^\alpha v^\beta) \\
+&= x^\mu (\nabla_\mu g_{\alpha\beta}) u^\alpha v^\beta
++ g^{\alpha\beta} (x^\mu \nabla_\mu u^\alpha) v^\beta
++ g^{\alpha\beta} u^\alpha (x^\mu \nabla_\mu v^\beta)
+\end{align*}
+
+We can now specialize such that $u^\alpha, v^\beta$ are constant
+vectors and so the last two terms vanish, which implies that
+
+\begin{equation}
+\nabla_\mu g_{\alpha\beta} = 0
+\end{equation}
+
+Equations~\ref{that one} and~\ref{torsion} together fix the
+connection coefficients in terms of the metric:
+
+\begin{equation}
+\Gamma^{\rho}{\mu\nu}
+= \frac{1}{2} g^{\rho\sigma}\left[
+\partial_\nu g_{\mu\sigma}
++ \partial_\mu g_{\nu\sigma}
+- \partial_\sigma g_{\mu\nu}
+\right]
+\end{equation}
+
+
+\subsection{The Riemann Tensor}
+
+We now generalize the example given in the section~\ref{s:paralle},
+and ask how a vector $A^\mu$ changes as it is parallel-transported
+around an infinitesimal parallelogram with sides defined by the
+vectors $A^\mu$ and $B^\nu$.  It can be shown that this is equivalent
+to asking how covariant derivatives fail to commute.  The result must
+be linear in the vectors and so we may write
+
+\begin{equation}
+\label{eq:riemann_def}
+\left[\nabla_\mu \nabla_\nu - \nabla_\nu \nabla_\mu\right] A^\rho
+= R^\rho_{\sigma\mu\nu} A^\sigma
+\end{equation}
+
+which defines the {\emph Riemann tensor} $R$.  A number of properties
+follow from this definition (which are either obvious or may be proven
+by substituting the definition of the covariant derivative
+(eqn.~\ref{eq:covariant_derivative}).
+
+First, the symmetry properties
+
+\begin{equation}
+\label{eq:symmetries}
+R_{\rho\sigma\mu\nu}
+= -R_{\sigma\rho\mu\nu}
+= -R_{\rho\sigma\nu\mu}
+= R_{\mu\nu\rho\sigma}
+\end{equation}
+
+which in turn imply
+
+\begin{align}
+R^\rho_{[\sigma\mu\nu]} = 0
+\end{align}
+
+Second, the Bianchi identity,
+
+\begin{equation}
+\label{eq:bianchi}
+R_{\rho\sigma\mu\nu;\alpha}
++R_{\rho\sigma\nu\alpha;\mu}
++R_{\rho\sigma\alpha\mu;\nu} = 0
+\end{equation}
+
+We may now generalize equation~\ref{eq:riemann_def} and ask how an
+arbitrary tensor changes after being parallel-transported 
+around a loop
+
+\begin{equation}
+\label{eq:higher_order_riemann}
+\left[\nabla_\mu \nabla_\nu - \nabla_\nu \nabla_\mu\right] 
+B^{\rho_1 \rho_2 \ldots \rho_n}
+= - R^{\rho_1}_{\sigma \mu\nu} B^{\sigma \rho_2 \ldots \rho_n}
+- R^{\rho_2}_{\sigma \mu\nu} B^{\rho_1 \sigma \ldots \rho_n}
+- \ldots -
+- R^{\rho_n}_{\sigma \mu\nu} B^{\rho_1 \rho_2 \ldots \sigma }
+\end{equation}
+
+This result is sensible; it is linear in $B$, has two free upper
+indices, and reduces to the correct expression when $B$ is a vector.
+This result may be proved by expanding 
+
+\begin{equation*}
+\left[\nabla_\mu \nabla_\nu - \nabla_\nu \nabla_\mu\right] 
+(\vec{e}_\rho \otimes \vec{e}_\sigma)
+\end{equation*}
+
+and then proceeding by induction.  
+
+The symmetries of the Riemann tensor imply that there is, up to sign,
+only one non-trivial contraction
+
+\begin{equation}
+R_{\mu\nu} = R^\sigma_{\mu\sigma\nu}
+\end{equation}
+
+which defines the {\emph Ricci tensor}.  This may be contracted again
+
+\begin{equation}
+R = R^\mu_\mu
+\end{equation}
+
+to obtain the \emph{Ricci scalar}.
+
+
+Contract the Bianchi identity twice
+
+\begin{align*}
+0 &=
+g^{\rho\mu} g^{\sigma\nu}
+\left(R_{\rho\sigma\mu\nu;\alpha}
++R_{\rho\sigma\nu\alpha;\mu}
++R_{\rho\sigma\alpha\mu;\nu}\right) \\
+&= g^{\rho\mu} g^{\sigma\nu}
+\left(\nabla_\alpha R_{\rho\sigma\mu\nu}
++ \nabla_\mu R_{\rho\sigma\nu\alpha}
++ \nabla_\nu R_{\rho\sigma\alpha\mu}\right) \\
+&= g^{\sigma\nu}
+\left(\nabla_\alpha R_{\sigma\nu}
++ \nabla^\rho R_{\rho\sigma\nu\alpha}
++ \nabla_\nu R^\mu_{\sigma\alpha\mu}\right) \\
+\end{align*}
+
+Using the symmetries of the Riemann tensor (eqn.~\ref{eq:symmetries})
+this can be written
+
+\begin{align*}
+0 &= g^{\sigma\nu}
+\left(\nabla_\alpha R_{\sigma\nu}
+- \nabla^\rho R_{\sigma\rho\nu\alpha}
+- \nabla_\nu R^\mu_{\sigma\mu\alpha}\right) \\
+&= g^{\sigma\nu}
+\left(\nabla_\alpha R_{\sigma\nu}
+- \nabla^\rho R_{\sigma\rho\nu\alpha}
+- \nabla_\nu R_{\sigma\alpha}\right) \\
+&= \nabla_\alpha R
+- \nabla^\rho R_{\rho\alpha}
+- \nabla^\sigma R_{\sigma\alpha} \\
+\end{align*}
+
+Relabeling the dummy indices gives
+
+\begin{equation*}
+0 = \nabla_\alpha R - 2 \nabla^\rho R_{\rho\alpha}
+\end{equation*}
+
+Then by metric compatibility
+
+\begin{align*}
+0 &= g_{\rho\alpha} \nabla^\rho R - 2 \nabla^\rho R_{\rho\alpha} \\
+&= \nabla^\rho (g_{\rho\alpha} R) - 2 \nabla^\rho R_{\rho\alpha} \\
+&= \nabla^\rho \left(g_{\rho\alpha} R - 2 R_{\rho\alpha} \right)
+\end{align*}
+
+This motivates the definition of the \emph{Einstein Tensor} as
+
+\begin{equation}
+\label{eq:einstein_tensor}
+G_{\mu\nu} = R_{\mu\nu} - \frac{1}{2} g_{\mu\nu} R
+\end{equation}
+
+the previous implies this is divergentless
+
+\begin{equation*}
+\nabla^\nu G_{\mu\nu} = 0
+\end{equation*}
+
+Note that $G$ is also symmetric, $G_{\mu\nu} = G_{\nu\mu}$.
+
+
+The matter and energy content of a region is described by the stress-
+energy tensor $T_\mu\nu$ where each component is ``the flow of $\mu$
+momentum in the $\nu$ direction.''  For example, the $0,0$ component
+is energy density and the $0,i$ components are the $i^\mathrm{th}$.
+
+Conservation of energy requires that the difference in momentum
+across each face of a cube be balanced by a change of energy,
+within the cube,
+
+\begin{equation*}
+\partial_t \rho = \partial_i p^i
+\end{equation*}
+
+In terms of the stress-energy tensor this becomes
+
+\begin{equation*}
+0 = - \nabla^0 T_{00} \nabla^i T_{0i} = 0
+= \nabla^\nu T_{0 \nu}
+\end{equation*}
+
+However the time direction is not uniquely specified, so this 
+must generalize to
+
+\begin{equation*}
+\nabla^\nu T_{\mu\nu} = 0
+\end{equation*}
+
+That is, $T$ is also divergentless, like $G$, and like $G$ it is also
+symmetric.  It is therefore reasonable to suggest the ansatz
+
+\begin{equation*}
+G_{\mu\nu} \propto T_{\mu\nu}
+\end{equation*}
+
+Requiring agreement with Newton's law of gravity in the appropriate
+low-energy limit ($T_{00} \gg$ all other components) fixes the
+constant of proportionality and gives us \emph{Einstein's field
+equation}
+
+\begin{equation}
+G_{\mu\nu} = 8\pi T_{\mu\nu}
+\end{equation}
+
+
+\section{Gravitational radiation}
+
+We begin with Einstein's equation in empty space,
+
+\begin{equation*}
+G_{\mu\nu} = R_{\mu\nu} - \frac{1}{2} g_{\mu\nu} R = 0
+\end{equation*}
+
+Taking the trace
+
+\begin{equation*}
+g^{\mu\nu} R_{\mu\nu} - \frac{1}{2} g^{\mu\nu} g_{\mu\nu} R 
+= R - 2 R = -R = 0
+\end{equation*}
+
+Substituting this result back into Einstein's equation shows that in
+empty space $R_{\mu\nu} = 0$.
+
+We also have, in empty space, using the Bianchi identity and
+symmetries of the Riemann tensor:
+
+\begin{align*}
+\label{eq:divergence_in_empty_space}
+R^\mu_{\beta\gamma\delta;\mu} &= 
+-R^\mu_{\beta\delta\mu;\gamma}  
+-R^\mu_{\beta\mu\gamma;\delta} \\ 
+&= R^\mu_{\beta\mu\delta;\gamma}  
+-R^\mu_{\beta\mu\gamma;\delta} \\
+&= R_{\beta\delta;\gamma}  
+-R_{\beta\gamma;\delta} \\
+&= 0
+\end{align*}
+
+We next consider the application of the wave operator to the Riemann
+tensor.  From the Bianchi identity (eqn.~\ref{eq:bianchi}) this becomes
+
+\begin{equation*}
+\label{eq:wave_expanded}
+g^{\mu\nu} R_{\alpha\beta\gamma\delta;\mu\nu}
+= - g^{\mu\nu}
+\left[R_{\alpha\beta\delta\mu;\gamma\nu}
++ R_{\alpha\beta\mu\gamma;\delta\nu} \right]
+\end{equation*}
+
+Consider the first term on the right-hand side:
+
+\begin{align*}
+g^{\mu\nu} R_{\alpha\beta\delta\mu;\gamma\nu}
+&= g^{\mu\nu} R_{\alpha\beta\delta\mu;\nu\gamma}
++ g^{\mu\nu} R_{\alpha\beta\delta\mu;\gamma\nu}
+- g^{\mu\nu} R_{\alpha\beta\delta\mu;\nu\gamma} \\
+&= g^{\mu\nu} R_{\alpha\beta\delta\mu;\nu\gamma}
++ g^{\mu\nu} 
+\left[\nabla_\nu,\nabla_\gamma\right] R_{\alpha\beta\delta\mu}
+\end{align*}
+
+The first term vanishes by equation~\ref{eq:divergence_in_empty_space}.  The second term involves
+products of $R$ by~\ref{eq:higher_order_riemann}.  The second term on the
+right in equation~\ref{eq:wave_expanded} has the same form.
+
+We now specialize to the case where $R$ is small so terms
+involving multiple factors can be neglected.  This is equivalent to
+considering $R$ as a field on a flat background.  This gives
+
+\begin{equation}
+\label{eq:riemann_wave}
+g^{\mu\nu}
+R_{\alpha\beta\gamma\delta;\mu\nu}
+=
+\Box R_{\alpha\beta\gamma\delta;\mu\nu}
+= 0
+\end{equation}
+
+That is, each component of the Riemann tensor independently 
+satisfies the vacuum wave equation.
+
+
+% Todo:
+% Discuss the Weyl tensor, if needed for NR
+

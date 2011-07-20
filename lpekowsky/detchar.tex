@@ -37,209 +37,6 @@ database}, a key piece of infrastructure, and \emph{daily ihope}, a
 modification of the CBC search used for detchar.
 
 
-\section{The Segment Database}
-
-\subsection{Data Quality Flags}
-
-The state of the instrument at any time is summarized by a set of
-\emph{flags}.  Flags are identified by a triple of (ifo id, flag name,
-version number), where \emph{ifo id} identifies the instrument,
-\emph{flag name} is a unique identifier, and \emph{version number} is
-an integer starting from 1.  The version number allows information to
-be updated without losing information that may be needed to
-reconstruct the results of earlier searches.  The full set of flags is
-stored in a database designed at Syracuse and hosted at Caltech.
-
-Flags are stored as a set of \emph{segments}, half-open intervals
-aligned on GPS integer second boundaries.  Each flag triple has an
-associated set of segments indicating the times during which it is
-\emph{defined}.  Such triples also have a set of segments indicating
-times during which they are \emph{active}.  The set of active segments
-must be a subset of defined segments.  Times during which a flag is
-defined and not active are considered \emph{inactive}.
-
-Flags may be entered manually through a web interface.  This can be
-used to indicate nonstandard operating conditions, such as heavy
-equipment being operated on site.  However, most flags are generated
-automatically.
-
-The first line of defense against noise triggers is on-site as the
-instrument is running.  At all such times the control room is staffed
-by an operator who is an expert in running the instrument employed by
-LIGO labs, and a science monitor (``SciMon'') who is a member of the
-LIGO Scientific Collaboration.  The two jointly decide when to enable
-\emph{science mode}, which marks the data as suitable for analysis.
-This declaration is not specific to the CBC group, but extends to all
-searches in the collaboration.  Science time is indicated by the flag
-\texttt{DMT\_SCIENCE}.
-
-In addition to the readout channel (\texttt{DARM\_ERR}, section
-\ref{sec:inst_readout} many other data channels are recorded, falling
-into two broad categories.  Physical environmental monitor (``PEM'')
-channels record information about the environment such as seismic
-activity at the base and end stations, microphones and magnetometers
-placed throughout the site, etc.  Instrumental (``INST'') channels
-record data from numerous subsystems such as servos for each mirror
-and the output of photodiodes at points throughout the light path.
-Software running at the sites called the data monitoring tool
-(``DMT'') creates data quality flags based on these channels.  For
-example, when a channel's value or standard deviation over time
-exceeds a given threshold.  The DMT is also responsible for recording
-the state of the science mode flag.  Other flags are set by programs
-that run analyses on these auxiliary channels, for examples see
-(\checkme{UPV refs}).
-
-
-\subsection{The Veto Definer}
-
-Problems in the data may have differing levels of severity, and
-consequently we define several \emph{veto categories} to characterize
-them.  The categories used by daily ihope differ slightly from those
-used by the full analysis.
-
-Category 1 vetoes indicates time that should not have been marked as
-science mode.  Typically attempting to analyze this time will
-adversely affect the entire 2048-second analysis chunk, for example by
-biasing the PSD (section \ref{sec:ihope_psd}).  Note that it is
-possible to correct science time by creating a new version of the
-\texttt{DMT\_SCIENCE} flag with an incremental version number.
-However, doing so is a more complicated process than creating a veto
-flag, and removing time by denoting it CAT1 carries additional
-information about the reason for the veto.  Note that category 1
-vetoes are undesirable, as they may remove time outside the range of
-the problem.  For example, a 4080-second span of science-mode data
-with a one-second CAT1 veto at 2040 seconds will be completely
-unanalyzable by the CBC group, as excising the bad data will leave no
-contiguous 2048-second block.
-
-Category 2 vetoes indicates time during which there was a problem,
-instrumental or environmental, with well-understood coupling into
-\texttt{DARM\_ERR}.  Such time can be analyzed without problem, but
-triggers from such time will be discarded. 
-
-Category 3 vetoes remove hardware injections (section
-\ref{sec:ihope_hardware_injections}).  In the full analysis hardware
-injectiob vetos do not have a category number and is denoted
-``hardware injections removed.''
-
-Category 4 is for time that appears to be ill-behaved according to 
-data quality studies, but where there is no clearly-understood 
-cause.  In the full analysis this is denoted category 3.
-
-Finally, a map is needed between data quality flags and veto
-categories.  This is achieved through the use of a search-specific
-\emph{veto definer file} which associates a flag with a veto level.
-Intervals within the range during which that version of the flag are
-active will be marked with the corresponding veto level.  The
-\texttt{ligolw\_segments\_from\_cats} program (see below) merges the
-information in this file with the set of active flag segments to produce
-\emph{veto segments} at each veto level.  Analysis is performed on
-times marked as science with no CAT1 vetoes.  Triggers from times
-marked as CAT2, CAT3 and CAT4 are discarded from both foreground and
-background.
-
-Sometimes the threshold on a DQ flag is such that the data is
-unsuitable for analysis close to, but outside, the range of the flag.
-The veto definer file therefore allows for \emph{padding}, offsets 
-which effectively extend the flags.
-
-
-\subsection{Technical details}
-
-The flag segments are stored in a high-performance relational
-database, exposed as a web service which provides secure access to all
-members of the collaboration.  Several utilities to interact with the
-segment database were written, many of which could run in many modes.
-The names of all these utilities start with ligolw, short for ``LIGO
-lightweight,'' an XML-based format used throughout the collaboration
-in which the output was generated.
-
-Except where noted all programs accept a common subset of arguments
-\begin{itemize}
-\item \texttt{--gps-start-time} and \texttt{--gps-end-time}: Integer
-GPS times specifying the time range over which to run.
-\item \texttt{--include-segments}: Takes a comma-separated list of
-segment specifiers of the form ifo:flag\_name:version or
-ifo:flag\_name and restricts the query to matching flags.  In the
-latter case, report on the latest version of the flag defined at each
-time within the time range.
-\item \texttt{--exclude-segments}: Takes a comma-separated list of
-segment specifiers in the same format as \texttt{--include-segments}.
-Runs a second query on the excluded segments and returns the set of
-segments in included segments - (included segments $\cap$ excluded
-segments).
-\item \texttt{--database}, \texttt{--segment-url},
-\texttt{--dmt-files}: Specifies the data source (segment database or
-XML files with segment information).
-\end{itemize}
-
-
-The programs used during S6 were:
-
-\textbf{ligolw\_dq\_query}.  This program reports on the state of
-flags at one or more GPS times given on the command line.  This
-program does not support \\
-\texttt{--gps-start-time} or \texttt{--gps-end-time}.   The available modes are
-
-\begin{itemize}
-\item \texttt{--report}:  Returns the active/inactive status of all DQ flags at the
-given times.  For active flags reports the start and end times of the
-segment within which the given time is contained.  For inactive flags
-reports the end time of the nearest preceding segment and the start
-time of the nearest subsequent segment.  This mode is used in the
-daily ihope ``loudest glitches'' page, see below.
-\item \texttt{--defined}: Returns a list of flags defined at the
-given times.
-\item \texttt{--active}: Returns a list of the flags that were active
-at the given times.
-\item \texttt{--start-pad}, \texttt{--end-pad}: Extends the
-\texttt{--defined} and \texttt{--active} modes to report on the status
-of flags within a small range of time.
-\end{itemize}
-
-
-\textbf{ligolw\_segment\_query}.  This program reports on the state of a
-set of flags over a span of times.  The available modes are
-
-\begin{itemize}
-\item \texttt{--show-types}: Reports the sets of flags that exist over
-the time span.
-\item \texttt{--query-types}: Reports the segments during which the
-flags were defined.
-\item \texttt{--query-segments}: Reports the segments during which the
-flags were active.
-\end{itemize}
-
-Every CBC analysis begins by determining the science mode times with a
-call of the form
-
-\vspace*{5mm}
-\texttt{ligolw\_segment\_query} \\
-\hspace*{0.5in}\texttt{--query-segments --include-segments H1:DMT-SCIENCE:3 ...}
-\vspace*{5mm}
-
-\textbf{ligolw\_segments\_from\_cats}.  Given a veto definer file,
-report on segments to be vetoed. 
-
-\textbf{ligolw\_dq\_active\_cats}.  Given a veto definer file and GPS
-time, report on the active/inactive status and veto category for all
-flags defined at the time.
-
-\textbf{ligolw\_segment\_insert}.  Adds new segments to the database,
-enforcing various policy decisions:
-\begin{itemize}
-\item New segments for an existing flag/version number pair must not overlap 
-with existing segments.  To update information a new version number must be used.
-\item New version numbers must be one greater than the largest
-existing version number.
-\item New segments must not extend into the future, past the GPS time
-at which the program is run.
-\end{itemize}
-
-
-% https://www.lsc-group.phys.uwm.edu/daswg/wiki/content_of_segment_publication_and_discovery
-
-
 \section{Daily ihope}
 
 
@@ -344,22 +141,61 @@ levels times 4 veto levels = 12 sets of triggers.
 
 %filter and record
 
-Several plots and reports were generated for each combination
-of veto level and cluster level.
+\section{The Daily Ihope report pages}
 
-\subsection{Analysis time and veto usage}
+Much of the utility of the daily runs was in the use of the resulting
+triggers to identify data quality issues and quantify the value of
+proposed vetoes.  Some of these uses will be discussed in
+section~\ref{sec:applications}.  In addition to the triggers the daily
+pipeline also produced a large number of plots and reports, organized
+into web pages that were available to the collaboration.  Data
+analysts could use these pages to spot potential problems for the full
+analysis and begin more detailed followup studies.  
 
-This report shows the total time analyzed, the vetoes applied beyond
-those applied at the previous level, the \emph{efficiency} (percentage of
-triggers removed) and \emph{deadtime} (percentage of time removed) by
-each veto.  In addition the ratio of efficiency over deadtime is
-reported as a measure of quality of the veto.  A random veto would
-result in an efficiency-over-deadtime of approximately 1, a
-finely-tuned veto that removes short, loud events that ring off the
-entire template bank would have a much higher ratio.
+We now summarize the contents of the daily pages. Each report and plot
+is made for each combination of the following:
 
-This allowed analysts tuning the veto definer files to get an ongoing
-measure of how well vetoes were working.
+\begin{itemize}
+\item IFO: H1, L1 and V1
+\item Cluster level: Unclustered, 30 ms clustering, 16 second
+clustering
+\item Veto level: Show all triggers in science time (level ``0''),
+only those not removed by category 1 vetos, only those not
+removed by categories 1 or 2, or only those note removed by
+categories 1,2 and 4.  Hardware injections vetos (category 3) were not 
+applied so that we could determine whether category 4 vetoes were 
+remove them.
+\end{itemize}
+
+Each of these features could be set independently.  The top-level web
+interface for a sample day is shown in figure~\ref{f:daily_ihope_top}.
+
+\begin{figure}
+  \includegraphics[width=\linewidth]{figures/detchar/daily_ihope_top}
+  \caption[Top-level web interface for daily ihope]{
+  \label{f:daily_ihope_top}
+Top-level web interface for daily ihope.  Options can be selected with
+the controls on the left hand side, when a button is clicked the
+contents region is immediately replaced.  The default view is the one
+shown here; the analysis time and veto efficiency at cat 1 for the
+Hanford detector.}
+\end{figure}%
+
+The available reports can bee seen at the bottom of the list of
+controls in figure~\ref{f:daily_ihope_top}:
+
+
+1. Analysis time and veto usage.  This report shows the total time
+analyzed, the vetoes applied beyond those applied at the previous
+level, the \emph{efficiency} (percentage of triggers removed) and
+\emph{deadtime} (percentage of time removed) by each veto.  In
+addition the ratio of efficiency over deadtime is reported as a
+measure of quality of the veto.  A random veto would result in an
+efficiency-over-deadtime of approximately 1, a finely-tuned veto that
+removes short, loud events that ring off the entire template bank
+would have a much higher ratio.   An example is shown in
+figure~\ref{f:daily_ihope_vetousage}.
+
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/detchar/vetousage.png}
@@ -370,26 +206,26 @@ all triggers were contained in 14.51\% of time, and the DMT flagged this time
 with elevated seismic activity from 3-10 Hz at the LVEA.}
 \end{figure}%
 
-\subsection{Loudest Triggers}
-\label{ssec:ihope_loudest}
-
-This report was only run for 16-second-clustered triggers.  Loud
-glitches tend to produce families of triggers,  without clustering the
-loudest triggers from each day would likely result from one underlying
-event.  This report considers two classes of triggers; those where no
-data quality flag was active and those where at least one flag was
-active.  For the five triggers with highest new SNR in each category a
-summary was presented along with a link to an \emph{omega scan}.  The
-omega pipeline is described in (\checkme{omega refs}).  Omega scans
-are a kind of time-frequency plot.  They are especially useful as they
-may be run on all auxiliary channels recorded by the instruments and
-therefore provide a visual aid to detecting coupling between auxiliary
-channels and the gravitational wave readout channel.
-
-These can be used to suggest mechanisms behind glitches, especially
-those that were not already marked by a DQ flag.  In addition, over
-time repeated shapes in the omega scan can pinpoint underlying
-problems in the instruments that need to be addressed.
+2. Loudest triggers.  This report was only run for 16-second-clustered
+triggers.  Loud glitches tend to produce families of triggers, without
+clustering the loudest triggers from each day would likely result from
+one underlying event.  This report considers two classes of triggers;
+those where no data quality flag was active and those where at least
+one flag was active.  A sample report is shown in
+figure~\ref{f:daily_ihope_loudest}.  For the five triggers with
+highest new SNR in each category a summary was presented along with a
+link to an \emph{omega scan}.  The omega pipeline is described in
+(\checkme{omega refs}).  Omega scans are a kind of time-frequency
+plot.  They are especially useful as they may be run on all auxiliary
+channels recorded by the instruments and therefore provide a visual
+aid to detecting coupling between auxiliary channels and the
+gravitational wave readout channel.  These can be used to suggest
+mechanisms behind glitches, especially those that were not already
+marked by a DQ flag.  In addition, over time repeated shapes in the
+omega scan can pinpoint underlying problems in the instruments that
+need to be addressed.  A few images from one of the glitches in
+figure~\ref{f:daily_ihope_loudest} is shown in
+figure~\ref{f:daily_ihope_loudest_omega}.
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/detchar/loudest.png}
@@ -414,23 +250,21 @@ event in one of the accelerometers on an instrument table.}
 \end{figure}%
 
 
-\subsection{HW Injections}
+3. Hardware injections.  This report was generated by code written by
+John Veitch  at Cardiff University.  It compared the list of
+injections, published as an XML file available from a web site, with
+the list of analysis times and triggers.  The results were plotted to
+indicate whether each injection was found, missed, or not analyzed.
 
-This report was generated by code written by John Veitch  at Cardiff
-University.  It compared the list of injections, published as an XML
-file available from a web site, with the list of analysis times and
-triggers.  The results were plotted to indicate whether each injection
-was found, missed, or not analyzed.
 
-\subsection{SNR Histograms}
 
-These plots show the number of triggers as a function of SNR and new
-SNR.  As noted in section \ref{sec:ihope_match_filter}, in Gaussian
-noise the number of triggers should be proportional to
-$\exp(-\rho^2/2)$.  These plots therefore show the degree of
-``non-Gausianity'' in the data.  A common use for these plots was to
-flip between veto levels to get a sense of how well the cumulative
-vetoes were cleaning the data, as shown in figure
+4. Hardware injections.  These plots show the number of triggers as a
+function of SNR and new SNR.  As noted in section
+\ref{sec:ihope_match_filter}, in Gaussian noise the number of triggers
+should be proportional to $\exp(-\rho^2/2)$.  These plots therefore
+show the degree of ``non-Gausianity'' in the data.  A common use for
+these plots was to flip between veto levels to get a sense of how well
+the cumulative vetoes were cleaning the data, as shown in figure
 \ref{f:daily_ihope_gaussianity}.
 
 Similarly figure~\ref{f:daily_ihope_new_hists} shows histograms of the
@@ -492,12 +326,12 @@ but was not removed by either signal-based vetoes or data quality
 vetoes.}
 \end{figure}%
 
-\subsection{Glitchgram}
 
-The ``glitchgram'' was an ``at-a-glance'' summary of the day, showing
-every trigger color-coded by SNR.  This highlighted times of loud
-triggers as well as dense regions indicating ``grumbly'' times.  A
-sample is shown in figure \ref{f:daily_ihope_glitchgram}.
+
+5. The ``glitchgram'' was an ``at-a-glance'' summary of the day,
+showing every trigger color-coded by SNR.  This highlighted times of
+loud triggers as well as dense regions indicating ``grumbly'' times.
+A sample is shown in figure \ref{f:daily_ihope_glitchgram}.
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/detchar/H1_1_UNCLUSTERED_glitchgram.png}
@@ -517,17 +351,16 @@ the PSD and all data after this time was in smaller segments.}
 \end{figure}%
 
 
-\subsection{Rate vs. Time and SNR vs. Time}
-
-These plots complimented the glitchgram by breaking the triggers up
-differently.  The rate plot showed average number of triggers over
-1-minute intervals.  The SNR plot showed the SNR of every trigger as a
-function of time.  These tend to be correlated, as loud glitches ring
-off the entire bank and produce large numbers of triggers.
-
-The plots were accompanied by tables showing the times where the
-rate of triggers exceeded 500 Hz for more than one second, and
-exceeded 200 Hz for more than 10 seconds.
+6. Rate vs. Time and SNR vs. Time.  These plots complimented the
+glitchgram by breaking the triggers up differently.  The rate plot
+(figure~\ref{f:daily_ihope_rate_v_time}) showed average number of
+triggers over 1-minute intervals.  The SNR plot
+(figure~\ref{f:daily_ihope_snr_v_time}) showed the SNR of every
+trigger as a function of time.  These tend to be correlated, as loud
+glitches ring off the entire bank and produce large numbers of
+triggers.  The plots were accompanied by tables showing the times
+where the rate of triggers exceeded 500 Hz for more than one second,
+and exceeded 200 Hz for more than 10 seconds.
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/detchar/H1_0_UNCLUSTERED_rate_vs_time.png}
@@ -547,19 +380,69 @@ triggers increases somewhat after 12:00 and there are more loud
 outliers.  However the change in behavior is better seen in 
 figure \ref{f:daily_ihope_rate_v_time}.}
 \end{figure}%
-% \subsection{Breakdown by template}
 
-\subsection{Chi-square test}
 
-These plots showed all triggers in with SNR values on the $x$-axis and
-$\chisq / (2p-2)$ (the reduced $\chisq$) on the $y$-axis as a way to
-visualize the glitchiness of the data.  These plots are most useful
-when compared to a reference plot generated from a day of simulated
-Gaussian noise, shown in figure \ref{f:gaussian_snr_chisq}, and
-comparing the plots at different veto levels, shown in figure
-\ref{f:daily_ihope_snr_chisq}.
+7. Breakdown by template.  This page showed several histograms of
+number of triggers as a function of the length of templates in
+seconds.  Examples of the standard histograms are shown in
+figure~\ref{f:daily_ihope_trig_histograms}, they show that most of the
+triggers come from short templates, and templates shorter than 5
+seconds produce up to six times as many triggers as shorter templates.
 
-\newpage
+Figure~\ref{f:count_per_template} shows the same information as a map
+of the template bank, color-coded to indicate how many triggers each
+template produced.  Figure~\ref{f:daily_ihope_time_mass} breaks this
+same information up by time and template mass.
+
+Qualitatively these plots do not change much day-by-day, and so these
+plots were not often used.  However, they did prompt a change to
+the analysis made early in the S6 run, see
+section~\ref{sec:daily_pipeline_changes}.
+
+\begin{figure}
+  \includegraphics[width=0.5\linewidth]{figures/detchar/H1_1_UNCLUSTERED_mass_hist}
+  \includegraphics[width=0.5\linewidth]{figures/detchar/H1_1_UNCLUSTERED_mass_hist_norm}
+  \caption[Histograms of trigger rates by template length]{
+  \label{f:daily_ihope_trig_histograms}
+Histograms of trigger rates by template length in daily ihope.  The
+plot on the left combines all templates, the plot on the right
+normalizes by plotting (number of triggers resulting from templates of
+length $x$) divided by (number of templates of length $x$).
+}
+\end{figure}%
+
+\begin{figure}
+  \includegraphics[width=\linewidth]{figures/detchar/H1_1_UNCLUSTERED_template_counts}
+  \caption[Triggers per template]{
+  \label{f:count_per_template}
+The daily template bank, color-coded to show how many triggers each
+template produced.  Note that the template in the upper-right corner,
+which is the template of shortest duration, produced approximately 1.3
+times as many triggers as the next most active.
+}
+\end{figure}%
+
+
+\begin{figure}
+  \includegraphics[width=\linewidth]{figures/detchar/H1_1_UNCLUSTERED_hexmass}
+  \caption[Trigger rates as a function of time and template length]{
+  \label{f:daily_ihope_time_mass}
+Trigger rates as a function of time and template length.  The elevated
+trigger rate after 12:00 is visible here as well.  Note that
+particularly loud glitches, such as that around 19:30, ring off the
+entire bank.
+}
+\end{figure}%
+
+
+8.  The $\chisq$ test.  These plots showed all triggers in with SNR
+values on the $x$-axis and $\chisq / (2p-2)$ (the reduced $\chisq$) on
+the $y$-axis as a way to visualize the glitchiness of the data.  These
+plots are most useful when compared to a reference plot generated from
+a day of simulated Gaussian noise, shown in figure
+\ref{f:gaussian_snr_chisq}, and comparing the plots at different veto
+levels, shown in figure \ref{f:daily_ihope_snr_chisq}.
+
 \begin{figure}
 \includegraphics[width=0.85\linewidth]{figures/detchar/GAUSSIAN_0_UNCLUSTERED_chisq.png}
 \caption[SNR/reduced $\chisq$ values in Gaussian noise]{
@@ -582,8 +465,130 @@ from thresholds within the inspiral code, see section
 population extending to the upper right at category 0 (left) that is
 removed by vetoes in category 4 (right).}
 \end{figure}%
-\newpage
-\section{Applications of daily ihope}
+
+
+\section{Applications of daily ihope to pipeline tuning}
+
+
+
+Change in clustering
+
+20090714_H1_1_UNCLUSTERED_rate_vs_time.png
+
+Vetoing was considered
+20090714_H1_1_UNCLUSTERED_rate_vs_time.png
+20090806_H1_0_UNCLUSTERED_rate_vs_time.png
+
+
+From week 21 down to 25 msun
+
+
+\section{Applications of daily ihope to individual vetos}
+
+
+\subsection{Category 1}
+
+TCS
+
+Grid glitches
+
+\subsection{Category 2}
+
+  L1:DCH-SEI_ITMY_Y_OVER_25000 (in B) (-1,5)
+  DCH-SPIKE_GLITCH (0,4)
+
+"L1","DCH-OMCLSC_SLIP",3,2,937473702,952387219,0,4,"Slip in OMC-LSC communications generated by hand until 952387215."
+
+
+\subsection{Category 4}
+
+L1:DCH-SEI_ITMY_Y_OVER_25000 (in B) (-10,30)
+
+UPV-IHOPE_H1_ASC_WFS2_IY_8_256_100 (in C) and more
+
+Eg (tconvert 957092703, May 05 2010 11:04:48 UTC)
+
+(tconvert 957191412, May 06 2010 14:29:57 UTC)
+Accompanied by rate > 500 Hz for 4 seconds, slight elevation in SNR
+
+DCH-SEISVETO_CBC
+
+
+Loud SNR:
+
+Through the S6 run the \emph{horizon distance}, the distance at which
+the coalesence of an optimally-oriented binary system consisting of
+two $1.4 \msun$ neutron stars would have an SNR of 8, was roughly 30
+Mpc.  The SNR scales inversely with distance, hence the distance at
+which we would expect to see such a system at, say, SNR 250 is 0.12
+Mpc.  Assuming uniform volume distribution, this makes an SNR 250
+event $6.4 \times 10^{-8}$ times less likely than an SNR 8 event.  
+However, such loud glitches do occur in the data fairly often,
+especially at L1 due to a glitch mechanism with a characteristic shape
+but unknown cause.
+
+Such loud glitches tend to have high $\chisq$ values which suppress
+them.  However, around SNR 250 glitches tend to be accompanied by
+additional triggers spanning $\pm 8$ seconds resulting from the
+interaction of the filter with the inverse spectrum truncation, see
+section \ref{sec:ihope_data_conditioning}.  Some of these auxiliary
+triggers can, by chance, have low $\chisq$ values and hence high new
+SNR values, and can potentially interfere with the search.  This
+suggests a CAT 4 veto centered on times of triggers with SNRs
+exceeding 250 with 8 seconds of padding in both directions.  Such a
+flag must be in place before the full run, making daily ihope the
+obvious choice for generating the flags.
+
+This scheme was implemented starting on June 26, 2010, coinciding with
+the portion of the run designated S6D.  An example of its
+effectiveness is shown in table \ref{tab:daily_ihope_loud_flag} which
+shows the efficiency and deadtime off the flag applied to triggers
+from the full analysis after CAT 1, for the two weeks containing the
+blind injection.  The efficiency to deadtime ratio is greater than 1,
+although still relatively small.  Still, the flag was deemed useful as
+it removed triggers we could not have easily claimed were due to a
+gravitational wave.
+
+\begin{table*}
+\begin{center}
+\begin{tabular}{lrrcrrcc}
+\hline
+ifo & Triggers & Vetoed & Efficiency & Time
+& Vetoed & Dead-  & Ratio \\
+ & (Count) & (Count) &  & (sec) & (sec) & time (sec) &  \\
+\hline
+L1  & 2890507 & 12578 & 0.43 & 798720 & 880 & 0.11 & 3.95 \\
+H1  & 1692904 &  6452 & 0.38 & 647168 & 416 & 0.06 & 5.92 \\
+\end{tabular}
+  \caption[Effectiveness of the ``SNR $>$ 250'' flag]{
+  \label{tab:daily_ihope_loud_flag}
+Effectiveness of the ``SNR $>$ 250'' flag over the weeks
+09/04/2010  to 09/17/2010.  Note that the flag was used almost twice
+as often in L1 as H1, although there is only 23\% more analysis time.
+This is another indication that L1 was glitchier overall.}
+\end{center}
+\end{table*}
+
+
+\subsection{Non-vetoed time}
+
+  https://www.lsc-group.phys.uwm.edu/ligovirgo/cbcnote/S6Vsr2Minutes20091027
+    Andy: has started comparing S6a OMC slips against daily triggers,
+    doesn't look like there's a problem. 
+
+  https://www.lsc-group.phys.uwm.edu/ligovirgo/cbcnote/S6Plan/100216085311DQandVetoesS6B%20CAT1%20Flags
+    Week 5,6: None of the circumstances noted in the scimon flags resulted in an excess or increased
+    loudness of triggers. 
+
+  https://www.lsc-group.phys.uwm.edu/ligovirgo/cbcnote/S6Vsr2Minutes20100614
+    On week 17, use of daily to show something isn't a problem:
+      Duncan B: Rates on the daily pages don't seem to be affected. Suggests
+      that Ben does an investigation for next week, correlating the rate of
+      daily ihope triggers with daily flow rates and site seismic. 
+
+
+
+\section{Applications of daily ihope to the blind injection challenge}
 
 In addition to the hardware injections discussed in section
 \ref{sec:ihope_hardware_injections} it was known at the start of S6
@@ -1001,58 +1006,6 @@ front-end code changes at H1 (left) and L1 (right).}
 
 \subsection{Loud-SNR veto}
 
-Through the S6 run the \emph{horizon distance}, the distance at which
-the coalesence of an optimally-oriented binary system consisting of
-two $1.4 \msun$ neutron stars would have an SNR of 8, was roughly 30
-Mpc.  The SNR scales inversely with distance, hence the distance at
-which we would expect to see such a system at, say, SNR 250 is 0.12
-Mpc.  Assuming uniform volume distribution, this makes an SNR 250
-event $6.4 \times 10^{-8}$ times less likely than an SNR 8 event.  
-However, such loud glitches do occur in the data fairly often,
-especially at L1 due to a glitch mechanism with a characteristic shape
-but unknown cause.
-
-Such loud glitches tend to have high $\chisq$ values which suppress
-them.  However, around SNR 250 glitches tend to be accompanied by
-additional triggers spanning $\pm 8$ seconds resulting from the
-interaction of the filter with the inverse spectrum truncation, see
-section \ref{sec:ihope_data_conditioning}.  Some of these auxiliary
-triggers can, by chance, have low $\chisq$ values and hence high new
-SNR values, and can potentially interfere with the search.  This
-suggests a CAT 4 veto centered on times of triggers with SNRs
-exceeding 250 with 8 seconds of padding in both directions.  Such a
-flag must be in place before the full run, making daily ihope the
-obvious choice for generating the flags.
-
-This scheme was implemented starting on June 26, 2010, coinciding with
-the portion of the run designated S6D.  An example of its
-effectiveness is shown in table \ref{tab:daily_ihope_loud_flag} which
-shows the efficiency and deadtime off the flag applied to triggers
-from the full analysis after CAT 1, for the two weeks containing the
-blind injection.  The efficiency to deadtime ratio is greater than 1,
-although still relatively small.  Still, the flag was deemed useful as
-it removed triggers we could not have easily claimed were due to a
-gravitational wave.
-
-\begin{table*}
-\begin{center}
-\begin{tabular}{lrrcrrcc}
-\hline
-ifo & Triggers & Vetoed & Efficiency & Time
-& Vetoed & Dead-  & Ratio \\
- & (Count) & (Count) &  & (sec) & (sec) & time (sec) &  \\
-\hline
-L1  & 2890507 & 12578 & 0.43 & 798720 & 880 & 0.11 & 3.95 \\
-H1  & 1692904 &  6452 & 0.38 & 647168 & 416 & 0.06 & 5.92 \\
-\end{tabular}
-  \caption[Effectiveness of the ``SNR $>$ 250'' flag]{
-  \label{tab:daily_ihope_loud_flag}
-Effectiveness of the ``SNR $>$ 250'' flag over the weeks
-09/04/2010  to 09/17/2010.  Note that the flag was used almost twice
-as often in L1 as H1, although there is only 23\% more analysis time.
-This is another indication that L1 was glitchier overall.}
-\end{center}
-\end{table*}
 
 % tot_time, tot_count
 % veto_time, veto_count
