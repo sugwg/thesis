@@ -518,9 +518,15 @@ Each row in the \texttt{sngl\_inspiral} table represents a single trigger or tem
 \end{equation*}
 Any rows that had \texttt{event\_id}s with the same last 9 digits --- i.e., if the slide number and event counter matched --- were coincidences.
 
+\subsection{The \texttt{sim\_inspiral} and \texttt{process} Tables}
+
+Two other tables used by \ac{HIPE}, as well as Pipedown, are worth mentioning: the \texttt{sim\_inspiral} and \texttt{process} tables. The \texttt{sim\_inspiral} is similar to the \texttt{sngl\_inspiral} table. Instead of storing triggers, it stores lists of injections. Some of the columns of the table are shown in Table \ref{tab:sim_inspiral}. The table is indexed by the \texttt{simulation\_id}. This id is simply a number: no information is stored in it, as it is with the \texttt{event\_id}.
+
+Note that both the \texttt{sim\_inspiral} and \texttt{sngl\_inspiral} table (as well as many other tables) have \texttt{process\_id} columns. These are used to map their entries to the \texttt{process} table. This table --- the columns of which are shown in table \ref{tab:process} --- is used to store relevant information about the program that created the entry. Associated with the \texttt{process} table is the \texttt{process\_params} table, which stores the arguments and values given to the program at run-time. For example, all the injections created by a single instance of \texttt{lalapps\_inspinj} will have the same \texttt{process\_id} in the \texttt{sim\_inspiral} table. These will all point to a single entry in the \texttt{process} table and multiple entries (one for each argument given to \texttt{lalapps\_inspinj}) in the \texttt{process\_params} table. These tables are useful for troubleshooting problems and verifying the correct program versions were used when an analysis was run. They are also used to associate a set of injections with a given injection \texttt{USER-TAG}; see section \ref{sec:dbaddinj} for details.
+
 \subsection{Coinc Tables}
 
-There were a few problems with using the \texttt{sngl\_inspiral} table to store coincident information. First, the number of coincident events in a single file could not exceed $99999$, else the event counter would spill over into the slide number. Likewise, no more than $9999$ slides could be stored in a single file. Third, it consumed more memory than necessary. If a single-\ac{IFO} trigger formed coincidences in multiple slides (as is often the case), multiple entries would have to be created in the table for it. The values in all columns (of which there are many) for these entries would be exactly the same, except for the last 9 digits of the \texttt{event\_id}. Finally, any coincident parameters, such as combined new \ac{SNR}, would have to be computed on the fly. For coincident statistics that could not be computed on the fly, such as \acp{FAR}, a \texttt{sngl\_inspiral} column (meant to store single information) had to be comandeered, and the same statistic would be stored repeatedly for each \ac{IFO} in the coincidence.
+There were a few problems with using the \texttt{sngl\_inspiral} table to store coincident information. First, the number of coincident events in a single file could not exceed $99,999$, else the event counter would spill over into the slide number. Likewise, no more than $9999$ slides could be stored in a single file. Third, it consumed more memory than necessary. If a single-\ac{IFO} trigger formed coincidences in multiple slides (as is often the case), multiple entries would have to be created in the \texttt{sngl\_inspiral} table for it. The values in all columns (of which there are many) for these entries would be exactly the same, except for the last 9 digits of the \texttt{event\_id}. Finally, any coincident parameters, such as combined new \ac{SNR}, would have to be computed on the fly. For coincident statistics that could not easily be computed on the fly, such as \acp{FAR}, a \texttt{sngl\_inspiral} column (meant to store single information) had to be comandeered, and the same value would be stored repeatedly for each \ac{IFO} in the coincidence.
 
 To remedy the situation, \emph{coinc tables} were developed. The coinc tables consist of the \texttt{coinc\_inspiral}, \texttt{coinc\_event}, \texttt{coinc\_event\_map}, and the \texttt{coinc\_definer} table. Additionally, there is the \texttt{time\_slide} table, although this is considered to be apart of the \emph{experiment} tables (see the next section). The columns in each of these tables and their purpose is shown in tables \ref{tab:coinc_inspiral} -- \ref{tab:time_slide}.
 
@@ -555,12 +561,136 @@ For these reasons, the \emph{experiment} tables were developed. The experiment t
 
 Within each experiment, we apply various vetoes, perform slides, and construct different data types (e.g., playground and injection runs). Each of these actions results in a different realization of an experiment. To define and list these realizations, we use the \texttt{experiment\_summary} table. Table \ref{tab:experiment_summary} shows the columns of the \texttt{experiment\_summary} table. Each row has its own \texttt{time\_slide\_id} and \texttt{experiment\_id} which maps it to the \texttt{experiment} and \texttt{time\_slide} table; thus, each row gives information about every slide that was performed in each instrument time. Additionally, there is a \texttt{datatype} column to enumerate each of the data types constructed in every experiment. This can have one of five entries: \texttt{all\_data}, \texttt{playground}, \texttt{exclude\_play}, \texttt{slide}, and \texttt{simulation}. The \texttt{all\_data}, \texttt{playground}, \texttt{exclude\_play}, and \texttt{simulation} are all zero-lag data types: \texttt{playground} is data consisting only of times occuring during playground seconds (defined above), \texttt{exclude\_play} is the converse, and \texttt{all\_data} consists of both. The \texttt{slide} data type is any non-zero lag data. We do not define a \texttt{slide} playground because playground slides are rarely used.\footnote{Looking at all-data slides is not considered opening the box.}
 
-The \texttt{simulation} data type describes zero-lag data that has software injections in it.\footnote{Note that we do not have a simulation slide data type. While it would be more realistic to do slides with injections in them, it would only be useful if the slides had one or two injections in them. This means we would have to re-do the slides for every software injection we create, which would result in an unwieldly amount of data.} This allows us to easily separate injection runs from non-injection runs. In order to separate various injection runs we additionally have the \texttt{sim\_proc\_id} column.
+The \texttt{simulation} data type describes zero-lag data that has software injections in it. This allows us to easily separate injection runs from non-injection runs. In order to separate various injection runs we use the \texttt{sim\_proc\_id} column. The \texttt{process\_id} of the \texttt{lalapps\_inspinj} job that created a set of injections is stored in this column. All injections in a single injection run are created by a single \texttt{inspinj} job; thus all these injections will have the same \texttt{process\_id} in the \texttt{process\_id} column of the \texttt{sim\_inspiral} table. By storing the same value in the \texttt{sim\_proc\_id} column of the \texttt{experiment\_summary} table, we map the two tables together. Note that this mapping simply means that a given set of injections were performed during a realization of an experiment. It does not mean that all events that occured during that realization were from injections. To pick out what events were due to injections and which are due to noise, we rely on mappings in the \texttt{coinc\_event\_map} table.
+
+The final mapping in the \texttt{experiment\_summary} table is the \texttt{veto\_def\_name} column. This column stores the name of a set of vetoes applied in the given realization of an experiment, e.g., \texttt{VETO\_CAT3\_CUMULATIVE} (the veto names are determined by \texttt{ligolw\_segments\_from\_cats}). This column maps the row to the \texttt{segment\_definer} table, which in turn maps to the veto segments, stored in the \texttt{segment} table. (See section \ref{sec:segment_tables} for more information on segment tables.) In this manner, the type of vetoes, and their segments, that were applied during an experiment can be retrieved without needing external files.
+
+All of the \texttt{experiment\_summary} columns we have reviewed so far serve to categorize realizations of experiments. The \texttt{duration} and \texttt{nevents} columns, on the other hand, store data about a realization. Perhaps the most important column is the \texttt{duration} column. This column stores the amount of \emph{live time} that exists in an instrument time during the experiment period (again, stored in the \texttt{experiment} table and mapped to via the \texttt{experiment\_id}) for a given veto category in a given slide for a given data type. While the live time can be computed on the fly using information from the segment tables, it is not a trivial operation. It is therefore left to a single program to do (\texttt{ligolw\_cbc\_compute\_durations} --- see section \ref{sec:compute_durations} below) for all realizations, which stores the results in the \texttt{duration} column. This makes live time retrieval quicker and easier for other programs. The \texttt{nevents} column stores the number of coincident events that occurs during an experiment realization.
+
+The final experiment table is the \texttt{experiment\_map} table. This table maps coincident events to realizations of experiments defined in the \texttt{experiment\_summary} table. It has two columns: an \texttt{experiment\_summ\_id} and a \texttt{coinc\_event\_id}. Having a table devoted solely to mapping coincident events and experiments allows for many-to-many mappings. This is needed: an experiment will have many events in it, and a coincident event can occur in multiple experiment realizations. For example, all zero-lag events will belong to the \texttt{all\_data} data type as well as either \texttt{playground} or \texttt{exclude\_play}. The \texttt{experiment\_map} allows all of these events to be efficiently stored in the same file, without needing to rely on file names to separate them. The effect of vetoes and which events survive which category --- a question that comes up often --- can also be acertained by simply looking at what mapping exist between a coincident event and \texttt{experiment\_summ\_id}s of various veto categories.\footnote{Currently, Pipedown stores different veto categories in separate files, and so checking veto categories via experiment tables is not currently taken advantage of. Combining vetoes into a single file is planned for the future, however.}
+
+\subsection{The Segment Tables}
+
+As they have already been mentioned a several times, and are used by several codes, we describe here the segment tables. The segment tables consist of the \texttt{segment}, \texttt{segment\_definer}, and \texttt{segment\_summary} tables. The columns of the \texttt{segment} and \texttt{segment\_definer} tables are shown in tables \ref{tab:segment} and \ref{tab:segment_definer}, respectively. The \texttt{segment\_summary} table is not shown nor described here, as it is not used by Pipedown programs.
+
+The \texttt{segment\_definer} table serves to identify a collection of segments by name. For example, all of the CAT123 veto segments for a given \ac{IFO} will be given a single \texttt{segment\_def\_id} and have the name \texttt{VETO\_CAT3\_CUMULATIVE}. The start and end times of each segment in the collection are listed in the \texttt{segment} table; the mapping between segments and their grouping in the \texttt{segment\_definer} table occurs via the \texttt{segment\_def\_id}. As mentioned above, entries in the \texttt{experiment\_summary} table map to the veto segments applied via the name in the \texttt{segment\_definer} table. The mapping is not done using the \texttt{segment\_def\_id} because each \ac{IFO} will have its own entry, and therefore its own \texttt{segment\_def\_id}, in the \texttt{segment\_definer} table. Using these mappings, we can re-construct the periods of time vetoed in any realization or slide in an experiment.
+
+\subsection{Other Tables}
+
+There are many other tables in use by searches in the \ac{CBC} group as well as the rest of the \ac{LSC} in addition to the ones presented here. These include meta-data tables such as the \texttt{search\_summary} tables, as well as a large number of tables used by other searches and search groups. Since these tables have little, if any, impact on the low-mass \ac{CBC} search, we do not describe them here. For a complete list of all the tables, and their columns, see the \texttt{lsctables.py} code in the LALSuite repository. This can be accessed online at: \verb|{http://www.lsc-group.phys.uwm.edu/cgit/lalsuite/tree/glue/glue/ligolw/lsctables.py}|
+
+\subsection{File Formats}
+
+It will be useful to also make a note of the file formats used to store data. As mentioned in section \ref{sec:HIPEDetail} all \ac{HIPE} programs store data in xml files. This is convenient because xml files can opened, looked at, and edited using any text editor; at the same time, they provide a standard format that can be interpetted by code.
+
+The downside to xml files is that the entire file must be loaded by a program in order to parse its data. This puts a limit to how much data can be stored in a file, and has proven to be troublesome when computing statistics, such as \acp{FAR} that require a large swath of data. It also means that many files can only be handled by computers with large amounts of memory, which limits the number of nodes in a cluster a that a program can be executed on. Even then, periods of high glitch rate occasionally max out memory, thus requiring more aggressive clustering. Finally, it can be difficult to quickly sort through large amounts of data to find a few triggers of interest, such as the ones with the smallest \ac{FAR}. Doing so requires writing code that can filter through large numbers of files as well as access to library packages that know how to interpet \ac{LIGO}-Virgo xml files.
+
+For these reasons, Pipedown converts xml files to SQLite databases, which are used by a number of its programs. SQLite has a number of advantages. Database files remain on disk: when a program reads from a database, it does not need to load the database into memory. Instead, it queries only the information it needs to perform a specific task. Once an operation is completed on that data, the results can be dumped back to the database and cleared from memory. Thus, file size is limited only by disk space, of which there is far more --- and which is much cheaper --- than memory. SQLite is also fast: it automatically invokes a number of optimization schemes which allows it to quickly read and write data, without needing special commands. Thus, when coding, we can concentrate more on what to do with data rather than how to get it. SQLite is also flexible. With xml, what columns exist in a table must be defined in \verb|lsctables.py|. The only way extra columns can be added is to edit \verb|lsctables.py| to add the column, re-install it, then re-create the xml. This can be frustrating when doing investigations into new statistics. SQLite, on the other hand, does not use table definitions. It can create new columns on the fly and add them to any table in the database. This is taken advantage of by a number of Pipedown programs, such as \verb|ligolw_cbc_repop_coinc| and \verb|ligolw_cbc_cfar|; see their respective sections for details. Finally, SQLite is well supported: it is developed and maintained by dedicated professional programmers, while also being open-source \cite{ref:SQLiteSite}. There exists a Python package for it so that it can be used from within Python code, even though SQLite itself is written in C. Additionally, there exists a free SQLite command-line tool (installed on all the \ac{LIGO} clusters) which can parse a database without needing support code to read data tables, as is the case with xml. One can therefore quickly search data from the command line without needing to hand-write tools.
+
+The downside to SQLite is database files are not human-readable. Either the command-line tool must be used to see data, or code must be written to print data out. Additionally, while the flexibility to create arbitrary columns on the fly is useful for investigations, once a statistic has been settled on, we wish to standardize the column. Otherwise it could be difficult to know what is stored where when going back over results created by different people at different times. For these reasons, xml files are considered to be the ``final" data products produced by the \ac{CBC} pipeline. One of Pipedown's goals is to take all the data analyzed by \ihope and disseminate it down to a few xml files containing a handful of ``loudest" triggers that are of interest.
+
+\section{Pipedown in Detail}
+
+We now step through Pipedown in detail, using Figure \ref{fig:PipedownDetail} and our toy analysis as a guide. Pipedown is run after all \ac{HIPE} runs have completed. It combines data from all these runs --- including zero-lag, time-slides, and all injection runs --- into a single database. \acp{FAR} are calculated using this database, and a number of plots are generated using it. Although the experiment table structure allows multiple veto categories to be stored in a single database, Pipedown currently keeps each veto category in a separate database. Thus, the pipeline shown in Firgure \ref{fig:PipedownDetail} is repeated for each veto category.
+
+\subsection{\texttt{ligolw\_thinca\_to\_coinc}}
+
+The first program run in Pipedown is \texttt{ligolw\_thinca\_to\_coinc}. It reads second \texttt{THINCA} files, and uses \texttt{sngl\_inspiral} \texttt{event\_id} to construct coinc and experiment tables, as well as convert the \texttt{event\_id} to a counter. It also loads the veto segments file corresponding to the given category that was produced by \ihope at run time. The veto segments are used to figure out what instrument times triggers belong to. (As discussed in the Second Thinca section, when higher category vetoes are applied, some coincidences will be moved to a different instrument time than what is indicated in the file name. \texttt{Thinca} does not store this information, so it must be reconstructed.) Although the veto segments (which are stored in segment tables), the veto segments are not added to the output xml file. Doing so at this point would cause repition across the files that would have to be remedied when the files are combined into a database. For simplicity, the veto file is added to the database at a later point.
+
+When applying vetoes to check instrument times, there are occasional edge cases in which more \acp{IFO} can be coincident than there are instruments on. For example, a H1L1V1 trigger can appear to occur duing H1V1 time. This is due to the way end times are recorded: as described above, the coincident end time is chosen to be the end time of the first \ac{IFO} when sorted alphabetically by name. So, in our example, the coincident end time is whatever the H1 trigger's end time is. Coincident windows have some spread in time, however, so this end time only represents a (somewhat arbitrary) point during that window. If a veto turns on during the window, the trigger on which the end time is based can be coincident with a trigger in the \ac{IFO} that is vetoed, if the trigger happened just before the veto. So, in our example, a L1 trigger must have occurred just before a L1 veto. The H1 trigger occurred just after the L1 veto, and so the end time of the H1L1V1 trigger appears to occur during H1V1 time. In this case, \texttt{ligolw\_thinca\_to\_coinc} assigns the trigger to H1L1V1 time.
+
+For non-injection runs, \texttt{thinca\_to\_coinc} combines the zero-lag and slide second \texttt{THINCA} files into a single xml file. Thus, for every two \texttt{FULL\_DATA} second \texttt{THINCA} files, there is one \texttt{THINCA\_TO\_COINC} file. The output file has the same naming convention as the second \texttt{THINCA} files, except \texttt{THINCA\_(SLIDE\_)SECOND} is replaced with \texttt{THINCA\_TO\_COINC}.
+
+In addition to constructing coinc and experiment tables, \texttt{ligolw\_thinca\_to\_coinc} also computes some coincident parameters, storing them in the \texttt{coinc\_inspiral} table. The includes the end time, combined chirp mass, combined total mass, and combined new \ac{SNR}.
+
+\subsection{\texttt{ligolw\_sqlite}}
+
+The next step in the Pipedown pipeline is to convert xml files to SQLite databases. This is done by \texttt{ligolw\_sqlite}. As can be seen in Figure \ref{fig:PipedownDetail}, \texttt{ligolw\_sqlite} turns all of the \texttt{thinca\_to\_coinc} xml files sharing a common \texttt{USER-TAG} into one database. (Blue arrows on the diagram indicate SQLite databases; black arrows indicate xml files.) The naming convention for the output database is:
+\begin{center}
+\begin{footnotesize}
+\begin{verbatim}
+{ANALYZED-IFOS}-{USER-TAG}_CAT_{N}_VETO_RAW_CBC_RESULTS-{GPS-START}-{DURATION}.sqlite
+\end{verbatim}
+\end{footnotesize}
+\end{center}
+where \texttt{ANALYZED-IFOS} are all the \acp{IFO} that are in the database, \texttt{N} is veto category\footnote{Note: in keeping with the \ac{HIPE} naming conventions, for CAT1 databases, the \texttt{CAT\_N\_VETO\_} part of the file name is excluded.}, \texttt{GPS-START} is the \ihope start time, and \texttt{DURATION} is the \ihope duration. For example, in our toy analysis, we would have two CAT3 databases:
+\begin{center}
+\verb|H1L1V1-FULL_DATA_CAT_3_VETO_RAW_CBC_RESULTS-967228343-10240.sqlite|
+\end{center}
+and
+\begin{center}
+\verb|H1L1V1-BNSINJ_CAT_3_VETO_RAW_CBC_RESULTS-967228343-10240.sqlite|
+\end{center}
+At this point the \texttt{FULL\_DATA} database contains both zero-lag and slide data.
+
+In addition to being able to add xml files to a database, \texttt{ligolw\_sqlite} can also extract xml files from databases. As a result, it is used many times in Pipedown to go between SQLite databases and xml files, as can be seen in Figure \ref{fig:PipedownDetail}.
+
+\subsection{\texttt{ligolw\_cbc\_dbsimplify}}
+
+Id columns must be unique in a single file. For example, there can only be one coincident event in the \verb|coinc_inspiral| table with \verb|coinc_event_id coinc_event:coinc_event_id:0| in a given file. Since the ids are simply counters, however, there is no way to ensure that they are unique across files. Thus, when \verb|ligolw_sqlite| combines xml files into a single database, it has to increment all the table ids to prevent ``collisions." For example, if a coincident event in the database already has \verb|coinc_event_id coinc_event:coinc_event_id:0|, and we wish to add another \verb|THINCA_TO_COINC| file that also has a coincident event with \verb|coinc_event_id coinc_event:coinc_event_id:0|, this latter id will be incremented to one plus whatever the largest id is in the database. The same goes for all other ids. This ensures that independent entries across files remain independent when combined into a single database or file.
+
+However, we may not wish to keep all entries independent when combining files. For example, all the \verb|THINCA_TO_COINC| files in a single \ihope run will have the same entries in the \verb|experiment| table. When \verb|ligolw_sqlite| adds all of these files into a single database, it will keep all of the entries independent by incrementing the \verb|experiment_id|s. In our toy analysis --- in which we have five \verb|FULL_DATA THINCA_TO_COINC|, with each one containing four \verb|experiment| entries (one for each possible instrument time) --- each \verb|experiment| entry will be repeated five times in the \verb|FULL_DATA THINCA_TO_COINC| database, leading to 20 total entries when we should only have 4. The same is true of any other table that stores information that spans multiple \verb|THINCA_TO_COINC| files, including the \verb|experiment_summary|, \verb|time_slide|, and \verb|coinc_definer| tables. The same is also true of the \verb|veto_definer|, \verb|sim_inspiral|, and segment tables. However, as these tables only exist in the veto file and the \verb|INJECTIONS| file, we avoid having to deal with them by adding them to the database after all the \verb|THINCA_TO_COINC| files have been added.
+
+To remove these redundancies, \verb|ligolw_cbc_dbsimplify| is run. This program loads a database created by \verb|ligolw_sqlite| and removes any redundant entry from the \verb|experiment|, \verb|experiment_summary|, \verb|time_slide|, and \verb|coinc_definer| tables. It then updates the corresponding ids in all other tables to point to the correct entry. This is done in-place, i.e., the output database has the same name as the input database. Due to the redundancy problem, \verb|ligolw_cbc_dbsimplify| should always be run after \verb|ligolw_sqlite| is used to add files to a database.
+
+\subsection{ \texttt{ligolw\_cbc\_repop\_coinc} }
+
+After all the \verb|RAW| databases have been created and simplified, Pipedown runs \verb|ligolw_cbc_repop_coinc|. This program reads single-\ac{IFO} information from the \verb|single_inspiral| table, compute a specified combined statistic, and saves it in the \verb|coinc_inspiral| table. For example, if told to compute combined \ac{SNR}, it will calculate the quadruture sum of the single-\acp{IFO}' \acp{SNR} and save it to the \verb|coinc_inspiral| table. If told to compute combined chirp mass, it will calculate the mean single-\ac{IFO} chirp mass and save it.
+
+What column \verb|repop_coinc| saves the combined parameter to is specified using the \verb|output-column|. \verb|Repop_coinc| takes advantage of SQLite's ability to create new columns in a table. The column does not need to already exist in the \verb|coinc_inspiral| table, nor does it need to be apart of the ``blessed" columns specified in the table definitions in \verb|lsctables.py|. If the column does not exist, \verb|repop_coinc| will simply create it, then store the data. If the column does exist, the data in it will be overwritten. This makes \verb|repop_coinc| extremely useful for experimenting with new statistics: one can take a database created by Pipedown, and add to it any statistic they wish without needing to update and re-install the LALSuite code base. Since the experimental statistic can be added to the \verb|coinc_inspiral| table, it can sit alongside currently used statistics (i.e., older data need not be overwritten), which makes it easy to compare the new statistic to older ones. However, columns that are not in the table definitions in \verb|lsctables.py| will not be in xml files that are extracted from a database. Therefore, if column is going to be used long-term, it should be added to list of ``blessed" columns.
+
+As \verb|thinca_to_coinc| already populates most of the \verb|coinc_inspiral| columns needed by the low-mass \ac{CBC} search, \verb|repop_coinc| is currently bypassed in the low-mass pipeline. However, as new statistics are invented or desired parameters are added, they will be computed by \verb|repop_coinc| rather than \verb|thinca_to_coinc|. This is partly because \verb|thinca| and \verb|thinca_to_coinc| are planned to be phased out in favor of a single coincidence program that uses the coinc and experiment table structure natively. The primary purpose of such a program is simply to find coincidences; once coincidences have been drawn, it will be left to \verb|repop_coinc| to compute and store all combined statistics.
+
+\section{\texttt{ligolw\_cbc\_cluster\_coincs}}
+
+Although we apply some bank-wide clustering in \verb|lalapps_inspiral|, experience has taught us that a single event can still cause many triggers after \verb|inspiral|'s clustering. Further, because it does not compute new \ac{SNR}, bank clustering in \verb|lalapps_inspiral| is based on \ac{SNR}. We therefore try not to be too agressive with clustering in \verb|inspiral|, as it may not necessarily pick the best candidate. Instead, we do a final round of bank-wide clustering in Pipedown using \verb|ligolw_cbc_cluster_coincs|.
+
+\verb|Cluster_coincs| clusters triggers based on combined statistics in the \verb|coinc_inspiral| table. What statistic it uses is determined by the \verb|ranking-stat| argument, set in the configuration file. In the low-mass \ac{CBC} search we use combined new \ac{SNR}.\footnote{In addition to \texttt{ranking-stat}, there is another argument, \texttt{rank-by}, which tells \texttt{cluster\_coincs} whether to cluster on large values of the ranking-stat, or small values. Thus, the program can cluster using statistics in which larger is better, such as new \ac{SNR}, or ones in which smaller is better, such as \ac{FAR}.} The clustering is done using a sliding time window in a similar manner as max-over chrip length: if there is another trigger within $\pm t_{\mathrm{win}}$ of a given trigger's end time with a ranking-stat value greater-than it (or less-than it --- see footnote), the trigger is deleted. The difference from max-over chirp-length is that the time window, $t_{\mathrm{win}}$, used by \verb|cluster_coincs| is a fixed value set in the configuration file. In the low-mass \ac{CBC} search we set the window to $10\,$s for both \ac{S5} and \ac{S6}.
+
+Since all slides and zero-lag, as well as playground, all-data, and exclude-play, triggers exist in the same database, the \verb|experiment_map| table is used to ensure the triggers are only clustered within their slides and datatype. We do not wish to cluster triggers across datatypes: it is possible for a trigger to survive clustering in playground, but be clustered away in all-data. Thus, clustering is carried out by first deleting mappings between coincident events and \verb|experiment_summ_id|s in the \verb|experiment_map| table; only events with the same \verb|experiment_summ_id| are compared to each other.\footnote{As a result, events must also be in the same instrument time for them to be clustered together.} Events that have no mappings left to any \verb|experiment_summ_id| are deleted entirely from the database.
+
+In addition to binning events by datatype, slide, and instrument type, \verb|cluster_coincs| can optionally bin by a coincident parameter and coincidence type. Two arguments can govern binning by a parameter range: \verb|param-name|, which sets what column in the \verb|coinc_inspiral| table to use, and \verb|param-ranges|, which set the values to bin by. For coincidence type, \verb|cluster_coincs| can be told to bin by the \acp{IFO} that took part in the coincidence (using \verb|group-by-ifos|), or the \emph{number} of coincident \acp{IFO} (using \verb|group-by-multiplicity|). For example, if \verb|group-by-ifos| is set, H1L1 and L1V1 triggers would not be clustered together. If \verb|group-by-multiplicity| is set, H1L1 and L1V1 triggers would be clustered together, but H1L1V1 triggers would not. If neither is set, all types are clustered together. These same arguments are used by several other programs to bin triggers, including \verb|ligolw_cbc_cfar| and a number of the plotting programs.
+
+In both \ac{S5} and \ac{S6} triggers were grouped by \acp{IFO} when being clustered. In \ac{S6} triggers were additionally grouped into the same chirp-mass bins that are used to compute uncombined \acp{FAR} (see section \ref{sec:cfar} for the bin boundaries). We chose to cluster in chirp-mass bins out of concern that higher trigger rates and larger new \acp{SNR} in one bin would cause triggers that would otherwise have lower uncombined \acp{FAR} to be lost in other bins. This would negate some of the benefits of binning triggers when computing \acp{FAR}. However, as a result of this choice, a loud event that rang off triggers in all bins would have three candidate triggers: one in each bin. In this case, we resolved to use the trigger that had the lowest uncombined \ac{FAR}. If a trigger was loud enough to have a \ac{FAR}$= 0$ in multiple bins, we would try to measure a \ac{FAR}, either by doing more slides or by folding in data from other runs. If a \ac{FAR} could still not be determined, we would use the one with the largest new \ac{SNR}. These considerations became important in the investigation of the blind injection made during \ac{S6}; see Chapter \ref{ch:s6_results} for details.
+
+As seen in Figure \ref{fig:PipedownDetail}, \verb|cluster_coincs| runs separately on each \verb|RAW| database. It writes the results to a new database which has naming convention:
+\begin{center}
+\begin{footnotesize}
+\begin{verbatim}
+{ANALYZED-IFOS}-{USER-TAG}_CAT_{N}_VETO_CLUSTERED_CBC_RESULTS-{GPS-START}-{DURATION}.sqlite
+\end{verbatim}
+\end{footnotesize}
+\end{center}
+In our toy analysis we thus have two clustered databases at CAT3:
+\begin{footnotesize}
+\begin{center}
+\verb|H1L1V1-FULL_DATA_CAT_3_VETO_CLUSTERED_CBC_RESULTS-967228343-10240.sqlite|
+\end{center}
+\end{footnotesize}
+and
+\begin{center}
+\begin{footnotesize}
+\verb|H1L1V1-BNSINJ_CAT_3_VETO_CLUSTERED_CBC_RESULTS-967228343-10240.sqlite|
+\end{footnotesize}
+\end{center}
+
+\subsection{The Injection Branch}
+
+At this point in Pipedown, additional steps are carried out on the \verb|CLUSTERED| injection databases that are not carried out on the \verb|FULL_DATA| database. First, \verb|ligolw_cbc_dbaddinj| is run on each injection database. This adds the \verb|INJECTIONS| file that was created by \verb|lalapps_inspinj| to the database with the corresponding \verb|USER-TAG|. Included in the \verb|INJECTIONS| file is the \verb|sim_inspiral| table. The same code that \verb|ligolw_sqlite| uses to add files to databases is used by \verb|dbaddinj|. We do not need to run \verb|dbsimplify| after it, however, because there are no tables in the \verb|INJECTIONS| file that will lead to redundancies when added to the database. We do not use \verb|ligolw_sqlite| to add the file because, in addition to adding the \verb|INJECTIONS| file, \verb|ligolw_cbc_dbaddinj| updates the \verb|sim_proc_id| column of the \verb|experiment_summary| table with the \verb|process_id| of the instance of \verb|insinj| that created the injections.
+
+After \verb|dbaddinj| is run, \verb|ligolw_sqlite| is run to convert each injections database into a single xml file. The name of the xml files are the same as the \verb|CLUSTERED| database, except the \verb|.sqlite| file extension is replaced with \verb|.xml|. This conversion must be done because the next program, \verb|ligolw_inspinjfind|, can only read xml files.
+
+\verb|Ligolw_inspinjfind| performs \emph{injection finding}: it maps injections that were perfomed to triggers that were caused by the injection. To decide whether or not a trigger was created by an injection \verb|inspinjfind| uses a $1\,$s time window; i.e., any coincident trigger that occurs within $\pm 1\,$s of an injection is considered to have been caused by that injection. Note that this means that multiple events can be mapped to a single injection. Simply using a time window does increase the chance for random noise events to get mapped to an injection. We use such a large window for purposes of calculating upper limits. When calculating upper limits we are only interested in injections that are louder than the loudest event. Since (in principle) the only difference between the \verb|FULL_DATA| results and the simulation runs are the injections, any event in the simulation runs that is louder than the loudest full-data event must be from an injection. Thus, we are safe simply using a time window for calculating upper limits. Admittedly, however, this method is not ideal when using injections to tune the pipeline. For that, an ethinca-ellipsoid based approach might be better. Investigations into implementing such a method are planned.
+
+\verb|Inspinjfind| works on the xml file in place; i.e., the mappings are added directly to the file. The maps between the injections (stored in the \verb|sim_inspiral| table) and coincident event are stored in the \verb|coinc_event_map| table. How exactly the maps are done is more complicated than how single-\ac{IFO} events are mapped to their coincident counterparts; we do not discuss it here. For details, see the \verb|ligolw_inspinjfind| golassary entry on the web at \verb|{https://www.lsc-group.phys.uwm.edu/ligovirgo/cbcnote/ligolw_inspinjfind}| (authentication required).
+
+
+
 
 \begin{table}[p]
 \label{tab:sngl_inspiral}
 \center
-\begin{tabular}{l | p{9cm}}
+\begin{tabular}{l | p{10cm}}
 Column      &   Purpose     \\
 \hline \hline
 \texttt{ifo}            &   Name of \ac{IFO} the trigger/template belongs to, e.g., \texttt{H1}. \\
@@ -572,8 +702,6 @@ Column      &   Purpose     \\
 \texttt{template\_duration} & The duration of the template (in seconds). \\
 \hline
 \texttt{eff\_distance}      & The effective distance to the binary (in $\Mpc$). For templates, this is set to 1; for triggers, this is calculated using equation \ref{eqn:DtoRho}. \\
-\hline
-\texttt{coa\_phase}     & The phase of the binary at coalescence. \\
 \hline
 \texttt{mass1}      & The component mass of one of the objects in the binary (in $\Msun$). \\
 \hline
@@ -604,10 +732,109 @@ Column      &   Purpose     \\
 \caption{Commonly used columns of the \texttt{sngl\_inspiral} table. Not all columns are shown.}
 \end{table}
 
-\begin{table}[h]
+\begin{table}[p]
+\label{tab:sim_inspiral}
+\center
+\begin{tabular}{l | p{10cm}}
+Column      &   Purpose     \\
+\hline \hline
+\texttt{waveform}    &   The waveform family used to generate the injection, e.g., \texttt{TaylorT4threePointFivePN}. \\
+\hline
+\texttt{geocent\_end\_time}     &   The end time of the injection as measured from the center of the Earth (in GPS seconds). \\
+\hline
+\texttt{geocent\_end\_time\_ns}     & The fractional seconds of the Geo-centric end time (in nanoseconds). \\
+\hline
+\texttt{[h,l,v]\_end\_time}   & The end of time of the injection as measured at \ac{LHO}, \ac{LLO}, and the Virgo observatory, respectively. (There are three columns, one for each site). \\
+\hline
+\texttt{[h,l,v]\_end\_time\_ns}   & The fractional seconds of the \ac{LHO}/\ac{LLO}/Virgo end time (in nanoseconds). \\
+\hline
+\texttt{mass1}      & The mass of one of the objects in the injection (in $\Msun$). \\
+\hline
+\texttt{mass2}      & The other component mass. \\
+\hline
+\texttt{mchirp}     & The chirp mass, $\mathcal{M}$, of the injection (in $\Msun$). \\
+\hline
+\texttt{eta}        & The symmetric mass ratio, $\eta$, of the injection. \\
+\hline
+\texttt{distance}   & The physical distance to the injection (in $\Mpc$). \\
+\hline
+\texttt{longitude}  & The longitudal coordinate of the injection, as measured on Earth. \\
+\hline
+\texttt{latitude}   & The latitude of the injection, as measured on Earth. \\
+\hline
+\texttt{incliniation}   &   The inclination angle between the angluar momentum vector of the injection and a line of site drawn from the center of the Earth to the center of the binary. \\
+\hline
+\texttt{spin1[x,y,z]}   &   The x, y, and z magnitudes of the spin of one of the injection's masses, as measured in the binary's coordinate system. (These are three separate columns.) \\
+\hline
+\texttt{spin2[x,y,z]}   &   The spin components of the other mass. \\
+\hline
+\texttt{f\_lower}   &   The frequency at which the injection was started. \\
+\hline
+\texttt{f\_final}   &   The \ac{GW} frequency of the injection at coalescence. \\
+\hline
+\texttt{eff\_dist\_[h,l,v]}   &   The effective distance to the injection, as measured at \ac{LHO}, \ac{LLO}, and Virgo, respectively (in Mpc). (These are three separate columns.) \\
+\hline
+\texttt{process\_id}    &   The \texttt{process\_id} of the program that created the entry. \\
+\hline
+\texttt{simulation\_id} &   Unique id used to identify the entry.
+\end{tabular}
+\caption{Some of the columns of the \texttt{sim\_inspiral} table.}
+\end{table}
+
+\begin{table}[p]
+\label{tab:process}
+\center
+\begin{tabular}{l | p{10cm}}
+Column      &   Purpose     \\
+\texttt{program}    &   The name of the program. \\
+\hline
+\texttt{version}    &   Currently used to store the git-hash tag of the program. \\
+\hline
+\texttt{cvs\_repository}    &   Currently used to store the status of the git repository from which the program came. \\
+\hline
+\texttt{cvs\_entry\_time}   &   Currently used to store the GPS time that the program was last comitted to git. \\
+\hline
+\texttt{node}   &   The cluster node that the program was executed on. \\
+\hline
+\texttt{username}   &   The UNIX user-name of the person that ran the program, or that launched the \ac{DAG} that launched the program. \\
+\hline
+\texttt{unix\_procid}   &   The process id assigned to the program by UNIX while it was running. \\
+\hline
+\texttt{start\_time}    &   The GPS time that the program began running. \\
+\hline
+\texttt{end\_time}      &   The GPS time when the program terminated. \\
+\hline
+\texttt{ifos}   &   The \acp{IFO} analyzed by the program. Only used by \ac{HIPE} programs. \\
+\hline
+\texttt{process\_id}    &   A unique id to identify the entry. \\
+\end{tabular}
+\caption{Relevant columns of the \texttt{process} table. Not shown are the \texttt{comment}, \texttt{jobid}, and \texttt{domain} columns as they are rarely used.}
+\end{table}
+
+\begin{table}[p]
+\label{tab:process_params}
+\center
+\begin{tabular}{l | p{10cm}}
+Column      &   Purpose     \\
+\texttt{program}    &   The name of the program (also stored in the \texttt{process} table). \\
+\hline
+\texttt{process\_id}    &   Maps the entrys to a process in the \texttt{process} table. \\
+\hline
+\texttt{param}      &   An argument given to the program, e.g., \texttt{num-slides} might be here for a \texttt{thinca} entry. \\
+\hline
+\texttt{type}   &   The data type of the argument, e.g., \texttt{float}, or \texttt{lstring}. \\
+\hline
+\texttt{value}  &   The value given for the argument. In our \texttt{num-slides} example, this might be \texttt{50}. If the argument requires no value (i.e., if it is just a flag), then this is empty.
+\end{tabular}
+\caption{Columns of the \texttt{process\_params} table.}
+\end{table}
+
+\pagebreak
+
+\begin{table}[p]
 \label{tab:coinc_inspiral}
 \center
-\begin{tabular}{l | p{9cm}}
+\begin{tabular}{l | p{10cm}}
 Column      &   Purpose     \\
 \hline \hline
 \texttt{ifos}   &   The \acp{IFO} that took part in the coincidence. This is comma-separated, e.g. \texttt{H1,L1}. \\
@@ -631,10 +858,10 @@ Column      &   Purpose     \\
 \caption{The columns of the \texttt{coinc\_inspiral} table and their purpose.}
 \end{table}
 
-\begin{table}[h]
+\begin{table}[p]
 \label{tab:coinc_event_map}
 \center
-\begin{tabular}{l | p{9cm}}
+\begin{tabular}{l | p{10cm}}
 Column      &   Purpose     \\
 \hline \hline
 \texttt{coinc\_event\_id}   &   A unique value to identify coincidences and to map them to single-\ac{IFO} events. \\
@@ -646,10 +873,10 @@ Column      &   Purpose     \\
 \caption{The columns of the \texttt{coinc\_event\_map} table and their purpose.}
 \end{table}
 
-\begin{table}
+\begin{table}[p]
 \label{tab:coinc_event}
 \center
-\begin{tabular}{l | p{9cm}}
+\begin{tabular}{l | p{10cm}}
 Column      &   Purpose     \\
 \hline \hline
 \texttt{coinc\_event\_id}   &   Used to map entries to coincident events. \\
@@ -667,10 +894,10 @@ Column      &   Purpose     \\
 \caption{The columns of the \texttt{coinc\_event} table and their purpose.}
 \end{table}
 
-\begin{table}
+\begin{table}[p]
 \label{tab:coinc_definer}
 \center
-\begin{tabular}{l | p{9cm}}
+\begin{tabular}{l | p{10cm}}
 Column      &   Purpose     \\
 \hline \hline
 \texttt{search}     &       Name of search that produced a class of coincidences, e.g., \texttt{inspiral}. \\
@@ -684,10 +911,12 @@ Column      &   Purpose     \\
 \caption{The columns of the \texttt{coinc\_definer} table and their purpose.}
 \end{table}
 
-\begin{table}
+\pagebreak
+
+\begin{table}[p]
 \label{tab:time_slide}
 \center
-\begin{tabular}{m{3.5cm} | p{9cm}}
+\begin{tabular}{m{3.5cm} | p{10cm}}
 Column      &   Purpose     \\
 \hline \hline
 \texttt{instrument} &   One of the analyzed \acp{IFO}. \\
@@ -701,10 +930,10 @@ Column      &   Purpose     \\
 \caption{The columns of the \texttt{time\_slide} table and their purpose.}
 \end{table}
 
-\begin{table}
+\begin{table}[p]
 \label{tab:experiment}
 \center
-\begin{tabular}{l | p{9cm}}
+\begin{tabular}{l | p{10cm}}
 Column      &   Purpose     \\
 \hline \hline
 \texttt{experiment\_id}  &  Unique id to index the row. \\
@@ -726,10 +955,10 @@ Column      &   Purpose     \\
 \caption{The columns of the \texttt{experiment} table and their purpose.}
 \end{table}
 
-\begin{table}
+\begin{table}[p]
 \label{tab:experiment_summary}
 \center
-\begin{tabular}{l | p{9cm}}
+\begin{tabular}{l | p{10cm}}
 Column      &   Purpose     \\
 \hline \hline
 \texttt{experiment\_summ\_id}   &   Unique id to index the row. \\
@@ -751,10 +980,10 @@ Column      &   Purpose     \\
 \caption{The columns of the \texttt{experiment\_summary} table and their purpose.}
 \end{table}
 
-\begin{table}
+\begin{table}[p]
 \label{tab:experiment_map}
 \center
-\begin{tabular}{ l | p{9cm}}
+\begin{tabular}{ l | p{10cm}}
 Column      &   Purpose     \\
 \hline \hline
 \texttt{experiment\_summ\_id}   &   Maps the row to a particular instantiation of an experiment in the \texttt{experiment\_summary} table. \\
@@ -763,3 +992,50 @@ Column      &   Purpose     \\
 \end{tabular}
 \caption{The columns of the \texttt{experiment\_summary} table and their purpose.}
 \end{table}
+
+\pagebreak
+
+\begin{table}[p]
+\label{tab:segment_definer}
+\center
+\begin{tabular}{ l | p{10cm}}
+Column      &   Purpose     \\
+\hline \hline
+\texttt{process\_id}    &   The process id of the process that created the group of segments. \\
+\hline
+\texttt{segment\_def\_id}   &   Unique id to identify the entry. \\
+\hline
+\texttt{ifos}   &   The \ac{IFO}(s) that the segments are from. \\
+\hline
+\texttt{name}   &   A name to identify the segments, e.g., \texttt{VETO\_CAT3\_CUMULATIVE}. \\
+\hline
+\texttt{version}    &   The version of the flag in the segment database that was used to generate the segments. \\
+\hline
+\texttt{comment}    &   A user-added comment about the segments. Not typically used.
+\end{tabular}
+\caption{The columns of the \texttt{segment\_definer} table.}
+\end{table}
+
+\begin{table}[p]
+\label{tab:segment}
+\center
+\begin{tabular}{ l | p{10cm}}
+Column      &   Purpose     \\
+\hline \hline
+\texttt{process\_id}    &   The process id of the process that created the segment. \\
+\hline
+\texttt{segment\_id}    &   Unique id to identify the segment. \\
+\hline
+\texttt{start\_time}    &   Start time of the segment, in GPS seconds. \\
+\hline
+\texttt{start\_time\_ns}    &   Fractional seconds of the start time, in nanoseconds. \\
+\hline
+\texttt{end\_time}  &   End time of the segment, in GPS seconds. \\
+\hline
+\texttt{end\_time\_ns}  &   Fractional seconds of the end time, in nanoseconds. \\
+\hline
+\texttt{segment\_def\_id}   &   Maps the segment to an entry in the \texttt{segment\_definer} table.
+\end{tabular}
+\caption{The columns of the \texttt{segment} table. Note: the nanosecond columns are not used in the segment database, and so are currently not used by \texttt{ligolw\_segment\_query}, \texttt{ligolw\_segments\_from\_cats}, nor any Pipedown programs. This may change in the future.}
+\end{table}
+
