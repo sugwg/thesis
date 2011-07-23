@@ -656,11 +656,11 @@ TCS glitches in daily ihope and followup omega scans.  The top left
 shows the SNR as a function of time, the loudest triggers are all TCS
 glitches.  Note that each loud glitch comes in the form of a ``tower''
 containing many triggers.  This phenomena will be discussed further in
-section~\ref{sec:penguins}.  This is further illustrated by the trigger
+section~\ref{ssec:penguins}.  This is further illustrated by the trigger
 rate plot (top right), which shows elevated trigger rates at the times
 of the glitch.  Note that around the time of the glitch the trigger
 rate actually {\it drops} significantly.  This will be discussed in
-section~\ref{sec:sarlacc}, but indicates that the glitches are loud
+section~\ref{ssec:sarlacc}, but indicates that the glitches are loud
 enough to interfere with the analysis in surrounding times, justifying
 the use of a CAT 1 veto.  The lower left plot shows the omega scan
 of the gravitational-wave output channel at the time of the loudest
@@ -732,10 +732,10 @@ immediately followed by a sharper increase.  In some cases there were
 a few cycles of ringing before the channel settled back down.  These
 often produced SNR values of several thousand.  The $\chisq$ values
 were typically large for the events themselves, resulting in
-negligable $\newsnr$ values.  However, the triggers in the tails (see
-section~\ref{sec:penguins}) could have large SNR values.  A sample
-daily ihope plot with several spike glitches and representative omega
-scans are shown in figure~\ref{f:daily_spikes}.
+negligible $\newsnr$ values.  However, the triggers in the tails (see
+section~\ref{ssec:penguins}) could have large new SNR values.  A
+sample daily ihope plot with several spike glitches and representative
+omega scans are shown in figure~\ref{f:daily_spikes}.
 
 Despite a great deal of effort by lots of people, the cause of these
 glitches was never identified.  However, the distinctive shape allowed
@@ -1444,15 +1444,15 @@ often accompanied by a rise in trigger rates.  In part this behavior
 is expected.  Many glitches, notably the spike glitch, are loud enough
 and sharp enough that they may be roughly modeled as impulses.  The
 impulse response of the match filter (eqn.~\ref{eq:match_filter}) is
-the time-reversed template (modified by the noise curve).  A loud
-glitch will therefore elevate the SNR time series for every template in
-the bank.
+the time-reversed template convolved with a function of the noise
+curve.  A loud glitch will therefore elevate the SNR time series for
+every template in the bank.
 
 Recall from chapter~\ref{ch:search} that triggers are selected from
 the SNR time series by finding the largest value above threshold in a
 sliding window.  The length of the window is taken to the length of
 the template, defined as \Note{fill in}.  This is done using the
-following algorithm:
+following algorithm: \Note{TODO: reformat this}
 
 \begin{verbatim}
 for each sample point j
@@ -1475,7 +1475,7 @@ However this would not account for the number of templates seen or the
 length of time for which the trigger rate is elevated. 
 
 To study this in more detail simulated Gaussian noise was produced (as
-in the NINJA project), and the value of a single sample increased to
+in the NINJA project) and the value of a single sample was increased to
 simulate a sharp glitch.  The triggers produced for two values of the
 glitch amplitude are shown in
 figure~\ref{f:impulses_original_no_chisq}.
@@ -1494,6 +1494,117 @@ See the text for discussion.
 }
 \end{figure}%
 
+The expected behavior is seen in the rainbow ``tower'' at the top of
+both plots, successively longer templates have lower SNRs and trigger
+slightly later.
+
+Below this in both plots there is a ``plateau'' of triggers from short
+templates.  This results from the inverse spectrum truncation,
+described more fully in (cite Duncan't thesis).  This behavior can be
+understood qualitatively as follows.
+
+For simplicity denote the square root of the inverse PSD,
+$(S_n(|f|))^{-1/2}$ as $\tilde{S}(f)$, and it's inverse Fourier
+transform in the time domain as $S(t)$.  Likewise, denote the
+frequency-domain template as $\tilde{h}(f)$ as usual, and its inverse
+Fourier transform as $h(t)$.  Finally, let $W(t)$ be a windowing
+function in the time domain with Fourier transform $\tilde{W}(f)$.  In
+addition, denote multiplication of function by $\cdot$ and convolution
+by $\star$.
+
+The application of the inverse spectrum truncation then proceeds as
+follows 
+
+1. Calculate $\tilde{S}(f)$ and from it $S(t)$.
+
+2. Apply the window in the time domain, giving $S(t) \cdot W(t)$.
+
+3. Return to to the frequency domain, giving $\tilde{S}(f) \star
+\tilde{W}(f)$.
+
+4. Square this (and correct the normalization, not shown here) giving 
+
+\begin{equation*}
+(\tilde{S}(f) \star \tilde{W}(f)) \cdot (\tilde{S}(f) \star \tilde{W}(f)) 
+\end{equation*}
+
+This replaces the $S_n(|f|)$ in the denominator of the match filter.
+
+If the signal is then a delta function with strength $\Delta$, $s(t) =
+\Delta \delta(t)$ then $\tilde{s} = \Delta$  and the SNR time series
+the then given by the matched filter,
+
+
+\begin{align*}
+\rho^2(t) &= \int e^{-2 i\pi i f t} df\, \Delta \tilde{h}^\star(f) \cdot
+(\tilde{S}(f) \star \tilde{W}(f)) \cdot 
+(\tilde{S}(f) \star \tilde{W}(f)) \\
+&= \Delta h(-t) \star
+(S(t) \cdot W(t)) \star
+(s(t) \cdot w(t))
+\end{align*}
+
+Note that if the window function is zero outside a region then the
+elevated SNR from an impulse will likewise be bounded in time.  This
+is the motivation for the truncation; without it a loud glitch would
+corrupt an entire analysis segment.  However, when $\Delta$ becomes
+large the SNR value within the bounded region may be sufficiently
+large to exceed the trigger threshold.  If the length used when
+scanning the SNR time series for triggers is less than the width of
+the truncation window then a loud glitch can produce several triggers.
+This explains both the width of the plateaus in
+figure~\ref{f:impulses_original_no_chisq} and why they are composed of
+triggers from short templates.  This may also be seen in the SNR time
+series shown in figure~\ref{f:short_snr_series}.
+
+\begin{figure}
+  \includegraphics[width=0.5\linewidth]{figures/detchar/snrs_17_short}
+  \includegraphics[width=0.5\linewidth]{figures/detchar/snrs_15_short}
+  \caption[SNR time series of a short template and loud impulse] {
+The SNR time series of a short (0.3 s) template responding to an
+impulse of strength $10^{-17}$ (left) and $10^{-15}$ (right).  The
+elevation within the truncation window is clear, and is long enough to
+produce several triggers.
+  \label{f:short_snr_series}
+}
+\end{figure}%
+
+The plateau persists as the strength of the impulse is increased.
+Beyond a certain point we also get a second ``rainbow'' of triggers
+from templates across the bank, seen to the right in
+figure~\ref{f:impulses_original_no_chisq}.  Note that the difference
+between triggers of the same color is precisely the length of
+template, identified by the same value in the colorbar.  As the
+impulse-response of the filter is the time-reversed template, a
+sufficiently loud impulse will elevate the SNR for the length of the
+template, independently of how the spectrum is truncated.   This can
+be seen in the SNR time series of a long template, shown in
+figure~\ref{f:long_snr_series}.
+
+
+\begin{figure}
+  \includegraphics[width=0.5\linewidth]{figures/detchar/snrs_17_long}
+  \includegraphics[width=0.5\linewidth]{figures/detchar/snrs_15_long}
+  \caption[SNR time series of a long template and loud impulse] {
+The SNR time series of a long (45 s) template responding to an
+impulse of strength $10^{-17}$ (left) and $10^{-15}$ (right).  The SNR
+is elevated over the length of the template. \Note{TODO: something's
+wrong with these plots, need to be fixed.}
+  \label{f:long_snr_series}
+}
+\end{figure}%
+
+This second set of triggers from long templates suggests that the
+length used when scanning the time series for is too short.  This,
+combined with the excess of short triggers within the truncation
+window suggests replacing this length with the larger of the length of
+the truncation window or 1.1 times the currently used length (the
+exact value to be obtained by further investigation).
+
+So far we have not used the $\chisq$ test.  When $\chisq$ is
+enabled the trigger clustering algorithm is modified as follows
+\Note{TODO: reformat this}
+
 \begin{verbatim}
 for each sample point j
   if \rho_j > threshold
@@ -1510,16 +1621,38 @@ for each sample point j
         event_snr   = r_j
 \end{verbatim}
 
+That is, an additional constraint is placed on triggers even before
+new SNR is calculated.  We would expect that this would quash many,
+and hopefully all, triggers resulting from the glitch.  The results of
+rerunning with $\chisq$ enabled are shown in
+figure~\ref{f:impulses_orinal_chisq}.
+
 \begin{figure}
   \includegraphics[width=0.5\linewidth]{figures/detchar/delta_chisq_1e-17}
   \includegraphics[width=0.5\linewidth]{figures/detchar/delta_chisq_1e-15}
-  \caption[] {
-  \label{f:}
+  \caption[Triggers produced by loud impulses with $\chisq$ enabled] {
+  \label{f:impulses_original_chisq}
+Triggers produced by impulses of strength $10^{-17}$ (left) and
+$10^{-15}$ (right) when the $\chisq$ test is enabled.  $\chisq$
+removes many triggers, but many remain.
 }
 \end{figure}%
 
+Turning on $\chisq$ does remove many triggers, in particular those in
+the original tower resulting from long templates.  However, the
+triggers from short templates remain.  This indicates that the
+$\chisq$ test is not as effective on short waveforms, which is to be
+expected.  The louder impulse on the right no longer produces the
+second rainbow of triggers.  However, there are now long-template
+triggers in the plateau, and a set of low-SNR, loud-template triggers
+resulting from the quieter impulse.  The reason for these is not
+clear, but they are have the potential to raise the background of the
+binary neutron-star search and are therefore problematic.
 
-Turning this inside out.  First cluster, then check chisq 
+Despite passing the $\chisq$ clustering it is unlikely that these
+triggers, especially the ones from long templates, have good $\chisq$
+values.  We can attempt to remove them by altering the clustering
+algorithm as follows:
 
 \begin{verbatim}
 for each sample point j
@@ -1537,28 +1670,66 @@ for each sample point j
       event_snr   = r_j
 \end{verbatim}
 
+
+Rather than applying the $\chisq$ test at each sample point, we
+cluster only on SNR and then use the $chisq$ test to validate the 
+candidate trigger.  This was implemented, along with altering the
+clustering window as described above.  The results are shown in
+figure~\ref{impulses_new_chisq}, and appear very promising.  The
+plateaus have been removed almost entirely, leaving only the last
+trailing edge.  Only a few triggers from short templates remain, and
+in particualr nothing that would interfere with the BNS search.
+
 \begin{figure}
   \includegraphics[width=0.5\linewidth]{figures/detchar/1e-17_fixed_20100909}
   \includegraphics[width=0.5\linewidth]{figures/detchar/1e-15_fixed_20100909}
-  \caption[] {
-  \label{f:}
+  \caption[Triggers produced by modified clustering algorithm] {
+  \label{f:impulses_new_chisq}
+Triggers produced by the modified clustering algorithm which extends
+the clustering window and applies the $chisq$  threshold after the
+candidate trigger has been found.  Results are promising: only a
+relatively small number of triggers from short templates remain.
 }
 \end{figure}%
 
+The revised code was then tested by performing injections of simulated
+signals into two weeks of real detector noise and examining the
+numbers of injections found and missed.  The new code misses many more
+injections, as shown in figure~\ref{f:found_missed_penguins}.  To see
+why, consider a glitch with high SNR but high $\chisq$ within a
+clustering window of an injection with lower SNR and lower $\chisq$.
+In the original code the clustering window would not open at the
+glitch, because it would not pass the $\chisq$ test.  The window would
+open at the time of the injection, and the trigger would be recorded.
+Under the new code, however, the higher SNR of the glitch will cause
+it to be the single event found in the window, but it will then be
+removed by the $\chisq$ test.  This problem is exacerbated by
+extending the length of the window.
 
 \begin{figure}
   \includegraphics[width=0.5\linewidth]{figures/detchar/penguin_foundmissed_orig}
   \includegraphics[width=0.5\linewidth]{figures/detchar/penguin_foundmissed_new}
-  \caption[] {
-  \label{f:}
+  \caption[Found/missed plots showing the effect of new code] {
+  \label{f:found_missed_penguins}
+Found and missed plots for simulated injection in two weeks of real
+noise.  Results from the current code are on the left, the modified
+code (as described in the text) is on the right.  The feature to focus
+on is found injections (blue dots) and missed injections (red
+crosses).  There are many more missed injections using the modified
+code.
 }
 \end{figure}%
 
-loud glitch with quiet signal within T:
-  old code: counter won't even start on the glitch, because bad chisq
-  new code: glitch wins on SNR, and is then killed by chisq
 
-
+At present the issue of excess triggers from loud glitches remains
+unresolved.  It is mitigated somewhat by the ``loud SNR'' veto at
+category 4, which extends $\pm 8$ seconds in order to remove the
+excess triggers from the inverse spectrum truncation.  However, as
+figure~\ref{f:impulses_original_no_chisq} shows, for very loud
+glitches excess triggers can be produced for as much as 45.  An
+appealing possibility that has been discussed but not tested would be
+to run the current algorithm over a new SNR time series formed by
+combining the SNR and $\chisq$ series.
 
 \subsection{Bias of the PSD by loud glitches}
 \label{ssec:sarlacc}
