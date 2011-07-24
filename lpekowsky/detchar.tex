@@ -961,22 +961,27 @@ This is another indication that L1 was glitchier overall.}
 
 \subsection{Non-vetoed time}
 
-\iffalse
-  https://www.lsc-group.phys.uwm.edu/ligovirgo/cbcnote/S6Vsr2Minutes20091027
-    Andy: has started comparing S6a OMC slips against daily triggers,
-    doesn't look like there's a problem. 
+It is at least as important to preserve time in which a detection
+could be made as it is to veto time that would prevent a detection.
+On occasion there were potential problems seen in results from
+another pipeline or reported by scimons or operators that daily ihope
+confirmed were not a problem for the CBC low-mass search (though they
+might have been problematic for other searches).  One example is shown
+in figure~\ref{f:non-vetoed-time}.  The omega pipeline reports excess
+noise at 200Hz, which was traced to runoff from a nearby damn.  The
+corresponding daily ihope report shows no issues with excess or loud
+triggers, and the day was able to be analyzed.
 
-  https://www.lsc-group.phys.uwm.edu/ligovirgo/cbcnote/S6Plan/100216085311DQandVetoesS6B%20CAT1%20Flags
-    Week 5,6: None of the circumstances noted in the scimon flags resulted in an excess or increased
-    loudness of triggers. 
-
-  https://www.lsc-group.phys.uwm.edu/ligovirgo/cbcnote/S6Vsr2Minutes20100614
-    On week 17, use of daily to show something isn't a problem:
-      Duncan B: Rates on the daily pages don't seem to be affected. Suggests
-      that Ben does an investigation for next week, correlating the rate of
-      daily ihope triggers with daily flow rates and site seismic. 
-\fi
-
+\begin{figure}
+  \includegraphics[width=0.5\linewidth]{figures/detchar/20100604_H1_0_100MILLISEC_CLUSTERED_snr_vs_time}
+  \includegraphics[width=0.5\linewidth]{figures/detchar/S6-H1-omega-959644815-959731215-GlitchTS}
+  \caption[Use of daily ihope to indicate no veto needed] {
+  \label{f:non-vetoed_time}
+Use of daily ihope to indicate that time did not need to be vetoed.
+The omega pipeline (left) shows a distinct feature at 200 Hz, within
+the sensitive band of LIGO.  Daily ihope shows no excess of triggers
+or SNR, and hence the time did not need to be vetoed}
+\end{figure}%
 
 
 \section{Applications of daily ihope to the blind injection challenge}
@@ -1734,23 +1739,70 @@ combining the SNR and $\chisq$ series.
 \subsection{Bias of the PSD by loud glitches}
 \label{ssec:sarlacc}
 
+Loud glitches are often accompanied by surrounding periods of
+decreased trigger rates, paradoxically.  This can be seen, for
+example, in figures \Note{list}.  This effect is confined to the
+2048-second analysis segment containing the glitch, as can be seen from
+figure~\ref{f:move_glitch}, which shows the trigger rate around a
+glitch as the analysis boundaries are changed.
+
 \begin{figure}
   \includegraphics[width=0.5\linewidth]{figures/detchar/H1-endtime_hist_ORIG}
   \includegraphics[width=0.5\linewidth]{figures/detchar/H1-endtime_hist_RESEG}
-  \caption[] {
-  \label{f:}
+  \caption[Effect on trigger rates of a large glitch] {
+  \label{f:move_glitch}
+Effect on trigger rates of a large glitch.  The plots show the number
+of triggers in an H1 analysis in 1-second blocks around a large glitch
+centered at 2500.  The analysis boundaries are arranged so that on the
+plot on the left the glitch falls at the end of the earlier segment,
+while on the right the glitch falls at the beginning of the later
+segment.  In both cases the glitch has the same number of triggers, 
+which is well in excess of the surrounding time for reasons discussed
+in the previous section.  However, the segment containing the glitch
+shows a marked decrease in the number of triggers.
 }
 \end{figure}%
+
+This behavior is due the effect of a glitch on the PSD estimation for
+the analysis period.  Recall from chapter~\ref{ch:search} that the PSD
+is estimated by Welch's method, and the value of the PSD at each
+frequency $f$ is the median over 15 256-second intervals, overlapped
+to span 2048 seconds.  The median is used instead of the mean
+precisely because it is more robust against glitches.  However, a
+values well outside the expected distribution can still bias the
+results to a significant extent.  To demonstrate this we calculate the
+PSD in two ways, once by considering the median of all 15 PSDs and
+once by consider the median of 14, removing the one containing the 
+glitch.  We plot the fractional difference of each frequency bin in
+figure~\ref{f:median_bias}.
 
 
 \begin{figure}
-  \includegraphics[width=0.5\linewidth]{figures/detchar/spectra_diffs_without_glitch}
-  \includegraphics[width=0.5\linewidth]{figures/detchar/spectra_diffs}
-  \caption[] {
-  \label{f:}
+  \includegraphics[width=\linewidth]{figures/detchar/spectra_diffs}
+  \caption[Bias in the PSD caused by a large glitch] {
+  \label{f:median_bias}
+The bias in the PSD caused by a large glitch.  This plot shows the
+difference between two PSDs, one calculated including the
+segment with the glitch and one without.  The results are shown as 
+the fraction difference in each mass bin, (with - without) / with.
+There is a notable bias upwards over much of the frequency range, and
+in particular over the most sensitive portion of the LIGO band.
 }
 \end{figure}%
 
+Some preliminary investigations using different-sized chunks and
+overlaps to compute the PSD were performed, but these have so far been
+inconclusive.  At present the only way to ensure that a loud glitch
+won't suppress a quiet signal is to veto the time containing the
+glitch at category 1.  This would be conceptually straightforward
+using something like the existing category 4 ``loud SNR'' veto, but it
+is far from an ideal solution.  This is especially true in advanced
+LIGO, where the low-mass templates will be significantly longer.  A
+glitch in the middle of such a signal could cause it to be lost, as
+the category 1 veto would split the SNR accumulation into two disjoint
+segments.   A better option would be to ``gate'' the data around a
+glitch; smoothly window out a second or so with a Tukey window or
+similar.  This is an area of ongoing research.
 
 % tot_time, tot_count
 % veto_time, veto_count
