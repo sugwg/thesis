@@ -769,7 +769,7 @@ unfiltered time series (right).  The sharp drop-rise-drop of the time
 series behavior was reasonable well-captured by the filtered used to
 create data quality segments.
 }
-\end{figure}
+\end{figure}%
 
 \weakheader{HEPI glitches}
 
@@ -820,6 +820,7 @@ A great deal of work was done on HEPI at this time, and after
   \includegraphics[width=0.5\linewidth]{figures/detchar/946834715_499755859_L1_SEI-ITMY_Y_1_00_timeseries_raw}
   \includegraphics[width=0.5\linewidth]{figures/detchar/946834715_499755859_L1_SEI-ITMY_Y_1_00_spectrogram_whitened}
   \caption[The HEPI glitch in daily ihope and Omega]{
+  \label{f:daily_hepi}
 The HEPI glitch in daily ihope and Omega.  On the top left, the SNR
 values for the day including a HEPI glitch at 17:38, as identified by
 the ``loudest glitches'' report.  On the top right, this event in
@@ -832,6 +833,7 @@ of this same channel, showing that it has exceeded the threshold of
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/detchar/L1-S6B2-snrhist_Cat1234_Spike_HEPI}
   \caption[Effectiveness of the HEPI veto] {
+  \label{f:hepi_veto_effectiveness}
 Effectiveness of the HEPI veto. The green line shows the number of
 daily triggers after applying all known vetoes, including the removal
 of spike glitches.  The blue line show counts after the additional
@@ -1505,7 +1507,7 @@ slightly later.
 
 Below this in both plots there is a ``plateau'' of triggers from short
 templates.  This results from the inverse spectrum truncation,
-described more fully in (cite Duncan't thesis).  This behavior can be
+described more fully in~\cite{findchirp}.  This behavior can be
 understood qualitatively as follows.
 
 For simplicity denote the square root of the inverse PSD,
@@ -1535,16 +1537,16 @@ follows
 
 This replaces the $S_n(|f|)$ in the denominator of the match filter.
 
-If the signal is then a delta function with strength $\Delta$, $s(t) =
-\Delta \delta(t)$ then $\tilde{s} = \Delta$  and the SNR time series
-the then given by the matched filter,
+If the signal is then a delta function with strength $M$, $s(t) = M
+\delta(t)$ then $\tilde{s} = M$  and the SNR time series the then
+given by the matched filter,
 
 
 \begin{align*}
-\rho^2(t) &= \int e^{-2 i\pi i f t} df\, \Delta \tilde{h}^\star(f) \cdot
+\rho^2(t) &= \int e^{-2 i\pi i f t} df\, M \tilde{h}^\star(f) \cdot
 (\tilde{S}(f) \star \tilde{W}(f)) \cdot 
 (\tilde{S}(f) \star \tilde{W}(f)) \\
-&= \Delta h(-t) \star
+&= M h(-t) \star
 (S(t) \cdot W(t)) \star
 (s(t) \cdot w(t))
 \end{align*}
@@ -1552,12 +1554,12 @@ the then given by the matched filter,
 Note that if the window function is zero outside a region then the
 elevated SNR from an impulse will likewise be bounded in time.  This
 is the motivation for the truncation; without it a loud glitch would
-corrupt an entire analysis segment.  However, when $\Delta$ becomes
-large the SNR value within the bounded region may be sufficiently
-large to exceed the trigger threshold.  If the length used when
-scanning the SNR time series for triggers is less than the width of
-the truncation window then a loud glitch can produce several triggers.
-This explains both the width of the plateaus in
+corrupt an entire analysis segment.  However, when $M$ becomes large
+the SNR value within the bounded region may be sufficiently large to
+exceed the trigger threshold.  If the length used when scanning the
+SNR time series for triggers is less than the width of the truncation
+window then a loud glitch can produce several triggers.  This explains
+both the width of the plateaus in
 figure~\ref{f:impulses_original_no_chisq} and why they are composed of
 triggers from short templates.  This may also be seen in the SNR time
 series shown in figure~\ref{f:short_snr_series}.
