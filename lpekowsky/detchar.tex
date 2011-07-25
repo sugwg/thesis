@@ -551,16 +551,16 @@ coming from the high-mass end of the bank.  This behavior is expected,
 as it is easier for short templates to match against glitches, but the
 trigger histograms highlighted the extent to which this was a problem.
 A sample plot of triggers per template from early S6 is shown on the
-left of figure~\ref{f:el_glitcho}.  It shows that the shortest
-template in the bank, with $m_1 = m_2 = 17.5 \msun$ was producing
-significantly more triggers than any other template.  In part this was
-due to a bug in the template bank code, that caused this template to
-appear twice in some banks.  In part the abundance of triggers from
-this template is due to it appearing in every bank throughout the day,
-whereas other templates tend to get repositioned as the noise curve
-changes.  Even taking these effects into account, most of the triggers
-come from templates shorter than \Note{value}, as seen on the right of
-figure~\ref{f:el_glitcho}.  
+left of figure~\ref{f:daily_ihope_el_glitcho}.  It shows that the
+shortest template in the bank, with $m_1 = m_2 = 17.5 \msun$ was
+producing significantly more triggers than any other template.  In
+part this was due to a bug in the template bank code, that caused this
+template to appear twice in some banks.  In part the abundance of
+triggers from this template is due to it appearing in every bank
+throughout the day, whereas other templates tend to get repositioned
+as the noise curve changes.  Even taking these effects into account,
+most of the triggers come from templates shorter than 5 seconds, as
+seen on the right of figure~\ref{f:daily_ihope_el_glitcho}.
 
 The fixed clustering window means that only the loudest trigger in a
 30-millisecond window will be passed to subsequent stages of the
@@ -574,13 +574,16 @@ vet this decision}.
 
 
 \begin{figure}
-  \includegraphics[width=\linewidth]{figures/detchar/20090806_H1_0_UNCLUSTERED_template_counts}
+  \includegraphics[width=0.5\linewidth]{figures/detchar/20090806_H1_0_UNCLUSTERED_template_counts}
+  \includegraphics[width=0.5\linewidth]{figures/detchar/20090806_H1_0_UNCLUSTERED_mass_hist_norm}
   \caption[Problematic templates seen in daily ihope]{
   \label{f:daily_ihope_el_glitcho}
-Problematic templates seen in daily ihope.  This shows the equivalent 
-of figure~\ref{f:count_per_template} from an earlier version of daily
-ihope and an earlier version of the CBC search.  Note the excess of
-triggers from the high-mass end of the bank.  
+Problematic templates seen in daily ihope.  This shows the equivalent
+of figures~\ref{f:daily_ihope_time_mass} and
+\ref{f:count_per_template} from an earlier version of daily ihope and
+an earlier version of the CBC search.  Note the excess of triggers
+from the high-mass end of the bank, corresponding to shorter
+templates.
 }
 \end{figure}%
 
@@ -764,6 +767,7 @@ indicated a potentially problematic rapid fluctuation in the data.
   \includegraphics[width=0.5\linewidth]{figures/detchar/947204646_611816406_L1_LSC-DARM_ERR_1_00_spectrogram_whitened}
   \includegraphics[width=0.5\linewidth]{figures/detchar/947204646_611816406_L1_LSC-DARM_ERR_1_00_timeseries_raw}
   \caption[Spike glitch in daily ihope and omega]{
+  \label{f:daily_spikes}
   Spike glitches in daily ihope and a typical omega scan.  At the top
 a daily ihope SNR-vs-time plot, showing several spike glitches with
 SNRs of several thousand.  On the bottom, the loudest of these spike
@@ -779,8 +783,11 @@ create data quality segments.
 Livingston is subject to seiesmic activity, both natural and
 anthropogenic, that does not effect the Hanford detector.  In order
 for the L1 detector to achieve the same low-frequency response it is
-therefore necessary to take additional steps.  \emph{HEPI}, provides a
-layer of active isolation \Note{Fill in, cite}.
+therefore necessary to take additional steps.  The Hydraulic External
+Pre-Isolation (\emph{HEPI}) system sits between the ground and
+chambers containing optical components and provides a layer of active
+seismic isolation.  This can reduce noise in the 1-3 Hz band by a few
+percent~\cite{Wen:thesis}.
 
 In early 2010 it was noticed that the daily ihope triggers contained
 several instances with SNRs above 600 even after applying all known
@@ -798,8 +805,8 @@ this veto are shown in figure~\ref{f:hepi_veto_effectiveness}.  After
 this confirmation the veto was applied at category 2 to the full
 search.
 
-A great deal of work was done on HEPI at this time, and after
-\Note{date} the problem ceased.
+A great deal of work was done on HEPI during this period, and after
+Jan 10, 2010 the problem ceased.
 
 % DCH-SEI_ITMY_Y_OVER_25000
 % example 946834715.499755859 == Jan 06 2010 17:38:20 UTC
@@ -1435,6 +1442,7 @@ front-end code changes at H1 (left) and L1 (right).}
 
 
 \section{Open Questions}
+\label{sec:daily_ihope_open_questions}
 
 Two potentially problematic features of the analysis were noticed in
 daily ihope over the course of S6, both related to the effect of loud
@@ -1449,35 +1457,39 @@ resolve them before advanced LIGO comes on-line around 2015.
 \subsection{Excess triggers produced by loud glitches}
 \label{ssec:penguins}
 
-We have noted in several plots (\Note{which?}) that loud glitches are
-often accompanied by a rise in trigger rates.  In part this behavior
-is expected.  Many glitches, notably the spike glitch, are loud enough
-and sharp enough that they may be roughly modeled as impulses.  The
-impulse response of the match filter (eqn.~\ref{eq:match_filter}) is
-the time-reversed template convolved with a function of the noise
-curve.  A loud glitch will therefore elevate the SNR time series for
-every template in the bank.
+From figure~\ref{f:hepi_veto_effectiveness} we see that applying a
+veto to loud glitches does not only remove loud triggers, but also
+numerous triggers with lower SNRs.  This same effect may be seen by
+comparing rate-vs-time and SNR-vs-time plots such
+as~\ref{f:daily_ihope_grid}; loud glitches correlate with an increase
+in trigger rates.  In part this behavior is expected.  Many glitches,
+notably the spike glitch, are loud enough and sharp enough that they
+may be roughly modeled as impulses.  The impulse response of the match
+filter (eqn.~\ref{eq:match_filter}) is the time-reversed template
+convolved with a function of the noise curve.  A loud glitch will
+therefore elevate the SNR time series for every template in the bank.
 
 Recall from chapter~\ref{ch:search} that triggers are selected from
 the SNR time series by finding the largest value above threshold in a
 sliding window.  The length of the window is taken to the length of
-the template, defined as \Note{fill in}.  This is done using the
-following algorithm: \Note{TODO: reformat this}
+the template, defined as the time required for the frequency of the pN
+waveform to go from 40 Hz to infinity.  The selection is done using
+the following algorithm: 
 
-\begin{verbatim}
+\begin{alltt}
 for each sample point j
-  if \rho_j > threshold
-    if ! eventlist
-      event_start = j
-      event_snr   = r_j
-    else if rho_j > event_snr
-      event_start = j
-      event_snr = r_j
-    else if (j - event_start) == template length
+  if \(\rho\sb{j}\) > threshold
+    if there is no event yet
+      event\_start = j
+      event\_snr   = \(\rho\sb{j}\)
+    else if \(\rho\sb{j}\) > event\_snr
+      event\_start = j
+      event\_snr = \(\rho\sb{j}\)
+    else if (j - event\_start) == template length
       record event
-      event_start = j
-      event_snr   = r_j
-\end{verbatim}
+      event\_start = j
+      event\_snr   = \(\rho\sb{j}\)
+\end{alltt}
 
 Based on this we would expect an impulse in the data to produce one
 trigger per template at approximately the time of the impulse.
@@ -1546,7 +1558,7 @@ given by the matched filter,
 
 
 \begin{align*}
-\rho^2(t) &= \int e^{-2 i\pi i f t} df\, M \tilde{h}^\star(f) \cdot
+\rho^2(t) &= \int df\, e^{-2 i\pi i f t} M \tilde{h}^\star(f) \cdot
 (\tilde{S}(f) \star \tilde{W}(f)) \cdot 
 (\tilde{S}(f) \star \tilde{W}(f)) \\
 &= M h(-t) \star
@@ -1613,23 +1625,23 @@ exact value to be obtained by further investigation).
 
 So far we have not used the $\chisq$ test.  When $\chisq$ is
 enabled the trigger clustering algorithm is modified as follows
-\Note{TODO: reformat this}
 
-\begin{verbatim}
+
+\begin{alltt}
 for each sample point j
-  if \rho_j > threshold
-    if \chisq_j < chisq thresh * ( 1+ rhosq * chisqfac ):
-      if ! eventlist
-        event_start = j
-        event_snr   = r_j
-      else if rho_j > event_snr
-        event_start = j
-        event_snr = r_j
-      else if (j - event_start) == length
+  if \(\rho\sb{j}\) > threshold
+    if \(\chisq\sb{j}\) < chisq\_thresh * (1 + \(\rho\sp{2}\) * chisqfac ):
+      if there is no event yet
+        event\_start = j
+        event\_snr   = \(\rho\sb{j}\)
+      else if \(\rho\sb{j}\) > event\_snr
+        event\_start = j
+        event\_snr = \(\rho\sb{j}\)
+      else if (j - event\_start) == template length
         record event
-        event_start = j
-        event_snr   = r_j
-\end{verbatim}
+        event\_start = j
+        event\_snr   = \(\rho\sb{j}\)
+\end{alltt}
 
 That is, an additional constraint is placed on triggers even before
 new SNR is calculated.  We would expect that this would quash many,
@@ -1664,28 +1676,28 @@ triggers, especially the ones from long templates, have good $\chisq$
 values.  We can attempt to remove them by altering the clustering
 algorithm as follows:
 
-\begin{verbatim}
-for each sample point j
-  if \rho_j > threshold
-    if ! eventlist
-      event_start = j
-      event_snr   = r_j
-    else if rho_j > event_snr
-      event_start = j
-      event_snr = r_j
-    else if (j - event_start) == length
-      if \chisq_{event_start} < chisq thresh * ( 1 + rhosq_{event\_start} * chisqfac ):
-        record event
-      event_start = j
-      event_snr   = r_j
-\end{verbatim}
 
+\begin{alltt}
+for each sample point j
+  if \(\rho\sb{j}\) > threshold
+    if there is no event yet
+      event\_start = j
+      event\_snr   = \(\rho\sb{j}\)
+    else if \(\rho\sb{j}\) > event\_snr
+      event\_start = j
+      event\_snr = \(\rho\sb{j}\)
+    else if (j - event\_start) == template length
+      if \(\chisq\sb{event_start}\) < chisq thresh * ( 1 + \(\rho\sp{2}\sb{event\_start}\) * chisqfac )
+        record event
+      event\_start = j
+      event\_snr   = \(\rho\sb{j}\)
+\end{alltt}
 
 Rather than applying the $\chisq$ test at each sample point, we
 cluster only on SNR and then use the $chisq$ test to validate the 
 candidate trigger.  This was implemented, along with altering the
 clustering window as described above.  The results are shown in
-figure~\ref{impulses_new_chisq}, and appear very promising.  The
+Figure~\ref{f:impulses_new_chisq}, and appear very promising.  The
 plateaus have been removed almost entirely, leaving only the last
 trailing edge.  Only a few triggers from short templates remain, and
 in particualr nothing that would interfere with the BNS search.
@@ -1696,7 +1708,7 @@ in particualr nothing that would interfere with the BNS search.
   \caption[Triggers produced by modified clustering algorithm] {
   \label{f:impulses_new_chisq}
 Triggers produced by the modified clustering algorithm which extends
-the clustering window and applies the $chisq$  threshold after the
+the clustering window and applies the $\chisq$  threshold after the
 candidate trigger has been found.  Results are promising: only a
 relatively small number of triggers from short templates remain.
 }
@@ -1746,10 +1758,10 @@ combining the SNR and $\chisq$ series.
 
 Loud glitches are often accompanied by surrounding periods of
 decreased trigger rates, paradoxically.  This can be seen, for
-example, in figures \Note{list}.  This effect is confined to the
-2048-second analysis segment containing the glitch, as can be seen from
-figure~\ref{f:move_glitch}, which shows the trigger rate around a
-glitch as the analysis boundaries are changed.
+example, in figure~\ref{f:daily_ihope_tcs}.  This effect is confined
+to the 2048-second analysis segment containing the glitch, as can be
+seen from figure~\ref{f:move_glitch}, which shows the trigger rate
+around a glitch as the analysis boundaries are changed.
 
 \begin{figure}
   \includegraphics[width=0.5\linewidth]{figures/detchar/H1-endtime_hist_ORIG}
