@@ -44,7 +44,7 @@ include at least five orbits of usable data before merger (i.e., not
 counting bursts of junk radiation or other significant noise).  Given
 the computation cost of extending the NR waveforms, we instead require
 stitching to a post-Newtonian inspiral approximant, which should be
-performed at a GW frequency of $M\omega ≤ 0.075$, where $M\omega$ is
+performed at a GW frequency of $M\omega \leq 0.075$, where $M\omega$ is
 the frequency of the $(l = 2, m = \pm 2)$ harmonic. The full waveform
 should be long enough to be entirely within the sensitivity bands of
 LIGO and Virgo down to $10 \msun$ with a lower cutoff frequency of 10
@@ -314,9 +314,62 @@ not show up in the time domain view of the waveform.}
 
 \subsection{Overlap comparisons}
 
-In tis check the waveforms were compared against each other using
+In this check the waveforms were compared against each other using
 standard data-analysis techniques, in particular the overlap defined
-in equation~\ref{eq:OverlapDefinition}.
+in equation~\ref{eq:OverlapDefinition}  using the initial LIGO noise
+curve.  The waveforms were grouped into sets with identical
+parameters.  For each set one waveform was chosen as the reference and
+the overlap with all the other waveforms calculated over a range of
+masses, optimizing over the unknown coalescence time and phase as
+usual.  This process was then repeated, taking each of the other
+waveforms as the reference in turn.
+
+The initial set of contributions showed unexpectedly large mismatches
+at masses $\approx 20 \msun$, at the point where the hybridization
+frequency for several waveforms passes through the most sensitive
+portion of the LIGO band.  This prompted a number of the NR groups to
+revise their hybridization procedures, after which the overlaps were
+more in line with the expected values.  A sample of these plots before
+and after rehybridization is shown in
+figure~\ref{f:ninja2_overlap_test}.  It is worth noting that even
+after rehybridizing there are still mismatches.  In particular, the
+SpEC and MayaKranc submissions use the same hybridization method, the
+same pN approximant, and are simulating the same physical system.  The
+overlaps approach 1 at higher masses, where the NR portion dominates.
+This is an important validation, as the two groups use completely
+different codes based on different principles.  The overlap is also
+close to 1 at the lowest masses, where pN dominates.  This is expected
+following the pN cross-checks done previously.  That the overlap
+diminishes slightly at intermediate masses must be due to the
+different hybridization frequencies \Note{get these values}, and
+indicates the sensitivity of the waveform to the hybridization
+details.
+
+
+\begin{figure}
+  \includegraphics[width=0.5\linewidth]{figures/ninja2/q_1_z_0_figure03}
+  \includegraphics[width=0.5\linewidth]{figures/ninja2/figure2_1_0_16}
+  \caption[Overlaps between NINJA-2 submissions maximized over time
+and phase]{
+  \label{f:ninja2_overlap_test}
+Overlaps between the equal-mass, non-spinning NINJA-2 contributions,
+maximized over time and phase.   For the original submissions (left)
+overlaps are as low as 0.70 between waveforms using different pN
+approximants and 0.94 for waveforms using the same approximant.  After
+rehybridization (right) the waveforms achieve much higher overlaps,
+with minima above 0.94 for different approximants and above 0.98 for
+identical approximants.  The residual differences  between waveforms
+using TaylorT4 are due to hybridization details.  The Llama waveform
+was accidentally omitted from the original runs.}
+\end{figure}%
+
+We also calculated the overlaps between waveforms with identical
+parameters, optimizing over mass as well as time and phase.  This gives
+a sense of the range over which parameter estimation pipelines could 
+be biased by unphysical features of the waveform.  Example plots
+using the equal-mass, non-spinning MayaKranc waveform as the signal and
+BAM plus two different approximants as the template are shown in 
+figure~\ref{f:ninja2_max_over_mass_bam}.
 
 
 \begin{figure}
@@ -327,22 +380,32 @@ in equation~\ref{eq:OverlapDefinition}.
 Overlaps between the equal-mass, non-spinning MayaKranc waveform taken
 as the signal, and the equal-mass, non-spinning BAM waveform
 hybridized with TaylorT4 (left) and TaylorT1 (right) taken as
-templates.  Maximization is done over mass, as well as time and phase.
-Note the lower overall overlaps and mass bias at the low-mass end,
-where the two pN waveforms dominate the overlap.}
+templates.  Maximization is done over the mass of the template, as well
+as over time and phase.  Note the lower overall overlaps and mass bias
+at the low-mass end of the figure on the right, where the two different
+pN waveforms dominate the overlap.}
 \end{figure}%
 
+At the high-mass end the overlap is dominated by NR data, and as in
+figure~\ref{f:ninja2_overlap_test} the overlaps are high without
+needing to move off the signal mass.  At the low-mass end the same
+result would be expected in a pure pN/pN comparison.  However, there
+is enough of the hybridization in-band to reduce the overlaps.  However,
+changing the mass introduces a phase difference that accumulates over
+all the cycles in-band, and so higher overlaps can not be achieved.
+The result is optimal mass values close to the correct mass value, but
+with a low overlap.
 
-\section{Construction of the NINJA-2 data set}
+In the middle region these factors compete.  At higher masses the
+overlap is reduced less by changing the mass and so the recovered
+value can stray further from the injected value.  However as the
+hybridization passes out of band this adjustment is no longer needed.
 
-\begin{figure}
-  \includegraphics[width=\linewidth]{figures/ninja2/ninja2_dataset.png}
-  \caption[Parameters of the NINJA-2 two-month data set]{
-  \label{f:ninja2_dataset}
-Distribution of mass, spin and distance parameters in the two-month,
-Gaussian-noise data set.
-}
-\end{figure}%
+
+\noindent \Note{TODO: Fill in more details, discuss the need to sample
+overlap time series at 16384, include the rest of the overlap plots after
+remaking them for latest submissions}
+
 
 
 
