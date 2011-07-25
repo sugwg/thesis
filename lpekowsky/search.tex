@@ -1,4 +1,7 @@
 
+\section{Matched filtering}
+\label{sec:ihope_match_filter}
+
 Let $n(t)$ be the noise, $h(t)$ a signal, and $s(t)=n(t)+h(t)$ data
 from the instrument.
 
@@ -88,7 +91,9 @@ This motivates the definition of an operator mapping pairs of
 functions to real numbers
 
 \begin{equation}
-(A|B) = \int_{-\infty}^\infty df\,
+\label{eq:InnerProduct}
+\InnerProduct{A|B} 
+ = \int_{-\infty}^\infty df\,
    \frac
      {\tilde{A}(f) \tilde{B}^\star(f)}
      {(1/2) S_n(f)}
@@ -97,10 +102,12 @@ functions to real numbers
 Using this the SNR becomes
 
 \begin{equation}
-\frac{S}{N} = \frac{(h|u)}{(u|u)^{1/2}}
+\label{eq:InnerProductSNR}
+\frac{S}{N} = \frac{\InnerProduct{h|u}}{\InnerProduct{u|u}^{1/2}}
 \end{equation}
 
-Now, the operator defined in ? has the following properties
+Now, the operator defined in~\ref{eq:InnerProduct} has the following
+properties
 
 Conjugate symmetry, $(x|y) = (y|x)^\star$
 
@@ -131,6 +138,13 @@ therefore
 
 The constant cancels in the SNR, and may therefore be set to 1.
 
+The
+\emph{overlap} between two templates $h$ and $h'$ is defined as
+\begin{equation}
+  \label{eq:OverlapDefinition}
+  \Overlap{h|h'} \equiv \frac{\InnerProduct{h|h'}}{
+    \sqrt{\InnerProduct{h|h} \InnerProduct{h'|h'}}}\ .
+\end{equation}
 
 \iffalse
 % from Boyle et al.
@@ -219,4 +233,35 @@ $\ta$.  Thus finding the maximum over $\ta$ involves taking the
 Fourier transform and selecting the largest element of the finite set
 that results from discretization.
 \fi
+
+\section{Estimation of the PSD}
+\label{sec:ihope_psd}
+
+\section{Trigger selection}
+\label{sec:analysis_trigger_selection}
+
+\section{The $\chisq$ test}
+\label{sec:ihope_chisq}
+
+\begin{equation}
+\label{eq:chisq}
+\chisq = \chisq
+\end{equation}
+
+\section{Construction of the Bank}
+\label{sec:bank_metric}
+
+\section{Detection Statistics}
+\label{sec:detection_statistics}
+
+\begin{equation}
+\label{eq:new_snr}
+\newsnr^2 = \begin{cases}
+ \rho^2, & \chi^2_{r} \leq 1, \\ 
+ \frac{\rho^2}{[(1+(\chi_r^2)^3)/2]^{1/6}}, \ & \chi^2_{r} > 1,
+\end{cases}  
+\end{equation}
+
+\section{Testing the Pipeline with Hardware Injections}
+\label{sec:ihope_hardware_injections})
 

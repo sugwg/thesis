@@ -21,8 +21,36 @@
 \usepackage{tensor}
 \usepackage{lscape}
 \usepackage{units} %  do things like \units[1.234]{sec}i
+
+\makeatletter
+\let\protect\relax
+{\catcode`\|=\active
+  \xdef\InnerProduct{\protect\expandafter\noexpand\csname InnerProduct
+\endcsname}
+  \expandafter\gdef\csname InnerProduct \endcsname#1{%
+    \begingroup
+    \ifx\SavedDoubleVert\relax
+    \let\SavedDoubleVert\|\let\|\IpDoubleVert
+    \fi
+    \mathcode`\|32768\let|\IPVert
+    \left({#1}\right)
+    \endgroup
+  }
+}
+\def\IPVert{\@ifnextchar|{\|\@gobble}% turn || into \|
+     {\egroup\,\mid@vertical\,\bgroup}}
+\def\IPDoubleVert{\egroup\,\mid@dblvertical\,\bgroup}
+\let\SavedDoubleVert\relax
+\def\midvert{\egroup\mid\bgroup}
+\def\SetVert{\@ifnextchar|{\|\@gobble}% turn || into \|
+    {\egroup\;\mid@vertical\;\bgroup}}
+\def\SetDoubleVert{\egroup\;\mid@dblvertical\;\bgroup}
+\def\mid@vertical{\mskip1mu\vrule\mskip1mu}
+\def\mid@dblvertical{\mskip1mu\vrule\mskip2.5mu\vrule\mskip1mu}
+\makeatother
 \usepackage{braket}
 \newcommand{\Overlap}{\Braket}
+
 \usepackage{xspace}
 \usepackage{url}
 \usepackage{alltt}
@@ -43,6 +71,8 @@
 \newcommand\fake[1]{\textcolor{red}{#1}}
 \newcommand\checkme[1]{\textcolor{blue}{\textbf{#1}}}
 
+
+\usepackage{hyperref} 
 
 \begin{document}
 
@@ -78,12 +108,14 @@ Scientific Collaboration and the NINJA Collaboration.
 
 \vspace*{0.5cm}
 
-\noindent Chapter \ref{ch:boyle_et_al} is based on material from
+\noindent Chapter \ref{ch:comparison} is based on material from
 
 \vspace*{0.25cm}
 
-\noindent \fake{Boyle et. al.}
-
+\noindent M. Boyle, D. A. Brown and L. Pekowsky, ``Comparison of high-accuracy
+numerical simulations of black-hole binaries with stationary phase
+post-Newtonian template waveforms for Initial and Advanced LIGO,''
+{\it Class. Quant. Grav.} {\bf 26}, 114006 (2009)
 
 \vspace*{0.5cm}
 
@@ -91,9 +123,21 @@ Scientific Collaboration and the NINJA Collaboration.
 
 \vspace*{0.25cm}
 
-\noindent \fake{The NINJA1 paper}
+\noindent B. Aylott {\it et al} (The NINJA Collaboration), ``Testing
+gravitational-wave searches with numerical relativity waveforms:
+Results from the first Numerical INJection Analysis (NINJA) project,''
+{\it Class. Quant. Grav.} {\bf 26}, 165008 (2009)
 
 
+\vspace*{0.5cm}
+
+\noindent Chapter \ref{ch:segdb} is based on material from
+
+\vspace*{0.25cm}
+
+\noindent D. Brown {\it et al}, ``S6 Segment Database
+Infrastructure Proposal,'' {\it Technical document
+{LIGO}-T0900005-00-Z} (2010)
 
 
 \prefacesection{Acknowledgments}

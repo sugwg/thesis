@@ -6,14 +6,14 @@
 
 \newcommand{\darmerr}{{\texttt DARM\_ERR} }
 
-As discussed in section \ref{sec:ihope_far}, the CBC group measures
-the significance of candidate events by comparing the combined new SNR
-(sec.~\ref{sec:search_new_snr}) against the background distribution.
-The background is obtained by sliding the triggers from each IFO
-against each other by more than the light travel time between them.
-In the limit of at most one real gravitational wave in each analysis
-segment this ensures that the background is composed entirely of
-triggers resulting from non- gravitational-wave sources.
+As discussed in section \ref{sec:detection_statistics}, the CBC group
+measures the significance of candidate events by comparing the
+combined new SNR (eqn.~\ref{eq:new_snr}) against the background
+distribution.  The background is obtained by sliding the triggers from
+each IFO against each other by more than the light travel time between
+them.  In the limit of at most one real gravitational wave in each
+analysis segment this ensures that the background is composed entirely
+of triggers resulting from non- gravitational-wave sources.
 
 Ideally, the instrumental noise would be Gaussian and the only source
 of extraneous triggers would be random fluctuations.  In reality
@@ -71,16 +71,17 @@ data in each instrument was suitable to analyze.  This goal determined
 the specifics of the daily runs, but more significantly it leaves the
 full search unbiased.
 
+\subsection{The Daily Ihope Pipeline}
+
 Recall that ihope is a templated, matched-filter search.  For the
 low-mass search, which was the focus of the daily runs, the templates
 are restricted, stationary-phase frequency-domain waveforms with phase
 evolution taken to 3.5 PN order.  The templates are laid out in a bank
 with 97\% overlap between nearest neighbors, and the mass range is
 from 2 $\msun - 25 \msun$.  A $\chisq$ discriminator is constructed to
-better separate signals from glitches (eqn \ref{eq:analysis_chisq} ,
-and the information from this discriminator is used along with the SNR
-to construct the new SNR detection statistic (eqn
-\ref{eq:analysis_newsnr}).
+better separate signals from glitches (eqn.\ref{eq:chisq}), and the
+information from this discriminator is used along with the SNR to
+construct the new SNR detection statistic (eqn.~\ref{eq:new_snr}).
 
 By construction, a great deal of the information provided by
 the full bank search is redundant.  Further, the evaluation of each
@@ -97,17 +98,16 @@ more cycles in the sensitive LIGO band, there is therefore ample
 information to distinguish between waveforms with close parameters.
 Conversely, this means that the low-mass end of the bank is very dense
 (in the sense of number of templates per unit square in parameter
-space, they are still equidistant in the sense of eq.
-\ref{eq:analysis_match_filter}).  Such fine resolution is not needed
-when looking for glitches, therefore the minimal match between
-templates in the region below a chirp mass ($\mathcal{M} = M
-\eta^{3/5}$) of 3.46 $M_\odot$ was set to 0.5.  At higher masses, up
-to a total mass of $25 M_\odot$, the minimal match was set to 0.95.
-In addition to ensuring coverage in a mass region which is naturally
-sparser this ensures that short glitches, characteristic of many
-glitch mechanisms, were flagged with large SNRs.  The resulting hybrid
-bank for the Hanford detector is shown in figure
-\ref{f:daily_ihope_bank}.
+space, they are still equidistant in the sense of the bank metric.
+Such fine resolution is not needed when looking for glitches,
+therefore the minimal match between templates in the region below a
+chirp mass ($\mathcal{M} = M \eta^{3/5}$) of 3.46 $M_\odot$ was set to
+0.5.  At higher masses, up to a total mass of $25 M_\odot$, the
+minimal match was set to 0.95.  In addition to ensuring coverage in a
+mass region which is naturally sparser this ensures that short
+glitches, characteristic of many glitch mechanisms, were flagged with
+large SNRs.  The resulting hybrid bank for the Hanford detector is
+shown in figure \ref{f:daily_ihope_bank}.
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/detchar/hybrid_bank.png}
@@ -149,6 +149,21 @@ removed from the original and clustered files.
 The result is, for each 2048-second block in each ifo, 3 cluster
 levels times 4 veto levels = 12 sets of triggers.
 
+The structure of the daily pipeline is shown in figure \Note{make
+this}.  For comparison we include the structure of the full search,
+shown in figure~\ref{f:hipe}~\footnote{Figure by Collin Capano, used
+with permission}.  We will not go over it in detail here, but note
+that it is a two-stage, coincident pipeline.
+
+\begin{figure}
+  \includegraphics[width=\linewidth]{figures/detchar/HIPEDiagram}
+  \caption[Structure of the full iHope search]{
+  \label{f:hipe}
+Structure of the full iHope search.  For details see (\Note{Collin's
+thesis}).
+}
+\end{figure}%
+
 %do analysis
 %record science triggers
 %cluster 30 ms     determine cat 1
@@ -162,11 +177,11 @@ levels times 4 veto levels = 12 sets of triggers.
 Much of the utility of the daily runs was in the use of the resulting
 triggers to identify data quality issues and quantify the value of
 proposed vetoes.  Some of these uses will be discussed in
-section~\ref{sec:applications}.  In addition to the triggers the daily
-pipeline also produced a large number of plots and reports, organized
-into web pages that were available to the collaboration.  Data
-analysts could use these pages to spot potential problems for the full
-analysis and begin more detailed followup studies.  
+section~\ref{sec:applications_vetoes}.  In addition to the triggers
+the daily pipeline also produced a large number of plots and reports,
+organized into web pages that were available to the collaboration.
+Data analysts could use these pages to spot potential problems for the
+full analysis and begin more detailed followup studies.  
 
 We now summarize the contents of the daily pages. Each report and plot
 is made for each combination of the following:
@@ -288,9 +303,9 @@ flip between veto levels to get a sense of how well the cumulative
 vetoes were cleaning the data, as shown in figure
 \ref{f:daily_ihope_gaussianity}.
 
-Similarly figure~\ref{f:daily_ihope_new_hists} shows histograms of the
-triggers in new SNR.  The total number of triggers is greatly reduced
-because many high-SNR triggers have $\newsnr < 5$ , where the
+Similarly figure~\ref{f:daily_ihope_gaussianity_newsnr} shows histograms
+of the triggers in new SNR.  The total number of triggers is greatly
+reduced because many high-SNR triggers have $\newsnr < 5$ , where the
 plot cuts off.  While triggers with such low $\newsnr$ values are not
 excluded from later stages of analysis in the full pipeline, it is
 extremely unlikely that the resulting combined new SNR will be high
@@ -302,14 +317,14 @@ expected in Gaussian noise.  However, detchar improves the situation
 still further, as the number of triggers is reduced at veto category
 4.
 
-However, there is one trigger with $\newsnr = 8$ that is not removed by
-any veto.  Such an outlier warrants further investigation, which here
-is provided by the loudest events page described in
-section~\ref{ihope_loudest}.  The omega scan from the time of this
-event is shown in figure~\ref{f:daily_loudest_glitch}, and it clearly
-rules out a gravitational wave as the source of this trigger.  This
-illustrates the important point that new SNR can be fooled, and hence
-continued human participation in detchar is necessary.
+However, there is one trigger with $\newsnr = 8$ that is not removed
+by any veto.  Such an outlier warrants further investigation, which
+here is provided by the loudest events page an example of which is
+shown in~\ref{f:daily_ihope_loudest}.  The omega scan from the time of
+this event is shown in figure~\ref{f:daily_loudest_glitch}, and it
+clearly rules out a gravitational wave as the source of this trigger.
+This illustrates the important point that new SNR can be fooled, and
+hence continued human participation in detchar is necessary.
 
 \begin{figure}
   \includegraphics[width=0.5\linewidth]{figures/detchar/H1_1_UNCLUSTERED_snr_hist.png}
@@ -330,7 +345,7 @@ quality has removed non-Guassian noise.}
   \includegraphics[width=0.5\linewidth]{figures/detchar/H1_1_UNCLUSTERED_new_snr_hist.png}
   \includegraphics[width=0.5\linewidth]{figures/detchar/H1_4_UNCLUSTERED_new_snr_hist.png}
   \caption[Trigger new SNR histograms for H1]{
-  \label{f:daily_ihope_gaussianity}
+  \label{f:daily_ihope_gaussianity_newsnr}
 Sample trigger histograms by new SNR. The data is much cleaner than
 the new SNR histograms, but there is still an outlier.}
 \end{figure}%
@@ -423,7 +438,7 @@ same information up by time and template mass.
 Qualitatively these plots do not change much day-by-day, and so these
 plots were not often used.  However, they did prompt a change to
 the analysis made early in the S6 run, see
-section~\ref{sec:daily_pipeline_changes}.
+section~\ref{sec:applications_pipeline}.
 
 \begin{figure}
   \includegraphics[width=0.5\linewidth]{figures/detchar/H1_1_UNCLUSTERED_mass_hist}
@@ -496,6 +511,7 @@ removed by vetoes in category 4 (right).}
 
 
 \section{Applications of daily ihope to pipeline tuning}
+\label{sec:applications_pipeline}
 
 Early in S6 there were frequent instances where the full analysis ran
 into difficulty.  This was characterized by individual programs taking
@@ -567,10 +583,10 @@ The fixed clustering window means that only the loudest trigger in a
 analysis.  Given the numbers of triggers from short templates there
 was concern that a loud, short glitch could mask a quieter trigger
 from a binary neutron star coalescence.  We therefore decided to limit
-the low-mass search to $M < 25 \msun$ \Note{mention studies done to
-vet this decision}.
-
-
+the low-mass search to $M < 25 \msun$ after comparing found/missed
+plots of injections in the same weeks with the different mass ranges,
+and determining that the smaller bank did as well or better than the
+larger bank.
 
 
 \begin{figure}
@@ -931,7 +947,7 @@ Such loud glitches tend to have high $\chisq$ values which suppress
 them.  However, around SNR 250 glitches tend to be accompanied by
 additional triggers spanning $\pm 8$ seconds resulting from the
 interaction of the filter with the inverse spectrum truncation, see
-section \ref{sec:ihope_data_conditioning}.  Some of these auxiliary
+section \ref{sec:daily_ihope_open_questions}.  Some of these auxiliary
 triggers can, by chance, have low $\chisq$ values and hence high new
 SNR values, and can potentially interfere with the search.  This
 suggests a CAT 4 veto centered on times of triggers with SNRs
@@ -979,7 +995,7 @@ On occasion there were potential problems seen in results from
 another pipeline or reported by scimons or operators that daily ihope
 confirmed were not a problem for the CBC low-mass search (though they
 might have been problematic for other searches).  One example is shown
-in figure~\ref{f:non-vetoed-time}.  The omega pipeline reports excess
+in figure~\ref{f:non_vetoed_time}.  The omega pipeline reports excess
 noise at 200Hz, which was traced to runoff from a nearby damn.  The
 corresponding daily ihope report shows no issues with excess or loud
 triggers, and the day was able to be analyzed.
@@ -988,7 +1004,7 @@ triggers, and the day was able to be analyzed.
   \includegraphics[width=0.5\linewidth]{figures/detchar/20100604_H1_0_100MILLISEC_CLUSTERED_snr_vs_time}
   \includegraphics[width=0.5\linewidth]{figures/detchar/S6-H1-omega-959644815-959731215-GlitchTS}
   \caption[Use of daily ihope to indicate no veto needed] {
-  \label{f:non-vetoed_time}
+  \label{f:non_vetoed_time}
 Use of daily ihope to indicate that time did not need to be vetoed.
 The omega pipeline (left) shows a distinct feature at 200 Hz, within
 the sensitive band of LIGO.  Daily ihope shows no excess of triggers
@@ -997,6 +1013,8 @@ or SNR, and hence the time did not need to be vetoed}
 
 
 \section{Applications of daily ihope to the blind injection challenge}
+\label{sec:applications_vetoes}
+
 
 In addition to the hardware injections discussed in section
 \ref{sec:ihope_hardware_injections} it was known at the start of S6
@@ -1465,7 +1483,7 @@ as~\ref{f:daily_ihope_grid}; loud glitches correlate with an increase
 in trigger rates.  In part this behavior is expected.  Many glitches,
 notably the spike glitch, are loud enough and sharp enough that they
 may be roughly modeled as impulses.  The impulse response of the match
-filter (eqn.~\ref{eq:match_filter}) is the time-reversed template
+filter (eqn.~\ref{eq:InnerProduct}) is the time-reversed template
 convolved with a function of the noise curve.  A loud glitch will
 therefore elevate the SNR time series for every template in the bank.
 
@@ -1647,7 +1665,7 @@ That is, an additional constraint is placed on triggers even before
 new SNR is calculated.  We would expect that this would quash many,
 and hopefully all, triggers resulting from the glitch.  The results of
 rerunning with $\chisq$ enabled are shown in
-figure~\ref{f:impulses_orinal_chisq}.
+figure~\ref{f:impulses_original_chisq}.
 
 \begin{figure}
   \includegraphics[width=0.5\linewidth]{figures/detchar/delta_chisq_1e-17}
