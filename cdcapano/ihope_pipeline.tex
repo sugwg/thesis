@@ -684,8 +684,87 @@ After \verb|dbaddinj| is run, \verb|ligolw_sqlite| is run to convert each inject
 
 \verb|Inspinjfind| works on the xml file in place; i.e., the mappings are added directly to the file. The maps between the injections (stored in the \verb|sim_inspiral| table) and coincident event are stored in the \verb|coinc_event_map| table. How exactly the maps are done is more complicated than how single-\ac{IFO} events are mapped to their coincident counterparts; we do not discuss it here. For details, see the \verb|ligolw_inspinjfind| golassary entry on the web at \verb|{https://www.lsc-group.phys.uwm.edu/ligovirgo/cbcnote/ligolw_inspinjfind}| (authentication required).
 
+\subsection{Preparing the Final Database}
 
+After \verb|lalapps_inspinjfind| has run on each of the injection xml files, they are added to the \verb|FULL_DATA CLUSTERED| database. This is done by \verb|ligolw_sqlite| followed by \verb|ligolw_cbc_dbsimplify|. Next the veto xml file (the same one given to \verb|thinca_to_coinc|) is added to the database. Thus, the \verb|FULL_DATA CLUSTERED| database contains all triggers from the zero-lag, slide, and injection runs, as well as all injection made (both ``found" and ``missed") in all runs, and the veto segments applied to the run. The \verb|FULL_DATA CLUSTERED| database is therefore the final data product from the pipeline: it is from this that false alarm will be computed (and saved) and all plots will be generated. The other databases --- i.e., all of the \verb|RAW| and injection databases --- are only intermediate data products.
 
+Now that the veto segments are in the database, \verb|ligolw_cbc_compute_durations| is run to compute the live time in each slide and zero-lag. To do the computation, \verb|compute_durations| must know what times were analyzed (pre-vetoes). It gets this from the \verb|thinca| start and stop times, which is stored in one of the meta-data tables (specifically, the \verb|search_summary| table, which is not described here). The \verb|thinca| start and stop times are needed because these define the ring boundaries within which triggers and vetoes were slid around. For each entry in the \verb|experiment_summary| table, the single-\ac{IFO} veto segments are retrieved (using the \verb|veto_def_name| column to get the appropriate segments from the \verb|segment| table) then slid around on the \verb|thinca| rings according to the offset vector associated with the entry (retrieved from the \verb|time_slide| using the \verb|time_slide_id| column). Subtracting the duration of the vetoes from the total analysis time gives the live time of the entry. For the \verb|playground| and \verb|exclude_play| datatypes, the playground segments (computed from the GPS times) are additionally intersected with the segments. The results are saved to the \verb|duration| column of the \verb|experiment_summary| table.
+
+\subsection{Computing False Alarm Rates}
+
+All of the pieces are now in place in the \verb|FULL_DATA CLUSTERED| database to compute the \acp{FAR} of the triggers. Both the uncombined and combined \acp{FAR} are calculated using \verb|ligolw_cbc_cfar|. cFar is run twice. On the first pass, the \verb|group-by-ifos|, \verb|param-name| and \verb|param-ranges| arguments are given to cFar, which causes it to compute the uncombined \acp{FAR}. As outlined in the algorithim at the end of Chapter \ref{ch:far}, the \ac{FAR} for each trigger is calculated by counting the number of background triggers in the same \ac{IFO} and chirp-mass bin that have a new \ac{SNR} greater-than-or-equal to it. Specifically, cFar uses the \verb|experiment| and \verb|experiment_summary| tables to grab all of the \verb|slide| triggers in each instrument-time, and it uses the \verb|ifos| and \verb|mchirp| columns in the \verb|coinc_inspiral| table to apply the bins. The background time is retrieved by summing the \verb|slide| \verb|exerpiment_summary| entries' live time. For \verb|slide| triggers, triggers nor live time within that slide are used to compute their \acp{FAR}. The uncombined \acp{FAR} are saved to the \verb|false_alarm_rate| column of the \verb|coinc_inspiral| table.
+
+Combined \acp{FAR} are computed when \verb|ligolw_cbc_cfar| is run again. This time, triggers are not binned by chirp mass or coincident \acp{IFO}, and the uncombined \acp{FAR} computed on the first pass are used as the ranking statistic. This result is saved to the \verb|combined_far| column of the \verb|coinc_inspiral| table.
+
+With the completion of the second cFar job, the \verb|FULL_DATA CLUSTERED| databases have obtained their final form. All other jobs launched by pipedown either create plots, summarize the most significant events in short lists, or run followups on loud triggers. The programs that carry these out are described in the next few sections.
+
+\subsection{IFAR Plots}
+
+Pipedown launches several plotting programs to summarize the results for analysts. Perhaps the most significant is \verb|ligolw_cbc_plotifar|. PlotIFAR creates cumulative histograms of the triggers as a function of the \emph{inverse} false alarm rate, or IFAR. Plots are created of both inverted uncombined \ac{FAR} and combined \ac{FAR}; figure \ref{fig:sample_plotifar} shows a sample of each. Both plots show the excpected background distribution, which is simply 1/IFAR, as a dashed black line. The yellow regions show the expected background $\pm \sqrt{N}$ and $\pm 2\sqrt{N}$ where $N$ is the number of counts. These regions are the expected variance of the background, which at high $N$ corresponds to the 1 and 2 $\sigma$ significance bands in a Gaussian distribution. The gray lines show the actual background distribution: each line represents a single slide.\footnote{Note that the actual background appears to disagree with the expected variance (yellow regions) at high IFAR. This is due to the difference between Gaussian and Poisson distributions. At low $N$ the Poisson distribution becomes asymmetric around the mean, so that the variance does not agree with the familar 1 and 2 $\sigma$ bands of a Gaussian. If the yellow regions mapped out $\sigma$ instead of variance (i.e., if they mapped out the regions we expect $\pm 34\%$ and $\pm 47.5\%$ of the triggers to fall) then they would appear to agree with the gray lines.} The zero-lag distribution is plotted by the colored symbols. In the uncombined plot, the symbols are determined by the chirp-mass bin they represent and the color is determined by the coincident \acp{IFO}. The dashed colored lines show where the background for a particular \ac{IFO} combination (represented by the lines' colors) and chirp-mass bin (represented by the dash pattern) ``runs out"; i.e., they are points of maximum (minimum) background \ac{FAR} (IFAR). The uncombined plots are useful for understanding characteristics of the data. For example, we do not see any high mass H1L1V1 triggers (purple squares) in the plot. This is expected, because we can see that the background for high mass H1L1V1 triggers (the purple dashed line furthest to the right) runs out at an IFAR greater than the expected background at a cumulative number equal to one. Thus the probability of getting a triple-coincident high mass trigger in a single experiment realization is less than one. In the combined plot, all zero-lag triggers are plotted as blue triangles.
+
+If a trigger is louder than all the background it will have a \ac{FAR} equal to zero. As discussed in Chapter \ref{ch:far}, this means that we have placed an upper limit on the \ac{FAR} equal to $1/\mathrm{T_b}$ where $\mathrm{T_b}$ is the total background time. On IFAR plots, zero-\ac{FAR} triggers are therefore placed at the point corresponding to $x=\mathrm{T_b}$\footnote{Since the loudest background trigger will always have a zero-FAR, this point can be seen in the combined plot where the gray lines end; in the uncombined plot the point is marked by the solid black line.} and an arrow pointing to the right is added to the trigger to indicate that the true IFAR is somewhere in the region to the right. Such triggers are of utmost interest to us; the first thing we look for when looking at an IFAR plot is whether or not any trigger is louder than all the background.
+
+Since the combined IFAR plot quickly conveys whether or not a trigger is louder than all the background --- i.e., whether or not there is a \ac{GW} candidate --- as well as how signficant triggers are and how well the zero-lag distribution is consistent with the background, it is our primary detection plot. When we open boxes it is the first thing we look at. For example, in the sample combined IFAR plot shown in Figure \ref{fig:sample_plotifar_combined}, we see that the loudest zero-lag event has a IFAR of $\sim0.02$, corresponding to a \ac{FAR} of $\sim50$ per year. There is therefore no \ac{GW} candidate in this data. Additionally, since the zero-lag is consistent with background across the entire region, we can be fairly confident that we are treating zero-lag and slides the same, and that there is not something wrong in our analysis.
+
+\subsection{PlotCumHist and PlotSlides}
+
+In addition to IFAR plots, Pipedown also generates cumulative histograms as a function of combined New \ac{SNR} using \verb|ligolw_cbc_plotcumhist|. A sample plot is shown in Figure \ref{fig:sample_plotcumhist}. To create the plot, bins of equal width in new \ac{SNR} squared are constructed. Within each bin, the number of triggers that have a new \ac{SNR} squared greater-than or equal-to the left-edge of the bin is plotted on the y-axis. Despite the label in the plot, new \ac{SNR} squared is plotted on the x-axis. Zero-lag results are indicated by the blue triangles; there is one triangle per-bin. For slide triggers, the cumulative number is computed by counting the number of triggers in each slide, then taking the mean of the counts. The black crosses show the mean background number in each bin, and they yellow regions indicate the standard deviation of the counts. 
+
+These cumulative histograms are used to check the \ac{SNR} distribution of triggers. We do not use cumulative histograms as our primary detection plot because they do not quantify the significance of triggers as IFAR plots do. We also cannot easily judge the significance of triggers across chirp-mass bins and coincidence types using these plots. If all of the categories are plotted together, as they are in Figure \ref{fig:sample_plotcumhist}, then the effect of different rates and new \ac{SNR} distributions, as discussed in Chapter \ref{ch:far}, is not accounted for. It is possible to make PlotCumHist to plot each category on separate plots; even so, this results in a large number of plots with no way to compare significance across plots.
+
+Another program that creates plots useful for checking data is \verb|ligolw_cbc_plotslides|. Sample plots are shown in Figures \ref{fig:sample_plotslide-duration} and \ref{fig:sample_plotslide-rate}. These plots are used to check the distribution of live times and trigger rates across slides. Figure \ref{fig:sample_plotslide-duration} shows the duration-per-slide for H1L1V1 and H1L1 time from the same six weeks of data used for the PlotCumHist and PlotIFAR plots. Note that the H1L1V1 time decreases with increasing slide number whereas H1L1 time increases. This is a common feature; it is due to the vetoes sliding around (the plots shown are after CAT 2 and 3 vetoes have been applied). As described in section \ref{sec:second_thinca}, when vetoes slide around their alignment across \acp{IFO} changes. This causes times that were formely in triple coincidence to drop to double, and double to drop to single. Although double time loses time to single-\ac{IFO} time, it gains time from triple. No double time can be promoted to triple, however, because the third \ac{IFO} is off for the entire double-time segment. The net effect is that triple time only loses time while double time both loses and gains.
+
+Figure \ref{fig:sample_plotslide-rate} shows a sample rate-per-slide plot created bye PlotSlides. PlotSlides creates a separate plot for each coincidence type and all types combined (the color scheme for the zero-lag bar is the same as used by PlotIFAR). Shown is the rate of H1L1V1 triggers in H1L1V1 time.
+
+\subsection{PlotFM}
+
+None of the plots discussed so far make use of the injection runs. To make various plots showing found and missed injections Pipedown runs \verb|ligolw_cbc_plotfm|. PlotFM is a versatile program that can create scatter plots of many different variables. In its default mode it creates plots of injected \emph{decisive distance} versus chirp mass. Decisive distance is the second furthest effective distance; it is so-named because at least two \acp{IFO} are needed to create a coincidence. Thus, decisive distance is the main arbiter of whether or not we expect to see an injection. Figure \ref{fig:plotfm-dist_v_mchirp} shows an example decisive distance versus chirp mass plot. ``Found" injections (as determined by \verb|ligolw_inspinjfind|) that had combined \acp{FAR} equal to zero are plotted as blue stars. Injections found with non-zero combined \acp{FAR} are plotted as colored circles, where the color corresponds to the \acp{FAR}. Red crosses indicate ``missed" injections. These plots are therefore useful to check how sensitive the detectors are, and whether or not this matches what is expected from the \ac{PSD}. Nearby missed injections and close injections with poor \acp{FAR} are followed up. These can indicate a problem with an analysis, or can point to data quality issues that may be dealt with by vetoing.
+
+By making use of Python's \verb|eval| function, PlotFM can set the x- and y-axes to be any function of any of the columns in the \verb|sim_inspiral| table or \verb|coinc_inspiral| table. What functions to plot are set on the command line, or, if running in Pipedown, in the configuration file. Thus, PlotFM can create any number of desired plots found-missed plots, which are useful for investigating the effects of changing tuning parameters and the efficacy of new statistics on injections. As an example, Figure \ref{fig:plotfm-example_v_dt} shows two additional plots currently created when Pipedown runs. The top plot is the fractional difference in recovered and injected chirp mass versus the difference and recovered and injected end times. This gives an indication of what ``found" injections are actually injections and which ones are probably due to noise triggers that happen to be within the time window of the injection. The bottom plot shows the difference in recovered and injected end times for each injection type. Not surprisingly, the best recovery is for \ac{BNS} injections. This is because \ac{BNS} waveforms have the most inspiral cycles in band, allowing for the most accurate timing reconstruction.
+
+The second plot also shows that PlotFM can plot against strings as well as functions. Although the injection tag is not a column in the \verb|sim_inspiral| table, it adds the column in memory using the \verb|process_id|. Note that in this plot and in plot \ref{fig:plotfm-mchirp_frac_v_dt} there are no red crosses. Whenever a recovered parameter is plotted (which is any column in the \verb|coinc_inspiral| table), no missed injections are plotted since recovered parameters are undefined for them.
+
+PlotFM plots have been used for a number of other studies; see Chapter \ref{ch:s6_results} for examples.
+
+\subsection{PrintLC and MiniFollowups}
+
+While plotting programs are useful for quickly evaluating large amounts of data, exact information about specific triggers is hard to ascertain. To list more detailed information about events of interest we use \verb|ligolw_cbc_printlc|.
+
+PrintLC ranks triggers according to a given statistic --- say, combined \ac{FAR} --- then prints all the information stored in the \verb|coinc_inspiral|, as well as relevant information in the \verb|experiment| and \verb|experiment_summary| tables, for the top ten triggers. The output table can either be in html, xml, or ``wiki", in which case the table is formatted for use in the \ac{CBC} group's wiki page. When run in Pipedown a separate loudest event list is created for each instrument time and saved to an xml file. The naming convention is:
+\begin{footnotesize}
+\begin{verbatim}
+{INSTRUMENT-TIME}
+    -FULL_DATA_CAT_{N}_VETO_LOUDEST_{DATATYPE}_EVENTS_BY_{RANKING-STAT}_SUMMARY
+    -{GPS-START}-{DURATION}.xml
+\end{verbatim}
+\end{footnotesize}
+\verb|RANKING_STAT| is the ranking-stat used to rank the triggers (in our case, \verb|COMBINED_FAR|). \verb|DATATYPE| is one of \verb|ALL_DATA|, \verb|PLAYGROUND|, \verb|EXCLUDE_PLAY|, or \verb|SLIDE|; a separate file is created for each of these. These files only contain a single, customized \verb|loudest_events| table that contains the columns PrintLC prints. In addition to this file, Pipedown also has PrintLC generate a xml file containing all of the data tables, pared down so that they only contain information relevant to the loudest events. These additional files have the same naming convention, sans the \verb|_SUMMARY| part preceeding the \verb|GPS-START| time.
+
+PrintLC adds a column for the end time of the trigger in UTC, which doubles as a hyperlink to the \emph{daily} \ihope page for the day the trigger occurred on, and it replaces the \verb|coinc_inspiral| table's \verb|ifos| column with one that doubles as a hyperlink to the \emph{e-log} page for each \ac{IFO} on that day. The daily \ihope page is an automatically-generated html page that is created at the end of each day. The page is created by running a shortened version of \ihope; in this version, \verb|lalapps_inspiral| is run once with $\chi^2$ on using a smaller template bank. Additionally, no coincidence test is performed. The page is used as a \ac{DQ} tool to get a sense of how the \ac{CBC} search will respond to data on a given day, and to quickly assess the efficiency of automatically generated \ac{DQ} flags. Figure \ref{fig:sample-daily_ihope-slide} shows a screen shot of a sample page. For more details on daily ihope, see \cite{ref:Larne_thesis}. The e-log page is an online notebook used to keep track of events that occur at each of the observatories. Entries are added by operators, on-site instrumentalists, and visting scientists. These entries provide valuable insight into the causes of \ac{DQ} issues that would be difficult to ascertain from instrumentation alone. For example, if a truck drives on the site, someone will record it, or if a study of equipment is being done, explanations of the study and the results are added. A screen shot of a sample e-log page is shown in Figure \ref{fig:sample-elog-slide}.
+
+PrintLC has the ability to add single-\ac{IFO} information to the \verb|loudest_events| table in the summary file. We do this for slide triggers: since the \verb|sngl_inspiral| table contains the unslid end times, printing the single end times along with the coincident loudest slides, we can quickly see what events most hurt our search. This ability was one of the most useful applications of Pipedown: it allowed to use loudest-slide information to fine tune vetoes during \ac{S6}. For more details, see Chapter \ref{ch:s6_results}.
+
+After PrintLC has run, Pipedown runs \verb|minifollowups|. MiniFollowups takes for input the two xml files PrintLC generated for a given datatype and the cache file generated by \ihope. For every trigger in the \verb|SUMMARY| file, MiniFollowups uses the information stored in the full xml file to track how the time evolved through the pipeline. Relavant data files (using the cache file) and a \ac{SNR}-versus-time plot of the single \ac{IFO} triggers within $10\,$s of the event time is made for each stage (\verb|INSPIRAL_FIRST|, \verb|THINCA_FIRST|, \verb|INSPIRAL_SECOND|, \verb|THINCA_SECOND|) in the \ac{HIPE} pipeline. These plots are saved to an html page.
+
+MiniFollowups also launches \emph{Omega scans} of the \ac{GW} channel in each coincident \ac{IFO} around the time of the loudest events. Omega scans are a tool borrowed from the Burst group's Omega pipeline. The scan can provide time-frequency spectrograms of any of the detectors' data channels, including auxillary environmental monitors \cite{wiki.ligo.org/foswiki/bin/view/DetChar/OmegaScan}. It is therefore an often-used tool for data quality investigations. However, for speed and simplicity, MiniFollowups only has Omega scan the \ac{GW} channel in each detector (\verb|LDAS-STRAIN| in the \ac{LIGO} detectors, and \verb|h_16384Hz| in Virgo).
+
+After the ``minifollowup" page and Omega scans have finished, MiniFollowups adds links to the pages in \verb|mini followup| and \verb|omega scan| columns of the \verb|loudest_events| table in the \verb|SUMMARY| xml file (these columns were created by PrintLC, but not populated). The table is then converted to html format and saved so that it can later be viewed in a web-browser. The naming convention of the file is the same as the \verb|SUMMARY| xml file, with \verb|.xml| replaced with \verb|.html|.
+
+Figures \ref{fig:example-loudest_all_data_events} and \ref{fig:example-loudest_slide_events} show an example of what the loudest-events table looks like for the loudest \verb|all_data| and \verb|slide| events, respectively. Note that the single-\ac{IFO} information is added to the slide table. Figures \ref{fig:sample-minifup_hardware_inj} and \ref{fig:sample-omega_hardware_inj} show the minifollowup page and omega scan of the loudest \verb|all_data| event; Figures \ref{fig:sample-minifup_slide} and \ref{fig:sample-omega_slide} show the same for the loudest \verb|slide| event. In this case, the loudest \verb|all_data| event was a hardware injection. The chirp pattern can clearly be seen in the H1 scan (Figure \ref{fig:sample-omega_hardware_inj-H1}). Also note the sharp spike in triggers in the MiniFollowups plot. Contrast this to the \verb|slide| event: the L1 Omega scan is clearly not a chirp, and the MiniFollowup plot shows an elevated trigger rate in L1 around the time of the event.
+
+Note, however, that the lack of a noticeable chirp pattern in the Omega scan does not necessarily mean there is no signal there. Indeed, below a \ac{SNR} of about 10, it becomes difficult to see a pattern. This fact is made evident by the L1 Omega scan of the hardware injection (Figure \ref{fig:sample-omega_hardware_inj-L1}): while the \ac{SNR} in H1 is $\approx 24$, the \ac{SNR} in L1 is $\approx 9$ (most likely due to the injection's sky-position and orientation). As a result, no chirp can be seen in the L1 scan. This highlights an important point: all of these followup tools and scans are not used to determine if an event is from a gravitational wave. The probability an event is a \ac{GW} detection is based solely on the \ac{FAR}. Rather, the followup tools are used to better understand what types of glitches affect the performance of the pipeline. Glitches can thereby be classified; if an environmental or instrumental cause can be found, the detector can be fixed or vetoes can be created, thereby improving the search. 
+
+\subsection{PrintMissed and PrintSims}
+
+To get more details about found and missed injections, Pipedown runs \verb|ligolw_cbc_printmissed| and \verb|ligolw_cbc_printsims|. These programs are similar to PrintLC: they create tables detailing information about specific events. Instead of printing information about \verb|all_data| and \verb|slide| events, however, these programs print information about injections.
+
+PrintMissed lists information about missed injections. These are injections for which no coincident event could be found within the one second window used by \verb|ligolw_inspinjfind|. We are most interested in the closest missed injections, particularily if they are within the range that the \ac{PSD} suggests we should be be able to find them. Thus, when run in Pipedown, PrintMissed prints off the closest 10 missed injections by decisive distance. Since there are obviously no coincidenct \acp{IFO} for missed injections, the decisive distance is determined by taking the second farthest effective distance out the \acp{IFO} that were on (and not vetoed) during the injection. PrintMissed then returns all of the information stored in the \verb|sim_inspiral| table for that injection, along with information about the experiment from the \verb|experiment| and \verb|experiment_summary| table. Like PrintLC, PrintMissed also gives hyperlinks to the daily ihope and e-log pages for the day that the missed injection occurred on. 
+
+Figure \ref{fig:sample-printmissed} shows example tables produced by PrintMissed when run in Pipedown. For each injection type, two tables are generated: one that combines all of the injection runs together, and a separate table for each injection type. Figure \ref{fig:sample-printmissed_ALLINJ} shows the table with all injections together, and Figure \ref{fig:sample-printmissed_BNSLOGINJ} shows the table for the \verb|BNSLOGINJ| injection run. (In the analysis from which this table came, \texttt{BNSLOGINJ} were \ac{BNS} injections distributed uniformly in log distance.) Notice that in this second table there are mini-followup links and links to Omega scans. Like PrintLC, the PrintMissed results are saved to a summary table in either html, xml, or wiki format. When run in Pipedown the individual injection run tables are saved to xml and passed to MiniFollowups. As with the \verb|all_data| results, MiniFollowups creates a page summarizing how the injection fared through the pipeline and it launches Omega scans of the time surrounding the injection. The MiniFollowup page for injections contains additional information not found in the \verb|all_data| and \verb|slide| pages. A table of injected parameters is added, along with a table summarizing whether or not the injection was found or missed (using a time window as the arbiter) at each stage in the pipeline. Figure \ref{fig:sample-minifup_missedinj} shows a screen shot of this latter table and the \verb|INSPIRAL_FIRST| plot for a missed injection.
+
+When used in conjunction with PlotFM plots, these PrintMissed tables allow us to spot and quickly follow up injections that we think should have been found. For example, the found/missed plot shown in Figure \ref{fig:plotfm-dist_v_mchirp} is from the same analysis as the PrintMissed tables shown in Figure \ref{fig:sample-printmissed}. Looking at the plot, the closest missed injection (a red cross with a chirp mass of $\sim1.3$ at a decisive distance of about $30\Mpc$) is clearly in a range that it should have been found: other injections of the same mass and distance are all found with zero \acp{FAR}. Looking at the table in Figure \ref{fig:sample-printmissed_ALLINJ} we see that this is a \verb|BNSLOGINJ| injection; going to the table in \ref{fig:sample-printmissed_BNSLOGINJ} we can access its MiniFollowup page and Omega scans. The table and \verb|INSPIRAL_FIRST| plot shown in \ref{fig:sample-minifup_missedinj} are for this injection. In the \verb|INSPIRAL_FIRST| plot there appears to be some sort of transient in L1 a couple seconds before the injection. This is confirmed by the L1 Omega scan, which is shown in Figure \ref{fig:sample-omega_missedinj-L1}: a short-duration, broadband glitch is clearly visible $\sim2\,$s prior to the end time of the injection.\footnote{Note that the injection is not visible in the Omega scan. This is not because of it has small \ac{SNR}. Since software injections are only added to the data in memory by \texttt{lalapps\_inspiral}, they are not visible to Omega scans, which are generated from the frame files. The scans are centered on the end-time of the injection, however, and so we can get a sense of what was going on during the injection even if we cannot see the injection itself.} Going back to the MiniFollowup table in Figure \ref{fig:sample-minifup_missedinj-table} we see that injection was found well in both H1 and L1 at \verb|INSPIRAL_FIRST| and \verb|THINCA_FIRST|, but no trigger was found in L1 at \verb|INSPIRAL_SECOND|. We know that at \verb|SECOND_INSPIRAL| $\chi^2$ is calculated and the $\chi^2$ threshold and $r^2$ veto is applied. We thus have a picture of why the injection was missed: the glitch two seconds prior most likely inflated the injection's $\chi^2$ value, causing it to fail either the $\chi^2$ test or the $r^2$ veto. 
+
+PrintSims is used to list information about ``found" injections (as determined by \verb|ligolw_inspinjfind|). It can print all of the columns that are in the \verb|coinc_inspiral| table along with the matching injections' \verb|sim_inspiral| information. We are most interested in the closest ``quietest found" injections. Ideally, we would like to know more about the closest injections that have a \ac{FAR} larger than the loudest \verb|all_data| trigger. We cannot know this prior to opening the box, however; since the PrintSims results are used to check the pipeline, we must choose a different \ac{FAR}. Typically \ihope is run on periods that are a few weeks long. With 100 slides, this means that any injection that is quiter than the loudest slide event will have a combined \ac{FAR} of at least 1 per few years. Any event with that large of a \ac{FAR} would not be considered as a candidate detection. Thus, we define ``quietest found" as any injection that has a non-zero \ac{FAR}. Pipedown has PrintSims sort these by decisive distance. Like PrintMissed, two tables are created for each injection type: one for all the injections together, and one for each injection type. An example of each of these tables is shown in Figure \ref{fig:sample-printsims}. The individual injection-type tables are passed through \verb|minifollowups| and a MiniFollowup page similar to the missed injection's page is created, along with Omega scans. We can thereby followup quietest found injections in the same manner that we did the missed injections.
 
 \begin{table}[p]
 \label{tab:sngl_inspiral}
@@ -1039,3 +1118,187 @@ Column      &   Purpose     \\
 \caption{The columns of the \texttt{segment} table. Note: the nanosecond columns are not used in the segment database, and so are currently not used by \texttt{ligolw\_segment\_query}, \texttt{ligolw\_segments\_from\_cats}, nor any Pipedown programs. This may change in the future.}
 \end{table}
 
+\begin{figure}[p]
+\begin{center}
+\subfigure[Uncombined IFAR plot]{\label{fig:sample_plotifar_uncombined}\includegraphics[width=4.5in]{figures/H1L1V1-ligolw_cbc_plotifar_FULL_DATA_CAT_4_VETO_cumhist_uncombined_ifar_ALL_DATA_PLOTTED_OPEN_BOX-931035296-4763191.png}}
+\subfigure[Combined IFAR plot]{\label{fig:sample_plotifar_combined}\includegraphics[width=4.5in]{figures/H1L1V1-ligolw_cbc_plotifar_FULL_DATA_CAT_4_VETO_cumhist_combined_ifar_ALL_DATA_PLOTTED_OPEN_BOX-931035296-4763191.png}}
+\end{center}
+\label{fig:sample_plotifar}
+\caption{Sample IFAR plots created by \texttt{ligolw\_cbc\_plotifar}. Both plots taken from $\sim6$ weeks of \ac{S6} data, between GPS times 931035296 and 935798487. In both plots, the black dashed-line indicates the expected background distribution, yellow-shaded regions are the expected background $\pm \sqrt{N}$ and $\pm \sqrt{2N}$, and gray lines are slide distributions when treated as zero-lag. The blue triangles in the bottom plot indicate the zero-lag distribution of combined IFARs. The top plot shows the uncombined IFAR distribution, with each symbol representing a separate chirp-mass bin and each color a coincident \ac{IFO} combination. Colored dashed lines indicate maximum (minimum) background \ac{FAR} (IFAR).}
+\end{figure}
+
+\begin{figure}[p]
+\label{fig:sample_plotcumhist}
+\begin{center}
+\includegraphics[width=5in]{figures/H1L1V1-ligolw_cbc_plotcumhist_FULL_DATA_CAT_4_VETO_cumhist_combined_snr_sq_ALL_DATA_PLOTTED_OPEN_BOX-931035296-4763191.png}
+\end{center}
+\caption{Sample cumulative histogram created by \texttt{ligolw\_cbc\_plotcumhist}. Data taken from $\sim6$ weeks of \ac{S6} data, between GPS times 931035296 and 935798487. Despite the label, \emph{new} \ac{SNR} squared is plotted on the x-axis (not \ac{SNR}). The data is binned and the cumulative number of triggers with new \ac{SNR} greater-than or equal-to a given bin are plotted on they y-axis. Zero-lag triggers are indicated by blue triangles. The mean slide counts are indicated by the black crosses and the shaded regions show the standard deviation across the slides.}
+\end{figure}
+
+\begin{figure}[p]
+\begin{center}
+\subfigure[Sample duration-per-slide plot for H1L1V1 time.]{\label{fig:sample_plotslide-H1L1V1_duration}\includegraphics[width=4.5in]{figures/H1L1V1-ligolw_cbc_plotslides_FULL_DATA_CAT_4_VETO_durations_per_slide_ALL_DATA_PLOTTED-931035296-4763191.png}}
+\subfigure[Sample duration-per-slide plot for H1L1 time.]{\label{fig:sample_plotslide-H1L1_duration}\includegraphics[width=4.5in]{figures/H1L1-ligolw_cbc_plotslides_FULL_DATA_CAT_4_VETO_durations_per_slide_ALL_DATA_PLOTTED-931035296-4763191.png}}
+\end{center}
+\label{fig:sample_plotslide-duration}
+\caption{Sample duration-per-slide plots created by \texttt{ligolw\_cbc\_plotslides}. Both plots taken from $\sim6$ weeks of \ac{S6} data, between GPS times 931035296 and 935798487. The top plots shows the duration per slide for H1L1V1 time; the bottom, H1L1 time. These plots are after CAT3 (cumulative) vetoes have been applied. Gray bars show the duration in each slide; the blue bar shows the zero-lag duration. The black solid line is the mean duration and the dashed lines show the standard deviation.}
+\end{figure}
+
+\begin{figure}[p]
+\label{fig:sample_plotslide-rate}
+\begin{center}
+\includegraphics[width=5in]{figures/H1L1V1-ligolw_cbc_plotslides_FULL_DATA_CAT_4_VETO_H1L1V1_rates_ALL_DATA_PLOTTED_OPEN_BOX-931035296-4763191.png}
+\end{center}
+\caption{Sample trigger-rate-per-slide plot created by \texttt{ligolw\_cbc\_plotslides}. The data is from the same time as Figure \ref{fig:sample_plotslide-duration}. Shown is the rate of H1L1V1 triggers in H1L1V1 time in each slide. Gray bars indicate the rate in each slide; the purple bar shows the rate in zero-lag. (The color of the zero-lag bar is based on the coincident \acp{IFO}.) The black solid line shows the mean rate and the dashed lines the standard deviation.}
+\end{figure}
+
+\begin{figure}[p]
+\label{fig:plotfm-dist_v_mchirp}
+\begin{center}
+\includegraphics[width=6in]{figures/H1L1-ligolw_cbc_plotfm_fm_dist_v_param_ALLINJ_CAT_4_VETO_F1_ALLINJ_PLOTTED-956707143-4838544.png}
+\end{center}
+\caption{Sample decisive distance versus chirp mass plot for H1L1 time created by \texttt{ligolw\_cbc\_plotfm}. The data is taken from $\sim6$ weeks of \ac{S6} data, between GPS times 961545543 and 965174487. The blue stars are injections found with a combined \ac{FAR} equal to zero. The circles are injections found with non-zero combined \ac{FAR}; they are colored according to their combined \ac{FAR}. Missed injections are indicated by red crosses. The black dashed lines show the chirp mass boundaries used.}
+\end{figure}
+
+\begin{figure}[p]
+\begin{center}
+\subfigure[Chirp mass fractional difference versus end-time accuracy.]{\label{fig:plotfm-mchirp_frac_v_dt}\includegraphics[width=5in]{figures/H1L1-ligolw_cbc_plotfm_fm_lin_plots_ALLINJ_CAT_4_VETO_F3_ALLINJ_PLOTTED-961545543-3628944.png}}
+\subfigure[Injection type versus end-time accuracy.]{\label{fig:plotfm-injtag_v_dat}\includegraphics[width=5in]{figures/H1L1-ligolw_cbc_plotfm_fm_lin_plots_ALLINJ_CAT_4_VETO_F2_ALLINJ_PLOTTED-961545543-3628944.png}}
+\end{center}
+\label{fig:plotfm-example_v_dt}
+\caption{More examples of PlotFM plots. The data used and color-coding is the same as in figure \ref{fig:plotfm-dist_v_mchirp}.}
+\end{figure}
+
+\clearpage
+
+%\begin{table}[hp]
+%\label{tab:sample-loudest_all_data_events}
+%\begin{scriptsize}
+%\center
+%\begin{tabular}{| c | c | c | c | c | c | c | c | c | c | c | c | c |} 
+%\hline
+%\parbox[c]{1.1cm}{\center rank \\ (using \\ combined \\ far)} & \parbox[c]{1.1cm}{\centering combined \\ far} & fap & snr & end time & \parbox[c]{1.2cm}{\center end time utc} & ifos & mass & mchirp & \parbox[c]{1.1cm}{\centering mini \\ followup} & \parbox[c]{0.8cm}{\centering omega \\ scan} & \parbox[c]{1.1cm}{\centering all data \\ duration \\ (days)} \\
+%\hline \hline
+%1 & 0.0 & 0.0 & 22.29 & 962841819.07 & \parbox[c]{1.2cm}{\center Sun 11 \\ Jul 2010 \\ 00:03:24} & H1,L1 & 3.35 & 1.46 & link & H1 L1 & \\
+%\cline{1-11}
+%2 & 57.11 & 0.87 & 9.25 & 964110645.94 & \parbox[c]{1.2cm}{\center Sun 25 \\ Jul 2010 \\ 16:30:30} & H1,L1 & 20.95 & 3.34 & link & H1 L1 & \multirow{2}{*}{15.58} \\
+%\cline{1-11}
+%3 & 85.95 & 0.95 & 8.88 & 965116842.39 & \parbox[c]{1.3cm}{\center Fri 06 \\ Aug 2010 \\ 08:00:27} & H1,L1 & 12.29 & 4.32 & link & H1 L1 & \\
+%\hline
+%\end{tabular}
+%\end{scriptsize}
+%\end{table}
+
+\begin{figure}[p]
+\label{fig:example-loudest_all_data_events}
+\center
+\fbox{\includegraphics[width=6in]{figures/all_data-loudest_events/example-loudest_all_data_events.png}}
+\caption{An example \texttt{all\_data} loudest-events list created by PrintLC when run in Pipedown.}
+\end{figure}
+
+\begin{figure}[p]
+\begin{center}
+\subfigure[A screen shot of the MiniFollowup page.]{\label{fig:sample-minifup_hardware_inj-screenshot}\fbox{\includegraphics[height=3.8in]{figures/all_data-loudest_events/minifup-example_page.png}}}
+\subfigure[A close-up of the \texttt{INSPIRAL\_FIRST} MiniFollowup plot.]{\label{fig:sample-minifup_hardware_inj-inspiral_first}\includegraphics[width=4.8in]{figures/all_data-loudest_events/H1L1-FULL_DATA_CAT_2_VETO_FULL_DATA_map-INSPIRAL_FIRST-3_LOUDEST_ALL_DATA_EVENTS_BY_COMBINED_FAR_SUMMARY-962755143-1209744.png}}
+\end{center}
+\label{fig:sample-minifup_hardware_inj}
+\caption{The MiniFollowup page for the third event, a hardware injection, in the loudest events list shown in Figure \ref{fig:example-loudest_all_data_events}. The top figure shows a screen shot of the page. The bottom figure shows \texttt{INSPIRAL\_FIRST} plot from that page.}
+\end{figure}
+
+\begin{figure}[p]
+\center
+\subfigure[The H1 Omega scan.]{\label{fig:sample-omega_hardware_inj-H1}\includegraphics[width=5in]{figures/all_data-loudest_events/962841819_0703125_H1_LDAS-STRAIN_2_00_spectrogram_whitened.png}}
+\subfigure[The L1 Omega scan.]{\label{fig:sample-omega_hardware_inj-L1}\includegraphics[width=5in]{figures/all_data-loudest_events/962841819_062011718_L1_LDAS-STRAIN_2_00_spectrogram_whitened.png}}
+\label{fig:sample-omega_hardware_inj}
+\caption{The Omega scans of the hardware injection shown in Figure \ref{fig:sample-minifup_hardware_inj}.}
+\end{figure}
+
+\begin{figure}[p]
+\label{fig:example-loudest_slide_events}
+\center
+\fbox{\includegraphics[width=6in]{figures/slide-loudest_events/example-loudest_slide_events.png}}
+\caption{An example \texttt{slide} loudest-events list created by PrintLC when run in Pipedown.}
+\end{figure}
+
+\begin{figure}[p]
+\begin{center}
+\label{fig:sample-minifup_slide}
+\includegraphics[width=4.8in]{figures/slide-loudest_events/H1L1-FULL_DATA_CAT_3_VETO_FULL_DATA_map-INSPIRAL_FIRST-3_LOUDEST_SLIDE_EVENTS_BY_COMBINED_FAR_SUMMARY-961545543-3628944.png}
+\end{center}
+\caption{The \texttt{INSPIRAL\_FIRST} mini-followup plot for the first loudest slide event (the one on Friday July 2 2010) shown in Figure \ref{fig:example-loudest_slide_events}.}
+\end{figure}
+
+\begin{figure}[p]
+\center
+\subfigure[The H1 Omega scan.]{\label{fig:sample-omega_slide-H1}\includegraphics[width=5in]{figures/slide-loudest_events/962107614_839111328_H1_LDAS-STRAIN_2_00_spectrogram_whitened.png}}
+\subfigure[The L1 Omega scan.]{\label{fig:sample-omega_slide-L1}\includegraphics[width=5in]{figures/slide-loudest_events/962107809_823242187_L1_LDAS-STRAIN_2_00_spectrogram_whitened.png}}
+\label{fig:sample-omega_slide}
+\caption{The Omega scans of the slide event shown in Figure \ref{fig:sample-minifup_slide}.}
+\end{figure}
+
+\begin{figure}[p]
+\label{fig:sample-daily_ihope-slide}
+\begin{center}
+\fbox{\includegraphics[height=7in]{figures/slide-loudest_events/example-daily_ihope_slide.png}}
+\end{center}
+\caption{A screen shot of a daily \ihope page. This page is from the same day as the loudest slide event shown in Figures \ref{fig:sample-minifup_slide} and \ref{fig:sample-omega_slide}. It can be accessed from the loudest-events table by clicking on the \texttt{sngl end time utc} for the trigger. Shown is the rate, new \ac{SNR} and \ac{SNR} of triggers as a function of time for L1 after CAT1 vetoes have been applied. As evident from the side bar, there are several other plots and lists available for all the \acp{IFO} at various vetoes and clustering windows. For more details on daily \ihope see \cite{ref:Larne}.}
+\end{figure}
+
+\begin{figure}[p]
+\label{fig:sample-elog-slide}
+\begin{center}
+\fbox{\includegraphics[width=6in]{figures/slide-loudest_events/sample-elog.png}}
+\end{center}
+\caption{A screen shot of a L1 e-log. The day shown is from the same day as the loudest slide event shown in Figures \ref{fig:sample-minifup_slide} and \ref{fig:sample-omega_slide}. It can be accessed from the loudest-events table by clicking on the ``L1" in the \texttt{sngl ifo} column for the trigger.}
+\end{figure}
+
+\begin{figure}[p]
+\center
+\subfigure[All injections.]{\label{fig:sample-printmissed_ALLINJ}\fbox{\includegraphics[width=6in]{figures/missed_injection-example/example-printmissed_ALLINJ.png}}}
+\subfigure[The \texttt{BNSLOGINJ} table.]{\label{fig:sample-printmissed_BNSLOGINJ}\fbox{\includegraphics[width=6in]{figures/missed_injection-example/example-printmissed_BNSLOGINJ.png}}}
+\label{fig:sample-printmissed}
+\caption{Example tables produced by PrintMissed when run in Pipedown. The top table shows the 10 closest missed injections out of all of the injection runs. The bottom table shows the 10 closest missed injections in the \texttt{BNSLOGINJ} run. Note that in the second table, mini-followup and Omega scan links have been added.}
+\end{figure}
+
+\begin{figure}[p]
+\center
+\subfigure[A screen shot of the found/missed table produced by MiniFollowups.]{\label{fig:sample-minifup_missedinj-table}\fbox{\includegraphics[width=6in]{figures/missed_injection-example/example-missedinj_minifup.png}}}
+\subfigure[The \texttt{INSPIRAL\_FIRST} plot from the mini-followup page for this missed injection.]{\label{fig:sample-minifup_missedinj-plot}\includegraphics[width=5in]{figures/missed_injection-example/H1L1-BNSLOGINJ_CAT_4_VETO_BNSLOGINJ_map-INSPIRAL_FIRST-1_CLOSEST_MISSED_INJECTIONS_SUMMARY-961545543-3628944.png}}
+\label{fig:sample-minifup_missedinj}
+\caption{An example of the output produced by MiniFollowups when run on a missed injection. The top figure is a screen shot of the found/missed table that traces whether or not the injection was found, and with what parameters, at each stage in the pipeline. The bottom figure shows the \texttt{INSPIRAL\_FIRST} plot. This followup is for the closest missed injection shown in the tables shown in Figure \ref{fig:sample-printmissed}.}
+\end{figure}
+
+\begin{figure}[p]
+\center
+\subfigure[The H1 Omega scan.]{\label{fig:sample-omega_missedinj-H1}\includegraphics[width=5in]{figures/missed_injection-example/962109028_314747572_H1_LDAS-STRAIN_20_00_spectrogram_whitened.png}}
+\subfigure[The L1 Omega scan.]{\label{fig:sample-omega_missedinj-L1}\includegraphics[width=5in]{figures/missed_injection-example/962109028_306081057_L1_LDAS-STRAIN_20_00_spectrogram_whitened.png}}
+\label{fig:sample-omega_missedinj}
+\caption{The Omega scans of the missed \texttt{BNSLOGINJ} injection detailed in Figure \ref{fig:sample-minifup_missedinj}. The H1 scan is clean, but the L1 scan shows a short-duration broadband glitch $\sim2\,$s before the injection's end time (which is placed at $0\,$s on the spectrograms). The H1 (and possibly the L1) \ac{SNR} of the injection is large enough to be seen in Omega scan. Nothing is seen because Omega scans do not currenlty show software injections.}
+\end{figure}
+
+\begin{figure}[p]
+\center
+\subfigure[All injections.]{\label{fig:sample-printsims_ALLINJ}\fbox{\includegraphics[width=5in]{figures/example-printsims_ALLINJ.png}}}
+\subfigure[The \texttt{BNSLOGINJ} table.]{\label{fig:sample-printsims_BNSLOGINJ}\fbox{\includegraphics[width=5in]{figures/example-printsims_BNSLOGINJ.png}}}
+\label{fig:sample-printsims}
+\caption{An example of the tables produced by PrintSims when run in Pipedown. The top table shows a portion of the quiestest found table for all the injection runs. The bottom table shows a portion of \texttt{BNSLOGINJ} table. Note that in the latter table, mini-followup and Omega scan links have been added.}
+\end{figure}
+
+\clearpage
+
+\section{Tying it All Together: The \ihope Page}
+\label{sec:ihope_page}
+
+The completion of all of the MiniFollowup jobs marks the end of Pipedown, and therefore the end of the \ihope pipeline. By this point we have many files and plots containing a wealth of information sprawled across the \ihope directory. To bring all of these files together into one easy-accessible place, we run \verb|write_ihope_page|. This program copies the most useful plots and files to a directory that's accessible to all \ac{LSC} and Virgo members through the internet. It then generates a web page that displays the plots and tables in clickable menus. Figure \ref{fig:sample_ihope_page} shows a screen shot of one of these \ihope pages. Shown is the IFAR plot with hardware injections left in the data (note the arrow on the loudest zero-lag triggers, indicating they have zero \acp{FAR}) and the corresponding PrintLC table. Clicking on the links in the table will open up the other pages, such as the MiniFollowup page and the Omega scans. Note that this is only one subsection; the right menu bar provides links to many other sections summarizing playground data, all injection runs (which includes the PlotFM plots discussed above, along with the PrintMissed and PrintSims tables), and other auxillarily information about the run.
+
+The page shown in Figure \ref{fig:sample_ihope_page} is an open-box page. When we do a \ac{CBC} search, a closed-box \ihope page is initially generated. The format of the page is the same, but only plots and tables containing playground data are shown; \verb|all_data| information is off-limits (and the frog is not coming out of a box). Using this page, we check and followup the loudest slide triggers, as well as the missed and quietest found injections. If a new glitch class is found for which a cause can be determined, we create a veto for it (this would be a CAT2 or higher veto). We then re-run the \verb|THINCA_SECOND| stage and Pipedown, applying the new vetoes. The new closed box page is checked and, if everything looks good, an open-box page is generated. We then look at this page to see if we have found any gravitational waves.
+
+Pipedown and the \ihope page, in the current form described here, were not developed until after \ac{S6} had started. Prior to this, and for \ac{S5}, scripts were run by hand to do the equivalent steps. However, the results were not as easily accessible, and so this method of checking loudest slide triggers to develop vetoes was not implemented until after Pipedown was completed, in the latter-half of \ac{S6}. In Chapter \ref{ch:s6_results} we detail some of the vetoes and tuning decisions that were made as a result of these loudest slide studies.
+
+\begin{figure}
+\label{fig:sample_ihope_page}
+\begin{center}
+\fbox{\includegraphics[height=7in]{figures/IhopePage-example.png}}
+\end{center}
+\caption{A screen shot of an \ihope page.}
+\end{figure}
