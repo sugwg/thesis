@@ -4,7 +4,7 @@
 \vspace*{5mm}
 }
 
-\newcommand{\darmerr}{{\texttt DARM\_ERR} }
+\newcommand{\darmerr}{\texttt{DARM\_ERR} }
 
 As discussed in section \ref{sec:detection_statistics}, the CBC group
 measures the significance of candidate events by comparing the
@@ -22,12 +22,12 @@ seismic, as well as glitches within the instrument will also produce
 triggers.
 
 It is in the interest of the collaboration to remove as many of these
-triggers as possible so that any real events will stand out 
-well above the background.  This removal must be done in
-an automated way in advance of looking at the results from the
-analysis.  LIGO would be justly criticized if the background were
-to be adjusted after the analysis in order to make a marginal candidate
-appear more significant.
+triggers as possible so that any real events will stand out well above
+the background.  This removal must be done in an automated way in
+advance of looking at the results from the analysis.  The LIGO and
+Virgo collaborations would be justly criticized if the background were
+to be adjusted after the analysis in order to make a marginal
+candidate appear more significant.
 
 There is therefore a need for a process of detector characterization
 (henceforth ``detchar''), a way to remove times from the analysis that
@@ -43,7 +43,7 @@ Detchar was a major undertaking, much more information can be found in
 (Smith and Lundgren in progress).  Three primary tools were run
 continuously or with low-latencies to provide views into the data,
 although these were supplemented with numerous short special-purpose
-scripts.  Two of these tools, the Kline-Welle pipeline~\cite{} and the
+scripts.  Two of these tools, the klinewelle pipeline~\cite{} and the
 Omega pipeline~\cite{} project data onto a wavelet basis and identify
 as triggers times and frequencies with amplitudes above a given
 threshold.  Both these tools were run on many auxiliary channels in
@@ -292,7 +292,7 @@ triggers.  The results were plotted to indicate whether each injection
 was found, missed, or not analyzed.
 
 
-\weakheader{4. Hardware injections}
+\weakheader{4. SNR histograms}
 
 These plots show the number of triggers as a function of SNR and new
 SNR.  As noted in section \ref{sec:ihope_match_filter}, in Gaussian
@@ -347,7 +347,7 @@ quality has removed non-Guassian noise.}
   \caption[Trigger new SNR histograms for H1]{
   \label{f:daily_ihope_gaussianity_newsnr}
 Sample trigger histograms by new SNR. The data is much cleaner than
-the new SNR histograms, but there is still an outlier.}
+the SNR histograms, but there is still an outlier at $\newsnr=8$.}
 \end{figure}%
 
 
@@ -478,7 +478,7 @@ entire bank.
 
 \weakheader{8.  The $\chisq$ test}
 
-These plots showed all triggers in with SNR values on the $x$-axis and
+These plots showed all triggers with SNR values on the $x$-axis and
 $\chisq / (2p-2)$ (the reduced $\chisq$) on the $y$-axis as a way to
 visualize the glitchiness of the data.  These plots are most useful
 when compared to a reference plot generated from a day of simulated
@@ -517,15 +517,16 @@ Early in S6 there were frequent instances where the full analysis ran
 into difficulty.  This was characterized by individual programs taking
 abnormally long to complete, consuming far more than the expected
 amount of memory, or failing outright.  The problematic jobs tended to
-be {\texttt trigbank} instances; this is the step where triggers from
-the first stage are examined to determine which templates need to be
-used at the second stage (see figure~\ref{f:hipe}).  Comparing the
-times that caused problems to the daily pages immediately revealed a
-correlation -- times over which trigscan were unable to run were those
+be individual runs of the \texttt{trigbank} program (see
+figure~\ref{f:hipe}); this is the step where triggers from the first
+stage are examined to determine which templates need to be used at the
+second stage (see figure~\ref{f:hipe}).  Comparing the times that
+caused problems to the daily pages immediately revealed a correlation
+-- times over which \texttt{trigbank} were unable to run were those
 where the rates of triggers were abnormally high.
 
 In S5 and the early weeks of S6 triggers were clustered using a method
-called {\emph trigscan}~\cite{SenguptaTrigScan:2008} which attempts to
+called \emph{trigscan}~\cite{SenguptaTrigScan:2008} which attempts to
 collapse clusters of triggers that are close in time and parameters to
 a single most-significant trigger.  Early versions of the daily page
 did this clustering as well, and comparison between the unclustered
@@ -540,7 +541,7 @@ pN templates (see section~\ref{sec:bank_metric}).  Some preliminary
 investigations were performed, but results were inconclusive}.  This
 is illustrated in figure~\ref{f:daily_ihope_high_rates}.  There is a
 short period of high trigger rate around 05:40 which remained high
-after clustering.  A {\texttt trigbank} instance processing this time was
+after clustering.  A run of \texttt{trigbank} processing this time was
 unable to complete.
 
 The possibility of vetoing such glitchy periods was raised, and this
@@ -557,6 +558,13 @@ efficiency.
   \includegraphics[width=0.5\linewidth]{figures/detchar/20090806_H1_0_TS_CLUSTERED_rate_vs_time}
   \caption[Problematic times identified by daily ihope]{
   \label{f:daily_ihope_high_rates}
+Problematic times identified by daily ihope.  The plot on the left
+shows the rate of triggers over the day without any clustering.  Note
+the sudden jump in rate at 5:40.  On the right, the same plot after
+clustering triggers with the trigscan algorithm.  The overall rate has
+been reduced by about a factor of two, indicated by the different
+scales on the y axes.  However, the rate remains high enough to cause
+problems.
 }
 \end{figure}%
 
@@ -619,15 +627,15 @@ the group during reviews of these studies.
 As patterns emerged from these results members of the detector
 characterization group would work with the commissioners to identify
 the underlying causes, and simultaneously work with data analysts to
-develop and test vetoes.  Often these vetoes were verified against the
-by running a script, {\texttt lalapps\_check\_flag} which, given a
-file containing veto segments and a time range it would report on the
+develop and test vetoes.  Often these vetoes were verified by running
+a script, \texttt{lalapps\_check\_flag} which, given a file
+containing veto segments and a time range would report on the
 efficiency and deadtime of the veto by applying it to the daily ihope
 triggers over the specified time range.  The file could be generated
 from an existing flag in the database using {\texttt
-ligolw\_dq\_query} (see chapter~\ref{ch:segdb}), or it could be generated
-by a script looking at auxiliary channel information provided by 
-Omega or Kline-Welle triggers.
+ligolw\_dq\_query} (see chapter~\ref{ch:segdb}), or it could be
+generated by a script looking at auxiliary channel information
+provided by Omega or klinewelle triggers.
 
 We now give examples of the use of daily ihope in constructing vetoes
 at each level.
@@ -640,11 +648,11 @@ The design of the LIGO mirrors accounted for the fact that in
 operation they would be heated by the laser and the radius of
 curvature would change.  However, in S6 as we moved to higher laser
 power the mirror's absorption of energy was larger than expected and
-the overheated and deformed more than expected~\cite{}.  To correct
-for this a compensating laser was added that would heat the mirror in
-a ring in order to restore the radius of curvature to an optimal
-value.  However, this laser would occasionally glitch, kicking the
-mirror and producing loud noise in the detector.
+the mirror overheated and deformed more than expected~\cite{}.  To
+correct for this a compensating laser was added that would heat the
+mirror in a ring in order to restore the radius of curvature to an
+optimal value.  However, this laser would occasionally glitch, kicking
+the mirror and producing loud noise in the detector.
 
 The identification of these glitches was straightforward; they were
 often the loudest glitches of the day and were readily visible in the
@@ -750,23 +758,38 @@ channels that were associated with this class of glitch.
 
 The spike glitch was a very loud, very short ``bang'' in the
 Livingston detector, characterized by a sudden drop in \darmerr
-immediately followed by a sharper increase.  In some cases there were
-a few cycles of ringing before the channel settled back down.  These
-often produced SNR values of several thousand.  The $\chisq$ values
-were typically large for the events themselves, resulting in
-negligible $\newsnr$ values.  However, the triggers in the tails (see
+immediately followed by a sharp increase.  An example is shown in
+figure~\ref{f:spike_glitch_example}.  In some cases there were a few
+cycles of ringing before the channel settled back down.  These often
+produced SNR values of several thousand.  The $\chisq$ values were
+typically large for the events themselves, resulting in negligible
+$\newsnr$ values.  However, the triggers in the tails (see
 section~\ref{ssec:penguins}) could have large new SNR values.  A
 sample daily ihope plot with several spike glitches and representative
 omega scans are shown in figure~\ref{f:daily_spikes}.
 
+\begin{figure}
+  \includegraphics[width=\linewidth]{figures/detchar/spike_glitch_example}
+  \caption[The spike glitch]{
+  \label{f:spike_glitch_example}
+A sample spike glitches in \darmerr.  Note the characteristic
+down-up-down pattern, and short timespan.}
+\end{figure}%
+
 Despite a great deal of effort by lots of people, the cause of these
 glitches was never identified.  However, the distinctive shape allowed
-the creation of an automated veto.  {\texttt LSC\_STRAIN} was sampled
-every half-millisecond and the for each sample $i$ the quantity $x_i -
-2 x_{i+1} + x_i$ was calculated, values exceeding a threshold
-indicated a possible spike and the time was flagged in the segment
-database.  Not every time so-flagged was a spike, but every instance
-indicated a potentially problematic rapid fluctuation in the data.
+the creation of an automated veto.  \texttt{LSC\_STRAIN} was sampled
+every half-millisecond, giving a time series $x_i$.  For each sample
+$i$ the quantity 
+
+\begin{equation*}
+x_i - 2 x_{i+1} + x_{i+2} 
+\end{equation*}
+
+was calculated, values exceeding a threshold indicated a possible
+spike and the time was flagged in the segment database.  Not every
+time so-flagged was a spike, but every instance indicated a
+potentially problematic rapid fluctuation in the data.
 
 
 
@@ -796,7 +819,7 @@ create data quality segments.
 
 \weakheader{HEPI glitches}
 
-Livingston is subject to seiesmic activity, both natural and
+Livingston is subject to seismic activity, both natural and
 anthropogenic, that does not effect the Hanford detector.  In order
 for the L1 detector to achieve the same low-frequency response it is
 therefore necessary to take additional steps.  The Hydraulic External
@@ -911,12 +934,13 @@ daily ihope.  The resulting analysis was rerun weekly.
 % Accompanied by rate > 500 Hz (=866) for 4 seconds, slight elevation in SNR
 
 An example is shown in figure~\ref{f:daily_upv}.  During the week
-including this day UPV determined that a particular instrumental
-channel had a high correlation with daily triggers.  This is a 
-quiet glitch, with an SNR of 6.5, and it would have taken
-considerable effort to track down manually.  However, it is
-accompanied by 4 seconds of elevated trigger rates which could have
-impacted the search and should therefore be flagged at category 4.
+including this day UPV determined that the instrumental channel
+\texttt{ASC-WFS2\_IY} \Note{brief description} had a high correlation
+with daily triggers.  This is a quiet glitch, with an SNR of 6.5, and
+it would have taken considerable effort to track down manually.
+However, it is accompanied by 4 seconds of elevated trigger rates
+which could have impacted the search and should therefore be flagged
+at category 4.
 
 \begin{figure}
   \includegraphics[width=0.5\linewidth]{figures/detchar/20100506_H1_0_UNCLUSTERED_rate_vs_time}
@@ -990,13 +1014,13 @@ This is another indication that L1 was glitchier overall.}
 \subsection{Non-vetoed time}
 
 It is at least as important to preserve time in which a detection
-could be made as it is to veto time that would prevent a detection.
-On occasion there were potential problems seen in results from
-another pipeline or reported by scimons or operators that daily ihope
-confirmed were not a problem for the CBC low-mass search (though they
-might have been problematic for other searches).  One example is shown
-in figure~\ref{f:non_vetoed_time}.  The omega pipeline reports excess
-noise at 200Hz, which was traced to runoff from a nearby damn.  The
+could be made as it is to veto problematic time.  On occasion there
+were potential problems seen in results from another pipeline or
+reported by scimons or operators that daily ihope confirmed were not a
+problem for the CBC low-mass search (though they might have been
+problematic for other searches).  One example is shown in
+figure~\ref{f:non_vetoed_time}.  The omega pipeline reports excess
+noise at 200Hz, which was traced to runoff from a nearby dam.  The
 corresponding daily ihope report shows no issues with excess or loud
 triggers, and the day was able to be analyzed.
 
@@ -1157,10 +1181,15 @@ to be glitchier over the course of S6.
   \includegraphics[width=0.5\linewidth]{figures/detchar/LM_L1_30MILLISEC_3_hist.png}
   \caption[Significance of the injection in the low-mass bin]{
   \label{f:daily_histogram_low}
-Significance of the blind injection in the low-mass bin in 
-H1 (left) and L1 (right).  Note the cumulative counts levels off
-around between 5 and 5.5, indicating that there are few triggers with
-smaller values.}
+Significance of the blind injection in the low-mass bin in H1 (left)
+and L1 (right). Results are shown as cumulative histograms.  The plots
+flatten out at low SNRs due the selection of triggers from the SNR
+time series, discussed in
+section~\ref{sec:analysis_trigger_selection}.  The red lines are the
+new SNR reported by the full ihope run (after coincidence).  The green
+lines are the loudest trigger in new SNR found at the first stage of
+the ihope analysis (before coincidence).  The blue lines are the new
+SNR values of the injection found by daily iHope (no coincidence).}
 \end{figure}%
 
 
@@ -1176,7 +1205,7 @@ around between 5 and 5.5, indicating that there are few triggers with
 smaller values.}
 \end{figure}%
 
-
+\iffalse
 From these results we can attempt to estimate a false alarm rate for
 the injection as follows.   Model coincident triggers as a Bernoulli
 trial where ``success'' is obtaining a coincidence with combined new
@@ -1287,7 +1316,7 @@ A = \frac{\pi}{2} \sigma_x \sigma_y \left[
 \end{equation}
 
 where $\erf$ is the error function.  The probability of obtaining a
-trigger with combined new SNR larger then the injection is then
+trigger with combined new SNR larger than the injection is then
 
 \begin{align*}
 P &= 1 - \frac{\pi\sigma_L \sigma_H}{2 A} \bigg[
@@ -1411,6 +1440,8 @@ single-ifo triggers.  In particular the two-stage nature of the full
 analysis introduces several complication.  However, this analysis does
 suggest an alternative method to estimate FARs for a single-stage
 pipeline which is currently in development.
+\fi
+
 
 \subsection{Front-end code verification}
 
@@ -1481,11 +1512,11 @@ numerous triggers with lower SNRs.  This same effect may be seen by
 comparing rate-vs-time and SNR-vs-time plots such
 as~\ref{f:daily_ihope_grid}; loud glitches correlate with an increase
 in trigger rates.  In part this behavior is expected.  Many glitches,
-notably the spike glitch, are loud enough and sharp enough that they
-may be roughly modeled as impulses.  The impulse response of the match
-filter (eqn.~\ref{eq:InnerProduct}) is the time-reversed template
-convolved with a function of the noise curve.  A loud glitch will
-therefore elevate the SNR time series for every template in the bank.
+notably the spike glitch, are sharp enough that they may be roughly
+modeled as impulses.  The impulse response of the match filter
+(eqn.~\ref{eq:InnerProduct}) is the time-reversed template convolved
+with a function of the noise curve.  A loud glitch will therefore
+elevate the SNR time series for every template in the bank.
 
 Recall from chapter~\ref{ch:search} that triggers are selected from
 the SNR time series by finding the largest value above threshold in a
@@ -1544,7 +1575,7 @@ described more fully in~\cite{findchirp}.  This behavior can be
 understood qualitatively as follows.
 
 For simplicity denote the square root of the inverse PSD,
-$(S_n(|f|))^{-1/2}$ as $\tilde{S}(f)$, and it's inverse Fourier
+$(S_n(|f|))^{-1/2}$ as $\tilde{S}(f)$, and its inverse Fourier
 transform in the time domain as $S(t)$.  Likewise, denote the
 frequency-domain template as $\tilde{h}(f)$ as usual, and its inverse
 Fourier transform as $h(t)$.  Finally, let $W(t)$ be a windowing
