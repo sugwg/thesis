@@ -9,10 +9,10 @@ However, NINJA-1 only began the process of testing detection and
 parameter estimation pipelines against realistic signals.  The
 follow-up project, NINJA-2, is ongoing as of the time of writing.
 NINJA-2 aims to remove some of the shortcomings of NINJA-1 and allow
-quantitative studies of the behaviors of pipelines in varying regions
-of signal parameter space.  Specifically, NINJA-2 addresses issues
-with both the waveform submissions and the noise used to construct the
-data sets.
+quantitative studies of the performance of gravitational-wave searches
+in varying regions of signal parameter space.  Specifically, NINJA-2
+addresses issues with both the waveform submissions and the noise used
+to construct the data sets.
 
 This chapter describes the contributed waveforms and the studies that
 have been performed to validate them.  The next chapter will discuss
@@ -28,19 +28,22 @@ requirements allowed for the possibility of unphysical features in the
 waveforms.  There were also no requirements to perform the kind of
 convergence testing reported in section~\ref{sec:PNNRHybridWaveform},
 although such validation is typically done by numerical
-relativistists.  The loose requirements limited the conclusions that
+relativists.  The loose requirements limited the conclusions that
 could be drawn, for example it makes it difficult to say whether an
 injection was missed due to the parameters of the signal or an
 unintended feature of the waveform.
 
 The lack of length requirement limited the available mass range to $M
 < 36 \msun$ for reasons that can be seen in
-figure~\ref{fig:StildesAndInitialPSD}.   Had the waveform in that plot
-not had a post-Newtonian component, the NR component to the right of
-the triangles would have had to be placed below 40 Hz in order to
-prevent turning on in-band.  This mass range limited the tests that
-could be done, for example it entirely excludes the standard CBC
-low-mass pipeline.
+figure~\ref{fig:StildesAndInitialPSD}.   (\Note{Remake plot with a
+NINJA-2 waveform}). Had the waveform in that plot not had a
+post-Newtonian component, the NR component to the right of the
+triangles would have had to be placed below 40 Hz in order to prevent
+turning on in-band.  This mass range limited the tests that could be
+done, for example it entirely excludes the standard CBC low-mass
+pipeline\footnote{Although a serendipitous result of this limitation
+was the discovery that the standard pipeline was able to detect
+signals outside its mass range}.
 
 To address these issues NINJA-2 specifies the following minimal
 requirements~\cite{ninja2-wiki}.  The raw numerical simulation should
@@ -48,20 +51,19 @@ include at least five orbits of usable data before merger (i.e., not
 counting bursts of junk radiation or other significant noise).  Given
 the computation cost of extending the NR waveforms, we instead require
 stitching to a post-Newtonian inspiral approximant, which should be
-performed at a GW frequency of $M\omega \leq 0.075$, where $M\omega$ is
-the frequency of the $(l = 2, m = \pm 2)$ harmonic. The full waveform
-should be long enough to be entirely within the sensitivity bands of
-LIGO and Virgo down to $10 \msun$ with a lower cutoff frequency of 10
-Hz, which corresponds to a starting GW frequency of $M\omega = 0.003$.
-The numerical-waveform (before any hybridization) amplitude should be
-accurate to within 5\%, and the phase (as a function of GW frequency)
-should have an accumulated uncertainty over the entire inspiral,
-merger and ringdown, of no more than 0.5 radian. The PN approximants
-used for hybridization should ideally use the highest PN orders
-available, both in phase and amplitude.  
-
-These minimal accuracy requirements are motivated by the results of
-the Samurai project~\cite{Hannam:2009hh}, and studies performed in
+performed at a GW frequency of $M\omega \leq 0.075$, where $M\omega$
+is the frequency of the $(l = 2, m = \pm 2)$ harmonic. The full
+waveform should be long enough to be entirely within the sensitivity
+bands of LIGO and Virgo down to $10 \msun$ with a lower cutoff
+frequency of 10 Hz, which corresponds to a starting GW frequency of
+$M\omega = 0.003$.  The numerical-waveform (before any hybridization)
+amplitude should be accurate to within 5\%, and the phase (as a
+function of GW frequency) should have an accumulated uncertainty over
+the entire inspiral, merger and ringdown, of no more than 0.5 radian.
+The PN approximants used for hybridization should ideally use the
+highest PN orders available, both in phase and amplitude.  These
+minimal accuracy requirements are motivated by the results of the
+Samurai project~\cite{Hannam:2009hh}, and studies performed in
 preparation for the NR-AR collaboration project~\cite{ninja-wiki}.
 
 The NINJA-2 project encourages although does not require the addition
@@ -328,13 +330,13 @@ standard data-analysis techniques, in particular the overlap defined
 in equation~\ref{eq:OverlapDefinition}  using the initial LIGO noise
 curve.  The waveforms were grouped into sets with identical
 parameters.  For each set one waveform was chosen as the reference and
-the overlap with all the other waveforms calculated over a range of
+the overlap with all the other waveforms was calculated over a range of
 masses, optimizing over the unknown coalescence time and phase as
 usual.  This process was then repeated, taking each of the other
 waveforms as the reference in turn.
 
 There is an important subtlety involved in calculating these overlaps.
-Recall from section~\ref{sec:ihope_matched_filter} that the output of
+Recall from section~\ref{sec:ihope_match_filter} that the output of
 the matched filter is a time series from which the point with the
 largest value is chosen in order to maximize over time.  When
 comparing two very similar waveforms, such as two numeric simulations
@@ -348,10 +350,10 @@ of two equal-mass, non-spinning waveforms sampled at four different
 rates.  At 40906 Hz, the sample rate used within the LIGO pipeline,
 the peak of the function is missed and the overlap is underestimated.
 The consequence of this is illustrated in
-figure~\ref{f:overlap_wiggles} which shows that the overlaps as a
+figure~\ref{f:overlap_wiggles} which shows that the overlap as a
 function of mass exhibit oscillations.  The mass determines the length
 of the waveform, as this length changes the waveforms slide with
-respect to the sampling, and the overlap as a function of mass traces
+respect to the grid of sample points, and the overlap function traces
 out this beating.  Consequently, all overlaps in this chapter were
 calculated at 32768 Hz.
 
@@ -401,7 +403,7 @@ these were used in the majority of the hybrid waveforms.
 \end{figure}%
 
 A sample set of overlaps, comparing all equal-mass, non-spinning
-waveforms submissions is shown in figure~\ref{ninja2_overlap_test}.
+waveforms submissions is shown in figure~\ref{f:ninja2_overlap_test}.
 
 At the high-mass end, where the numeric portion of the waveform
 dominates the overlap, the overlaps approach 1.  This is as expected,
@@ -417,7 +419,7 @@ lower than would be expected based on pN considerations alone.
 
 In the region of $\approx 20 \msun$ all the overlaps drop, some more
 significantly than others.  This is the region where the hybridization
-region is passing through the sensitive band.  The goal of
+is passing through the sensitive band.  The goal of
 hybridization is to smoothly interpolate between the pN and NR
 waveforms, and in cases where the pN and NR separately agree we would
 expect this agreement to extend through the hybridization region.  We
@@ -435,10 +437,9 @@ after rehybridizing there are still mismatches.  In particular, the
 SpEC and MayaKranc submissions use the same hybridization method, the
 same pN approximant and are simulating the same physical system.  The
 only differences are the length of the NR waveforms and the
-frequencies at which the hybridization is performed \Note{get these
-values}.  The question of how many NR cycles are needed in order to
-produce a robust hybrid waveform is an area of active
-research~\cite{MacDonald:2011}. 
+frequencies at which the hybridization is performed.  The question of
+how many NR cycles are needed in order to produce a robust hybrid
+waveform is an area of active research~\cite{MacDonald:2011}. 
 
 \begin{figure}
   \includegraphics[width=0.5\linewidth]{figures/ninja2/q_1_z_0_figure03}
@@ -469,7 +470,7 @@ that these waveforms can be found in searches.
 
 We also extended these overlap studies by maximizing over the mass of
 one of the waveforms, as well as the time and phase.  This addresses
-the ``parameter estimation'' question, the bias in the recovered mass
+the ``parameter estimation question,'' the bias in the recovered mass
 gives an estimate of the minimum error that can be expected in
 parameter estimation pipelines.  Example plots using the equal-mass,
 non-spinning MayaKranc waveform as the signal and BAM plus two
@@ -497,7 +498,7 @@ the overlap.}
 At the high-mass end the overlap is dominated by NR data, and as in
 figure~\ref{f:ninja2_overlap_test} the overlaps are high without
 needing to move off the signal mass.  At the low-mass end the same
-result would be expected in a pure pN/pN comparison.  However, there
+result would be expected in a pure pN/pN comparison although there
 is enough of the hybridization in-band to reduce the overlaps.  However,
 changing the mass introduces a phase difference that accumulates over
 all the cycles in-band, and so higher overlaps can not be achieved.
@@ -509,9 +510,9 @@ overlap is reduced less by changing the mass and so the recovered
 value can stray further from the injected value.  However as the
 hybridization passes out of band this adjustment is no longer needed.
 
-The same general bahvior can be seen in comparisons between 
+The same general behavior can be seen in comparisons between 
 non-spinning, unequal-mass ($q=2$) waveforms, shown in
-figure~\ref{f:max_over_m_q2}.  However, the overlaps drop slightly at
+figure~\ref{f:max_over_m_q2}.  However, the overlaps drop slightly 
 above $\approx 60 \msun$, suggesting a disagreement in the NR portion
 of the waveforms.
 
@@ -523,7 +524,7 @@ scaling of one of the waveforms, but more study is needed.
 
 
 \begin{figure}
-  \includegraphics[width=0.5\linewidth]{figures/ninja2/maya_bam_q2_max_over_m} 
+  \includegraphics[width=\linewidth]{figures/ninja2/maya_bam_q2_max_over_m} 
   \caption[Overlaps between unequal-mass submissions maximized over mass]{
   \label{f:max_over_m_q2}
 Overlaps (indicated by color) between the $q=2$ non-spinning MayaKranc
@@ -539,7 +540,7 @@ to differences in the NR waveforms.}
 
 
 \begin{figure}
-  \includegraphics[width=0.5\linewidth]{figures/ninja2/maya_llama_z0d4_max_over_m}
+  \includegraphics[width=\linewidth]{figures/ninja2/maya_llama_z0d4_max_over_m}
   \caption[Overlaps between spinning submissions maximized over mass]{
   \label{f:max_over_m_z4}
 Overlaps (indicated by color) between the equal-mass $s_{1z} = s_{2z}

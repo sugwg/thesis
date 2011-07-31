@@ -31,7 +31,7 @@ waveform are distorted due to aliasing of power to lower frequencies.
 \end{figure}%
 
 Note that this is a different issue from the one that motivated
-performing the waveform overlaps at 16384 Hz, discussed in
+performing the waveform overlaps at 32768 Hz, discussed in
 section~\ref{ssec:ninja2_overlap_comparisons}.  The issue there was
 that undersampling could miss the maximum of the overlap function.
 The issue here is that undersampling can distort the end of the
@@ -77,7 +77,7 @@ Four NINJA-2 data sets were released:
 
 \begin{itemize}
 \item A test set consisting of one week of data was released on May 13, 2010.  This
-included three separate sets spanning different mass regions,
+included three separate sets spanning different mass regions;
 low-mass ($10\msun - 40 \msun$), high-mass ($35 \msun - 100 \msun$)
 and a burst/ringdown set ($80 \msun - 350 \msun$).  This purpose of
 this run was to shake out bugs in the injection code and waveforms,
@@ -85,14 +85,14 @@ several of which were found.
 
 \item A second test set consisting of one week of data for each of the
 three mass bins was released on May 31, 2010.  This was meant to test
-to the fixes implemented after the first test set, and to do more
+the fixes implemented after the first test set, and to do more
 careful sanity checks.  Some results from this run are discussed in
 section~\ref{sec:ninja2_test_week}.
 
-\item Based on positive results from analyses of the test weeks, full
-two-month data sets for all three mass bins were released on June 9,
-2010.  Unfortunately shortly release a remaining major bug in the
-injection software was discovered.  Data is stored in frame files
+\item Based on positive results from analyses of the second test week,
+full two-month data sets for all three mass bins were released on June
+9, 2010.  Unfortunately shortly after release a remaining major bug in
+the injection software was discovered.  Data is stored in frame files
 spanning 4096 seconds.  When an injection crossed frame boundaries
 this bug would cause the portion contained in the earlier frame to be
 omitted.  This happened in enough cases to invalidate the entire data
@@ -148,7 +148,7 @@ be resolved before this can be done, however the key results from
 NINJA-2 will come from on-the-fly injections into real noise.
 
 \section{CBC Results from the second one-week data set}
-\label{sec:ninja2_test_week}.
+\label{sec:ninja2_test_week}
 
 As noted above, two one-week data sets were produced for testing the
 injection code and performing sanity checks on the results.  Here we
@@ -180,22 +180,24 @@ stationary-phase templates taken to 3.5 pN order in phase evolution.
 The first result of interest is the found/missed plots at the first
 stage, before the $\chisq$ test or coincidence between detectors has
 been applied.  The result for the H1 detector is shown in
-figure~\ref{f:first_stage}.  This can give some indication of how
-well the waveforms and the bank capture the signals.  However, it can
-also be misleading.  The pipeline considers an injection to be
-``found'' if there is a trigger within 100 ms of the injection time.
-No parameter matching is required.  This means a quiet trigger
-resulting from the noise can be mistaken for finding the injection.
-To see how often this can happen we also ran the analysis on frames
-containing only the noise, without any injected signals.  This is also
-shown in figure~\ref{f:first_stage}, and indeed many of the
-reportedly found injections can be seen to be coming from the noise.
-Both $\chisq$ and coincidence will cut down the number of false
-reports, in figure~\ref{f:second_stage} we show the found/missed plots
-for H1 after the coincidence test, and many of the triggers coming
-from the background have been removed.  At the second stage the
-results are sensible, the ability of the pipeline to recover the
-injections falls off as the effective distance increases.
+figure~\ref{f:first_stage}.  This can give some indication of how well
+the waveforms and the bank capture the signals.  However, it can also
+be misleading.  The pipeline considers an injection to be ``found'' if
+there is a trigger within 100 ms of the injection time.  No parameter
+matching is required.  This means a quiet trigger resulting from the
+noise can be mistaken for finding the injection.  To see how often
+this can happen we also ran the analysis on frames containing only the
+noise, without any injected signals.  This is also shown in
+figure~\ref{f:first_stage}, and indeed many of the reportedly found
+injections can be seen to be coming from the noise.  Both $\chisq$ and
+coincidence will cut down the number of false reports, in
+figure~\ref{f:test_found_missed} we show the found/missed plots for
+all three detectors after the coincidence test, and many of the
+triggers coming from the background have been removed.  At the second
+stage the results are sensible, the ability of the pipeline to recover
+the injections falls off as the effective distance increases.  There
+are however a few close missed injections that would warrant follow up
+study in a full search.
 
 
 \begin{figure}
@@ -344,13 +346,13 @@ a region defined by minimum component masses of $1 \msun$, minimum
 total mass of $25 \msun$, and maximum total mass of $100 \msun$.
 
 
-Figure~\ref{f:ninja_cbc_results_high_first} shows the found/missed plots
+Figure~\ref{f:ninja2_cbc_results_high_first} shows the found/missed plots
 after the first stage in the high-mass search.  As expected, distant
 signals are less likely to be found than close ones.  As discussed
 above the loose coincidence test between injections and triggers means
 that many of these injections may not really be found.  We therefore
 look at the second-stage results in
-figure~\ref{f:ninja_cbc_results_high_second}, and as in
+figure~\ref{f:ninja2_cbc_results_high_second}, and as in
 figure~\ref{f:first_stage} there are many fewer found injections.  
 
 
@@ -395,7 +397,7 @@ injections.
 
 There is an unexpected feature in the V1 plot, which shows that at
 high mass more close injections are missed than distant ones.  We
-return to this issue below.
+will return to this issue below.
 
 
 \begin{figure}
@@ -417,12 +419,12 @@ templates, and an important question is the ability of these pipelines
 to detect spinning signals.  NINJA-2 is uniquely positioned to help
 answer this question, and we begin by plotting the recovery efficiency
 of the high-mass pipeline as a function of the spin parameter $\chi$
-in figure~\ref{high_spin_efficiencies}.  There is a general trend
+in figure~\ref{f:high_spin_efficiencies}.  There is a general trend
 suggesting that the efficiency increases with $\chi$, and in
-particular that it performs worse on anti-aligned systems than aligned
-systems.  Again, the jaggedness of the plots makes it impossible to
-make firm statements, but this will be remedied in follow up studies
-with more injections.
+particular that the search performs worse on anti-aligned systems than
+aligned systems.  Again, the jaggedness of the plots makes it
+impossible to draw definitive conclusions, but this will be remedied in
+follow up studies with more injections.
 
 
 
@@ -441,13 +443,11 @@ needed to verify and quantify this.
 
 
 We now consider the parallel analysis performed with the low-mass
-search.
-
-Figure~\ref{f:ninja_cbc_results_low_first} shows the found/missed
-plots after the first stage.  Again, distant signals are more likely
-to be missed than close ones.  The low-mass template bank extends
-to a total mass of $25\msun$, and correspondingly the efficiency 
-decreases notably above a chirp mass of $\approx 80 \msun$.
+search.  Figure~\ref{f:ninja2_cbc_results_low_first} shows the
+found/missed plots after the first stage.  Again, distant signals are
+more likely to be missed than close ones.  The low-mass template bank
+extends to a total mass of $25\msun$, and correspondingly the
+efficiency decreases notably above a chirp mass of $\approx 80 \msun$.
 
 The anomalous behavior in Virgo is more pronounced here than in the
 high-mass search, with most injections above a chirp mass of $100
@@ -475,7 +475,7 @@ Again we defer further discussion to section~\ref{ssec:virgo_anomaly}.
   \includegraphics[width=0.5\linewidth]{figures/ninja2_results/L1-plotinspmissed_LOW_FULL_DATA_mchirp-eff_dist-log-L1-871147552-5209912_first} \\
   \includegraphics[width=0.5\linewidth]{figures/ninja2_results/V1-plotinspmissed_LOW_FULL_DATA_mchirp-eff_dist-log-V1-871147552-5209912_first} \\
   \caption[First stage found/missed plots from the low-mass search]{
-  \label{f:ninja2_cbc_results_high_first}
+  \label{f:ninja2_cbc_results_low_first}
 Preliminary first stage found/missed plots from the low-mass search.
 The behavior is as expected: distant signals are more likely to be
 missed than close ones.
@@ -539,13 +539,13 @@ needed to verify and quantify this.
 \subsection{Anomalous Virgo results}
 \label{ssec:virgo_anomaly}
 
-In both the high-mass and low-mass search we see that, at higher chirp
-masses, closer injections are missed while further injections are
-found.  This problem is evident in all three interferometers, but 
-it is most extreme in Virgo and affects even the first-stage results.
-At the time of writing no explanation for this behavior has
-yet been found, however some possibilities have been ruled out.  As
-the problem is most notable in Virgo we focus attention there.
+In both the high-mass and low-mass searches we find that at higher
+chirp masses closer injections are missed while further injections are
+found.  This problem is evident in all three interferometers, but it
+is most extreme in Virgo and affects even the first-stage results.  At
+the time of writing no explanation for this behavior has yet been
+found, however some possibilities have been ruled out.  As the problem
+is most notable in Virgo we focus attention there.
 
 First, we consider the possibility that the effective distance is
 simply being misreported.  We check this by plotting the injections on
@@ -612,33 +612,34 @@ time series.  All plots line up as expected.
 
 \section{Open Questions for NINJA-2}
 
-Beyond resolving the unexpected behavior in the low mass pipeline
-we intend to use NINJA-2 to address several important open question.
-We briefly note these here.
+Beyond resolving the unexplained behavior in the searches we intend to
+use NINJA-2 to address several important open question.  We briefly
+note these here.
 
 \weakheader{Further tests of the pipeline modifications}
 
 We intend to rerun these analyses using a bank extended to unphysical
 $\eta$ and terminating the waveforms at the WRD frequency, as in
-NINJA-1.  The goal is to determine how this effects the efficiency of
+NINJA-1.  The goal is to determine how this affects the efficiency of
 the search at lower masses than could be tested in NINJA-1, as well as
 on a wider range of parameter space.  We will also repeat the analysis
 in real detector noise.  A critical question is how the extended bank
-will effect the rate of background triggers.  NINJA-1 indicates we can
+will affect the rate of background triggers.  NINJA-1 indicates we can
 recover higher SNRs by making this change, but if this comes with an
 elevated background, making signals stand out less strongly, then this
 change will not be useful.
 
 \weakheader{Transition between the low-mass and high-mass searches}
 
-The dividing line between the two searches is somewhat arbitrary at
-present.  We hope to use efficiency plots such as those presented in
-this chapter, populated with many more injections, to determine the
-point at which the efficiencies cross.  In particular, as will be
-discussed in the next chapter, much of the background in the low-mass
-search comes from the higher-mass end of the template bank.  If we can
-reduce the upper limit of the low-mass search we can hope to clean up
-the background and make quiet signals more significant.
+The dividing line between the low- and high-mass searches is somewhat
+arbitrary at present.  We hope to use efficiency plots such as those
+presented in this chapter, populated with many more injections, to
+determine the point at which the efficiencies cross.  In particular,
+as will be discussed in the next chapter, much of the background in
+the low-mass search comes from the higher-mass end of the template
+bank.  If we can reduce the upper limit of the low-mass search we can
+hope to clean up the background and make quiet signals more
+significant.
 
 \weakheader{Effects of spin}
 
@@ -661,11 +662,11 @@ for the search, can be tested by running \emph{bank simulations}.  In
 such a simulation a bank is constructed and the maximum overlap
 between a signal and every template in the bank is found.  By
 comparing this maximum against the maximum found by varying the
-parameters continuously (as in chapter~\ref{ch:comparison} we can
-determine the loss in SNR due to discrediting the bank.  We plan to
-run such analyses using the NINJA-2 signals with both 2.0 pN
-templates and 3.5 pN templates in order to determine the extent to
-which the incorrect metric decreases the efficiency of the search.
+parameters continuously (as in chapter~\ref{ch:comparison}) we can
+determine the loss in SNR due to discretizing  the bank.  We plan to
+run such analyses using the NINJA-2 signals with both 2.0 pN templates
+and 3.5 pN templates in order to determine the extent to which the
+incorrect metric decreases the efficiency of the search.
 
 \section{Conclusions}
 
