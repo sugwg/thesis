@@ -1,63 +1,89 @@
 \newcommand{\darmerr}{\texttt{DARM\_ERR} }
 
-As discussed in section \ref{sec:detection_statistics}, the CBC group
-measures the significance of candidate events by comparing the
-combined new SNR (eqn.~\ref{eq:new_snr}) against the background
-distribution.  The background is obtained by sliding the triggers from
-each IFO against each other by more than the light travel time between
-them.  In the limit of at most one real gravitational wave in each
-analysis segment this ensures that the background is composed entirely
-of triggers resulting from non- gravitational-wave sources.
+In the preceding chapter we discussed data quality flags, which
+characterize the state of the detectors at any time, the various
+repositories for storing these flags, and the tools for creating and
+accessing them.  We also discussed the veto definer file, which maps
+flags to veto levels.  By combining a veto definer with a set of data
+quality flags we produce a set of \emph{veto segments}, intervals of
+time that should either not be analyzed at all or which should be
+removed from the analysis.
 
-Ideally, the instrumental noise would be Gaussian and the only source
-of extraneous triggers would be random fluctuations.  In reality
-environmental couplings to the instrument, such as electrical and
-seismic, as well as glitches within the instrument will also produce
-triggers.
-
-It is in the interest of the collaboration to remove as many of these
-triggers as possible so that any real events will stand out well above
-the background.  This removal must be done in an automated way in
-advance of looking at the results from the analysis.  The LIGO and
-Virgo collaborations would be justly criticized if the background were
-to be adjusted after the analysis in order to make a marginal
-candidate appear more significant.
+We have thus far not discussed the construction of the veto definer
+file.  It is in the interest of the collaboration to remove as many
+background triggers as possible, so that real events will stand out
+well above the background.  However this removal must be done in an
+automated way in advance of looking at the results from the analysis.
+The LIGO and Virgo collaborations would be justly criticized if the
+background were to be adjusted after the analysis in order to make a
+marginal candidate appear more significant.
 
 There is therefore a need for a process of detector characterization
 (henceforth ``detchar''), a way to remove times from the analysis that
-are more likely to produce triggers from noise than from a real event.
-One of the most significant features of the S6 run is that the people
-working on detchar were in close contact with the people commissioning
-the instrument.  This meant that, in addition to cleaning the search,
-information about problematic behavior in the instrument could be used
-to fix the problems at the source, in turn allowing more time to be
-analyzed and the prospects for making a detection to improve.
+are more likely to produce background triggers than gravitational wave
+detections.  One of the most significant features of the S6 run is
+that the people working on detchar were in close contact with the
+people commissioning the instrument.  This meant that, in addition to
+cleaning the search, information about problematic behavior in the
+instrument could be used to fix the problems at the source, in turn
+allowing more time to be analyzed and the prospects for making a
+detection to improve.
 
 Detchar was a major undertaking, much more information can be found in
 (Smith and Lundgren in progress).  Three primary tools were run
-continuously or with low-latencies to provide views into the data,
+either continuously or with low-latencies to provide views into the data,
 although these were supplemented with numerous short special-purpose
 scripts.  Two of these tools, the klinewelle pipeline~\cite{} and the
 Omega pipeline~\cite{} project data onto a wavelet basis and identify
 as triggers times and frequencies with amplitudes above a given
 threshold.  Both these tools were run on many auxiliary channels in
 addition to the detector output.  The third tool, daily ihope, is the
-focus of the current chapter.
+focus of the current chapter.  We proceed as follows:  
+
+In section~\ref{sec:daily_ihope} we introduce the daily ihope
+pipeline, focusing on the differences between daily ihope and the full
+analysis.
+
+We then move to general applications of the daily ihope results.
+Section~\ref{sec:daily_pages} gives a walk-through of a web-based
+front end to daily ihope which provides numerous views into the
+behavior of the detectors over 24-hour periods.  
+Section~\ref{sec:applications_pipeline} discusses the changes to the
+low-mass pipeline that were implemented in part based on results from
+daily ihope.  Section~\ref{sec:applications_vetoes} focuses on the use
+of daily ihope in constructing the veto definer file used in the
+low-mass search.
+
+We next discuss applications of daily ihope to the study of a specific
+event, a potential gravitation wave candidate that ultimately was
+revealed to be a hardware injection that was performed as a ``blind
+injection challenge'' meant to test the search pipelines.  Until the
+cause of the candidate was revealed the collaboration followed it up
+with all due diligence, including many follow up studies that needed
+to be performed rapidly.  The studies that were enabled by daily ihope
+are discussed in section~\ref{sec:applications_applications_dog}.
+
+Finally, in section~\ref{sec:daily_ihope_open_questions} we note some
+problems seen in the pipeline with daily ihope and discuss preliminary
+attempts to address them.  As of this writing these problems remain
+unsolved and are areas of active research.
+
 
 
 \section{Daily ihope}
+\label{sec:daily_ihope}
 
-As discussed in (search chapter) the CBC group uses the \emph{ihope}
-pipeline to search for gravitational waves produced by the inspiral of
-binary systems consisting of neutron stars and/or black holes.  During
-LIGO's 6th science run (July 7, 2009 - October 20, 2010) which
-overlapped Virgo's second (July 7, 2009 - January 11, 2010), and third
-(August 11, 2010 - October 20, 2010) science runs, the goal of the
-group was to run the full analysis every two weeks with latencies as
-small as possible.  The daily ihope runs were conceived of as a way to
-characterize the detector in order to look for potential problems in
-advance of the full search, particularly problems specific to the CBC
-search.
+As discussed in chapter~\ref{ch:search}, the CBC group uses the
+\emph{ihope} pipeline to search for gravitational waves produced by
+the inspiral of binary systems consisting of neutron stars and/or
+black holes.  During LIGO's 6th science run (July 7, 2009 - October
+20, 2010) which overlapped Virgo's second (July 7, 2009 - January 11,
+2010), and third (August 11, 2010 - October 20, 2010) science runs,
+the goal of the group was to run the full analysis every two weeks
+with latencies as small as possible.  The daily ihope runs were
+conceived of as a way to characterize the detector in order to look
+for potential problems in advance of the full search, particularly
+problems specific to the CBC search.
 
 It is important to stress that daily ihope was not itself a
 gravitational wave search, it was a tool to help determine whether the
@@ -66,6 +92,8 @@ the specifics of the daily runs, but more significantly it leaves the
 full search unbiased.
 
 \subsection{The Daily Ihope Pipeline}
+
+\Note{TODO: flowchart of the daily ihope pipeline}
 
 Recall that ihope is a templated, matched-filter search.  For the
 low-mass search, which was the focus of the daily runs, the templates
@@ -167,18 +195,20 @@ thesis}).
 %filter and record
 
 \section{The Daily Ihope report pages}
+\label{sec:daily_pages}
 
-Much of the utility of the daily runs was in the use of the resulting
-triggers to identify data quality issues and quantify the value of
-proposed vetoes.  Some of these uses will be discussed in
-section~\ref{sec:applications_vetoes}.  In addition to the triggers
-the daily pipeline also produced a large number of plots and reports,
-organized into web pages that were available to the collaboration.
-Data analysts could use these pages to spot potential problems for the
-full analysis and begin more detailed followup studies.  
+The output of daily ihope is a set of triggers.  These triggers were
+used by many programs to produce or validate vetoes, some of these
+uses will be discussed in section~\ref{sec:applications_vetoes}.  
 
-We now summarize the contents of the daily pages. Each report and plot
-is made for each combination of the following:
+In addition to such programmatic usage, the daily pipeline also
+produced a large number of plots and reports that data analysts could
+use to spot potential problems before the full analysis was run in
+order to begin more detailed followup studies.  These plots were
+organized into web pages that were available to the collaboration.  We
+now present a walk-through of the daily pages.
+
+Each report and plot is made for each combination of the following:
 
 \begin{itemize}
 \item IFO: H1, L1 and V1
@@ -507,6 +537,13 @@ removed by vetoes in category 4 (right).}
 \section{Applications of daily ihope to pipeline tuning}
 \label{sec:applications_pipeline}
 
+
+The plots presented in the previous section provided a great deal of
+information about both the detectors and the response of the search
+software.  These could be correlated with the behavior of the full
+search in order to identify the cause of problems and motivate
+solutions.  We now give two examples.
+
 Early in S6 there were frequent instances where the full analysis ran
 into difficulty.  This was characterized by individual programs taking
 abnormally long to complete, consuming far more than the expected
@@ -610,9 +647,27 @@ templates.
 \section{Applications of daily ihope to individual vetoes}
 \label{sec:applications_vetoes}
 
+The primary motivation for the creation of daily ihope was 
+for it to be a source of information to be used in construction the
+veto definer file.  We now define the veto categories used in S6 and
+present examples of the use of daily ihope in constructing each.
 
-The categories used by daily ihope differ slightly from those
-used by the full analysis.
+\iffalse
+As patterns emerged from these results members of the detector
+characterization group would work with the commissioners to identify
+the underlying causes, and simultaneously work with data analysts to
+develop and test vetoes.  Often these vetoes were verified by running
+a script, \texttt{lalapps\_check\_flag} which, given a file
+containing veto segments and a time range would report on the
+efficiency and deadtime of the veto by applying it to the daily ihope
+triggers over the specified time range.  The file could be generated
+from an existing flag in the database using {\texttt
+ligolw\_dq\_query} (see chapter~\ref{ch:segdb}), or it could be
+generated by a script looking at auxiliary channel information
+provided by Omega or klinewelle triggers.
+\fi
+
+\subsection{Category 1}
 
 Category 1 vetoes indicates time that should not have been marked as
 science mode.  Typically attempting to analyze this time will
@@ -628,46 +683,6 @@ the problem.  For example, a 4080-second span of science-mode data
 with a one-second CAT1 veto at 2040 seconds will be completely
 unanalyzable by the CBC group, as excising the bad data will leave no
 contiguous 2048-second block.
-
-Category 2 vetoes indicates time during which there was a problem,
-instrumental or environmental, with well-understood coupling into
-\texttt{DARM\_ERR}.  Such time can be analyzed without problem, but
-triggers from such time will be discarded. 
-
-Category 3 vetoes remove hardware injections (section
-\ref{sec:ihope_hardware_injections}).  In the full analysis hardware
-injection vetoes do not have a category number and is denoted
-``hardware injections removed.''
-
-Category 4 is for time that appears to be ill-behaved according to 
-data quality studies, but where there is no clearly-understood 
-cause.  In the full analysis this is denoted category 3.
-In addition to tracking the performance of the pipeline as a whole,
-daily ihope was used to flag numerous glitch mechanisms throughout the
-course of S6.  Such glitches typically showed up in the rate vs. time
-plot, the SNR vs. time plot, and/or the list of loudest triggers.
-Often these were spotted either by individuals reviewing the pages on
-a daily basis, by an individual in the CBC group assigned  to do
-glitch studies preceding a run of the full analysis pipeline, or by
-the group during reviews of these studies.
-
-As patterns emerged from these results members of the detector
-characterization group would work with the commissioners to identify
-the underlying causes, and simultaneously work with data analysts to
-develop and test vetoes.  Often these vetoes were verified by running
-a script, \texttt{lalapps\_check\_flag} which, given a file
-containing veto segments and a time range would report on the
-efficiency and deadtime of the veto by applying it to the daily ihope
-triggers over the specified time range.  The file could be generated
-from an existing flag in the database using {\texttt
-ligolw\_dq\_query} (see chapter~\ref{ch:segdb}), or it could be
-generated by a script looking at auxiliary channel information
-provided by Omega or klinewelle triggers.
-
-We now give examples of the use of daily ihope in constructing vetoes
-at each level.
-
-\subsection{Category 1}
 
 \weakheader{Glitches from the Thermal Compensation System}
 
@@ -780,6 +795,11 @@ channels that were associated with this class of glitch.
 
 
 \subsection{Category 2}
+
+Category 2 vetoes indicates time during which there was a problem,
+instrumental or environmental, with well-understood coupling into
+\texttt{DARM\_ERR}.  Such time can be analyzed without problem, but
+triggers from such time will be discarded. 
 
 \weakheader{The spike glitch}
 
@@ -921,6 +941,23 @@ $~ 10$.}
 
 \subsection{Category 4}
 
+Category 3 vetoes remove hardware injections (section
+\ref{sec:ihope_hardware_injections}).  In the full analysis hardware
+injection vetoes do not have a category number and is denoted
+``hardware injections removed.''  As this veto category had a fixed
+meaning it was not used in daily ihope.
+
+Category 4 is for time that appears to be ill-behaved according to 
+data quality studies, but where there is no clearly-understood 
+cause.  In the full analysis this is denoted category 3.
+In addition to tracking the performance of the pipeline as a whole,
+daily ihope was used to flag numerous glitch mechanisms throughout the
+course of S6.  Such glitches typically showed up in the rate vs. time
+plot, the SNR vs. time plot, and/or the list of loudest triggers.
+Often these were spotted either by individuals reviewing the pages on
+a daily basis, by an individual in the CBC group assigned  to do
+glitch studies preceding a run of the full analysis pipeline, or by
+the group during reviews of these studies.
 % https://wiki.ligo.org/foswiki/bin/view/DetChar/H1LVEASEISZS6Cflag
 
 \weakheader{Automated vetoes}
@@ -1066,6 +1103,8 @@ or SNR, and hence the time did not need to be vetoed}
 \section{Applications of daily ihope to the blind injection challenge}
 \label{sec:applications_applications_dog}
 
+We now move from general uses of daily ihope to its applications in
+following up a particular event.
 
 In addition to the hardware injections discussed in section
 \ref{sec:ihope_hardware_injections} it was known at the start of S6
@@ -1520,14 +1559,17 @@ front-end code changes at H1 (left) and L1 (right).}
 \section{Open Questions}
 \label{sec:daily_ihope_open_questions}
 
-Two potentially problematic features of the analysis were noticed in
-daily ihope over the course of S6, both related to the effect of loud
-glitches on the match filter.  Of course the ultimate goal is to
-remove such glitches at the source.  However, it is likely that such
-glitches will continue to be present in the advanced LIGO era and the
-search pipeline must be robust against them.  We note here the
-problems and some initial studies, but more research will be needed to
-resolve them before advanced LIGO comes on-line around 2015.
+We have seen in section~\ref{applications_pipeline} that daily ihope
+was used to help identify and remedy problems in the low-mass search
+early in S6.  We conclude this chapter by discussing two additional
+issues with the pipeline seen through daily ihope, both of which
+relate to the effect of loud glitches on the match filter.  Of course
+the ultimate goal is to remove such glitches at the source.  However,
+it is likely that such glitches will continue to be present in the
+advanced LIGO era and the search pipeline must be robust against them.
+We note here the problems and some initial attempts to remedy them,
+but more research will be needed to resolve them before advanced LIGO
+comes on-line around 2015.
 
 
 \subsection{Excess triggers produced by loud glitches}
