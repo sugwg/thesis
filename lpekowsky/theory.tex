@@ -863,13 +863,129 @@ Therefore, orbiting bodies will emit gravitational radiation and
 
 Substituting equation~\ref{eq:h_plus_cross} into
 equation~\ref{eq:energy_loss} shows that the power emitted goes as
-$a^{-5}$.  Most of the power in an inspiral, and therefore our best
-chance of detectin such systems, occurs when the masses have become
+$a^{-5}$.  Most of the power from an inspiral, and therefore our best
+chance of detecting such systems, occurs when the masses have become
 close and are about to merge.  The approximations we made in the
-previous section  are no longer valid in this regime, when the bodies
-are moving at an appreciable fraction of the speed of light.  In order
-to model gravitational waves from inspirals to a precision useful in
-searches we must therefore go to higher-order approximations.
+previous section are no longer valid in this regime.  In order to
+obtain analytic models of  gravitational waves from inspirals to a
+precision that will be useful in searches we must therefore consider
+higher-order corrections beyond Newtonian gravity.  This leads to
+\emph{post-Newtonian} (pN) waveforms.
+
+The key to doing this is the requirement that the energy flux carried
+away by gravitational radiation must be balanced by loss of energy of the
+system
+
+\begin{equation}
+\label{eq:equivilent_exchange}
+\frac{dE}{dt} = - \mathcal{F}
+\end{equation}
+
+It can be shown~\cite{MTW} that the energy of a body of mass $\mu$ moving
+on a geodesic in the Schwarzschild metric with mass $M$ is
+
+\begin{equation}
+E = \mu \frac{1-2M}{\sqrt{1-3M/r}} 
+\end{equation}
+
+We now introduce the parameter $v = (\pi M f)$, which is the velocity
+in Newtonian gravity.  We now consider the \emph{adiabatic
+approximation}, where we treat the system as moving through a series
+of circular orbits.  On a circular geodesic $v= \sqrt{M/r}$ and the
+energy becomes
+
+\begin{equation}
+E = \mu \frac{1-2v^2}{\sqrt{1-3v^2}} 
+\end{equation}
+
+We have written down the flux to first pN order above in
+equation~\ref{eq:energy_loss}, in terms of the parameter $v$ it is
+
+\begin{equation}
+\mathcal{F} = \frac{32}{5} \left( \frac{\mu}{M} \right) v^{10}
+\end{equation}
+
+Going to higher order requires techniques that are beyond the scope of
+this thesis.\Note{add ref}
+
+Both the energy and flux may now be expanded in powers of $v^2$.  We
+could then obtain $t$ as a function of $v$ by rewriting
+equation~\ref{eq:equivilent_exchange} and integrating.  However, we
+will instead obtain an expression relating time and the orbital phase
+$\phi = \int 2\pi f\, dt$ by writing
+
+\begin{equation*}
+\mathcal{F} = - \frac{dE}{dv} \frac{dv}{d\phi} \frac{d\phi}{dt}
+\end{equation*}
+
+which leads to the expression
+
+\begin{equation}
+\label{eq:expansion_for_phi}
+\phi = \phi_0 + \frac{2}{M} \int_v^{v_\mathrm{ref}} \frac{v^3
+dE/dv}{\mathcal{F}}\, dv
+\end{equation}
+
+where $v_\mathrm{ref}$ is the velocity at a given reference velocity,
+or equivalently reference frequency.  If $\mathcal{F}$ is given as a
+Taylor series in $v$ then $\mathcal{F}^{-1}$ may be expanded to the
+same order.  $dE/dv$ may be similarly expanded, and the integrand
+becomes the product of polynomials with rational coefficients.
+
+Motivated by equation~\ref{eq:h_plus_cross} we model the waveform as a
+time-dependant amplitude and evolving phase:
+
+\begin{equation}
+\label{eq:general_waveform}
+h(t) = A(t) \cos(\phi(t)) = \frac{1}{2} A(t) \left(e^{i\phi(t)} +
+e^{-i\phi(t)} \right)
+\end{equation}
+
+For reasons that will become clear in the next chapter it is often more
+convenient to work in the frequency domain, so we take the Fourier
+transform of equation~\ref{eq:general_waveform}
+
+\begin{equation}
+\tilde{h}(f) = \sum_{+,-} \frac{1}{2} \int A(t) \exp(2\pi i f t \pm i
+\phi(t))\, dt
+\end{equation}
+
+We next apply the \emph{stationary-phase approximation}.  Oscillatory
+integrands cancel except where the phase is stationary, at extrema of
+the exponent.  We therefore expand the exponent around the time $t_0$
+of the extremum and discard the linear term
+
+\begin{equation}
+2 \pi i f t + i \phi(t) \approx (2 \pi i f t_0 + i \phi(t_0))
++ \frac{1}{2} i \ddot{\phi}(t_0) (t-t_0)^2
+\end{equation}
+
+Substituting back, the first term leads to a constant factor and the
+second leads to a Gaussian integral.  Going through the calculation
+yields the approximate waveform
+
+\begin{equation}
+\label{eq:spa_waveform}
+\tilde{f}(f) = \frac{2 G \msun}{c^2 r}
+\left(\frac{5 \mu}{96 \msun} \right)^{\frac{1}{2}}
+\left( \frac{M}{\pi^2 \msun} \right)^{\frac{1}{3}}
+\left( \frac{G \msun}{c^3}\right)^{-\frac{1}{6}}
+f^{-\frac{7}{6}} \Theta(f - f_c) e^{i \Psi(f;M,mu)}
+\end{equation}
+
+where $\msun$ is the mass of the sun and is introduced to so that $M$
+is measured in solar masses, a useful unit in astrophysical work.
+$\Psi$ is the result of the expansion~\ref{eq:expansion_for_phi}
+written as a function of $f$.  The coefficients coming from the
+expansion of the flux will depend on the mass $M$ and ration $\mu$ or
+equivalently mass and \emph{symmetric mass ratio} $\eta = \mu/M$.
+
+We introduce the step function to terminate the waveform at a
+\emph{cut off frequency} $f_c$.  This reflects the fact that we do not
+trust this approximation all the way through the evolution of the
+binary to merger.  The appropriate value for the cutoff frequency is
+one of the questions we will address in chapter~\ref{c:comparison}.
+
 
 \subsection{Effective One-Body}
 \label{ssec:EOB}
