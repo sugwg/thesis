@@ -316,9 +316,34 @@ In S6D the \verb|LVEA_SEISZ| veto was superceded by SeisVeto. SeisVeto improved 
 
 \subsection{The ``Spike" Glitch}
 
-One of the major \ac{DQ} issues of S6 was the ``Spike" Glitch. Beginning in August 2009, loud, short duration ($\sim1\,$ms) glitches began to appear in the Livingston data.
+One of the major \ac{DQ} issues of S6 was the ``Spike" Glitch. Beginning in August 2009, loud, short-duration ($\sim1\,$ms) glitches began to appear in the Livingston data. These glitches were characterized by a sharp downward ``spike" in the \ac{GW} channel followed by ringing (due to the response filters in the interfermeter); Figure \ref{fig:spike_glitch-closeup} shows a close-up of one. The glitch would vary in strength; some were so loud that they could be seen in the raw (unfiltered) time-series of the \ac{GW} channel. Figure \ref{fig:spike_glitch-example-time_series} shows the time series of an example loud spike and Figure \ref{fig:spike_glitch-example-omega_scan} shows the corresponding Omega scan. The high-amplitude noise surrounding the glitch is due to the ringing of Omega's whitening filters; despite the short duration of the glitch, it causes ringing that lasts for several seconds due to its high amplitude.
 
-Loud, short, transients in L1 OMC. Show one of Andy's time-series plots. Also show an Omega scan, and \ac{CBC} triggers created by it. Unable to determine cause. We resolved to create an \ac{SNR} > 250 flag, and veto at CAT3. Duncan MacCleod and I were supposed to study the effect on nearby injections, but it appears to have never finished.
+The spike glitch would also cause the \ac{CBC} matched filter to ring. Figure \ref{fig:spike_glitch-cbc_response} shows a typical response by \verb|lalapps_inspiral| when a spike glitch passes through; in this case the glitch was the one shown in Figure \ref{fig:spike_glitch-example}. This plot was created with the $2 \leq \mtotal/\Msun \leq 35$ template-bank, without any clustering. Each trigger is colored by its $\tau_0$ value, which essentially gives the duration of the template. The large spike in \ac{SNR} which begins at the time of the glitch ($0\,$s) is due to the impulse response of the templates. Although the \ac{SNR} of these triggers is quite large (in this case, the loudest template had a $\rho = 8300$), they did not typically show up in our loudest events nor our loudest slides. This is because they would have very poor $\chi^2$ values, resulting in low new \acp{SNR}. Of greater concern was the ``shoulders" surrounding the spike and the tail proceeding the glitch (which we called the ``penguin wing"). This tail could last several seconds after the glitch and its triggers could have lower $\chi^2$ values. We therefore wished to find the cause of the glitch, so that the detector could be fixed, or, if that was not possible, so we could veto it.
+
+\begin{figure}[htb]
+\center
+\includegraphics[width=4in]{figures/spike_glitch/spike_glitch_example.png}
+\label{fig:spike_glitch-closeup}
+\caption{A close-up of a spike glitch. Shown is the \ac{GW} channel (\texttt{DARM\_ERR}) raw time series.}
+\end{figure}
+
+Unfortunately, despite a number of intensive data-quality studies and feedback from instrumentalists, we were never able to determine the cause of the spike glitch. Not only did this prevent us from fixing the instrument so the glitch would go away, but it also made it difficult to veto. As stated above, we typically only veto triggers if they can be strongly correlated with an auxillarily channel. This is to avoid accidently vetoing a gravitational-wave. The spike glitch was clearly not a \ac{GW}, but we had no other way to veto it than to use the \ac{GW} channel. We therefore decided to use a flag based on daily \ihope triggers. Named \verb|H1:DCH-CBC_SNR_GT_0250|, this flag would go off whenever triggers exceeded a \ac{SNR} threshold of 250. The flag was used as a CAT3 veto in S6D, and a ``padding" of $\pm8\,$s was added to it. The padding was added to remove the ``shoulder" triggers created by the spike. $8\,$s was chosen based on the length of the inverse spectrum truncation.
+
+There was some concern that vetoing triggers using the output of daily \ihope would cause us to miss a nearby event. However, any real \ac{GW} event that had a \ac{SNR} above 250 would stick above the background at CAT2. Since we check results after CAT2 vetoes have been applied, and the \ac{SNR} $> 250$ flag was applied at CAT3, this veto would not prevent us from detecting such an event.
+
+\begin{figure}[hp]
+\center
+\subfigure[Raw time series.]{\label{fig:spike_glitch-example-time_series}\includegraphics[width=4in]{figures/spike_glitch/945281603_spike_glitch-raw_time_series.png}}
+\subfigure[Omega scan.]{\label{fig:spike_glitch-example-omega_scan}\includegraphics[width=4in]{figures/spike_glitch/945281603_9826171875_L1-LSC-DARM_ERR_16_00_spectrogram_whitened.png}}
+\label{fig:spike_glitch-example}
+\caption{An example spike glitch. This glitch occurred at GPS time 945281603.98 (19 December 2009 18:13:08 UTC). The top plot shows the raw time series from the \ac{GW} channel; no filtering has been applied to this plot. The bottom plot shows the Omega scan of this glitch. Omega uses a whitening filter to create the bottom plot, hence the high-ampltiude noise lasts several seconds.}
+\end{figure}
+
+\begin{figure}[hp]
+\includegraphics[width=4in]{figures/spike_glitch/L1_945281603.png}
+\label{fig:spike_glitch-cbc_response}
+\caption{The unclustered triggers created by the spike glitch shown in \ref{fig:spike_glitch-example} when passed through \texttt{lalapps\_inspiral}.}
+\end{figure}
 
 %\subsection{Mysterious Missed Injection}
 %
