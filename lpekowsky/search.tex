@@ -86,7 +86,7 @@ Now consider the quantity $S_y(f)$ called the \emph{power spectral
 density}, defined as
 
 \begin{equation}
-\label{psd1}
+\label{eq:psd1}
 S_y(f) \equiv \lim_{T \to \infty} 
 \frac{1}{T} \left| \int_{-T/2}^{T/2} (y(t) - \bar{y}(t))
 e^{2 \pi i f t} dt \right|^2
@@ -428,19 +428,215 @@ quantity, $\newsnr$ (new SNR), which downweights the SNR by $\chisq$,
 \end{equation}
 
 
-\section{Estimation of the PSD}
-\label{sec:ihope_psd}
-
 \section{Choosing the templates}
 \label{sec:bank_metric}
 
-\section{The iHope pipeline}
+We have thus far referred to the $h$ as ``the template'', but recall
+from equation~\ref{eq:spa_waveform} that the waveforms are
+parameterized by parameters of the binary, such as total mass $M$ and
+symmetric mass ratio $\eta$.  As the values of these parameters
+diverge between the signal  and template the SNR will decrease.  We
+must therefore construct a \emph{bank} of templates arranged to
+capture, to within some acceptable loss of SNR, all the signals of
+interest.  To do so we consider the space of templates as a manifold,
+as in chapter~\ref{ch:theory}, and we use the parameter values (or
+functions of these values) as coordinates.  The distance between two
+points $\mathbf{p}$ and $\mathbf{q}$, with coordinates=parameters
+$p_i$ and $q_i$,  is defined in terms of the overlap of templates at those
+parameters
+
+\begin{equation*}
+d = 1 - \Overlap{h(\mathbf{p})|h(\mathbf{q})}
+\end{equation*}
+
+We then seek a set of templates, $\{h_i\}$ such that within a region
+of interest every point in the manifold is ``sufficiently close'' to
+at least one template:
+
+\begin{equation*}
+\forall \mathbf{p}, \min_i \Overlap{h(\mathbf{p})|h_i} < x
+\end{equation*}
+
+Such a bank will ensure that the loss in SNR from using the bank
+instead of testing the entire continuum of parameters is less than
+$x\%$.  In LIGO we typically require no more than a 3\% loss in SNR.
+As the distance to which we can detect signals scales with SNR and
+volume is the cube of distance, this corresponds to approximately a
+10\% loss in event rate.
+
+It is possible to construct the bank \emph{stochastically}:
+
+\begin{itemize}
+\item Choose a point in the manifold at random
+
+\item If the overlap with any already-placed template is greater than the
+minimal match, discard it
+
+\item Otherwise, add it to the set and continue
+
+\item Repeat until there have been $N$ consecutive rejected new
+candidates, where $N$ is chosen to give a reasonable probability that
+the space has been covered.
+\end{itemize}
+
+In many cases however we can do better then this.  Since we are
+interested in distances on a manifold it makes sense to seek a metric
+on this space.  Such a metric can be obtained by expanding the
+overlap function~\cite{Owen:1995tm, Owen:1998dk}
+
+\begin{equation*}
+\label{eq:bank_matric}
+\Overlap{h(\mathbf{\lambda})|h(\mathbf{\lambda} +
+\Delta\mathbf{\lambda})}
+\approx 1 - \frac{1}{2} 
+\frac{\partial^2 \Overlap{h(\mathbf{\lambda})|h(\mathbf{\lambda} +
+\Delta\mathbf{\lambda})}}{\partial \Delta \lambda_i \partial \Delta \lambda_j}\bigg|_{\Delta
+\mathbf{\lambda}=0} (\Delta
+\lambda_i) (\Delta \lambda_j)
+\end{equation*}
+
+where we can drop the linear term because the overlap is a maximum at
+$\Delta \mathbf{\lambda} = 0$.  When using frequency-domain,
+stationary-phase templates of the form~\ref{eq:spa_templates}, the
+calculation of this metric can be done analytically, and gives a 
+result in terms of moments of the noise curve
+
+\begin{equation*}
+I(q) = S_n(f_0) \int_{f_0}^{f_c} \frac{x^{-q/3}}{S_n(x f_0)}\,dx
+\end{equation*}
+
+where $f_0$ is a chosen reference frequency.
+
+The metric can then be used to efficiently lay out a grid of
+templates.  In general it is impossible to lay out a grid on a curved
+surface such that every point is the same distance from its nearest
+neighbors, but the metric on the template manifold is approximately
+flat and, when written in appropriate coordinates, the coefficients
+are constant.
 
 
-\subsection{Detection Statistics}
-\label{sec:detection_statistics}
+\section{The search pipeline}
 
-\subsection{Testing the Pipeline with Hardware Injections}
-\label{ssec:ihope_hardware_injections}
+We now discuss how the above elements are incorporated into 
+a gravitational wave search.  The system is collectively known as a
+\emph{pipeline}, as it may be thought of as a series of steps through
+which the data flows.
+
+We now present a very high-level overview of how the above elements
+were used in the search for gravitational waves from the coalescence
+of compact binaries.  We focus in particular on the search for
+gravitational waves from the coalescence of binary systems in LIGO's
+6th science run (denoted "S6", July 7, 2009 - October 20, 2010) which
+overlapped Virgo's second ("VSR2", July 7, 2009 - January 11, 2010),
+and third ("VSR3", August 11, 2010 - October 20, 2010) science runs.
+For more details, see \Note{Collin's thesis}.
+
+In each IFO the analysis is broken into 2048-second segments.  This is
+done for computational efficiency, as well as to limit to times where
+the PSD is nearly stationary.  The times may not overlap, but we
+ignore this minor complication.
+
+First, the data is filtered to remove power below 40 Hz.  The seismic
+noise below this frequency is orders of magnitude greater than  the
+noise at higher frequencies, and without this filtering any signal
+would be entirely swamped.
+
+The PSD for each IFO is then calculated by \emph{Welch's method}.  The
+2048 seconds are split into 15 256-second chunks, overlapping by 128
+seconds.  The PSD of each chunk is then calculated using the defining
+equation~\ref{eq:psd1}.  The final PSD is obtained by taking the
+median values of each frequency bin. This is done in order to make the
+PSD estimation robust against loud, short events.  As an extreme
+example, if there were a loud gravitational wave in the data the PSD
+would be elevated, paradoxically suppressing the SNR.  This gives a
+single PSD spanning 256 seconds.
+
+The PSD is then used to construct the template bank.  In S6/VSR2,3 we
+used stationary-phase templates taken to 3.5 pN order in phase
+evolution.  See chapter~\ref{ch:comparison} for more on this choice.
+
+We then break the 2048-second segment into 256-second chunks (as that
+is the duration for which the PSD is valid) and filter the data with
+each template in the bank.  The $\chisq$ test is not enabled at this
+stage, as it is computationally expensive.  The segments are again
+overlapped, due to issues with the first and final 64 seconds of each
+segment being corrupted.  See~\cite{DBrownThesis} for more on this
+issue.
+
+The PSD used at this stage is not exactly the PSD that was calculated,
+it has been modified to prevent a loud impulse from corrupting the
+entire chunk.  We return to this issue in section~\ref{ssec:penguins},
+but for the moment recall that the response of the matched filter to
+an impulse can elevate the SNR for an extended time.
+
+The outcome of this stage is a set of triggers for each IFO.  We then
+apply a \emph{coincidence test} by testing whether each trigger is
+close (in the sense of the metric equation~\ref{eq:bank_matric}) to
+triggers from the other instruments.  We allow the trigger time to
+differ by the maximum time it could take a gravitational wave to
+travel between instruments.
+
+There is now a second stage of the process.  Templates in each bank
+that have not produced coincident triggers are discarded.  The
+filtering is then repeated, now with $\chisq$ enabled.  There is then
+another coincidence test and the resulting triggers, now identified as
+\emph{foreground triggers} are assigned a \emph{cumulative new SNR}
+value
+
+\begin{equation*}
+\rho_{\textrm{new, cumulative}}^2 = \sum_i \rho_{\textrm{new}, i}^2
+\end{equation*}
+
+
+In order to determine how significant a foreground trigger is it must
+be compared against the background distribution.  In pure Gaussian
+noise the probability distribution for cumulative new SNR could be
+calculated from equation~\ref{eq:prob_of_signal}.  As the real data is
+not Gaussian, this distribution must instead be measured.  We do so by
+performing \emph{time slides}.  The data from each IFO is slid by more
+than the light-travel time between instruments.  Assuming at most one
+gravitational wave, this ensures that any coincidences are entirely
+due to triggers produced by noise.  We repeat this 100 times in order
+to build up more statistics.  At the end we have a probability (or
+equivalently a rate) of obtaining triggers at each combined new SNR
+value.  The foreground triggers are then compared to this
+distribution, those with values that are sufficiently rare/improbable
+are potential detection candidates, which are then subjected to
+extensive follow up analysis.
+
+The order to test and tune the pipeline we perform numerous
+\emph{software injections}, where simulated signals are added to the
+data before the first filtering step.  Changes to the pipeline can be
+tested by examining the efficiency of the search, the number of
+injections recovered as a fraction of the number injected in a given
+region of parameter space.
+
+The LIGO and Virgo collaborations also perform end-to-end tests with
+\emph{hardware injections}, in which signals are added to the data by
+moving the \texttt{ETMX} mirror.  Generally the times and the
+parameters of the injections are known, allowing complete end-to-end
+tests of the pipeline.  However, there have been ``blind'' injection
+challenges, signals injected at \texttt{ETMY} by a small group within
+the collaboration which are not announced.  We will have much more to
+say about one such injection in section~\ref{sec:applications_dog}.
+
+\section{Conclusions}
+
+We have derived the matched filter as the optimal search for a known
+signal in Gaussian noise.  We then proceeded to construct an entire
+gravitational wave search pipeline using matched filtering as the core
+concept.
+
+The construction of this pipeline involved making many choices: the
+template waveforms, the frequency at which to terminate the templates,
+the spacing of the bank, the region of parameter space to cover, the
+SNR threshold, and so on.  It is possible and useful to test
+these choices against pN signals, as is done in software and hardware
+injections.   However, it is known that these waveforms to not capture
+the full physics of the systems for which we are looking.  There is
+therefore string impetus to test the pipeline again signals from
+numerical relativity.  This topic is the basis for the next four
+chapters.
+
 
 
