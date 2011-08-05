@@ -17,29 +17,28 @@ therefore do not need any special features to deal with this
 discretization, beyond the usual care taken not to accumulate
 numerical errors.  In particular, Fourier transforms, special
 functions, and similar functionality can be provided by standard
-libraries.
+code libraries.
 
 
 
-\section{Searching for signals in noise}
+\section{Detecting signals in noise}
 \label{sec:ihope_match_filter}
 
-There are many ways to search for signals in noise, and to a large
-extent the method used will depend on the nature of the signal being
-sought.  In this chapter we focus on the method used to search for the
-coalescence of compact binaries, as discussed in
-chapter~\ref{ch:theory}.
+There are many ways to search for evidence of gravitational waves in
+noise and to a large extent the method used will depend on the nature
+of the signal being sought.  In this chapter we focus on the method
+used to search for the coalescence of compact binaries, as discussed
+in chapter~\ref{ch:theory}.
 
 \subsection{Random Processes}
 \label{ssec:random_processes}
 
 We start by modelling the noise in the instruments, following the
-treatment in~\cite{BlandfordThorne}.  Seismic noise is noise is not
-predictable in any detailed way, and thermal and shot noise are
-quantum-mechanical in nature and therefore can not be predicted even
-in principle.  The noise is therefore a \emph{random process}.  Such a
-process is described by a collection of probability density functions
-of the form
+treatment in~\cite{BlandfordThorne}.  Seismic noise is not predictable
+in any detailed way, and thermal and shot noise are quantum-mechanical
+in nature and therefore can not be predicted even in principle.  The
+noise is therefore a \emph{random process}.  Such a process is
+described by a collection of probability density functions of the form
 
 \begin{equation*}
 \label{eq:pdfs}
@@ -47,12 +46,12 @@ p(y_n, t_n; y_{n-1}, t_{n-1}; \ldots y_0 t_0) dy_n dy_{n-1} \ldots
 dy_0
 \end{equation*}
 
-which gives the probability that the sample at time $t_0$ will will
-lie between $y_0$ and $y_0 + dy_0$ and that the sample at time $t_1$
+which gives the probability that the value at time $t_0$ will will
+lie between $y_0$ and $y_0 + dy_0$ and that the value at time $t_1$
 will will lie between $y_1$ and $y_1 + dy_1$, and so on.
 
 By considering a hypothetical ensemble of such processes we can 
-construct averages values of functions of the process at one or more
+construct average values of functions of the process at one or more
 times.  For example the average value of the product $y(t_1)y(t_2)$,
 
 \begin{equation*}
@@ -60,7 +59,7 @@ times.  For example the average value of the product $y(t_1)y(t_2)$,
 p(y_2, t_2; y_1, t_1)\, dy_2\, dy_1
 \end{equation*}
 
-We now make the following assumptions about the LIGO noise
+We now make the following assumptions about the LIGO noise:
 
 \begin{itemize}
 \item That it is \emph{stationary}, the values of the
@@ -70,12 +69,13 @@ good model for seismic noise, but by breaking the analysis into small
 chunks of time it will be accurate enough over the span of each.
 
 \item That it is \emph{Gaussian}, that is, the functions~\ref{eq:pdfs}
-are all Gaussians.  This is not necessarily a good model for, eg,
-electrical noise, which is better modeled as a sine wave with
-time-dependant random amplitude.  However, again this will be
-approximately correct.  We will further assume that the mean is 0
-(eg, that the mirrors are just as likely to swing one way as the
-other).
+are all of the form $\exp(-Y^T A Y)$ where $Y$ is a vector of $y$
+values and  $A$ is a positive-definite matrix.  This is not
+necessarily a good model for, eg, electrical noise, which is better
+modeled as a sine wave with time-dependant random amplitude.  However,
+again this will be approximately correct.  We will further assume that
+the mean is 0 (eg, that the mirrors are just as likely to swing one
+way as the other).
 
 \item That it satisfies the \emph{ergodic hypothesis} so that we may
 replace ensemble averages with time averages.
@@ -135,8 +135,8 @@ the continuum limit this becomes
 We now define the signal strength $S$ as the expected value of
 $\hat{s}$ when the signal is present:
 
-\begin{align}
-S &= \langle \hat{s} \rangle \\
+\begin{align*}
+S &= \left\langle \hat{s} \right\rangle \\
 &= \langle  \int_{-\infty}^\infty s(t) K(t)\, dt \rangle \\
 &= \int_{-\infty}^\infty \langle s(t) K(t)\rangle \, dt \\
 &= \int_{-\infty}^\infty \langle s(t) \rangle K(t) \, dt \\
@@ -145,15 +145,15 @@ S &= \langle \hat{s} \rangle \\
 \rangle \right)  K(t) \, dt \\
 &= \int_{-\infty}^\infty \left( 0 + h(t) \right)  K(t) \, dt \\
 &= \int_{-\infty}^\infty h(t) K(t) \, dt \\
-\end{align}
+\end{align*}
 
 Now, since $K(t)$ is real we can replace it by its complex conjugate
 and then apply Parseval's theorem to write this as
 
-\begin{align}
-S &= \int_{-\infty}^\infty h(t) K^\star(t) \, dt \\
-&= \int_{-\infty}^\infty \tilde{h}(f) \tilde{K}^\star(f) \, df \\
-\end{align}
+\begin{equation*}
+S = \int_{-\infty}^\infty h(t) K^\star(t) \, dt
+= \int_{-\infty}^\infty \tilde{h}(f) \tilde{K}^\star(f) \, df
+\end{equation*}
 
 We characterise the noise $N$ as the rms value of $\hat{s}$ when the
 signal is absent:
@@ -208,8 +208,7 @@ functions to real numbers
      {(1/2) S_n(f)}
 \end{equation}
 
-Now, the operator defined in~\ref{eq:InnerProduct} has the following
-properties
+This operator has the following properties
 
 \begin{itemize}
 \item Conjugate symmetry, $(x|y) = (y|x)^\star$
@@ -236,17 +235,19 @@ pattern $f(t)$ in the data is, up to normalization~\cite{Finn1992}
 
 \begin{equation}
 \label{eq:prob_of_signal}
-p(f) \propto \exp\left(- \frac{1}{2} \InnerProduct(f|f) \right)
+p(f) \propto \exp\left(- \frac{1}{2} \InnerProduct{f|f} \right)
 \end{equation}
 
 Using equation~\ref{eq:InnerProduct} the SNR becomes
 
 \begin{equation}
 \label{eq:InnerProductSNR}
-\frac{S}{N} = \frac{\InnerProduct{h|u}}{\InnerProduct{u|u}^{1/2}}
+\rho = \frac{S}{N} = \frac{\InnerProduct{h|u}}{\InnerProduct{u|u}^{1/2}}
 \end{equation}
 
-We now seek a function $u$ (and hence $K$) that will maximize the SNR.
+where we introduce $\rho$ as the symbol we will use for SNR.
+
+We now seek a function $u$ (and hence $K$) that will maximize $\rho$.
 In this form it is clear that $u$ and $h$ must be parallel, and
 therefore
 
@@ -290,13 +291,13 @@ Substituting this into the matched filter,
 \begin{equation}
 \label{eq:snr_time_series}
 \rho(\tau) = \frac{1}{\InnerProduct{h|h}}
-\left\lvert \int e^{-2\pi i f \tau} \frac{\tilde{s}
-\tilde{h}^\star}{S_n(f)}\,df \right\rvert
+\left\lvert \int e^{-2\pi i f \tau} \frac{\tilde{s}(f)
+\tilde{h}^\star(f)}{S_n(f)}\,df \right\rvert
 \end{equation}
 
 where we have added the absolute value from the maximization over
 $\phi_0$.  This is just the inverse Fourier transform of the quantity
-$\tilde{s}\tilde{h}^\star/S_n$.  
+$\tilde{s}(f)\tilde{h}(f)^\star/S_n$.  
 
 Related to the SNR is the \emph{overlap} between two waveforms $h$ and
 $h'$ with respect to a given PSD,
@@ -319,12 +320,12 @@ will use this repeatedly in subsequent chapters.
 Equation~\ref{eq:prob_of_signal} says that there is a finite
 probability of a \emph{false alarm}, random fluctuations mimicking a
 signal.  We must therefore choose a threshold on $\rho(t)$ that is
-high enough to keep the false alarm level to an acceptable level, but
+high enough to keep the false alarm rate to an acceptable level, but
 not so high as to prevent detection of realistic signals.  LIGO has
 chosen 5.5 as this threshold.  However, it would be wasteful to store
 every value in excess of this threshold.  The LIGO data is sampled
 rapidly enough that adjacent points do not differ by values that are
-large relative to numeric precision.  This feature is inherited in the
+large relative to numeric precision.  This feature is inherited by the
 SNR time series.  Therefore, points close to a large value will also
 be large, despite coming from the same event.  We therefore need only
 consider the largest SNR.  This SNR,  the time at which it occurred,
@@ -342,6 +343,7 @@ from which the instantaneous frequency is 40 Hz to the time where it
 becomes infinite.
 
 The full trigger selection algorithm is:
+\newpage
 
 \begin{alltt}
 for each sample point j
@@ -358,6 +360,8 @@ for each sample point j
       event\_snr   = \(\rho\sb{j}\)
 \end{alltt}
 
+We will discuss some implications of this algorithm in
+section~\ref{sec:daily_ihope_open_questions}.
 
 \section{The $\chisq$ test}
 \label{sec:ihope_chisq}
@@ -367,13 +371,13 @@ which we now write as
 
 \begin{equation*}
 \rho(t) = \frac{1}{\InnerProduct{h|h}}
-\int e^{-2\pi i f t} \frac{\tilde{h}^\star}{S_n(f)} \cdot \tilde{s}(f) \,df
+\int e^{-2\pi i f t} \frac{\tilde{h}^\star(f)}{S_n(f)} \cdot \tilde{s}(f) \,df
 \end{equation*}
 
 By the convolution theorem this becomes
 
 \begin{equation*}
-\rho(t) = \frac{1}{\InnerProduct{h|1}}
+\rho(t) = \frac{1}{\InnerProduct{h|h}}
 h(-t) \star S(t) \star s(t)
 \end{equation*}
 
@@ -432,17 +436,17 @@ quantity, $\newsnr$ (new SNR), which downweights the SNR by $\chisq$,
 \label{sec:bank_metric}
 
 We have thus far referred to the $h$ as ``the template'', but recall
-from equation~\ref{eq:spa_waveform} that the waveforms are
-parameterized by parameters of the binary, such as total mass $M$ and
-symmetric mass ratio $\eta$.  As the values of these parameters
-diverge between the signal  and template the SNR will decrease.  We
-must therefore construct a \emph{bank} of templates arranged to
-capture, to within some acceptable loss of SNR, all the signals of
-interest.  To do so we consider the space of templates as a manifold,
-as in chapter~\ref{ch:theory}, and we use the parameter values (or
-functions of these values) as coordinates.  The distance between two
-points $\mathbf{p}$ and $\mathbf{q}$, with coordinates=parameters
-$p_i$ and $q_i$,  is defined in terms of the overlap of templates at those
+from equation~\ref{eq:spa_waveform} that the waveforms are depend on
+the parameters of the binary, such as total mass $M$ and symmetric
+mass ratio $\eta$.  As the values of these parameters diverge between
+the signal  and template the SNR will decrease.  We must therefore
+construct a \emph{bank} of templates arranged to capture, to within
+some acceptable loss of SNR, all the signals of interest.  To do so we
+consider the space of templates as a manifold, as in
+chapter~\ref{ch:theory}, and we use the parameter values (or functions
+of these values) as coordinates.  The distance between two points
+$\mathbf{p}$ and $\mathbf{q}$, with coordinates=parameters $p_i$ and
+$q_i$,  is defined in terms of the overlap of templates at those
 parameters
 
 \begin{equation*}
@@ -497,8 +501,8 @@ overlap function~\cite{Owen:1995tm, Owen:1998dk}
 
 where we can drop the linear term because the overlap is a maximum at
 $\Delta \mathbf{\lambda} = 0$.  When using frequency-domain,
-stationary-phase templates of the form~\ref{eq:spa_templates}, the
-calculation of this metric can be done analytically, and gives a 
+stationary-phase templates of the form~\ref{eq:spa_waveform}, the
+calculation of this metric can be done analytically, and gives a
 result in terms of moments of the noise curve
 
 \begin{equation*}
@@ -532,9 +536,9 @@ and third ("VSR3", August 11, 2010 - October 20, 2010) science runs.
 For more details, see \Note{Collin's thesis}.
 
 In each IFO the analysis is broken into 2048-second segments.  This is
-done for computational efficiency, as well as to limit to times where
-the PSD is nearly stationary.  The times may not overlap, but we
-ignore this minor complication.
+done for computational efficiency, as well as to restrict to timespans
+over which the PSD is nearly stationary.  The times covered by each
+instrument may not overlap, but we ignore this minor complication.
 
 First, the data is filtered to remove power below 40 Hz.  The seismic
 noise below this frequency is orders of magnitude greater than  the
@@ -595,14 +599,14 @@ calculated from equation~\ref{eq:prob_of_signal}.  As the real data is
 not Gaussian, this distribution must instead be measured.  We do so by
 performing \emph{time slides}.  The data from each IFO is slid by more
 than the light-travel time between instruments.  Assuming at most one
-gravitational wave, this ensures that any coincidences are entirely
-due to triggers produced by noise.  We repeat this 100 times in order
-to build up more statistics.  At the end we have a probability (or
-equivalently a rate) of obtaining triggers at each combined new SNR
-value.  The foreground triggers are then compared to this
-distribution, those with values that are sufficiently rare/improbable
-are potential detection candidates, which are then subjected to
-extensive follow up analysis.
+gravitational wave in the data, this ensures that any coincidences are
+entirely due to triggers produced by noise.  We repeat this 100 times
+in order to build up more statistics.  At the end we have a
+probability (or equivalently a rate) of obtaining triggers at each
+combined new SNR value.  The foreground triggers are then compared to
+this distribution, those with values that are sufficiently
+rare/improbable are potential detection candidates, which are then
+subjected to extensive follow up analysis.
 
 The order to test and tune the pipeline we perform numerous
 \emph{software injections}, where simulated signals are added to the
@@ -634,7 +638,7 @@ SNR threshold, and so on.  It is possible and useful to test
 these choices against pN signals, as is done in software and hardware
 injections.   However, it is known that these waveforms to not capture
 the full physics of the systems for which we are looking.  There is
-therefore string impetus to test the pipeline again signals from
+therefore strong impetus to test the pipeline against signals from
 numerical relativity.  This topic is the basis for the next four
 chapters.
 
