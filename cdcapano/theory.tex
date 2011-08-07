@@ -6,46 +6,170 @@ In this chapter we briefly review the theory of gravitational waves: how they ar
 
 \section{Gravitational Waves in General Relativity}
 
-We begin our discussion with Einstein's field equations, given by\footnote{We will work in ``natural units" in which $G = c = 1$, where $G$ is Newton's gravitational constant and $c$ is the speed of light.}:
-
+In this section we show how gravitational-waves arise in General Relativity. We begin our discussion with Einstein's field equations, given by\footnote{We will work in ``natural units" in which $G = c = 1$, where $G$ is Newton's gravitational constant and $c$ is the speed of light.} \cite{ref:Einstein}:
 \begin{equation}
 \label{eqn:einstein_field_eqns}
-R_{\alpha \beta} - \frac{1}{2}R g_{\alpha\beta} = 8\pi T^{\alpha \beta}
+G_{\alpha\beta} = 8\pi T_{\alpha \beta}
 \end{equation}
-Here, $R_{\alpha \beta}$ is the Rici tensor, $R$ is the Rici scalar, $g_{\alpha \beta}$ is the metric tensor, and $T^{\alpha \beta}$ is the stress-energy tensor.
+where $T_{\alpha\beta}$ is the stress-energy tensor and $G_{\alpha\beta}$ is the Einstein curvature tensor, defined as:
+\begin{equation}
+G_{\alpha\beta} \equiv R_{\alpha \beta} - \frac{1}{2}R g_{\alpha\beta}
+\end{equation}
+Here, $g_{\alpha\beta}$ is the metric on some manifold and $R$ is the Rici curvature scalar, which is obtained by contracting $R_{\alpha\beta}$, which is the Rici tensor. The Rici tensor is obtained by contracting the Riemann curvature tensor, $R\indices{^\alpha_{\beta\mu\nu}}$, on the first and third indices. Riemann is defined as:
+\begin{equation}
+R\indices{^\alpha_{\beta\mu\nu}} \equiv \Gamma\indices{^\alpha_{\beta\nu,\mu}} - \Gamma\indices{^\alpha_{\beta\mu,\nu}} + \Gamma\indices{^\alpha_{\sigma\mu}}\Gamma\indices{^\sigma_{\beta\nu}} - \Gamma\indices{^\alpha_{\sigma\nu}}\Gamma\indices{^\sigma_{\beta\mu}}
+\end{equation}
+where the $\Gamma\indices{^\alpha_{\mu\nu}}$ are the Christoffel symbols, given by:
+\begin{equation}
+\Gamma\indices{^\alpha_{\mu\nu}} = \frac{1}{2}g^{\alpha\beta}(g_{\beta\mu,\nu} + g_{\beta\nu,\mu} - g_{\mu\nu,\beta})
+\end{equation}
+The ``," indicates the partial derivative of the tensor with respect to the trailing indices. The Christoffel symbols give the change in the metric as it is moved along a path in a curved manifold. Stepping back up the ladder, the Riemann tensor gives the change in the metric when we go around a small closed path. It thereby describes the curvature of the manifold, in $20$ independent components (in a four-dimensional spacetime). The Rici tensor reduces the number of components to $10$, and the Einstein tensor to $6$, leaving $4$ components of the metric free \cite{ref:BlanfordThorne}.\footnote{These four free components allow us to choose any coordinate system, or ``gauge", we wish without changing the underlying physics.} Thus the Einstein field equations relate the curvature of spacetime to mass and energy, which gives rise to the ``force" we call gravity. (Voil\`{a}. \ac{GR} in a nutshell.)
 
+In a strongly curved spacetime, the full Einstein field equations cannot be solved analytically. We will therefore concern ourselves with the weak field limit, in which:
+\begin{align}
+g_{\alpha\beta} = \eta_{\alpha\beta} + h_{\alpha\beta}
+\end{align}
+Here, $\eta_{\alpha\beta}$ is the Minkowski metric (we use the $(-,+,+,+)$ convention) and $h_{\alpha\beta}$ is a small perturbation on this metric, i.e., $|h_{\alpha\beta}| \ll 1$. With this assumption, the Riemann tensor simplifies to \cite{ref:Schutz}:
+\begin{equation}
+R\indices{_{\alpha\beta\mu\nu}} = \frac{1}{2}(h_{\alpha\nu,\beta\mu} + h_{\beta\mu,\alpha\nu} - h_{\alpha\mu,\beta\nu} - h_{\beta\nu,\alpha\mu})
+\end{equation}
+If we define $\bar{h}^{\alpha\beta}$ to be the ``trace reverse" of $h_{\alpha\beta}$:
+\begin{equation}
+\bar{h}_{\alpha\beta} = h_{\alpha\beta} - \frac{1}{2}\eta_{\alpha\beta}h
+\end{equation}
+(here $h = h\indices{^\sigma_\sigma}$ is the trace of h) then, to first order, we can simplify the Einstein curvature tensor to:
+\begin{equation}
+G_{\alpha\beta} = -\frac{1}{2}(\bar{h}\indices{_{\alpha\beta,\mu}^\mu} + \eta_{\alpha\beta}\bar{h}\indices{_{\mu\nu}^{,\mu\nu}} - \bar{h}\indices{_{\alpha\mu,\beta}^\mu} - \bar{h}\indices{_{\beta\mu,\alpha}^\mu} + \mathcal{O}(h^2_{\alpha\beta}))
+\end{equation}
+We can exploit gauge freedoms in the Einstein equations to simplify this more. If we chose the Lorenz gauge,
+\begin{equation}
+\bar{h}\indices{^{\mu\nu}_{,\nu}} = 0
+\end{equation}
+then:
+\begin{equation}
+G_{\alpha\beta} = -\frac{1}{2}\bar{h}\indices{_{\alpha\beta,\mu}^\mu}
+\end{equation}
+The weak-field Einstein equations are thus:
+\begin{equation}
+\label{eqn:wave_eqn}
+\Box\bar{h}_{\alpha\beta} = -16\pi T_{\alpha\beta}
+\end{equation}
+where $\Box$ is the d'Almbertian operator. This is the wave equation. Analogous to the wave equation in electromagnetism, equation \ref{eqn:wave_eqn} has the solution:
+\begin{equation}
+\label{eqn:wave_sol-source}
+\bar{h}_{\alpha\beta} = 4 \int \frac{T_{\alpha\beta}(t - |\vec{x}-\vec{x}'|, \vec{x}')}{|\vec{x} - \vec{x'}|} \d x'^3
+\end{equation}
+
+Equation \ref{eqn:wave_sol-source} relates the metric pertubation to its source. We will return to this equation shortly. First, to explore properties of \ac{GW} propagation, we consider the field equations at points outside the source, i.e., in vacuum, for which $T_{\alpha\beta} = 0$. The wave equation becomes:
+\begin{equation}
+\Box\bar{h}_{\alpha\beta} = 0
+\end{equation}
+which has the solution:
+\begin{equation}
+\label{eqn:wave_sol-vac}
+\bar{h}_{\alpha\beta} = \Re A_{\alpha\beta} e^{ik_\mu x^\mu}
+\end{equation}
+Each $\alpha\beta$ component of $\Bar{h}$ is thus a sinusodial wave that travles along the vector $k^\mu$ with amplitude $A_{\alpha\beta}$. It can be shown \cite{ref:Schutz} that $k_\mu k^\mu = 0$, i.e., $k^\mu$ is a null vector. Identifying $k^0$ as the angular frequency of the wave, $\omega$, this implies that  $|\vec{k}|^2 = \omega^2$. Since, in general, $|\vec{k}| = \omega/v$ (where $v$ is the phase velocity of the wave), $v$ (as well as the group velocity) must be 1. The wave therefore travels at the speed of light. Additionally, in the Lorenz gauge:
+\begin{equation}
+\label{eqn:lorenz_cond_wave}
+A_{\alpha\beta}k^\beta = 0
+\end{equation}
+This means that $A_{\alpha\beta}$ must be orthogonal to $\vec{k}$; i.e., the wave is a transverse-plane wave.
+
+We can exploit additional gauge freedoms to further simplify the wave equations \ref{eqn:wave_sol-vac}. It can be shown \cite{ref:Schutz} that we can impose two further conditions:
+\begin{align}
+A\indices{_{\alpha}^{\alpha}} = 0 \\
+A_{\alpha\beta}u^{\beta} = 0
+\end{align}
+while still satisfying the Lorenz gauge condition. The first makes $\Bar{h}_{\alpha\beta}$ trace free; thus in this gauge, which we denote by a TT superscript (the reason for which will become clear shortly),
+\begin{equation}
+\Bar{h}^{\TT}_{\alpha\beta} = h^{\TT}_{\alpha\beta}
+\end{equation}
+The second condition sets the $\alpha$ component of $A$ orthogonal to some constant four-velocity of our choosing. If we orient our background reference frame such that the four-velocity lies along the time basis vector, $u^\beta = \delta\indices{^{\beta}_0}$, and such that the spatial part of the wave-vector points along the $z$-axis (i.e, $k = (\omega,0,0,\omega)$) then this condition implies that $A_{\alpha0}$ and $A_{\alpha z}$ are $0$ for all $\alpha$. (The second result follows from equation \ref{eqn:lorenz_cond_wave}.) Thus in this gauge, the metric pertubation is both transverse and traceless, hence the TT label.
+
+By going to the TT gauge we have greatly simplied the solution to the wave equation. Since the metric perturbation is transverse, the only non-zero elements are $h^\TT_{xx}$, $h^\TT_{yy}$, and $h^\TT_{xy}$ (= $h^\TT_{yx}$). Since it is traceless, $h^\TT_{xx} = -h^\TT_{yy}$. Thus we have reduced solutions \ref{eqn:wave_sol-vac} to two independent equations:
+\begin{align}
+h^\TT_{xx} = \Re h_\pls e^{ik_\mu x^\mu} = h_\pls \cos(\omega(t-z) + \phi_0) \\
+h^\TT_{xy} = \Re h_\crs e^{ik_\mu x^\mu} = h_\crs \cos(\omega(t-z) + \phi_0)
+\end{align}
+where $h_\pls$ ($= A_{xx} = -A_{yy}$) and $h_\crs$ ($= A_{xy} = A_{yx}$) are the ``plus" and ``cross" polarizations of the gravitational wave. ($\phi_0$ is some arbitrary initial phase.)
+
+Since we have used all of our gauge freedoms to obtain these two solutions, the results are physically observable. We can see this by considering the proper distance between two freely-falling particles, one located at the origin ($x_1^i = (0,0,0)$) and the other at $x_2^i = (\delta x,0,0)$ when a gravitational wave passes by. In Cartesian coordinates the line element in the TT gauge is:
+\begin{align*}
+\d s^2 &= -\d t^2 + \d z^2 + (1+ h_\pls \cos(\omega[t-z]+\phi_0)) \d x^2 \\
+     &+ (1 - h_\pls \cos(\omega[t-z]+\phi_0)) \d y^2 + 2 h_\crs \cos(\omega[t-z]+\phi_0) \d x \d y
+\end{align*}
+To get a sense of the effect of the passing wave, consider the case when the wave only has plus polarization. Additionally, let the initial phase of the gravitational wave be $\phi_0 = -\pi/4$. The proper distance between the two particles at arbitrary time $t$ is: 
+\begin{align}
+\Delta l = \int \d s &= \int_0^{\delta x} \sqrt{(1 + h_\pls \cos(\omega t - \pi/4))} \d x \\
+    &\approx \int_0^{\delta x} (1 + \frac{1}{2} h_\pls \cos(\omega t - \pi/4)) \d x \\
+    &= \delta x (1 + \frac{1}{2} h_\pls \cos(\omega t - \pi/4))
+\end{align}
+In the second step we have used the fact that $|h_\pls| \ll 1$. At time $t=0$, we get $\Delta l = \delta x$, as expected. At time $t= \pi/4\omega$, however, we get $\Delta l = \delta x(1 + h_\pls/2)$: the particle has moved from the origin by an additional $h_\pls/2$. If we perform the same analysis for another particle situated at $x_3^i = (0,\delta y, 0)$, we will get $\Delta l = \delta y(1 - h_\pls/2)$ at time $t = \pi/4\omega$. Likewise, if we consider particles situated at $x^i = (\delta x, \delta y, 0)$ and $x^i = (-\delta x, \delta y, 0)$ we will get similar oscillations when a cross-polarized wave passes through. Figure \ref{fig:plus_cross} shows what this would look like for a ring of particles. Thus, we can detect a gravitational wave by measuring how the proper distance changes between two freely-falling masses. How this is done is explained in section \ref{sec:interferometers}.
+
+Return now to the source-dependent wave solution, equation \ref{eqn:wave_sol-source}. Since the TT gauge captures all of the physically measureable quantities of the gravitational wave outside the source, we can simplify the equation to:
+\begin{equation}
+\label{eqn:wave_from_source}
+h^\TT_{ij} = 4 \left[\int \frac{ T_{ij}(t - |\vec{x}-\vec{x}'|, \vec{x}')}{|\vec{x} - \vec{x'}|} \d x'^3\right]^\TT
+\end{equation}
+In other words, we can calculate the measureable gravitational wave created by a source from the $ij$ components of the stress-energy tensor alone. We then throw out the transverse parts and remove the trace. We will use this result in the next section to find a solution for the gravitational waveform from a compact binary system.
 
 \subsection{Gravitational Waves from a Compact Binary Inspiral}
 
-We now consider the gravitational radiation emitted from a system consisting of two compact objects orbiting around each other. Let the mass of the objects be denoted by $m_1$ and $m_2$, such that the total mass, $M$, is $M = m_1 + m_2$, and consider their motion when they are at a distance $a \gg 2M$. We will assume their motion is determined entirely by their mutual gravitational attraction and that $m_1 ~ m_2 ~ \Msun$. Although we will find that the orbit of the objects shrinks due to the energy loss from emitted \acp{GW}, with these assumptions, $\dot{a} \ll v_{\mathrm{tan}}$. Thus we can use Kepler's laws to evaluate the dynamics of the binary; the orbital angular velocity is therefore:
+We now consider the gravitational radiation emitted from a system consisting of two compact spherical objects orbiting around each other. Let the mass of the objects be denoted by $m_1$ and $m_2$, and the total mass by $M$. Consider their motion when they are at a distance $a \gg 2M$. We will assume their motion is determined entirely by their mutual gravitational attraction and that $m_1 \sim m_2 \sim \Msun$. Although we will find that the orbit of the objects shrinks due to the energy loss from emitted \acp{GW}, with these assumptions, $\dot{a} \ll v$, where $v$ is their relative orbital velocities. Thus we can assume quasi-stationary circular orbits. Additionally, since we have assumed $a \gg 2M$, $v \ll 1$; in this case, relativistic effects become negligible and we can use Newtonian gravity and Kepler's third law --- given by: 
 \begin{equation}
 \label{eqn:orbit_ang_v}
-\omega = \sqrt{\frac{M}{a^3}}
+\Omega = \sqrt{\frac{M}{a^3}}
+\end{equation}
+where $\Omega$ is the orbital angular velocity --- to analyze the system.
+
+Our assumptions also allow us to simplify equation \ref{eqn:wave_from_source}. First, from energy and momentum conservation ($T\indices{^{\mu\nu}_{,\nu}} = 0$) we have:
+\begin{align*}
+T\indices{^{00}_{,0}} &= -T\indices{^{0j}_{,j}} \\
+T\indices{^{j0}_{,0}} &= -T\indices{^{jk}_{,k}}
+\end{align*}
+Doing some algebra yields:
+\begin{equation*}
+2T^{jk} = T\indices{^{00}_{,00}}x^jx^k - (T^{lm}x^jx^k)_{,ml} + 2(T^{lj}x^k + T^{lk}x^j)_{,l}
+\end{equation*}
+When we plug this into equation \ref{eqn:wave_from_source}\footnote{Since the background metric is $\eta_{\alpha\beta}$ we can lower the $ij$ indices on T with impunity.} we find that the last two terms are zero due to Stokes theorem. The $T^{00}$ term gives the mass-energy of the source, $\rho$. We therefore have:
+\begin{equation}
+\label{eqn:source_rho}
+h^\TT_{ij} = 2 \left[ \partial_t^2 \int \frac{\rho(t - |\vec{x}-\vec{x}'|, \vec{x}')}{|\vec{x} - \vec{x}'|} \d^3x'\right]^\TT
 \end{equation}
 
-% need to show where this equation comes from
-From equation \ref{eqn:?} the dominant contribution to the gravitational wave field is given by the mass-quadrupole term:
+Now, because we are far from the source, $|\vec{x} - \vec{x}'| \sim r$ (where $r$ is the distance to the source), i.e., $|\vec{x}'|/|\vec{x}| \ll 1$. As is done in \ac{EM}, we can therefore expand the denominator \cite{ref:BlanfordThorne}:
 \begin{equation}
-\label{eqn:h_mass_quad}
-h^{\TT}_{jk} = \frac{2}{r} \ddot{\qI}^\TT(t - r)
+\label{eqn:expansion}
+\frac{1}{|\vec{x} - \vec{x}'|} = \frac{1}{r} + \frac{x^{j}x^{j'}}{r^3} + \frac{x^j x^k (3x^{j'}x^{k'} - r^{'2}\delta_{jk})}{2r^5} + \ldots
 \end{equation}
-where $t$ is the time coordinate, $r$ is the radial coordinate, and the quadrupole moment, $\qI$, is given by:
+Keeping the first term yields:
+\begin{equation*}
+\frac{2}{r} \partial_t^2 \int \rho(t - r) x^{'j}x^{'k} \d^3 x'
+\end{equation*}
+We recognize this as the second-time derivative of the second moment of the mass distribution, $\ddot{I}_{jk}$.\footnote{In general, we will use over-dots to indicate differentation with respect to proper time, $\tau$. However, because we are working in a Minkowski space time, $\tau \rightarrow t$. We can therefore use the dots here to indicate differentation with respect to the coordinate time.} Since we eventually remove the trace, we can instead use the mass quadrupole moment, $\qI$, defined as:
 \begin{equation}
 \label{eqn:quad_moment}
 \qI = \int \rho(\mathbf{x})\left( x_j x_k - \frac{1}{3} \delta_{jk} \delta_{mn} x^{m} x^{n} \right) \d^3 x
 \end{equation}
+Plugging this into equation \ref{eqn:source_rho} yields:
+\begin{equation}
+\label{eqn:h_mass_quad}
+h^{\TT}_{jk} = \frac{2}{r} \ddot{\qI}^\TT(t - r)
+\end{equation}
+This is an important result: we only get gravitional waves if we have a changing quadrupole (or higher-order) moment. Contrast this with \ac{EM}, in which we only need a changing dipole moment to get electromagnetic waves.
 
-To evaluate the amplitude of the \ac{GW} field we must first evaluate $\qI$. Since we only have two masses, we can use the discreet form of the quadrupole moment to directly write:
+Returning to our problem, to evaluate the amplitude of the \ac{GW} emitted by the binary we must first evaluate $\qI$. Since we only have two masses, we can use the discreet form of the integral to directly write:
 \begin{equation}
 \label{eqn:discreet_qm}
 \qI_{ij} = m_1(x_{1i}x_{1j} - \delta_{ij}\frac{1}{3} r_1^2) + m_2(x_{2i}x_{2j} - \delta_{ij}\frac{1}{3}r_2^2)
 \end{equation}
 where $r_n^2 = x_n^2 + y_n^2$ is the radial position of the $n\th$ mass. Working in the center-of-mass frame of the binary (see figure \ref{fig:binary_com_diagram}), we have:
 \begin{align*}
-x_1 &= r_1 \cos \omega t \\
-y_1 &= r_1 \sin \omega t \\
-x_2 &= - r_2 \cos \omega t \\
-y_2 &= - r_2 \sin \omega t \\
+x_1 &= r_1 \cos \Omega t \\
+y_1 &= r_1 \sin \Omega t \\
+x_2 &= - r_2 \cos \Omega t \\
+y_2 &= - r_2 \sin \Omega t \\
 \end{align*}
 where
 \begin{align}
@@ -55,9 +179,9 @@ r_2 &= a \frac{m_1}{m_1 + m_2}
 Plugging these values into equation \ref{eqn:discreet_qm} we have:
 \begin{align}
 \qI_{xx} &= m_1 x_1^2 + m_2 x_2^2 - \frac{1}{3}(m_1r_1^2 + m_2r_2^2) \nonumber \\
-         &= (m_1r_1^2 + m_2r_2^2)\left(\cos^2 \omega t - \frac{1}{3}\right) \nonumber \\
-         &= a^2\left(\frac{m_1m_2^2 + m_2m_1^2}{m_1+m_2}\right)\left(\cos^2 \omega t - \frac{1}{3}\right) \nonumber \\
-         &= \mu a^2 \left(\cos^2 \omega t - \frac{1}{3} \right)
+         &= (m_1r_1^2 + m_2r_2^2)\left(\cos^2 \Omega t - \frac{1}{3}\right) \nonumber \\
+         &= a^2\left(\frac{m_1m_2^2 + m_2m_1^2}{m_1+m_2}\right)\left(\cos^2 \Omega t - \frac{1}{3}\right) \nonumber \\
+         &= \mu a^2 \left(\cos^2 \Omega t - \frac{1}{3} \right)
 \end{align}
 where:
 \begin{equation}
@@ -66,30 +190,30 @@ where:
 \end{equation}
 is the reduced mass. By a similar calculation, we get:
 \begin{align}
-\qI_{yy} &= \mu a^2 \left(\sin^2 \omega t - \frac{1}{3}\right) \\
+\qI_{yy} &= \mu a^2 \left(\sin^2 \Omega t - \frac{1}{3}\right) \\
          &= -\qI_{xx} \\
 \qI_{zz} &= -\frac{1}{3} \mu a^2 \\
-\qI_{xy} &= \mu a^2 \cos \omega t \sin \omega t \\
+\qI_{xy} &= \mu a^2 \cos \Omega t \sin \Omega t \\
          &= \qI_{yx}
 \end{align}
 The second time derivative of the quadrupole moment is thus:
 \begin{subequations}
 \begin{align}
-\ddot{\qI}_{xx} &=  -2\mu a^2\omega^2 \cos(2\omega t) \\
-\ddot{\qI}_{yy} &=  2\mu a^2\omega^2 \cos(2\omega t)  \\
-\ddot{\qI}_{xy} &=  -2 \mu a^2 \omega^2 \sin(2 \omega t) \\
+\ddot{\qI}_{xx} &=  -2\mu a^2\Omega^2 \cos(2\Omega t) \\
+\ddot{\qI}_{yy} &=  2\mu a^2\Omega^2 \cos(2\Omega t)  \\
+\ddot{\qI}_{xy} &=  -2 \mu a^2 \Omega^2 \sin(2 \Omega t) \\
                 &=  \ddot{\qI}_{yx} \\
 \ddot{\qI}_{zz} &=  0
 \end{align}
 \label{eqn:second_deriv_qm}
 \end{subequations}
 
-In order to plug equations \ref{eqn:second_deriv_qm} into equation \ref{eqn:h_mass_quad} we need the transverse part of the moments. We know that the gravitational waves will propagate outward from the binary. Therefore, if we project equations \ref{eqn:second_deriv_qm} into the spherical coordinates $\{r,\iota,\phi\}$ shown in figure \ref{fig:?}, then $\qI_{\iota\iota},~\qI_{\phi\phi},$ and $\qI_{\iota\phi}~ (= \qI_{\phi\iota})$ will form parts of the tensor transverse transverse to the propagation. Since the $z$ components of the time derivative of the quadrupole are all zero, the transformation law is simplified to:
+In order to plug equations \ref{eqn:second_deriv_qm} into equation \ref{eqn:h_mass_quad} we need the transverse part of the moments. We know that the gravitational waves will propagate outward from the binary. Therefore, if we project equations \ref{eqn:second_deriv_qm} into the spherical coordinates $\{r,\iota,\phi\}$ shown in figure \ref{fig:?}, then $\qI_{\iota\iota},~\qI_{\phi\phi},$ and $\qI_{\iota\phi}~ (= \qI_{\phi\iota})$ will form the parts of the tensor transverse to the propagation. Since the $z$ components of the time derivative of the quadrupole are all zero, the transformation law is simplified to:
 \begin{align*}
 \ddot{\qI}_{i'j'}  &= \Lambda\indices{_{i'}^i} \Lambda\indices{_{j'}^j} \ddot{\qI}_{ij} \\
             &= \Lambda\indices{_{i'}^x} \Lambda\indices{_{j'}^x} \ddot{\qI}_{xx} + \Lambda\indices{_{i'}^x} \Lambda\indices{_{j'}^y} \ddot{\qI}_{xy} + \Lambda\indices{_{i'}^y} \Lambda\indices{_{j'}^x} \ddot{\qI}_{yx} + \Lambda\indices{_{i'}^y} \Lambda\indices{_{j'}^y} \ddot{\qI}_{yy}
 \end{align*}
-We can further simplify the problem by setting the initial orbital phase, $\phi$, to 0. Since we have assumed quasi-stationary circular orbits, we can later account for arbitrary initial phase by letting $\omega t \rightarrow \omega t + \phi$. Doing so simplifies the transformation matrix to:
+We can further simplify the problem by setting the initial orbital phase, $\phi$, to 0. Since we have assumed quasi-stationary circular orbits, we can later account for arbitrary initial phase by letting $\Omega t \rightarrow \Omega t + \phi$. Doing so simplifies the transformation matrix to:
 \begin{equation*}
 \Lambda = \begin{pmatrix}
     \sin \iota &    0    &  \cos \iota \\
@@ -104,35 +228,35 @@ Resulting in:
 \ddot{\qI}_{\iota\phi}  &= \ddot{\qI}_{xy} \cos \iota \\
                         &= \ddot{\qI}_{\phi\iota}
 \end{align*}
-To make the tensor traceless in this coordinate basis, we set $\ddot{\qI}^{\TT}_{\iota\iota} = -\ddot{\qI}^{\TT}_{\phi\phi} = 1/2(\ddot{\qI}_{\iota\iota} - \ddot{\qI}_{\phi\phi})$. Letting $\omega t \rightarrow \omega t - \phi$, we have:
+To make the tensor traceless in this coordinate basis, we set $\ddot{\qI}^{\TT}_{\iota\iota} = -\ddot{\qI}^{\TT}_{\phi\phi} = 1/2(\ddot{\qI}_{\iota\iota} - \ddot{\qI}_{\phi\phi})$. Letting $\Omega t \rightarrow \Omega t - \phi$, we have:
 \begin{align}
-\ddot{\qI}^{\TT}_{\iota\iota} &= \mu a^2 \omega^2 \cos(2[\omega t - \phi])(1 + \cos^2\iota) \\
-\ddot{\qI}^{\TT}_{\iota\phi}  &= -2 \mu a^2 \omega^2 \sin(2[\omega t - \phi])\cos\iota
+\ddot{\qI}^{\TT}_{\iota\iota} &= \mu a^2 \Omega^2 \cos(2[\Omega t - \phi])(1 + \cos^2\iota) \\
+\ddot{\qI}^{\TT}_{\iota\phi}  &= -2 \mu a^2 \Omega^2 \sin(2[\Omega t - \phi])\cos\iota
 \end{align}
-Plugging this into equation \ref{eqn:h_mass_quad}, and using Kepler's law to put $a$ in terms of $M$ and $\omega$ ($a = \left(M/\omega^2\right)^{1/3}$), we have:
+Plugging this into equation \ref{eqn:h_mass_quad}, and using Kepler's law to put $a$ in terms of $M$ and $\Omega$ ($a = \left(M/\Omega^2\right)^{1/3}$), we have:
 \begin{subequations}
 \label{eqn:h_pls-h_crs}
 \begin{align}
-h^{\TT}_{\iota\iota} &= \frac{2}{r}\mu (M \omega)^{2/3} \cos(2[\omega (t-r) - \phi])(1 + \cos^2\iota) &= h_{\pls} \\
-h^{\TT}_{\iota\phi}  &= -\frac{4}{r} \mu (M\omega)^{2/3} \sin(2[\omega (t-r) - \phi])\cos\iota &= h_{\crs}
+h^{\TT}_{\iota\iota} &= \frac{2}{r}\mu (M \Omega)^{2/3} \cos(2[\Omega (t-r) - \phi])(1 + \cos^2\iota) &= h_{\pls} \\
+h^{\TT}_{\iota\phi}  &= -\frac{4}{r} \mu (M\Omega)^{2/3} \sin(2[\Omega (t-r) - \phi])\cos\iota &= h_{\crs}
 \end{align}
 \end{subequations}
 Here we have identified the $\iota\iota$ and $\iota\phi$ parts of the \ac{GW} field as the ``plus" and ``cross" polarizations by using the basis vectors \cite{ref:BlanfordThorne}:
 \begin{equation}
 \mathbf{e}^{\pls} = (\vec{e}_{\iota} \otimes \vec{e}_{\iota} - \vec{e}_{\phi} \otimes \vec{e}_{\phi}), ~ \mathbf{e}^{\crs} = (\vec{e}_{\iota} \otimes \vec{e}_{\phi} + \vec{e}_{\phi} \otimes \vec{e}_{\iota})
 \end{equation}
-In equations \ref{eqn:h_pls-h_crs} we can see that the \emph{gravitational-wave frequency} is \emph{twice} the orbital frequency:
+In equations \ref{eqn:h_pls-h_crs} we can see that the gravitational-wave frequency is \emph{twice} the orbital frequency:
 \begin{equation}
 \label{eqn:f_GW}
-\fGW = 2 f_{\mathrm{orbit}} = \frac{\omega}{\pi}
+\fGW = 2 f_{\mathrm{orbit}} = \frac{\Omega}{\pi}
 \end{equation}
 
-The inclination angle, $\iota$, and the distance to the center of mass, $r$, are \emph{extrinsic} parameters of the binary: they depends only on the orientation of the binary with respect to an outside observer. To separate the part of the waveform that depends on the \emph{intrinsic} parameters of the binary --- i.e., the physical parameters of the binary that are independent of the location of the observer\footnote{When we say ``independent of the location of the observer" we mean independent of the location of any observers that are in the same \ac{LLF}.} --- we define the \emph{sine chirp}, $h_s$, and the \emph{cosine chirp}, $h_c$ \cite{ref:Brown}:
+The inclination angle, $\iota$, and the distance to the center of mass, $r$, are \emph{extrinsic} parameters of the binary: they depends only on the orientation of the binary with respect to an outside observer. To separate the part of the waveform that depends on the \emph{intrinsic} parameters of the binary --- i.e., the physical parameters of the binary that are independent of the location of the observer\footnote{When we say ``independent of the location of the observer" we actually mean ``independent of the location of any observers that are in the same \ac{LLF}."} --- we define the \emph{sine chirp}, $h_s$, and the \emph{cosine chirp}, $h_c$ \cite{ref:Brown}:
 \begin{subequations}
 \label{eqn:cos_sin_chirp}
 \begin{align}
-h_c &\equiv 2 \mu (M \omega^{2/3}) \cos(2[\omega t - \phi_0] ) \\
-h_s &\equiv 2 \mu (M \omega^{2/3}) \sin(2[\omega t - \phi_0] )
+h_c &\equiv 2 \mu (M \Omega^{2/3}) \cos(2[\Omega t - \phi_0] ) \\
+h_s &\equiv 2 \mu (M \Omega^{2/3}) \sin(2[\Omega t - \phi_0] )
 \end{align}
 \end{subequations}
 such that:
@@ -144,7 +268,7 @@ h_\crs &= \frac{h_s}{r} \cos\iota
 
 \subsection{Evolution of the Gravitational Waveform in Newtonian Physics}
 
-In Chapter \ref{ch:pipeline_principles} we will find that we use the sine and cosine waveforms to \emph{match-filter} data from \ac{GW} detectors. Match filtering offers the best way to find a \ac{CBC} \ac{GW} signal that is buried in noise. However, to perform the match filter, we need to generate a time or frequency series for the waveform. From equations \ref{eqn:cos_sin_chirp} we see that this requires knowledge of how the orbital phase, $\omega t$, (or, via equation \ref{eqn:f_GW}, the gravitational-wave phase) evolves with time (or frequency). We can find this by considering the energy lost by the binary due to gravitational radiation.
+In Chapter \ref{ch:pipeline_principles} we will find that we use the sine and cosine waveforms to \emph{match-filter} data from \ac{GW} detectors. Match filtering offers the best way to find a \ac{CBC} \ac{GW} signal that is buried in noise. However, to perform the match filter, we need to generate a time or frequency series for the waveform. From equations \ref{eqn:cos_sin_chirp} we see that this requires knowledge of how the orbital phase, $\Omega t$, (or, via equation \ref{eqn:f_GW}, the gravitational-wave phase) evolves with time (or frequency). We can find this by considering the energy lost by the binary due to gravitational radiation.
 
 The energy loss from \ac{GW} emmision is given by \cite{ref:BlanfordThorne}:
 \begin{equation}
@@ -153,16 +277,16 @@ The energy loss from \ac{GW} emmision is given by \cite{ref:BlanfordThorne}:
 \end{equation}
 where the brackets $<\cdot>$ denote an average over time. Using equations \ref{eqn:second_deriv_qm}, we find:
 \begin{align*}
-\dddot{\qI}_{xx} &= 4 \mu a \omega^3\sin(2\omega t) &= -\dddot{\qI}_{yy} \\
-\dddot{\qI}_{xy} &= -4 \mu a^2 \omega^3\cos(2\omega t) &= \dddot{\qI}_{yx}
+\dddot{\qI}_{xx} &= 4 \mu a \Omega^3\sin(2\Omega t) = -\dddot{\qI}_{yy} \\
+\dddot{\qI}_{xy} &= -4 \mu a^2 \Omega^3\cos(2\Omega t) = \dddot{\qI}_{yx}
 \end{align*}
 This gives:
 \begin{align*}
 \frac{\d E}{\d t} &= -\frac{2}{5}\left< \ddot{\qI}_{xx}^2 + \ddot{\qI}_{xy}^2 \right> \\
-    &= -\frac{32}{5} \mu^2 a^4 \omega^6 \left< \sin^2(2\omega t) + \cos^2(2\omega t) \right> \\
+    &= -\frac{32}{5} \mu^2 a^4 \Omega^6 \left< \sin^2(2\Omega t) + \cos^2(2\Omega t) \right> \\
     &= -\frac{32}{5} \frac{\mu^2 M^3}{a^5}
 \end{align*}
-In the last step we have again used Kepler's law to put $\omega$ in terms of $M$ and $a$. We can use this equation to find how the separation distance shrinks with time. Using the chain rule we have:
+In the last step we have again used Kepler's law to put $\Omega$ in terms of $M$ and $a$. We can use this equation to find how the separation distance shrinks with time. Using the chain rule we have:
 \begin{equation}
 \label{eqn:energy_loss-a}
 \frac{\d E}{\d t} = \frac{\partial E}{\partial a}\frac{\d a}{\d t}
@@ -187,28 +311,28 @@ where:
 \end{equation}
 is the \emph{time to coalescence}. That is, $\tau_0$ is the amount of time it takes for the binary to go from the initial separation $a_0$ to $a=0$. In equation \ref{eqn:a_evolution} we can see that the orbital separation decreases with time due to the loss in energy. In other words, the two masses ``inspiral" into each other.
 
-We can use equations \ref{eqn:a_evolution} and \ref{eqn:tau_0-a}, and Kepler's third law to find how the orbital angular velocity changes with time. Re-arranging equation \ref{eqn:keplers_thirdlaw} to $a = (M/\omega^2)^{1/3}$ and manipulating equation \ref{eqn:tau_0-a} to get $a_0$ in terms of $\tau_0$, we have, from equation \ref{eqn:a_evolution}:
+We can use equations \ref{eqn:a_evolution} and \ref{eqn:tau_0-a}, and Kepler's third law to find how the orbital angular velocity changes with time. Re-arranging equation \ref{eqn:keplers_thirdlaw} to $a = (M/\Omega^2)^{1/3}$ and manipulating equation \ref{eqn:tau_0-a} to get $a_0$ in terms of $\tau_0$, we have, from equation \ref{eqn:a_evolution}:
 \begin{equation*}
-M^{4/3}\omega^{-8/3} = \frac{256}{5} \mu M^2(\tau_0 - t)
+M^{4/3}\Omega^{-8/3} = \frac{256}{5} \mu M^2(\tau_0 - t)
 \end{equation*}
 Here, we have set the initial time $t_0 = 0$. Rearranging, we have:
 \begin{equation}
 \label{eqn:omega_evolution}
-\omega = \left[ \frac{5}{256} \frac{1}{\eta M^{5/3}(\tau_0 - t)} \right]^{3/8}
+\Omega = \left[ \frac{5}{256} \frac{1}{\eta M^{5/3}(\tau_0 - t)} \right]^{3/8}
 \end{equation}
 where:
 \begin{equation}
 \label{eqn:symmetric_mass}
 \eta \equiv \frac{\mu}{M}
 \end{equation}
-is the \emph{symmetric mass-ratio}. Using equation \ref{eqn:f_GW} to relate the gravitational-wave frequency to $\omega$, we find:
+is the \emph{symmetric mass-ratio}. Using equation \ref{eqn:f_GW} to relate the gravitational-wave frequency to $\Omega$, we find:
 \begin{equation}
 \label{eqn:f_evolution}
 \fGW(t) \propto (\tau_0 - t)^{-3/8}
 \end{equation}
 Figure \ref{fig:GW_evolution-freq} shows what the gravitational wave-frequency looks like as a function of time. We see that the wave sweeps upward in frequency in a ``chirp" pattern, asymptoting to infinity as $a \rightarrow 0$.
 
-We can also use equation \ref{eqn:omega_evolution} to find how the amplitude of the waveform changes over time. In equations \ref{eqn:cos_sin_chirp} we see that the amplitude of the waveform is proportional to $M\omega^{2/3}$. Thus:
+We can also use equation \ref{eqn:omega_evolution} to find how the amplitude of the waveform changes over time. In equations \ref{eqn:cos_sin_chirp} we see that the amplitude of the waveform is proportional to $M\Omega^{2/3}$. Thus:
 \begin{equation}
 \label{eqn:amp_evolution}
 |h_c| = |h_s| = 2 \left( \frac{5}{256} \frac{\mchirp}{\tau_0 - t} \right)^{1/4}
@@ -219,21 +343,19 @@ where we have defined the \emph{chirp mass}, $\mchirp$, as:
 \end{equation}
 Thus the amplitude also increases with time, asymptoting to infinity as $a \rightarrow 0$. Figure \ref{fig:GW_evolution-waveform} shows what the waveform evolution looks like for $M=1\,\Msun$ and $\eta = 1/4$ (i.e., for an equal-mass binary).
 
-%Note that from the definition in equation \ref{eqn:quad_moment}, the quadrupole and its time derivatives are traceless. 
-
 \subsection{Orbital Dynamics in a Schwarzschild Spacetime}
 
 In the above analysis we assumed the relative velocities of the binary's component masses were small compared to the speed of light, and that the spacetime curvature was relatively flat. This allowed us to use Newtonian and Keplerian dynamics to analyze the binary. While this worked well when the masses were far apart from each other, it breaks down as the separation distance gets small. This was evident in the fact that the orbital angular velocity asymptoted to infinity as $a \rightarrow 0$. This means that the component masses' relative tangential velocity:
 \begin{equation}
-v = (M\omega)^{1/3}
+v = (M\Omega)^{1/3}
 \end{equation}
 would also approach infinity. Clearly there is a separation distance for which our assumptions fail, and we must take into account relativistic effects.
 
 To illustrate relativistic effects, we consider a test-particle with mass $m$ orbiting a massive black hole with mass $M$, such that $m \ll M$. For simplicity we will assume that both the test mass and the black hole have negligible spin. Thus, we can describe the spacetime using the Schwarzchild metric \cite{ref:MTW}:
 \begin{equation}
-\d s^2 = - (1 - 2M/r)\d t^2 + \frac{\d r^2}{1 - 2M/r} + r^2\d\Omega^2
+\d s^2 = - (1 - 2M/r)\d t^2 + \frac{\d r^2}{1 - 2M/r} + r^2\d\phi^2 + r\sin\iota \d\iota^2
 \end{equation}
-where $\d \Omega$ is the solid angle. The coordinates are chosen such that $r=0$ is at the ``center" of the black hole. Without loss in generality we will assume the inclination angle is equal to $\pi/2$, so that the solid angle element reduces to $\d\Omega = r^2\d\phi$.\footnote{For a treatment of this problem with $\iota \neq \pi/2$ see Box 25.4 of \cite{ref:MTW}.} In this case the metric only has three elements:
+The coordinates are chosen such that $r=0$ is at the center-of-mass of the system, which --- since $M \gg m$ --- is roughly at the ``center" of the black hole. Without loss in generality we will assume the inclination angle is equal to $\pi/2$, so that the $\d\iota$ part of the line element is $0$.\footnote{For a treatment of this problem with $\iota \neq \pi/2$ see Box 25.4 of \cite{ref:MTW}.} In this case the metric only has three elements:
 \begin{subequations}
 \begin{align}
 g_{tt} &= - (1 - 2M/r) \\
@@ -253,7 +375,7 @@ where the Christoffel symbol is:
     &= \frac{1}{2}g^{\alpha\sigma}( g_{\sigma\mu,\nu} + g_{\sigma\nu,\mu} - g_{\mu\nu,\sigma}) \nonumber \\
     &= \frac{1}{2}g^{\alpha\alpha}(g_{\alpha\mu,\nu} + g_{\alpha\nu,\mu} - g_{\mu\nu,\alpha})
 \end{align}
-The ``," indicates the partial derivative of the tensor with respect to the trailing indices. In the last step we have used the fact that there are no mixing terms in the metric (i.e., $g^{\alpha\sigma} = \delta\indices{^{\alpha}_\sigma}g^{\alpha\sigma}$). 
+In the last step we have used the fact that there are no mixing terms in the metric (i.e., $g^{\alpha\sigma} = \delta\indices{^{\alpha}_\sigma}g^{\alpha\sigma}$). 
 
 Before analyzing these equations, we note a few properties of the metric which greatly simplify the problem. The metric has no $t$, $\phi$, or (since we set the particle's inclination angle to $\pi/2$) $\iota$ dependence. Thus the $t$, $\phi$, and $\iota$ components of the particle's conjugate four-momentum, $p_\alpha$ are conserved \cite{ref:MTW, ref:Schutz, ref:Carroll}. The particle's four-momentum is given by:
 \begin{equation}
@@ -263,7 +385,7 @@ where $u^{\alpha}$ is the particle's four-velocity. The four-momentum is related
 \begin{equation}
 \dot{p}^t = \ddot{t}/m = \dot{p}^\phi = \ddot{\phi}/m = \dot{p}^\iota = \ddot{\iota}/m = 0
 \end{equation}
-Since we have fixed the inclination angle to $\pi/2$, $\ddot{\iota}$ is also zero. From equation \ref{eqn:christoffel_symbols}, this means that $\Gamma^{\iota}_\mu\nu$ is zero, and so the $\iota$ equation of motion gives the trival result $0 = 0$. Thus we only have three equations to consider:
+Since we have fixed the inclination angle to $\pi/2$, $\ddot{\iota}$ is also zero. From equation \ref{eqn:christoffel_symbols}, this means that $\Gamma\indices{^\iota_{\mu\nu}}$ is zero, and so the $\iota$ equation of motion gives the trival result $0 = 0$. Thus we only have three equations to consider:
 \begin{equation}
 \label{eqn:equations_of_motion}
 \Gamma\indices{^\alpha_{tt}} \dot{t}^2 + 2\Gamma\indices{^\alpha_{t\phi}}\dot{t}\dot{\phi} + \Gamma\indices{^\alpha_{\phi\phi}} \dot{\phi}^2 = 0 
@@ -288,11 +410,11 @@ Plugging these into the equation of motion yields:
 \end{align*}
 Note that:
 \begin{equation}
-\frac{\dot{\phi}}{\dot{t}} = \frac{\d\phi/\d\tau}{\d t/\d\tau} = \frac{\d\phi}{\d t} = \omega
+\frac{\dot{\phi}}{\dot{t}} = \frac{\d\phi/\d\tau}{\d t/\d\tau} = \frac{\d\phi}{\d t} = \Omega
 \end{equation}
-where $\omega$ is the angular velocity of the test particle as measured by an observer in the particle's \ac{LLF}. Thus we have:
+where $\Omega$ is the angular velocity of the test particle as measured by an observer in the particle's \ac{LLF}. Thus we have:
 \begin{equation}
-\omega = \sqrt{\frac{M}{r^3}}
+\Omega = \sqrt{\frac{M}{r^3}}
 \end{equation}
 Evidently Kepler's third law is valid for all $r$; i.e., it is a relativistic equation. 
 
