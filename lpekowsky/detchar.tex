@@ -75,14 +75,11 @@ unsolved and are areas of active research.
 As discussed in chapter~\ref{ch:search}, the CBC group uses the
 \emph{ihope} pipeline to search for gravitational waves produced by
 the inspiral of binary systems consisting of neutron stars and/or
-black holes.  During LIGO's 6th science run (July 7, 2009 - October
-20, 2010) which overlapped Virgo's second (July 7, 2009 - January 11,
-2010), and third (August 11, 2010 - October 20, 2010) science runs,
-the goal of the group was to run the full analysis every two weeks
-with latencies as small as possible.  The daily ihope runs were
-conceived of as a way to characterize the detector in order to look
-for potential problems in advance of the full search, particularly
-problems specific to the CBC search.
+black holes.  During S6/VSR2,3 the goal of the group was to run the
+full analysis every two weeks with latencies as small as possible.
+The daily ihope runs were conceived of as a way to characterize the
+detector in order to look for potential problems in advance of the
+full analysis, particularly problems specific to the CBC search.
 
 It is important to stress that daily ihope was not itself a
 gravitational wave search, it was a tool to help determine whether the
@@ -91,8 +88,6 @@ the specifics of the daily runs, but more significantly it leaves the
 full search unbiased.
 
 \subsection{The Daily Ihope Pipeline}
-
-\Note{TODO: flowchart of the daily ihope pipeline}
 
 Recall that ihope is a templated, matched-filter search.  For the
 low-mass search, which was the focus of the daily runs, the templates
@@ -103,6 +98,21 @@ from 2 $\msun - 25 \msun$.  A $\chisq$ discriminator is constructed to
 better separate signals from glitches (eqn.\ref{eq:chisq}), and the
 information from this discriminator is used along with the SNR to
 construct the new SNR detection statistic (eqn.~\ref{eq:new_snr}).
+
+The structure of the full search is shown in
+figure~\ref{f:hipe}~\footnote{Figure by Collin Capano, used with
+permission} and discussed in section~\ref{sec:search_pipeline}.  We
+will not go over it in detail here, but note that it is a two-stage,
+coincident pipeline.
+
+\begin{figure}
+  \includegraphics[width=\linewidth]{figures/detchar/HIPEDiagram}
+  \caption[Structure of the full iHope search]{
+  \label{f:hipe}
+Structure of the full iHope search.  For details see
+reference~\cite{Capano:thesis}.
+}
+\end{figure}%
 
 By construction, a great deal of the information provided by
 the full bank search is redundant.  Further, the evaluation of each
@@ -140,6 +150,15 @@ The cut is made at constant chirp mass, which is
 a curve in the total mass, $\eta$ plane.}
 \end{figure}%
 
+We are interested in not only the SNR, but also the extent to which
+glitches are able to mimic real signals.  We therefore wish to
+calculate $\chisq$.  However, this is computationally expensive, as it
+amounts to filtering with each template 16 times.  Reducing the size
+of the bank helps, but we can obtain results even faster by splitting
+the bank into smaller sub-banks and filtering with each in parallel.
+as the templates are independent at this stage there is no
+complication in doing so.
+
 Daily ihope processing ran at 03:00 GMT and examined data spanning the
 24 hours ending at 00:00 GMT.  Unlike full ihope, the analysis was
 done on all science time, including that which would be vetoed at CAT
@@ -166,24 +185,26 @@ The triggers were also filtered.  A version of the veto definer file
 designated as ``online'' was maintained and used by daily ihope to
 identify times with veto categories.  These vetoed times were then
 removed from the original and clustered files.  
-% The pipeline is summarized in figure (xx).
+
+The structure of daily ihope is summarized in
+figure~\ref{f:daily_flowchart}.
+
+\begin{figure}
+  \includegraphics[width=\linewidth]{figures/detchar/daily_flowchart}
+  \caption[Structure of the daily iHope search]{
+  \label{f:daily_flowchart}
+Structure of the daily iHope search.  The bank has been generated and
+split into sub-banks to speed up the process, as described in the
+text.  Each sub-bank is filtered with $\chisq$ turned on.  Triggers
+are then grouped and clustered.  The vetoes are applied sequentially,
+and at each stage plots are generated.  The entire diagram is
+replicated for each 2048-second block and for each IFO.}
+\end{figure}%
+
 The result is, for each 2048-second block in each ifo, 3 cluster
 levels times 4 veto levels = 12 sets of triggers.
 
-The structure of the daily pipeline is shown in figure \Note{make
-this}.  For comparison we include the structure of the full search,
-shown in figure~\ref{f:hipe}~\footnote{Figure by Collin Capano, used
-with permission}.  We will not go over it in detail here, but note
-that it is a two-stage, coincident pipeline.
 
-\begin{figure}
-  \includegraphics[width=\linewidth]{figures/detchar/HIPEDiagram}
-  \caption[Structure of the full iHope search]{
-  \label{f:hipe}
-Structure of the full iHope search.  For details see (\Note{Collin's
-thesis}).
-}
-\end{figure}%
 
 %do analysis
 %record science triggers
@@ -671,7 +692,7 @@ provided by Omega or klinewelle triggers.
 Category 1 vetoes indicates time that should not have been marked as
 science mode.  Typically attempting to analyze this time will
 adversely affect the entire 2048-second analysis chunk, for example by
-biasing the PSD (section \ref{sec:ihope_psd}).  Note that it is
+biasing the PSD (section \ref{sec:search_pipeline}).  Note that it is
 possible to correct science time by creating a new version of the
 \texttt{DMT\_SCIENCE} flag with an incremental version number.
 However, doing so is a more complicated process than creating a veto
@@ -940,7 +961,7 @@ $~ 10$.}
 \subsection{Category 4}
 
 Category 3 vetoes remove hardware injections
-(section~\ref{ssec:ihope_hardware_injections}).  In the full analysis
+(section~\ref{sec:search_pipeline}).  In the full analysis
 hardware injection vetoes do not have a category number and is denoted
 ``hardware injections removed.''  As this veto category had a fixed
 meaning it was not used in daily ihope.
@@ -1105,7 +1126,7 @@ We now move from general uses of daily ihope to its applications in
 following up a particular event.
 
 In addition to the hardware injections discussed in
-section~\ref{ssec:ihope_hardware_injections} it was known at the start
+section~\ref{sec:search_pipeline} it was known at the start
 of S6 that there would be any from zero to ``a few'' unannounced,
 blind hardware injections performed in order to provide an unbiased
 test of the search pipelines.  One such injection was performed on Sep
