@@ -28,10 +28,10 @@ allowing more time to be analyzed and the prospects for making a
 detection to improve.
 
 Detchar was a major undertaking, much more information can be found in
-(Smith and Lundgren in progress).  Three primary tools were run either
-continuously or with low-latencies to provide views into the data,
-although these were supplemented with numerous short special-purpose
-scripts.  Two of these tools, the klinewelle
+an upcoming paper by Josh Smith and Andrew Lundgren.  Three primary
+tools were run either continuously or with low-latencies to provide
+views into the data, although these were supplemented with numerous
+short special-purpose scripts.  Two of these tools, the klinewelle
 pipeline~\cite{LIGO-T060221-00-Z} and the Omega
 pipeline~\cite{Chatterji:thesis} project data onto a wavelet basis and
 identify as triggers times and frequencies with amplitudes above a
@@ -45,7 +45,7 @@ analysis.
 
 We then move to general applications of the daily ihope results.
 Section~\ref{sec:daily_pages} gives a walk-through of a web-based
-front end to daily ihope which provides numerous views into the
+front end to daily ihope which provided numerous views into the
 behavior of the detectors over 24-hour periods.  
 Section~\ref{sec:applications_pipeline} discusses the changes to the
 low-mass pipeline that were implemented in part based on results from
@@ -63,9 +63,9 @@ performed rapidly.  The studies that were enabled by daily ihope are
 discussed in section~\ref{sec:applications_dog}.
 
 Finally, in section~\ref{sec:daily_ihope_open_questions} we note some
-problems seen in the pipeline with daily ihope and discuss preliminary
-attempts to address them.  As of this writing these problems remain
-unsolved and are areas of active research.
+issues with the pipeline that were flagged by daily ihope, and discuss
+preliminary attempts to address them.  As of this writing these
+problems remain unsolved and are areas of active research.
 
 
 
@@ -76,7 +76,7 @@ As discussed in chapter~\ref{ch:search}, the CBC group uses the
 \emph{ihope} pipeline to search for gravitational waves produced by
 the inspiral of binary systems consisting of neutron stars and/or
 black holes.  During S6/VSR2,3 the goal of the group was to run the
-full analysis every two weeks with latencies as small as possible.
+full analysis every two weeks with latencies as low as possible.
 The daily ihope runs were conceived of as a way to characterize the
 detector in order to look for potential problems in advance of the
 full analysis, particularly problems specific to the CBC search.
@@ -156,7 +156,7 @@ calculate $\chisq$.  However, this is computationally expensive, as it
 amounts to filtering with each template 16 times.  Reducing the size
 of the bank helps, but we can obtain results even faster by splitting
 the bank into smaller sub-banks and filtering with each in parallel.
-as the templates are independent at this stage there is no
+As the templates are independent at this stage there is no
 complication in doing so.
 
 Daily ihope processing ran at 03:00 GMT and examined data spanning the
@@ -239,11 +239,13 @@ only those not removed by category 1 vetos, only those not
 removed by categories 1 or 2, or only those note removed by
 categories 1,2 and 4.  Hardware injections vetos (category 3) were not 
 applied so that we could determine whether category 4 vetoes were 
-remove them.
+removing them.
 \end{itemize}
 
 Each of these features could be set independently.  The top-level web
 interface for a sample day is shown in figure~\ref{f:daily_ihope_top}.
+The available reports can bee seen at the bottom of the list of
+controls on the left.
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/detchar/daily_ihope_top}
@@ -256,8 +258,6 @@ shown here; the analysis time and veto efficiency at cat 1 for the
 Hanford detector.}
 \end{figure}%
 
-The available reports can bee seen at the bottom of the list of
-controls in figure~\ref{f:daily_ihope_top}:
 
 \weakheader{1. Analysis time and veto usage.}
 
@@ -291,17 +291,16 @@ data quality flag was active and those where at least one flag was
 active.  A sample report is shown in
 figure~\ref{f:daily_ihope_loudest}.  For the five triggers with
 highest new SNR in each category a summary was presented along with a
-link to an \emph{omega scan}.  The omega pipeline is described in
-(\checkme{omega refs}).  Omega scans are a kind of time-frequency
+link to an \emph{omega scan}.  The omega pipeline is described
+in~\cite{Chatterji:thesis}.  Omega scans are a kind of time-frequency
 plot.  They are especially useful as they may be run on all auxiliary
 channels recorded by the instruments and therefore provide a visual
-aid to detecting coupling between auxiliary channels and the
-gravitational wave readout channel.  These can be used to suggest
-mechanisms behind glitches, especially those that were not already
-marked by a DQ flag.  In addition, over time repeated shapes in the
-omega scan can pinpoint underlying problems in the instruments that
-need to be addressed.  A few images from one of the glitches in
-figure~\ref{f:daily_ihope_loudest} is shown in
+aid to detect coupling between auxiliary channels and \darmerr.  These
+can be used to suggest mechanisms behind glitches, especially those
+that were not already marked by a DQ flag.  In addition, over time
+repeated shapes in the omega scan can pinpoint underlying problems in
+the instruments that need to be addressed.  A few images from one of
+the glitches in figure~\ref{f:daily_ihope_loudest} is shown in
 figure~\ref{f:daily_ihope_loudest_omega}.
 
 \begin{figure}
@@ -570,10 +569,10 @@ expected amount of memory, or failing outright.  The problematic jobs
 tended to be individual runs of the \texttt{trigbank} program (see
 figure~\ref{f:hipe}); this is the step where triggers from the first
 stage are examined to determine which templates need to be used at the
-second stage (see figure~\ref{f:hipe}).  Comparing the times that
-caused problems to the daily pages immediately revealed a correlation
--- times over which \texttt{trigbank} were unable to run were those
-where the rates of triggers were abnormally high.
+second stage.  Comparing the times that caused problems to the daily
+pages immediately revealed a correlation -- times over which
+\texttt{trigbank} were unable to run were those where the rates of
+triggers were abnormally high.
 
 In S5 and the early weeks of S6 triggers were clustered using a method
 called \emph{trigscan}~\cite{SenguptaTrigScan:2008} which attempts to
@@ -707,12 +706,12 @@ The design of the LIGO mirrors accounted for the fact that in
 operation they would be heated by the laser and the radius of
 curvature would change.  However, in S6 as we moved to higher laser
 power the mirror's absorption of energy was larger than expected and
-the mirror overheated and deformed more than expected~\cite{}.  To
-correct for this a compensating laser was added that would heat the
-mirror in a ring in order to restore the radius of curvature to an
-optimal value.  However, this laser would occasionally glitch, kicking
-the mirror through radiation pressure and producing loud noise in the
-detector.
+the mirror overheated and deformed more than
+expected~\cite{LIGO-T050064-00-R}.  To correct for this a compensating
+laser was added that would heat the mirror in a ring in order to
+restore the radius of curvature to an optimal value.  However, this
+laser would occasionally glitch, kicking the mirror through radiation
+pressure and producing loud noise in the detector.
 
 The identification of these glitches was straightforward; they were
 often the loudest glitches of the day and were readily visible in the
@@ -743,7 +742,7 @@ figure~\ref{f:daily_ihope_tcs}.
   \caption[TCS glitch in daily ihope and omega]{
   \label{f:daily_ihope_tcs}
 TCS glitches in daily ihope and followup omega scans.  The top left
-shows the SNR as a function of time, the loudest triggers are all TCS
+shows the trigger SNRs as a function of time, the loudest triggers are all TCS
 glitches.  Note that each loud glitch comes in the form of a ``tower''
 containing many triggers.  This phenomena will be discussed further in
 section~\ref{ssec:penguins}.  This is further illustrated by the trigger
@@ -1018,12 +1017,11 @@ daily ihope.  The resulting analysis was rerun weekly.
 
 An example is shown in figure~\ref{f:daily_upv}.  During the week
 including this day UPV determined that the instrumental channel
-\texttt{ASC-WFS2\_IY} \Note{brief description} had a high correlation
-with daily triggers.  This is a quiet glitch, with an SNR of 6.5, and
-it would have taken considerable effort to track down manually.
-However, it is accompanied by 4 seconds of elevated trigger rates
-which could have impacted the search and should therefore be flagged
-at category 4.
+\texttt{ASC-WFS2\_IY} had a high correlation with daily triggers.
+This is a quiet glitch, with an SNR of 6.5, and it would have taken
+considerable effort to track down manually.  However, it is
+accompanied by 4 seconds of elevated trigger rates which could have
+impacted the search and should therefore be flagged at category 4.
 
 \begin{figure}
   \includegraphics[width=0.5\linewidth]{figures/detchar/20100506_H1_0_UNCLUSTERED_rate_vs_time}
@@ -1098,10 +1096,10 @@ This is another indication that L1 was glitchier overall.}
 
 It is at least as important to preserve time in which a detection
 could be made as it is to veto problematic time.  On occasion there
-were potential problems seen in results from another pipeline or
-reported by scimons or operators that daily ihope confirmed were not a
-problem for the CBC low-mass search (though they might have been
-problematic for other searches).  One example is shown in
+were potential problems seen in another pipeline or reported by
+scimons or operators that daily ihope confirmed were not a problem for
+the CBC low-mass search (though they might have been problematic for
+other searches).  One example is shown in
 figure~\ref{f:non_vetoed_time}.  The omega pipeline reports excess
 noise at 200Hz, which was traced to runoff from a nearby dam.  The
 corresponding daily ihope report shows no issues with excess or loud
@@ -1135,8 +1133,8 @@ gravitational wave candidate.  This candidate was followed up to the
 point of writing a detection paper and submitting it to the
 collaboration for publication approval.  Once approval had been
 granted the fact that it had been an injection was revealed.  For more
-details on the event and how it was followed up, see (the S6 low mass
-paper).
+details on the event and how it was followed up, see the S6 low-mass
+results paper, in preparation as of the time of writing.
 
 Although daily ihope was not a search, the injection showed up on the
 page of loudest triggers for H1 and L1, with parameters shown in table
@@ -1539,12 +1537,13 @@ perform extensive checks to remove, or at least reduce, the
 possibility that the trigger was due to any source other than a
 gravitational wave.  Consequently many components of the
 interferometer were subject to scrutiny.  One such component was the
-\emph{front-end control code}, which is responsible for \Note{FILL
-IN DETAILS}.  This code is updated occasionally as new systems are
-added or bugs are found and fixed.   To verify that the most recent
-change preceding the event did not significantly change the behavior
-of the instruments we compared histograms of triggers from daily ihope
-before and after these changes.
+\emph{front-end control code}, which is responsible for interfacing
+between the data-acquisition and data-recording systems.  This code is
+updated occasionally as new systems are added or bugs are found and
+fixed.   To verify that the most recent change preceding the event did
+not significantly change the behavior of the instruments we compared
+histograms of triggers from daily ihope before and after these
+changes.
 
 Two weeks prior to and following the most recent code changes at each
 site were selected.  SNR histograms are shown in figure
@@ -1582,7 +1581,7 @@ We have seen in section~\ref{sec:applications_pipeline} that daily ihope
 was used to help identify and remedy problems in the low-mass search
 early in S6.  We conclude this chapter by discussing two additional
 issues with the pipeline seen through daily ihope, both of which
-relate to the effect of loud glitches on the match filter.  Of course
+relate to the effect of loud glitches on the matched filter.  Of course
 the ultimate goal is to remove such glitches at the source.  However,
 it is likely that such glitches will continue to be present in the
 advanced LIGO era and the search pipeline must be robust against them.
@@ -1601,7 +1600,7 @@ comparing rate-vs-time and SNR-vs-time plots such
 as~\ref{f:daily_ihope_grid}; loud glitches correlate with an increase
 in trigger rates.  In part this behavior is expected.  Many glitches,
 notably the spike glitch, are sharp enough that they may be roughly
-modeled as impulses.  The impulse response of the match filter
+modeled as impulses.  The impulse response of the matched filter
 (eqn.~\ref{eq:InnerProduct}) is the time-reversed template convolved
 with a function of the noise curve.  A loud glitch will therefore
 elevate the SNR time series for every template in the bank.
