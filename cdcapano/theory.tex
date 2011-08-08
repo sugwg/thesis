@@ -147,19 +147,19 @@ Keeping the first term yields:
 \begin{equation*}
 \frac{2}{r} \partial_t^2 \int \rho(t - r) x^{'j}x^{'k} \d^3 x'
 \end{equation*}
-We recognize this as the second-time derivative of the second moment of the mass distribution, $\ddot{I}_{jk}$.\footnote{In general, we will use over-dots to indicate differentation with respect to proper time, $\tau$. However, because we are working in a Minkowski space time, $\tau \rightarrow t$. We can therefore use the dots here to indicate differentation with respect to the coordinate time.} Since we eventually remove the trace, we can instead use the mass quadrupole moment, $\qI$, defined as:
+We recognize the integral as the second-time derivative of the second moment of the mass distribution, $\ddot{I}^{jk}$.\footnote{In general, we will use over-dots to indicate differentation with respect to proper time, $\tau$. However, because we are working in a Minkowski space time, $\tau \rightarrow t$. We can therefore use the dots here to indicate differentation with respect to the coordinate time.} Since we eventually remove the trace, we can instead use the mass quadrupole moment, $\qI_{jk}$, defined as:
 \begin{equation}
 \label{eqn:quad_moment}
-\qI = \int \rho(\mathbf{x})\left( x_j x_k - \frac{1}{3} \delta_{jk} \delta_{mn} x^{m} x^{n} \right) \d^3 x
+\qI_{jk} = \int \rho(\mathbf{x})\left( x_j x_k - \frac{1}{3} \delta_{jk} \delta_{mn} x^{m} x^{n} \right) \d^3 x
 \end{equation}
 Plugging this into equation \ref{eqn:source_rho} yields:
 \begin{equation}
 \label{eqn:h_mass_quad}
-h^{\TT}_{jk} = \frac{2}{r} \ddot{\qI}^\TT(t - r)
+h^{\TT}_{jk} = \frac{2}{r} \ddot{\qI}_{jk}^\TT(t - r)
 \end{equation}
 This is an important result: we only get gravitional waves if we have a changing quadrupole (or higher-order) moment. Contrast this with \ac{EM}, in which we only need a changing dipole moment to get electromagnetic waves.
 
-Returning to our problem, to evaluate the amplitude of the \ac{GW} emitted by the binary we must first evaluate $\qI$. Since we only have two masses, we can use the discreet form of the integral to directly write:
+Returning to our problem, to evaluate the amplitude of the \ac{GW} emitted by the binary we must first evaluate $\qI_{jk}$. Since we only have two masses, we can use the discreet form of the integral to directly write:
 \begin{equation}
 \label{eqn:discreet_qm}
 \qI_{ij} = m_1(x_{1i}x_{1j} - \delta_{ij}\frac{1}{3} r_1^2) + m_2(x_{2i}x_{2j} - \delta_{ij}\frac{1}{3}r_2^2)
@@ -267,10 +267,11 @@ h_\crs &= \frac{h_s}{r} \cos\iota
 (The reason for the name ``chirp" will become clear below.) Here, $\phi_0$ is the phase of the binary at some initial point in time.
 
 \subsection{Evolution of the Gravitational Waveform in Newtonian Physics}
+\label{sec:0pn_solution}
 
 In Chapter \ref{ch:pipeline_principles} we will find that we use the sine and cosine waveforms to \emph{match-filter} data from \ac{GW} detectors. Match filtering offers the best way to find a \ac{CBC} \ac{GW} signal that is buried in noise. However, to perform the match filter, we need to generate a time or frequency series for the waveform. From equations \ref{eqn:cos_sin_chirp} we see that this requires knowledge of how the orbital phase, $\Omega t$, (or, via equation \ref{eqn:f_GW}, the gravitational-wave phase) evolves with time (or frequency). We can find this by considering the energy lost by the binary due to gravitational radiation.
 
-The energy loss from \ac{GW} emmision is given by \cite{ref:BlanfordThorne}:
+Using equation \ref{eqn:h_mass_quad} it can be shown that the energy loss from \ac{GW} emmision is given by \cite{ref:BlanfordThorne}:
 \begin{equation}
 \label{eqn:energy_loss-t}
 \frac{\d E}{\d t} = -\frac{1}{5}\left< \dddot{\qI}_{jk} \dddot{\qI}^{jk} \right>
@@ -344,6 +345,7 @@ where we have defined the \emph{chirp mass}, $\mchirp$, as:
 Thus the amplitude also increases with time, asymptoting to infinity as $a \rightarrow 0$. Figure \ref{fig:GW_evolution-waveform} shows what the waveform evolution looks like for $M=1\,\Msun$ and $\eta = 1/4$ (i.e., for an equal-mass binary).
 
 \subsection{Orbital Dynamics in a Schwarzschild Spacetime}
+\label{sec:schwarzchild_dynamics}
 
 In the above analysis we assumed the relative velocities of the binary's component masses were small compared to the speed of light, and that the spacetime curvature was relatively flat. This allowed us to use Newtonian and Keplerian dynamics to analyze the binary. While this worked well when the masses were far apart from each other, it breaks down as the separation distance gets small. This was evident in the fact that the orbital angular velocity asymptoted to infinity as $a \rightarrow 0$. This means that the component masses' relative tangential velocity:
 \begin{equation}
@@ -464,6 +466,76 @@ The systems we will consider in this thesis have masses low enough that the freq
 \caption{A plot of the energy-per-unit mass of a test particle orbiting a Schwarschild black hole as a function of its radial coordinate per the black hole's mass. The plot was created in Maple using equation \ref{eqn:Eschwarz}.}
 \end{figure}
 
-\subsection{The Post-Newtonian Expansion}
+\subsection{The Post-Newtonian Approximation}
+
+Let us recap the steps we took in section \ref{sec:0pn_solution} to arrive at a solution for the gravitational waveform:
+\begin{itemize}
+\item{First, we performed a multipolar expansion on the right hand side of equation \ref{eqn:} to get $h^\TT_{ij}$ in terms of increasing moments of the mass-energy density. This eventually allowed us to solve the \emph{energy-balance equation}:
+\begin{equation}
+\label{eqn:energy_balance}
+\frac{\d E}{\d t} = -\mathcal{F}
+\end{equation}
+Since we only kept the first (most-dominant) term of the expansion, we had $\mathcal{F} = \left<\dddot{\qI_{jk}}\dddot{\qI^{jk}}\right>/5$.}
+\item{Next, we found an expression for $E$ in terms of the mass and the orbital sepration. In section \ref{sec:0pn_solution} we used using Newton's law of gravity to find $E$. In section \ref{sec:schwarz_dynamics} we were a bit more sophisticated, and we obtained $E$ by using the Schwarzschild metric.}
+\item{Plugging our expression for $E$ into the energy balance equation, we were able to find how the phase and amplitude of the \ac{GW} evolved with time.}
+\end{itemize}
+Generalizing, this process is known as the \emph{post-Newtonian approximation}.
+
+If our fortitude and skill permitted, we could have kept higher order terms in the mutipolar expansion of $h$, which would have given us a more complicated experssion for $\mathcal{F}$. However, had we limited ourselves to the mass-moments, we would have missed some important terms. If we perform the multipolar expansion and take the integral \emph{before} taking the transverse-traceless part, we would have found that the $h_{0j}$ terms yield corrections to the gravitational wave from moments of the momentum density. In general, we would get \cite{ref:BlanfordThorne}:
+\begin{equation}
+|h_\pls| \sim |h_\crs| \sim \frac{\ddot{\qI_2}}{r} \& \frac{\dddot{\qI_3}}{r} \& \ldots \& \frac{\ddot{\mathcal{S}}}{r} \& \frac{\dddot{\mathcal{S}}}{r} \& \ldots
+\end{equation}
+Here, $\&$ indicates addition with terms, and:
+\begin{equation}
+\qI_l \sim ML^l, \quad \mathcal{S}_l \sim MvL^l
+\end{equation}
+are the mass and momentum moments, respectively, of order $l$. $L$ is the size of the source and $v$ is the relative velocities of the objects. Since the number of time derivatives grows with each of these terms, we can see that each term grows as $\partial_t^{(2-l)} L \sim v^(2-l)$. Hence the effects from each term becomes more relevant as the relative velocity of the objects grows.\footnote{Since $\mathcal{S} \sim Mv$, its effect on $h$ is one-step down from the mass-moment. In other words, $|\mathcal{S}_l| \sim |\qI_{l-1}|$. For example, the mass quadrupole ($l=2$) goes as $v^0$, where as the momentum quadrupole goes as $v^1$. Due to conservation of angular momentum, the $\mathcal{S}_1$ term, like the $\qI_1$ term, has no effect on $h$. Thus the dominant term is the mass-quadrupole ($\qI_2$), and so we were ok neglecting the momentum moments in section \ref{sec:first_approx}.}
+
+To find the an expression for $E$ in section \ref{sec:first_approx} we used Newtonian physics. If we consider relativistic effects due to spacetime curvature, as we did in section \ref{sec:schwarzchild_dynamics}, we find that we can also express $E$ in terms of a power series in $v$. For example, in the Schwarzschild case above, we can re-work equation \ref{eqn:} by noting that $v = r\Omega$. Using equation \ref{eqn:} we get:
+\begin{equation}
+v = \sqrt{\frac{M}{r}}
+\end{equation}
+Thus we can re-write equation \ref{eqn:} as:
+\begin{equation}
+E = m \frac{1-2v^2}{\sqrt{1-3v^2}}
+\end{equation}
+Since $v \ll 1$, we can write expand the denominator in a Maclaurin series, which results in:
+\begin{equation}
+\frac{E}{m} = 1 - \frac{1}{2}v^2 + \frac{3}{8}v^4 + \mathcal{O}(v^6)
+\end{equation}
+To relate this to the phase of the gravitational wave, $\phi$, we use the chain rule to write:
+\begin{equation}
+\frac{\d E}{\d t} = \frac{\d E}{\d v}\frac{\d v}{\d \phi}\frac{\d \phi}{\d t}
+\end{equation}
+We can get $\d \phi / \d t$ by noting that:
+\begin{equation}
+\phi = \int 2\pi \fGW \d t
+\end{equation}
+thus:
+\begin{equation}
+\frac{\d \phi}{\d t} = 2\pi \fGW
+\end{equation}
+Also note that, from equation \ref{eqn:},
+\begin{equation}
+\label{eqn:v_to_f}
+v = (\pi m \fGW)^{1/3}
+\end{equation}
+We can therefore write:
+\begin{equation}
+\frac{\d \phi}{\d t} = \frac{2 v^3}{m}
+\end{equation}
+Plugging these results into the energy balance equation, rearranging terms, and integrating yields:
+\begin{equation}
+\phi(v) = \phi_0 + 2\int_{v}^{v_0} \frac{v^3 (\d E/\d v)}{\mathcal{F}(v)} \d v
+\end{equation}
+Here, $\phi_0$ is the \ac{GW} phase of the binary at the initial velocity $v_0$. (If we instead prefer $\phi$ as a function of $\fGW$ we can use equation \ref{eqn:v_to_f} to convert.) Thus, by expanding $\mathcal{F}$ and $E$ to some desired power of $v$, and performing the integral, we can obtain higher order corrections to the gravitational wave.
+
+How \ac{pN} expansions are carried out to various orders is a rich (and complicated) field that is beyond the scope of this thesis. Here, we only note a few properties that are relevant to the low-mass \ac{CBC} search that we will describe in later chapters:
+\begin{itemize}
+\item{Each successive term in the expansion of $\mathcal{F}$ accounts for additional physics of the binary. For example, the ``0\ac{pN}" order ($\sim v^0$) results in \acp{GW} from a changing mass-quadrupole. We were able to compute the effects of this order above, in section \ref{sec:}. The ``1\ac{pN}" order ($\sim v^2$), which takes into account the mass-octopole and momentum-quadrupole, results in the perihelion shift of orbiting bodies. The next step is the ``1.5\ac{pN}" term ($\sim v^3$)\footnote{The numbering of the \ac{pN} orders increase by $0.5$ because they are based on powers of $M/r$.}, which results in frame dragging. Thus it takes into account the effects of spin/orbit coupling. It also adds a correction for outgoing waves that scatter off of the binary's spacetime curvature, known as the ``wave-tail". At 2\ac{pN} we get effects from spin/spin coupling; at 2.5\ac{pN} order we get effects from ``radiation-reaction"; etc.}
+\item{As described in the next chapter, in the low-mass \ac{CBC} search we look for \acp{GW} by match filtering gravitational-wave detector data. When doing this, it is most important that we get the phasing of the waveform correct. Any minor errors in phase will quickly add up over the large number of cycles that the system spends in band, severly hampering our search. Thus we try to use the most up-to-date (reviewed) \ac{pN} order available to us to compute the phase evolution. Currently, this is the 3.5\ac{pN} term.}
+\item{As compared to phase, the amplitude evolution is less critical to the search. Thus, for simplicity, we can get away with using the 0\ac{pN} term, given in equation \ref{eqn:}, to generate the amplitude evolution. These are known as ``restricted" \ac{pN} waveforms.}
+\item{For lower-mass systems in which spin is not important, we can further simplify the \ac{pN} approximates by setting all spin degrees of freedom to zero. This is done in the current low-mass \ac{CBC} search so that we can construct a ``template bank" of waveforms; see section \ref{sec:} of Chapter \ref{ch:} for details.}
+\end{itemize}
 
 
