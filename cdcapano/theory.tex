@@ -5,6 +5,7 @@
 In this chapter we briefly review the theory of gravitational waves: how they arise in \ac{GR} and how they can be detected by an interferometer. We then review the physics behind the \ac{LIGO} and Virgo interferometers, including their main sources of noise. Finally, we examine potential sources of \ac{GW} waves that can be detected by the \ac{LIGO} and Virgo interferometers.
 
 \section{Gravitational Waves in General Relativity}
+\label{sec:gr}
 
 In this section we show how gravitational-waves arise in General Relativity. We begin our discussion with Einstein's field equations, given by\footnote{We will work in ``natural units" in which $G = c = 1$, where $G$ is Newton's gravitational constant and $c$ is the speed of light.} \cite{ref:Einstein}:
 \begin{equation}
@@ -260,10 +261,13 @@ h_s &\equiv 2 \mu (M \Omega^{2/3}) \sin(2[\Omega t - \phi_0] )
 \end{align}
 \end{subequations}
 such that:
+\begin{subequations}
+\label{eqn:hpls_hcrs}
 \begin{align}
 h_\pls &= \frac{h_c}{r} (1 + \cos^2\iota) \\
 h_\crs &= \frac{h_s}{r} \cos\iota
 \end{align}
+\end{subequations}
 (The reason for the name ``chirp" will become clear below.) Here, $\phi_0$ is the phase of the binary at some initial point in time.
 
 \subsection{Evolution of the Gravitational Waveform in Newtonian Physics}
@@ -532,10 +536,100 @@ Here, $\phi_0$ is the \ac{GW} phase of the binary at the initial velocity $v_0$.
 
 How \ac{pN} expansions are carried out to various orders is a rich (and complicated) field that is beyond the scope of this thesis. Here, we only note a few properties that are relevant to the low-mass \ac{CBC} search that we will describe in later chapters:
 \begin{itemize}
-\item{Each successive term in the expansion of $\mathcal{F}$ accounts for additional physics of the binary. For example, the ``0\ac{pN}" order ($\sim v^0$) results in \acp{GW} from a changing mass-quadrupole. We were able to compute the effects of this order above, in section \ref{sec:}. The ``1\ac{pN}" order ($\sim v^2$), which takes into account the mass-octopole and momentum-quadrupole, results in the perihelion shift of orbiting bodies. The next step is the ``1.5\ac{pN}" term ($\sim v^3$)\footnote{The numbering of the \ac{pN} orders increase by $0.5$ because they are based on powers of $M/r$.}, which results in frame dragging. Thus it takes into account the effects of spin/orbit coupling. It also adds a correction for outgoing waves that scatter off of the binary's spacetime curvature, known as the ``wave-tail". At 2\ac{pN} we get effects from spin/spin coupling; at 2.5\ac{pN} order we get effects from ``radiation-reaction"; etc.}
+\item{Each successive term in the expansion of $\mathcal{F}$ accounts for additional physics of the binary. For example, the ``0\ac{pN}" order ($\sim v^0$) results in \acp{GW} from a changing mass-quadrupole. We were able to compute the effects of this order above, in section \ref{sec:}. The ``1\ac{pN}" order ($\sim v^2$), which takes into account the mass-octopole and momentum-quadrupole, results in the perihelion shift of orbiting bodies. The next step is the ``1.5\ac{pN}" term\footnote{The numbering of the \ac{pN} orders increase by $0.5$ because they are based on powers of $M/r$.} ($\sim v^3$), which results in frame dragging. Thus it takes into account the effects of spin/orbit coupling. It also adds a correction for outgoing waves that scatter off of the binary's spacetime curvature, known as the ``wave-tail". At 2\ac{pN} we get effects from spin/spin coupling; at 2.5\ac{pN} order we get effects from ``radiation-reaction"; etc.}
 \item{As described in the next chapter, in the low-mass \ac{CBC} search we look for \acp{GW} by match filtering gravitational-wave detector data. When doing this, it is most important that we get the phasing of the waveform correct. Any minor errors in phase will quickly add up over the large number of cycles that the system spends in band, severly hampering our search. Thus we try to use the most up-to-date (reviewed) \ac{pN} order available to us to compute the phase evolution. Currently, this is the 3.5\ac{pN} term.}
 \item{As compared to phase, the amplitude evolution is less critical to the search. Thus, for simplicity, we can get away with using the 0\ac{pN} term, given in equation \ref{eqn:}, to generate the amplitude evolution. These are known as ``restricted" \ac{pN} waveforms.}
 \item{For lower-mass systems in which spin is not important, we can further simplify the \ac{pN} approximates by setting all spin degrees of freedom to zero. This is done in the current low-mass \ac{CBC} search so that we can construct a ``template bank" of waveforms; see section \ref{sec:} of Chapter \ref{ch:} for details.}
 \end{itemize}
 
+\section{Detection of Gravitational Waves using Interferometers; or, There and Back Again (A Photon's Story)}\footnote{Ok, so in this section we actually use the classical picture of light. Still, I could not help myself.}
+
+Having established some properties of gravitational waves, we now turn to the question of detecting them. In section \ref{sec:gr} we found that a passing \ac{GW} will cause a particle at a distance $\delta x$ from another particle to be displaced by an extra $\delta xh_\pls/2$ when the wave is at maximum amplitude. We can parametrize this as the by defining the \emph{strain}, $h$, as:
+\begin{equation}
+h \equiv \frac{\Delta L}{2L}
+\end{equation}
+\acp{GW} are extremely weak: a binary system comprised of two objects each with masses $~\Msun$ at a distance of $\sim10\Mpc$ from Earth will produce a strain of $h \sim 10^{-21}$ \cite{ref:Saulson}. In order to detect a passing \ac{GW} we therefore need an extremely sensitive detector. A device that lends itself to such minute measurements is an \emph{interferometer}.
+
+Consider again figure \ref{fig:displacement}. For simplicity, focus on the plus polarization. Now, imagine we stick a mirror on the particles that lie on the $+x$ and $+y$ axes. Put a beam splitter at the origin, and shine a laser into the splitter, so that the laser beam gets split: half the light travels down the x-axis (or ``arm") and the other done the y. After reflecting off the mirrors and travelling back down the arms the light will be recombined by the beam splitter. A straight forward analysis of the electric field in each arm \cite{ref:Saulson} reveals that field of the combined light that is reflected back toward the laser is:
+\begin{equation}
+E_{\mathrm{refl}} = -i e^{i(2\pi f( t - L_x + L_y )}E_0\sin(2\pi f(L_x - L_y))
+\end{equation}
+where $E_0$ is the amplitude of the field, $f$ is the frequency of the light, and $L_x$ and $L_y$ are the lengths of the x- and y-arms as measured in the interferometer's rest frame, respectively.\footnote{For now we will assume the entire interferometer sits in the same \ac{LLF}.} The rest of the combined light exits down the $-y$ axis, it what we call the ``output" port. The electric field of the output light is:
+\begin{equation}
+E_{\mathrm{out}} = -i e^{i(2\pi f( t - L_x + L_y )}E_0\cos(2\pi f(L_x - L_y))
+\end{equation}
+Thus we can see that if the arms are of the same length (or, eqivalently, if the light-travel time down each arm) is the same, the light will destructively interfere at the input port, resulting in zero reflected light, and constructively interfere at the output, resulting in maximum transmitted light. If the arms are slightly offset, however, the strength of the light in the output will decrease. Thus by measuring the brightness of the light in the output port we can measure the relative phase difference of the light in each arm.\footnote{Actually, we offset the mirrors slightly so that we get an interference pattern in the output port. To measure the relative phase of the light we measure how the dark fringes in the pattern shift.} This apparatus is known as a \emph{Michelson} interferometer.
+
+Now consider what happens to the light when a gravitational wave passes by. The line element is given by equation \ref{eqn:}. For simplicity, consider only the effect on the light in the x-arm when the gravitational wave causes maximum displacement, i.e., when $\cos(\omega_{\mathrm{GW}}t - phi_{\mathrm{GW}}) = 1$. Let us assume that the frequency of the gravitational wave is low enough that we can assume the strain is this constant value for the period of time that the light is in the arm. Since light travels along a null geodesic, $\d s^2$ for light is zero. Thus we have:
+\begin{equation}
+\d t^2 = (1 + h_\pls)\d x^2
+\end{equation}
+Consider what happens to the light travel-time on the outgoing path. Integrating, we get:
+\begin{equation}
+\tau_{\mathrm{out}} = \int_{0}^{L} \sqrt{1 + h_\pls} \d x \approx L(1 + \frac{h_\pls}{2})
+\end{equation}
+where, as before, we assumed $|h_\pls| \ll 1$. On the return trip the light will incur the same dilation, giving a total round-trip travel time of:
+\begin{equation}
+\tau_{\mathrm{rt,x}} = L(2 + h_\pls)
+\end{equation}
+If we preform the same analysis on just the y-arm, we obtain $\tau_{\mathrm{rt,y}} = L(2-h_\pls$. Taking the difference between the two yields:
+\begin{equation}
+\Delta \tau_{\mathrm{rt}} = L(2+h_\pls) - L(2-h_\pls) = 2L h_\pls
+\end{equation}
+We can relate this difference in travel time to a relative phase shift between the two beams:
+\begin{equation}
+\Delta \phi = 2\pi f \Delta \tau_{\mathrm{rt}} = \frac{4 \pi L}{\lambda} h_\pls
+\end{equation}
+where $\lambda$ is the wavelength of the light. Since this phase change will result in a change in the interference pattern in the output port, we can measure the amplitude of a passing \ac{GW} by monitoring the output light.
+
+\subsection{Antenna Pattern}
+
+In the above analysis we only considered the effect of the plus polarization on the interferometer, with the ``plus" being aligned along the arms of the device. Of course, gravitational waves from real systems will not always have their plus polarizations aligned along the arms of interferometer. If the polarization was oriented such that it displaced both mirrors in the same manner, then we would the time dilation in each arm would be the same: $\tau_{\mathrm{rt,x}} = \tau_{\mathrm{rt,y}} \sim h_\pls$. Thus there would be no relative phase change between the two arms, and we could not measure the passing \ac{GW}. The interferometer therefore has an \emph{antenna pattern}.
+
+We can relate the strain induced in the interferometer from any arbitrarily oriented system by \cite{ref:?}:
+\begin{equation}
+h(t) = F_\pls h_\pls(t) + F_\crs h_\crs(t)
+\end{equation}
+where:
+\begin{align}
+F_\pls = -\frac{1}{2} (1 + \cos^2 \theta)\cos 2\varphi \cos 2\psi - \cos\theta \sin2\varphi \sin 2\psi \\
+F_\crs = \frac{1}{2}(1 + \cos^2 \theta)\cos 2\varphi \sin2\psi - \cos\theta \sin2\varphi \cos 2\psi
+\end{align}
+The angles $\theta$, $\varphi$, and $\psi$ are the Euler angles that relate the frame of the binary to the frame of the detector. Figure \ref{fig:?} shows what the antenna pattern looks like for a binary with $\iota = \psi = 0$. We see the ``dead spots" --- the point where the strain induced by the wave is $0$ --- are in the middle of the arms, in the plane of the interferometer. The best sensitivity occurs for systems that located directly above or below the interferometer (with $\iota = 0$); we therefore refer to such systems as being \emph{optimally oriented}.
+
+Returning to our general solutions for $h_\pls$ and $h_\crs$ --- equations \ref{eqn:cos_sin_chirp} and \ref{eqn:hpls_hcrs} --- we can account for the anetnna pattern by writing \cite{ref:Brown}:
+\begin{equation}
+h(t) = \frac{A(t)}{\effD} \cos(2\phi(t) - \theta)
+\end{equation}
+where $\effD$ is the \emph{effective distance} of the binary from the detector, given by:
+\begin{equation}
+\effD = \frac{r}{\sqrt{ F_\pls^2(1 + \cos^2\iota)^2/4 + F_\crs^2\cos^2 \iota}}
+\end{equation}
+The phase angle, $\theta$ is given by:
+\begin{equation}
+\theta = \tan^{-1} \frac{F_\crs 2\cos \iota}{F_\pls(1 + \cos^2 \iota)}
+\end{equation}
+$A(t)$ and $\phi(t)$ are calculated from the post-Newtonian approximation, discussed above. We will use these results in the next chapter.
+
+The effective distance gives the distance to the binary as if it were optimally oriented. Note that a binary that is not optimally oriented is indistinguishable from a binary that is, but is further away. In order to break the degeneracy we need a network of detectors to triangluate the source. A brief overview of how this is done is presented in chapter \ref{ch:ligo_south}.
+
+\subsection{The LIGO and Virgo Interferometers}
+
+The \ac{LSC} operates three \emph{\acp{IFO}}: two in at the \ac{LHO} in Hanford, Washington --- which we will denote H1 and H2 --- and one at the \ac{LLO} in Livingston, Lousianna, which we denote L1. The Virgo Collaboration operates one interferometer, which we denote V1, in Cascina, Italy. At root, these instruments run on the same basic principles as our toy interferometer described above. In practice, however, they are far more sophisticated, as they must account for a number of real-world problems; no description here would do them justice. Instead we note a few of their basic properties that are relevant to the later chapters of this thesis.
+
+In the above section we found that the phase shift induced in the arms of the interferometer was proportional to the amplitude of the gravitational-wave, and to the length of the arm. This would suggest that the longer we make the arms, the more sensitive our instrument will be. However, if the light remains in the arm for a full cycle of the gravitational wave, any time dilation gained on the crest of the wave will be cancelled by the trough. We therefore wish the light to remain in the arms for $1/2$ the period of the \ac{GW}, as this will result in the maximum phase difference. If we are searching for waves with a frequency $\sim 100\,$Hz, this sets an optimal length for the arms to be:
+\begin{equation}
+L = \frac{\lambda}{4} = \frac{c}{2\fGW} = \frac{c}{200} \sim 1000\,\mathrm{km}
+\end{equation}
+This is a hopelessly large distance for a ground-based interferometer. The LIGO and Virgo \acp{IFO} deal with this difficulty by using \emph{Fabry-Perot cavities}.
+
+Figure \ref{fig:fabry_perot} shows a schematic of a Fabry-Perot interferometer. By placing a semi-transparent mirror in the near-end of each arm --- referred to as the \emph{intermediate test masses} (ITMX and ITMY), to distinguish it from the \emph{end test masses} (ETMX and ETMY) --- a cavity is created. By keeping the length of the arms close the resonance of the light, the light bounces around for $~200$ more times \cite{ref:Brown} before exiting the arms. Thus the actual length of the arms can be $\mathcal{O}(1\,\mathrm{km})$ while the effective lenth will be $\mathcal{O}(10^3\,\mathrm{km})$. This results in the maximum detectable phase shift at $100\,$Hz. Both the \ac{LIGO} and Virgo interferometers are $\mathcal{O}(\mathrm{km})$: H1 and L1 are $4\,$km long, and V1 is $3\,$km. In \emph{initial} \ac{LIGO} H2 was $2\,$km, but this is planned to be expanded to $4\,$km for \emph{advanced} \ac{LIGO}.
+
+Since gravitational waves are so weak, sources of noise are a major concern. We briefly note a few here:
+\begin{itemize}
+\item{\emph{Seismic Noise}: As the name suggests, this is noise due to ground motion. This motion can couple into the interferometer through the test masses' suspension system. To counteract it, a number of seismic isolation systems are put in place between the ground and the wires to which the test masses are attached. Seismic noise is primarily a problem at low-frequency. In initial \ac{LIGO}, the seismic ``wall" was at $\sim 40\,$Hz; in advanced \ac{LIGO} it is projected to be at $\sim 10\,$Hz. When analyzing \ac{LIGO} and Virgo data, we cut put a lower cut-off to the matched filter, $f_0$, at these frequencies.}
+\item{\emph{Shot Noise}: This is the primary noise source at high ($~1\,$kHz) frequency. If we view the light in the interferometer from a quantum perspective, we recognize that we are limited by Poisson counting statistics of the photons. The error in the mean number of counts (which is the same as the intensity of the light) in some given amount of time goes as $1/\sqrt{N}$. Thus, as we consider higher frequencies, the error in our measurement of the light goes up. This suggests using a more powerful laser, which was done for enhanced \ac{LIGO}, and is planned for advanced \ac{LIGO}. However, more intense light will also cause higher radiation pressure on the mirrors --- which is noise source at lower frequencies --- and so these considerations must be balanced. Additionally, more intense light will heat up the mirrors, which causes greater ---}
+\item{\emph{Thermal Noise}: This is due to the thermal vibrations in the mirrors and the wires from which the mirrors hang. This noise primarily affects frequencies in the $40\,$ to $200\,$Hz range.}
+\end{itemize}
+These, and other sources, add up to give the the amplitude spectral density of the detectors. Figure \ref{fig:asd} shows what this looked like for \ac{LIGO} and Virgo during \ac{S6}. All of these sources contribute to the \emph{stationary Gaussian} noise of the detectors. In addition, there are a number of environmental and instrumental transient sources, or ``glitches", for which we have no model. As discussed in the next few chapters, a major part of the \ac{CBC} data-analysis pipeline is mitigating the effect of these transient sources.
 
