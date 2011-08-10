@@ -2,22 +2,24 @@ In the previous chapter we showed that interferometric detectors, such
 as LIGO, are capable of encoding the presence of gravitational waves
 in the phase shifts of light.  These shifts over time, or rather the
 motion of the servos to prevent them, are recorded as the data stream
-\darmerr.  As noted, this data stream will also contain noise from
-several sources.  In this chapter we discuss a method to extract
-signals, if present, from the noise and hence allow the LIGO and Virgo
-collaborations to claim a direct detection of gravitational waves.
+\darmerr.  As noted, this data stream will also contain noise.  This
+noise will contain both a continuous component which sets the overall
+sensitivity of the detector, and short glitches which can interfere
+with the search.
 
-For the most part in this chapter we will disregard implementation
-details.  In particular, we will treat quantities as continuous in
-both time and magnitude.  In reality the data is sampled at 16,384 
-Hz, and all time integrals should be replaced by sums.  Values are
-also stored in a discrete form, although the resolution is no coarser
-than the resolution of IEEE floating-point numbers.  Analysis codes
-therefore do not need any special features to deal with this
-discretization, beyond the usual care taken not to accumulate
-numerical errors.  In particular, Fourier transforms, special
-functions, and similar functionality can be provided by standard
-code libraries.
+In this chapter we discuss a method to extract signals, if present,
+from the noise and hence allow the LIGO and Virgo collaborations to
+claim a direct detection of gravitational waves.  For the most part in
+this chapter we will disregard implementation details.  In particular,
+we will treat quantities as continuous in both time and magnitude.  In
+reality the data is sampled at 16384 Hz, and all time integrals
+should be replaced by sums.  Values are also stored in a discrete
+form, although the resolution is no coarser than the resolution of
+IEEE floating-point numbers.  Analysis codes therefore do not need any
+special features to deal with this discretization, beyond the usual
+care taken not to accumulate numerical errors.  In particular, Fourier
+transforms, special functions, and similar functionality can be
+provided by standard code libraries.
 
 
 
@@ -26,9 +28,14 @@ code libraries.
 
 There are many ways to search for evidence of gravitational waves in
 noise and to a large extent the method used will depend on the nature
-of the signal being sought.  In this chapter we focus on the method
-used to search for the coalescence of compact binaries, as discussed
-in chapter~\ref{ch:theory}.
+of the signal being sought.  In this chapter we focus on \emph{matched
+filtering}, which is optimal given certain assumptions about the noise
+and if we have an accurate model of the signal for which we are
+searching.  Such a method is ideal for searching for the coalescence
+of compact binaries, as discussed in chapter~\ref{ch:theory}, as we
+can use the analytic approximations as the model.  The question of how
+well these models match real signals then becomes critical, and 
+we will return to this question in subsequent chapters.
 
 \subsection{Random Processes}
 \label{ssec:random_processes}
@@ -50,17 +57,19 @@ which gives the probability that the value at time $t_0$ will will
 lie between $y_0$ and $y_0 + dy_0$ and that the value at time $t_1$
 will will lie between $y_1$ and $y_1 + dy_1$, and so on.
 
-By considering a hypothetical ensemble of such processes we can 
+By considering a hypothetical ensemble of such processes we can
 construct average values of functions of the process at one or more
-times.  For example the average value of the product $y(t_1)y(t_2)$,
-
+times.  We denote the ensemble average of a quantity $x$ by angle
+brackets, $\langle x \rangle$, for example the average value of the product
+$y(t_1)y(t_2)$ is
+%
 \begin{equation*}
 \langle y(t_1) y(t_2) \rangle = \int y_2 y_1
 p(y_2, t_2; y_1, t_1)\, dy_2\, dy_1
 \end{equation*}
 
 We now make the following assumptions about the LIGO noise:
-
+%
 \begin{itemize}
 \item That it is \emph{stationary}, the values of the
 functions~\ref{eq:pdfs} depend only on the differences between the
@@ -72,10 +81,11 @@ chunks of time it will be accurate enough over the span of each.
 are all of the form $\exp(-Y^T A Y)$ where $Y$ is a vector of $y$
 values and  $A$ is a positive-definite matrix.  This is not
 necessarily a good model for, eg, electrical noise, which is better
-modeled as a sine wave with time-dependant random amplitude.  However,
-again this will be approximately correct.  We will further assume that
-the mean is 0 (eg, that the mirrors are just as likely to swing one
-way as the other).
+modeled as a sine wave with time-dependant random amplitude.  This is
+definitely not a good model for the numerous non-Gaussian glitch
+mechanisms.  However, this assumption is again approximately correct.  We
+will further assume that the mean is 0 (eg, that the mirrors are just
+as likely to swing one way as the other).
 
 \item That it satisfies the \emph{ergodic hypothesis} so that we may
 replace ensemble averages with time averages.
@@ -83,7 +93,7 @@ replace ensemble averages with time averages.
 \end{itemize}
 
 Now consider the quantity $S_y(f)$ called the \emph{power spectral
-density}, defined as
+density} (PSD), defined as
 
 \begin{equation}
 \label{eq:psd1}
@@ -91,18 +101,18 @@ S_y(f) \equiv \lim_{T \to \infty}
 \frac{1}{T} \left| \int_{-T/2}^{T/2} (y(t) - \bar{y}(t))
 e^{2 \pi i f t} dt \right|^2
 \end{equation}
-
+%
 Using Parceval's theorem it can be shown that
-
+%
 \begin{equation*}
 \int_0^\infty S_y(f)\, df = \sigma^2_y
 \end{equation*}
-
+%
 That is, $S_y(f)$ measures the contribution of each frequency 
 to the total variance of the process.
-
+%
 It can also be shown that 
-
+%
 \begin{equation}
 \label{eq:psd2}
 \langle \tilde{y}(f) \tilde{y}(f')\rangle = \frac{1}{2} S_y(f)
@@ -114,30 +124,29 @@ It can also be shown that
 
 We now specialize to the case of LIGO.  We denote the noise in the
 detector as $n(t)$, and a gravitational-wave signal as $h(t)$.  The
-output of the detector is then $s(t)=n(t)+h(t)$ data from the
-instrument.  We seek a filter on the data that we can use to infer the
-presence of the signal.
+output of the detector is then $s(t)=n(t)+h(t)$.  We seek a filter on
+the data that we can use to infer the presence of the signal.
 
-Consider the most general linear filter which  in the discrete case
+Consider the most general linear filter which in the discrete case
 would be
-
+%
 \begin{equation}
 \hat{s} = \sum_i s_i K_i
 \end{equation}
-
+%
 Since we will want a real result, we require the $K_i$ to be real.  In
 the continuum limit this becomes
-
+%
 \begin{equation}
 \hat{s} = \int_{-\infty}^\infty s(t) K(t)\, dt
 \end{equation}
 
 We now define the signal strength $S$ as the expected value of
 $\hat{s}$ when the signal is present:
-
+%
 \begin{align*}
 S &= \left\langle \hat{s} \right\rangle \\
-&= \langle  \int_{-\infty}^\infty s(t) K(t)\, dt \rangle \\
+&= \left\langle  \int_{-\infty}^\infty s(t) K(t)\, dt \right\rangle \\
 &= \int_{-\infty}^\infty \langle s(t) K(t)\rangle \, dt \\
 &= \int_{-\infty}^\infty \langle s(t) \rangle K(t) \, dt \\
 &= \int_{-\infty}^\infty \langle n(t) + h(t) \rangle K(t) \, dt \\
@@ -146,10 +155,10 @@ S &= \left\langle \hat{s} \right\rangle \\
 &= \int_{-\infty}^\infty \left( 0 + h(t) \right)  K(t) \, dt \\
 &= \int_{-\infty}^\infty h(t) K(t) \, dt \\
 \end{align*}
-
+%
 Now, since $K(t)$ is real we can replace it by its complex conjugate
 and then apply Parseval's theorem to write this as
-
+%
 \begin{equation*}
 S = \int_{-\infty}^\infty h(t) K^\star(t) \, dt
 = \int_{-\infty}^\infty \tilde{h}(f) \tilde{K}^\star(f) \, df
@@ -157,8 +166,7 @@ S = \int_{-\infty}^\infty h(t) K^\star(t) \, dt
 
 We characterise the noise $N$ as the rms value of $\hat{s}$ when the
 signal is absent:
-
-
+%
 \begin{align}
 N^2 &= \langle \hat{s}^2(t) \rangle - \langle \hat{s}(t) \rangle^2 \\
 &= \langle \hat{s}^2(t) \rangle  \\
@@ -168,23 +176,24 @@ N^2 &= \langle \hat{s}^2(t) \rangle - \langle \hat{s}(t) \rangle^2 \\
 \int_{-\infty}^\infty df\,df' e^{2\pi i f t}e^{-2\pi i f' t'} \langle
 \tilde{n}^\star(f) \tilde{n}(f')\rangle \\
 \end{align}
-
+%
 Using equation~\ref{eq:psd2} this becomes
-
+%
 \begin{equation}
 N^2 = \int_{-\infty}^\infty df\,\frac{1}{2} S_n(f) |\tilde{K}(f)|^2
 \end{equation}
 
 We now introduce a new function
-
+%
 \begin{equation}
 \tilde{u}(f) = \frac{1}{2} S_n(f) \tilde{K}(f)
 \end{equation}
-
-In terms of which we can write the signal-to-noise ration $S/N$ as
-
+%
+In terms of which we can write the signal-to-noise ratio, which we
+henceforth denote as $\rho$ as
+%
 \begin{equation}
-\frac{S}{N} =
+\rho =
 \frac
   {\int_{-\infty}^\infty df\,
    \frac
@@ -198,18 +207,18 @@ In terms of which we can write the signal-to-noise ration $S/N$ as
 
 This motivates the definition of an operator mapping pairs of
 functions to real numbers
-
+%
 \begin{equation}
 \label{eq:InnerProduct}
 \InnerProduct{A|B} 
- = \int_{-\infty}^\infty df\,
+ = 2 \int_{-\infty}^\infty df\,
    \frac
      {\tilde{A}(f) \tilde{B}^\star(f)}
-     {(1/2) S_n(f)}
+     {S_n(f)}
 \end{equation}
-
+%
 This operator has the following properties
-
+%
 \begin{itemize}
 \item Conjugate symmetry, $(x|y) = (y|x)^\star$
 \item Linearity in the first argument $(ax + by|z) = a(x|z) + b(y|z)$ for
@@ -219,100 +228,142 @@ of the Fourier transform.
 follows from the positive-definiteness of the product $aa^\star$ for
 $a \in \mathcal{C}$.
 \end{itemize}
-
+%
 The operator has all the properties of an inner product on
 the vector space of functions.  We may therefore consider
-
-\[
+%
+\begin{equation*}
 \frac{u}{(u|u)}
-\]
-
+\end{equation*}
+%
 to be a normalized vector.
 
 An important feature of this inner product, which we will use
 repeatedly, is that the probability of obtaining any particular 
-pattern $f(t)$ in the data is, up to normalization~\cite{Finn1992}
-
+pattern $h(t)$ in the data is, up to normalization~\cite{Finn1992},
+%
 \begin{equation}
 \label{eq:prob_of_signal}
-p(f) \propto \exp\left(- \frac{1}{2} \InnerProduct{f|f} \right)
+p(h) \propto \exp\left(- \frac{1}{2} \InnerProduct{h|h} \right)
 \end{equation}
 
-Using equation~\ref{eq:InnerProduct} the SNR becomes
-
+Now using equation~\ref{eq:InnerProduct} the SNR becomes
+%
 \begin{equation}
 \label{eq:InnerProductSNR}
-\rho = \frac{S}{N} = \frac{\InnerProduct{h|u}}{\InnerProduct{u|u}^{1/2}}
+\rho = \frac{\InnerProduct{h|u}}{\InnerProduct{u|u}^{1/2}}
 \end{equation}
-
-where we introduce $\rho$ as the symbol we will use for SNR.
-
-We now seek a function $u$ (and hence $K$) that will maximize $\rho$.
+%
+We next seek a function $u$ (and hence $K$) that will maximize $\rho$.
 In this form it is clear that $u$ and $h$ must be parallel, and
 therefore
-
+%
 \begin{equation}
 \tilde{K}(f) \propto \frac{\tilde{h}}{S_n(f)}
 \end{equation}
-
-The constant cancels in the SNR, and may therefore be set to 1.
+%
+The constant cancels, and may therefore be set to 1.
 
 Combining these results, the value we will use to determine whether or
 not our data $s$ contains the gravitational waveform $h$ (henceforth
 called the \emph{template} waveform) is
-
+%
 \begin{equation}
 \label{eq:snr}
 \rho = \frac{\InnerProduct{s|h}}{\sqrt{\InnerProduct{h|h}}}
 \end{equation}
 
 The template has an unknown phase, denoted $\phi_0$ in
-equation~\ref{eq:spa_waveform}.  As this term has no $f$ dependence it
-gives rise to a constant of the form $\exp(i\phi_0)$, which can be
-pulled out of the integral.  We can then maximize over this value by
-taking the absolute value.
+equation~\ref{eq:spa_waveform}.  As this term has no frequency
+dependence it gives rise to a constant of the form $\exp(i\phi_0)$,
+which can be pulled out of the integral.  We can then maximize over
+this value by taking the absolute value. 
 
-This result is valid for a segment of data of length $t$ seconds
+The result is valid for a segment of data of length $t$ seconds
 and a waveform of the same length.  However, there may be a signal in
 the data that does not end where the template does. We should
 therefore evaluate~\ref{eq:snr} repeatedly, sliding the template so
 that it ends at a different time for each iteration.  However, this
 can be done in a single operation.  If $\tilde{h}(f)$ is the Fourier
 transform of $h(t)$, then the Fourier transform of $h(t+\tau)$ is
-
+%
 \begin{equation*}
 \tilde{h}(f)' = \int h(t+\tau) e^{2 \pi i f t} dt
 = \int h(t') e^{2 \pi i f (t'-\tau)} dt'
 = e^{-2 \pi i } \tilde{h}(f)
 \end{equation*}
-
+%
 Substituting this into the matched filter,
-
+%
 \begin{equation}
 \label{eq:snr_time_series}
-\rho(\tau) = \frac{1}{\InnerProduct{h|h}}
+\rho(\tau) = \frac{2}{\sqrt{\InnerProduct{h|h}}}
 \left\lvert \int e^{-2\pi i f \tau} \frac{\tilde{s}(f)
 \tilde{h}^\star(f)}{S_n(f)}\,df \right\rvert
 \end{equation}
-
+%
 where we have added the absolute value from the maximization over
 $\phi_0$.  This is just the inverse Fourier transform of the quantity
 $\tilde{s}(f)\tilde{h}(f)^\star/S_n$.  
 
-Related to the SNR is the \emph{overlap} between two waveforms $h$ and
+\subsection{The Overlap}
+\label{ssec:overlap}
+
+Consider data consisting of noise and a signal $h$.  Let $\rho$
+be the SNR obtained by filtering this data with template $h$.  Then
+the loss in SNR incurred by filtering with an incorrect template, $h'$
+is
+%
+\begin{align}
+\label{eq:motivate_overlap}
+\rho - \rho' 
+&= \frac{\InnerProduct{s|h}}{\sqrt{\InnerProduct{h|h}}}
+- \frac{\InnerProduct{s|h'}}{\sqrt{\InnerProduct{h'|h'}}} \\ \nonumber
+&= \frac{\InnerProduct{n|h}}{\sqrt{\InnerProduct{h|h}}}
++ \frac{\InnerProduct{h|h}}{\sqrt{\InnerProduct{h|h}}}
+- \frac{\InnerProduct{n|h'}}{\sqrt{\InnerProduct{h'|h'}}}
+- \frac{\InnerProduct{h|h'}}{\sqrt{\InnerProduct{h'|h'}}} \\
+  \nonumber
+\end{align}
+%
+Taking the mean of both sides the first and third terms vanish because
+%
+\begin{equation*}
+\left\langle \InnerProduct{s|h} \right\rangle
+= 2 \int_{-\infty}^\infty df\,
+   \frac
+     {\langle \tilde{n}(f) \rangle \tilde{h}^\star(f)}
+     {S_n(f)}
+= 0
+\end{equation*}
+%
+where the last step follows from our assumption that the noise is
+Gaussian with zero mean.  Equation~\ref{eq:motivate_overlap} then
+becomes
+%
+\begin{align*}
+\langle \rho - \rho'  \rangle
+&= \frac{\InnerProduct{h|h}}{\sqrt{\InnerProduct{h|h}}}
+- \frac{\InnerProduct{h|h'}}{\sqrt{\InnerProduct{h|h'}}} \\
+&= \sqrt{\InnerProduct{h|h}} \left(1 -
+\frac{\InnerProduct{h|h'}}{\sqrt{\InnerProduct{h|h}
+\InnerProduct{h'|h'}}} \right)
+\end{align*}
+
+This motivates the definition of the \emph{overlap} between two waveforms $h$ and
 $h'$ with respect to a given PSD,
-
-
+%
 \begin{equation}
   \label{eq:OverlapDefinition}
   \Overlap{h|h'} \equiv \frac{\InnerProduct{h|h'}}{
-    \sqrt{\InnerProduct{h|h} \InnerProduct{h'|h'}}}\ .
+    \sqrt{\InnerProduct{h|h} \InnerProduct{h'|h'}}}
 \end{equation}
+%
+which is a measure of how similar the two waveforms are, or conversely
+how dissimilar they are and hence the fractional SNR we can expect to
+lose using one rather than the other.  We will use this repeatedly in
+subsequent chapters.
 
-This is a measure of how similar the two waveforms are. We can
-eliminate artificial discrepancies created by misaligning the
-waveforms by maximizing over the time and phase, as with the SNR.  We
-will use this repeatedly in subsequent chapters.
 
 \subsection{Trigger Selection}
 \label{ssec:analysis_trigger_selection}
@@ -368,62 +419,60 @@ section~\ref{sec:daily_ihope_open_questions}.
 
 Consider again the SNR time series, equation~\ref{eq:snr_time_series},
 which we now write as
-
+%
 \begin{equation*}
-\rho(t) = \frac{1}{\InnerProduct{h|h}}
+\rho(t) = \frac{1}{\sqrt{\InnerProduct{h|h}}}
 \int e^{-2\pi i f t} \frac{\tilde{h}^\star(f)}{S_n(f)} \cdot \tilde{s}(f) \,df
 \end{equation*}
-
+%
 By the convolution theorem this becomes
-
+%
 \begin{equation*}
-\rho(t) = \frac{1}{\InnerProduct{h|h}}
+\rho(t) = \frac{1}{\sqrt{\InnerProduct{h|h}}}
 h(-t) \star S(t) \star s(t)
 \end{equation*}
-
+%
 where $S(t)$ is the inverse Fourier transform of $1/S_n(f)$.  If the
 signal is an impulse, $s(t) = \delta(t)$, then the response is the
 time-reversed template (``fuzzed'' by the noise curve).  Given a sharp
 feature in the data the SNR will therefore be elevated, even though
-the data looks nothing like a gravitational wave.  As we will see in
-chapter~\ref{ch:detchar}, this is a very practical concern.  More
-generally however this demonstrates that the SNR alone is not
+the data looks nothing like a gravitational wave.  More
+generally this demonstrates that the SNR alone is not
 sufficient to distinguish signals from noise in the presence of
-non-Gaussian features of the data.
+non-Gaussian features of the data.  Given the presence of glitches
+this is a very practical concern.
 
-We therefore supplement the analysis with the $\chisq$
-test~\cite{Allen:2004}.  The idea is to check not only that the SNR is
-large, but also that it was accumulated over the frequency integration
-in a way consistent with a real signal.  We do this by dividing the
-template into $p$ sub-templates $h_i$, which match the original
-template between frequencies $f_i$ and $f_{i+1}$ and are zero
-elsewhere and the $f_i$ are chosen such that
-
+We therefore supplement the analysis with a $\chisq$
+signal-consistency test~\cite{Allen:2004}.  The idea is to check not
+only that $\rho$ is large, but also that the SNR was accumulated over the
+frequency integration in a way consistent with a real signal.  We do
+this by dividing the template into $p$ sub-templates $h_i$, which
+match the original template between frequencies $f_i$ and $f_{i+1}$
+and are zero elsewhere and the $f_i$ are chosen such that
+%
 \begin{equation*}
 \int_{f_i}^{f_{i+1}} \frac{|h_i|^2}{S_n(f)}\,df
 = \frac{1}{p}
-\int_{f_0}^{f_c} \frac{|h_i|^2}{S_n(f)}\,df
+\int_{f_0}^{f_c} \frac{|h|^2}{S_n(f)}\,df
 \end{equation*}
-
-where $f_0$ is the starting frequency (40 Hz in LIGO) and
-$f_c$ is, as in equation~\ref{eq:spa_waveform}, the frequency at which
-we terminate the waveform.
-
-We then filter with these sub-templates independently to produce 
-the $p$ time series $\rho_i(t)$ and construct the quantity
-
+%
+where $f_0$ is the starting frequency (40 Hz in LIGO) and $f_c$ is, as
+in equation~\ref{eq:spa_waveform}, the frequency at which we terminate
+the waveform.  We then filter with these sub-templates independently
+to produce the $p$ time series $\rho_i(t)$ and construct the quantity
+%
 \begin{equation}
 \label{eq:chisq}
-\chi^2(t) = \sum_{i=1}^p \left(\rho_i(t) - \frac{\rho(t)}{p}\right)^2
+\chi^2(t) = p \sum_{i=1}^p \left(\rho_i(t) - \frac{\rho(t)}{p}\right)^2
 \end{equation}
-
+%
 If the signal exactly matches the template $\chi^2$ will be zero, and
 it will increase as the signal and template deviate.  Based on
 investigations in S5, we choose $p=16$.
 
 We incorporate this information in the analysis by constructing a
 quantity, $\newsnr$ (new SNR), which downweights the SNR by $\chisq$,
-
+%
 \begin{equation}
 \label{eq:new_snr}
 \newsnr^2 = \begin{cases}
@@ -431,7 +480,12 @@ quantity, $\newsnr$ (new SNR), which downweights the SNR by $\chisq$,
  \frac{\rho^2}{[(1+(\chi_r^2)^3)/2]^{1/6}}, \ & \chi^2_{r} > 1,
 \end{cases}  
 \end{equation}
-
+%
+where the first clause is added to avoid promoting triggers that
+happen to have anomalously low $\chisq$ values, and the form and
+factors of the second clause have been chosen based on studies to test
+the ability of the search to distinguish between simulated injected
+signals and glitches.
 
 \section{Choosing the templates}
 \label{sec:bank_metric}
@@ -439,29 +493,33 @@ quantity, $\newsnr$ (new SNR), which downweights the SNR by $\chisq$,
 We have thus far referred to the $h$ as ``the template'', but recall
 from equation~\ref{eq:spa_waveform} that the waveforms depend on
 the parameters of the binary, such as total mass $M$ and symmetric
-mass ratio $\eta$.  As the values of these parameters diverge between
-the signal  and template the SNR will decrease.  We must therefore
+mass ratio $\eta$.  As discussed in section~\ref{ssec:overlap},
+the difference between the signal and the template used in the matched filter 
+corresponds directly to a reduction in $\rho$.  We must therefore
 construct a \emph{bank} of templates arranged to capture, to within
 some acceptable loss of SNR, all the signals of interest.  To do so we
 consider the space of templates as a manifold, as in
 chapter~\ref{ch:theory}, and we use the parameter values (or functions
 of these values) as coordinates.  The distance between two points
 $\mathbf{p}$ and $\mathbf{q}$, with coordinates=parameters $p_i$ and
-$q_i$,  is defined in terms of the overlap of templates at those
+$q_i$, is defined in terms of the overlap of templates at those
 parameters
-
+%
 \begin{equation*}
 d = 1 - \Overlap{h(\mathbf{p})|h(\mathbf{q})}
+= \frac{\InnerProduct{h(\mathbf{p})||h(\mathbf{q})|}}{
+    \sqrt{\InnerProduct{h(\mathbf{p})||h(\mathbf{p})|}
+\InnerProduct{h(\mathbf{q})||h(\mathbf{q})|}}}
 \end{equation*}
-
+%
 We then seek a set of templates, $\{h_i\}$ such that within a region
 of interest every point in the manifold is ``sufficiently close'' to
 at least one template:
-
+%
 \begin{equation*}
-\forall \mathbf{p}, \min_i \Overlap{h(\mathbf{p})|h_i} < x
+\forall \mathbf{p}, \max_i \Overlap{h(\mathbf{p})|h_i} \geq x
 \end{equation*}
-
+%
 Such a bank will ensure that the loss in SNR from using the bank
 instead of testing the entire continuum of parameters is less than
 $x\%$.  In LIGO we typically require no more than a 3\% loss in SNR.
@@ -469,7 +527,8 @@ As the distance to which we can detect signals scales with SNR and
 volume is the cube of distance, this corresponds to approximately a
 10\% loss in event rate.
 
-It is possible to construct the bank \emph{stochastically}:
+It is possible to construct the bank
+\emph{stochastically}~\cite{PhysRevD.80.104014}:
 
 \begin{itemize}
 \item Choose a point in the manifold at random
@@ -499,17 +558,17 @@ overlap function~\cite{Owen:1995tm, Owen:1998dk}
 \mathbf{\lambda}=0} (\Delta
 \lambda_i) (\Delta \lambda_j)
 \end{equation*}
-
+%
 where we can drop the linear term because the overlap is a maximum at
 $\Delta \mathbf{\lambda} = 0$.  When using frequency-domain,
 stationary-phase templates of the form~\ref{eq:spa_waveform}, the
 calculation of this metric can be done analytically, and gives a
 result in terms of moments of the noise curve
-
+%
 \begin{equation*}
 I(q) = S_n(f_0) \int_{f_0}^{f_c} \frac{x^{-q/3}}{S_n(x f_0)}\,dx
 \end{equation*}
-
+%
 where $f_0$ is a chosen reference frequency.
 
 The metric can then be used to efficiently lay out a grid of
@@ -532,45 +591,50 @@ We now present a very high-level overview of how the above elements
 were used in the search for gravitational waves from the coalescence
 of compact binaries.  We focus in particular on LIGO's sixth science
 run which overlaps Virgo's second and third.  For more details on this
-search see~\cite{Capano:thesis}.
+search see Ref.~\cite{Capano:thesis}.
 
 In each IFO the analysis is broken into 2048-second segments.  This is
 done for computational efficiency, as well as to restrict to timespans
-over which the PSD is nearly stationary.  The times covered by each
-instrument may not overlap, but we ignore this minor complication.
+over which the PSD is nearly stationary.  
 
-First, the data is filtered to remove power below 40 Hz.  The seismic
-noise below this frequency is orders of magnitude greater than  the
-noise at higher frequencies, and without this filtering any signal
-would be entirely swamped.
+Computers are able to store numbers with only finite range and
+precision.  In particular we are unable to small differences above
+large values without losing information.  As the seismic noise below
+40 Hz is orders of magnitude greater than the noise at higher
+frequencies, we must first filter the data to remove power below 40 Hz. 
 
-The PSD for each IFO is then calculated by \emph{Welch's method}.  The
-2048 seconds are split into 15 256-second chunks, overlapping by 128
-seconds.  The PSD of each chunk is then calculated using the defining
-equation~\ref{eq:psd1}.  The final PSD is obtained by taking the
-median values of each frequency bin. This is done in order to make the
-PSD estimation robust against loud, short events.  As an extreme
-example, if there were a loud gravitational wave in the data the PSD
-would be elevated, paradoxically suppressing the SNR.  This gives a
-single PSD spanning 256 seconds.
+The PSD for each IFO is then calculated by a variation of
+\emph{Welch's method}.  The 2048 seconds are split into 15 256-second
+chunks, overlapping by 128 seconds.  The PSD of each chunk is then
+calculated using the defining equation~\ref{eq:psd1}.  The final PSD
+is obtained by taking the median values of each frequency bin. This is
+done in order to make the PSD estimation robust against loud, short
+events.  As an extreme example, if there were a loud gravitational
+wave in the data the PSD would be elevated, paradoxically suppressing
+the SNR. 
 
-The PSD is then used to construct the template bank.  In S6/VSR2,3 we
-used stationary-phase templates taken to 3.5 pN order in phase
-evolution.  See chapter~\ref{ch:comparison} for more on this choice.
+This PSD is then used to construct the template bank.  In S6/VSR2,3 we
+used stationary-phase templates of the form of
+equation~\ref{eq:spa_waveform}.   We take the phase evolution, $\Psi$
+to 3.5 pN order, corresponding to an expansion in $v$ to seventh
+order.   See chapter~\ref{ch:comparison} for more on this choice.
 
-We then break the 2048-second segment into 256-second chunks (as that
-is the duration for which the PSD is valid) and filter the data with
-each template in the bank.  The $\chisq$ test is not enabled at this
-stage, as it is computationally expensive.  The segments are again
-overlapped, due to issues with the first and final 64 seconds of each
-segment being corrupted.  See~\cite{DBrownThesis} for more on this
-issue.
+We then break the 2048-second segment into 256-second chunks (to match
+the resolution of the PSD) and filter the data with each template in
+the bank.  The Fourier transformation algorithm we use treats the data
+as periodic, it identifies the times $t=0$ and $t=256$.  This
+correlates the data at the beginning and end of the segment, we
+therefore discard the first and last 64 seconds in each segment, and
+overlap the segments so as to cover the entire time.  See
+Ref.~\cite{DBrownThesis} for more on this issue.  The $\chisq$ test is
+not enabled at this stage, as it is computationally expensive.  
 
 The PSD used at this stage is not exactly the PSD that was calculated,
-it has been modified to prevent a loud impulse from corrupting the
-entire chunk.  We return to this issue in section~\ref{ssec:penguins},
-but for the moment recall that the response of the matched filter to
-an impulse can elevate the SNR for an extended time.
+it has been modified to avoid wrap-around issues and prevent a loud
+impulse from corrupting the entire chunk.  We return to this issue in
+section~\ref{ssec:penguins}, but for the moment recall that the
+response of the matched filter to an impulse can elevate the SNR for
+an extended time.
 
 The outcome of this stage is a set of triggers for each IFO.  We then
 apply a \emph{coincidence test} by testing whether each trigger is
@@ -583,13 +647,14 @@ There is now a second stage of the process.  Templates in each bank
 that have not produced coincident triggers are discarded.  The
 filtering is then repeated, now with $\chisq$ enabled.  There is then
 another coincidence test and the resulting triggers, now identified as
-\emph{foreground triggers} are assigned a \emph{cumulative new SNR}
+\emph{foreground triggers} are assigned a \emph{combined new SNR}
 value
-
+%
 \begin{equation*}
-\rho_{\textrm{new, cumulative}}^2 = \sum_i \rho_{\textrm{new}, i}^2
+\rho_{\textrm{new, combined}}^2 = \sum_i \rho_{\textrm{new}, i}^2
 \end{equation*}
-
+%
+where $i$ ranges over the set of detectors.
 
 In order to determine how significant a foreground trigger is it must
 be compared against the background distribution.  In pure Gaussian
