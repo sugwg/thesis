@@ -1,18 +1,18 @@
-The search for gravitational waves is not a binary process, the
-instrument does not simply emit zeroes until a wave is detected, at
-which time it emits a one.  We have seen in figure~\ref{f:first_stage}
-of the previous chapter that even in Gaussian noise the search
-produces background triggers.
+We have made frequent references to \emph{glitches} in the detectors,
+a type of noise consisting of short, transient features.  In
+chapter~\ref{ch:search} we have also noted that such features in the
+data can elevate $\rho(t)$ and produce spurious triggers.  We will
+refer to triggers resulting from noise as \emph{background triggers}.
 
 In order to claim the detection of a gravitational wave we must have a
 candidate whose significance stands well above that of these
-background triggers.  So far this thesis has focused on increasing 
-the efficiency of the search to increase the significance of the 
-signals.  We now shift focus to reducing the number of triggers in the
+background triggers.  So far this thesis has focused on increasing the
+efficiency of the search to increase the significance of the signals.
+We now shift focus to reducing the number of triggers in the
 background.  The key to doing this is ability to \emph{veto} time,
-that is, remove from the analysis times which we believe will pollute
-the background and/or times in which we would be unable to confidently
-detect a real signal.
+that is, remove from the analysis times which we believe will
+contribute excessively to the background and/or times in which we
+would be unable to confidently detect a real signal.
 
 In this chapter we discuss the infrastructure that enables such
 vetoes.  In the next chapter we look at a tool, \emph{daily ihope},
@@ -20,185 +20,145 @@ which was used in S6 to characterize the behavior of the detectors and
 determine times that needed to be vetoed.
 
 
-\subsection{Data Quality Flags}
+\section{Data Quality Flags}
 
-The state of the instrument at any time is summarized by a set of
-\emph{flags}.  Flags are identified by a triple of (ifo id, flag name,
-version number), where \emph{ifo id} identifies the instrument,
-\emph{flag name} is a unique identifier, and \emph{version number} is
-an integer starting from 1.  The version number allows information to
-be updated without losing information that may be needed to
-reconstruct the results of earlier searches.  The full set of flags is
-stored in a database designed at Syracuse and hosted at Caltech.
+The LIGO and Virgo detectors are extremely sophisticated, complex, and
+sensitive.  Glitches can be produced in and by many parts of the
+instrument, and may ultimately be caused by either environmental
+conditions or conditions internal to the detectors.  A great deal of
+information is about the state of the detector is recorded in
+\emph{channels}, which are time-series sampled from 1 Hz to 16 kHz,
+depending on the channel.  These include such information as
+\begin{itemize}
+\item The power at which the Laser is operating
+\item The output of every photodiode throughout the detector
+\item The power in seismic noise in various frequency bands
+\item The activity of the control servos
+\end{itemize}
+%
+and a great deal more.  When any of these exceed normal operating
+values it may indicate the presence of glitches, or even be their root
+cause.  It is therefore extremely valuable to both data analysts and 
+commissioners working on the instrument to be able to \emph{flag} any
+anomalous conditions.
 
-Flags are stored as a set of \emph{segments}, half-open intervals
-aligned on GPS integer second boundaries.  Each flag triple has an
-associated set of segments indicating the times during which it is
-\emph{defined}.  Such triples also have a set of segments indicating
-times during which they are \emph{active}.  The set of active segments
-must be a subset of defined segments.  Times during which a flag is
-defined and not active are considered \emph{inactive}.
-
-Flags may be entered manually through a web interface.  This can be
-used to indicate nonstandard operating conditions, such as heavy
-equipment being operated on site.  However, most flags are generated
-automatically.
-
-The first line of defense against noise triggers is on-site as the
+The first line of defense against glitches is on-site as the
 instrument is running.  At all such times the control room is staffed
 by an operator who is an expert in running the instrument employed by
 LIGO labs, and a science monitor (``SciMon'') who is a member of the
-LIGO Scientific Collaboration.  The two jointly decide when to enable
-\emph{science mode}, which marks the data as suitable for analysis.
-This declaration is not specific to the CBC group, but extends to all
-searches in the collaboration.  Science time is indicated by the flag
-\texttt{DMT\_SCIENCE}.
-
-In addition to the readout channel (\texttt{DARM\_ERR}, described in
-section~\ref{ssec:readout}) many other data channels are recorded,
-falling into two broad categories.  Physical environmental monitor
-(``PEM'') channels record information about the environment such as
-seismic activity at the base and end stations, microphones and
-magnetometers placed throughout the site, etc.  Instrumental
-(``INST'') channels record data from numerous subsystems such as
-servos for each mirror and the output of photodiodes at points
-throughout the light path.  Software running at the sites called the
-data monitoring tool (``DMT'') creates data quality flags based on
-these channels.  For example, when a channel's value or standard
-deviation over time exceeds a given threshold.  The DMT is also
-responsible for recording the state of the science mode flag.  Other
-flags are set by programs that run analyses on these auxiliary
-channels, for examples see~\cite{Isogai:2010}.
-
-
-
-\iffalse
-\subsection{Technical details}
-
-The flag segments are stored in a high-performance relational
-database, exposed as a web service which provides secure access to all
-members of the collaboration.  Several utilities to interact with the
-segment database were written, many of which could run in many modes.
-The names of all these utilities start with ligolw, short for ``LIGO
-lightweight,'' an XML-based format used throughout the collaboration
-in which the output was generated.
-
-Except where noted all programs accept a common subset of arguments
+LIGO Scientific Collaboration (LSC).  Either may flag times of unusual
+activity such as
 \begin{itemize}
-\item \texttt{--gps-start-time} and \texttt{--gps-end-time}: Integer
-GPS times specifying the time range over which to run.
-\item \texttt{--include-segments}: Takes a comma-separated list of
-segment specifiers of the form ifo:flag\_name:version or
-ifo:flag\_name and restricts the query to matching flags.  In the
-latter case, report on the latest version of the flag defined at each
-time within the time range.
-\item \texttt{--exclude-segments}: Takes a comma-separated list of
-segment specifiers in the same format as \texttt{--include-segments}.
-Runs a second query on the excluded segments and returns the set of
-segments in included segments - (included segments $\cap$ excluded
-segments).
-\item \texttt{--database}, \texttt{--segment-url},
-\texttt{--dmt-files}: Specifies the data source (segment database or
-XML files with segment information).
+\item Movement of heavy machinery on site
+\item Nearby storms
+\item Modification of control parameters
+\end{itemize}
+%
+The operator and sciMon also jointly decide when to flag time as
+suitable for analysis.  This depends on a few conditions; there must
+be laser light in both arms and the detector must be \emph{locked},
+meaning the cavities are on resonance.  When such conditions are met
+the operator and SciMon can choose to enable \emph{science mode}.  Any
+time such flagged will be included in the LIGO searches.
+
+In addition to such manually-created flags, flags may be created
+automatically by scanning the channel data.  This is done by a program
+called the \emph{Data Monitoring Tool} (DMT) which records conditions
+such as
+%
+\begin{itemize}
+\item An instrumental channel has exceeded a threshold
+\item The standard deviation of a channel has exceeded its expected
+value
+\item Elevated seismic noise in a frequency band
+\item The detector is properly locked
 \end{itemize}
 
+Note that these are all yes-or-no conditions.  Flags do not store
+values, such as the level of seismic noise.  That information is
+available in the channel data, the flags are intended to provide the
+simplest possible summary of conditions.  At any given time a flag can
+be in any of three states: on, off, or undefined.  Flags are undefined
+during times when the responsible DMT process was not running.
 
-The programs used during S6 were:
+In order to be useful flags must be represented in a standard format
+and accessible to members of the LSC.  We start by identifying a flag
+as a triple of (ifo id, flag name, version number), where \emph{ifo
+id} identifies the instrument, \emph{flag name} is a unique
+identifier, and \emph{version number} is an integer starting from 1.
+Version numbers can change if, for example, a bug is found in one of
+the DMT processes.  Once the bug is fixed it can be rerun over the
+original channel data to produce the next subsequent version of the
+flag.  However, by storing all prior versions we are able to
+reconstruct the results of earlier searches.  To prevent confusion
+with case sensitivity in processing tools, all DQ flag names were
+required to be in upper case case. Additionally, a 3-letter prefix was
+be added to each flag name to better identify the source where data
+came from. For example: the flag indicating high wind speed would be
+\texttt{DMT-WIND\_OVER\_30MPH}.
 
-\textbf{ligolw\_dq\_query}.  This program reports on the state of
-flags at one or more GPS times given on the command line.  This
-program does not support \\
-\texttt{--gps-start-time} or \texttt{--gps-end-time}.   The available modes are
-
+Conceptually, managing flag information consists of providing
+functions that
+%
 \begin{itemize}
-\item \texttt{--report}:  Returns the active/inactive status of all DQ flags at the
-given times.  For active flags reports the start and end times of the
-segment within which the given time is contained.  For inactive flags
-reports the end time of the nearest preceding segment and the start
-time of the nearest subsequent segment.  This mode is used in the
-daily ihope ``loudest glitches'' page, see below.
-\item \texttt{--defined}: Returns a list of flags defined at the
-given times.
-\item \texttt{--active}: Returns a list of the flags that were active
-at the given times.
-\item \texttt{--start-pad}, \texttt{--end-pad}: Extends the
-\texttt{--defined} and \texttt{--active} modes to report on the status
-of flags within a small range of time.
+\item map from a flag (ifo id, flag name, version number) to a set of
+times where the flag was defined
+\item map from a flag (ifo id, flag name, version number) to a set of
+times where the flag was active
 \end{itemize}
+%
+We represent sets of times as sets of \emph{segments}, which are
+half-open intervals aligned on GPS-second boundaries.  The times
+during which the flag was inactive, if needed, can be obtained from the
+difference between these two.  It is also useful to think of these
+functions as mapping (ifo id, flag name, version number, time) to an
+``active, inactive or undefined'' indicator, or mapping a time to a
+set of flags that are on.
 
-
-\textbf{ligolw\_segment\_query}.  This program reports on the state of a
-set of flags over a span of times.  The available modes are
-
-\begin{itemize}
-\item \texttt{--show-types}: Reports the sets of flags that exist over
-the time span.
-\item \texttt{--query-types}: Reports the segments during which the
-flags were defined.
-\item \texttt{--query-segments}: Reports the segments during which the
-flags were active.
-\end{itemize}
-
-Every CBC analysis begins by determining the science mode times with a
-call of the form
-
-\vspace*{5mm}
-\texttt{ligolw\_segment\_query} \\
-\hspace*{0.5in}\texttt{--query-segments --include-segments H1:DMT-SCIENCE:3 ...}
-\vspace*{5mm}
-
-\textbf{ligolw\_segments\_from\_cats}.  Given a veto definer file,
-report on segments to be vetoed. 
-
-\textbf{ligolw\_dq\_active\_cats}.  Given a veto definer file and GPS
-time, report on the active/inactive status and veto category for all
-flags defined at the time.
-
-\textbf{ligolw\_segment\_insert}.  Adds new segments to the database,
-enforcing various policy decisions:
-\begin{itemize}
-\item New segments for an existing flag/version number pair must not overlap 
-with existing segments.  To update information a new version number must be used.
-\item New version numbers must be one greater than the largest
-existing version number.
-\item New segments must not extend into the future, past the GPS time
-at which the program is run.
-\end{itemize}
-\fi
 
 % https://www.lsc-group.phys.uwm.edu/daswg/wiki/content_of_segment_publication_and_discovery
 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Repositories for Data Quality Flags}
 
-In order for data quality information to be used in searches and
-available to investigators it must be stored in specified locations
-and formats, and common creation and access tools must be available.
-We must also be able to recreate the state of all flags at the time of
-an analysis, in order to be able to fully vet any potential candidate
-detections.  This later point implies that if a flag is updated the
-old version must be maintained.
+\section{Implementation details}
 
-In S6 two parallel solutions were pursued:
+The implementation of the maps between flags and sets of segments is
+conceptually straightforward.  We can assign to each flag triple a
+unique integer identifier, and then store segments as triples of (id, start
+time, end time).  The functions above then consist of looking up the
+flag, determining the identifier, then returning all segments with
+matching identifiers.  We will need two such segment stores, one for
+``defined'' segments and one for ``active'' segments.  We will call the
+map between flags and identifiers the \texttt{segment\_definer}, the
+store of ``defined'' segments will be called the
+\texttt{segment\_summary}, and we we reserve the name \texttt{segment}
+for the store of active segments.
+
+We now have a structure in which data quality flags can be stored.
+In S6 flags were stored in two ways
+%
 \begin{enumerate}
-\item A database-based solution allowed users to store and query segment
-information. This was based on the infrastrure used in S5, updated with
-the lessons learned from the science run.
-\item The same tools used to query the database could be used 
-to query online DQ data files generated by the DMT, simply by
-changing one command-line argument. This allowed 
-users to perform small low-latency queries relevant to online
-searches in the most direct manner possible.
+\item as files in eXtensible Markup Language (XML) format.  XML is a
+scheme for adding structure to documents.  It is relatively
+simple in that XML files can be opened with standard editors.  The LSC
+utilities specialized form of XML called \emph{LIGO light weight} or
+LIGO LW.  The names of most programs that produce or consume such files
+begin with the prefix \texttt{ligolw\_}.  See
+Sec.~\ref{sec:data_file_format} for more on this format.
+
+\item In a relational database called the \emph{segment database},
+hosted at CalTech.  This allowed high-speed, distributed
+access to flag information.  See
+Sec.~\ref{sec:segment_database_design} for more on the structure of
+the database.
 \end{enumerate}
 
-\section{Implementation plan}
 
 \begin{figure}[h]
-  \begin{center}
-    \includegraphics[width=0.9\linewidth]{figures/segdb/T0900005_fig1}
-  \end{center}
+  \label{f:segment_flow}
+  \includegraphics[width=\linewidth]{figures/segdb/T0900005_fig1}
   \caption[Flow of S6 data quality information]{
   Flow of S6 data quality segment information. Online data
   quality segments and science segment information is generated by the DMT.
@@ -208,27 +168,20 @@ searches in the most direct manner possible.
   database.} 
 \end{figure}
 
+The flow of flag information is illustrated in
+figure~\ref{f:segment_flow}:
+%
 \begin{enumerate}
-\item \textbf{DMT trigger manager:} The DMT trigger manager handled
+\item \textbf{DMT} The DMT handled
 the creation of all science segments and online data quality segments
-in S6. Every 60 seconds, the DMT trigger manager wrote segment
+in S6. Every 60 seconds, the DMT wrote segment
 information in XML format to disk at the Observatories. The DMT called
 the \texttt{dmtdq\_seg\_insert} program to insert the XML data into
 the segment database.
 
-To prevent confusion with case sensitivity in processing tools, all
-DQ flag names were required to be in upper case case. Additionally, a
-3-letter prefix was be added to each DQ flag to better identify the
-source where data came from. For example: the S5 DQ flag known as
-\texttt{Wind\_Over\_30MPH} would be written into the XML file as
-\texttt{DMT-WIND\_OVER\_30MPH} in S6. All DQ flags generated online by
-the DMT had version number 1.
-
 \item \textbf{Archival of DMT segment data:} The 60 second XML files
-generated by the DMT were archived every 3600 seconds onto the LDAS
-\verb|/archive/dataprods| filesystem for replication to Caltech and
-Teir 2 computing centers. Files were compressed using the gzip
-algorithm.
+generated by the DMT were replication to Caltech and other LSC
+computing centers. Files were compressed using the gzip algorithm.
 
 \item Software was developed to combine the segment
 information from DMT XML files with a data quality categorization file
@@ -251,399 +204,8 @@ diagram, targeted latencies were:
 
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{S6 segment database design}
-
-The segment database schema (and hence the XML files) were
-substantially simplified from the S5 implementations.  The five tables
-to used for S6 were shown in figure~\ref{f:schema}. All unnecessary
-tables were eliminated and the remaining table set simplified.
-The \verb|process|, \verb|process_params| and \verb|segment_definer|
-tables were unchanged from S5, with the exception that the
-\verb|domain| column in the \verb|process| table was used to store the
-distingished name of the user inserting the data.  In S5, segments
-were either stored as on or off allowing users to distinguish between
-a segment being off or undefined, due to data not being analyzed. It
-was found that the off/undefined query was used substantially less
-than the on query, and so in S6 this column was eliminated from the
-\verb|segment| table.  To ensure that off/undefined information is
-still available, the \verb|segment_summary| was introduced in S6 to
-store time intervals when quality flags are defined. This further
-simplified the query ``What versions were defined at what time?''
-allowing better use of version information in S6.
-
-\begin{figure}[h]
-  \begin{center}
-    \includegraphics[width=0.9\linewidth]{figures/segdb/T0900005_fig3}
-  \end{center}
-  \label{f:schema}
-  \caption{S6 Segment Database Schema}
-\end{figure}
-
-
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Data Replication Between Observatories and Tier 2 Centers}
-
-In S6, the Caltech segment database was the official data repository.
-In addition to being written into the database, all data inserted in
-to the Caltech segment database was output as XML files to a
-central location. These XML files were then replicated to tier 2
-sites at ldas.ligo-wa.caltech.edu, ldas.ligo-la.caltech.edu. A rsync
-script was implemented at Caltech to periodically replicate XML
-files from Caltech to tier 2 sites.  
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Command Line Tools}
-
-Several utilities were created that allowed user to query the segment
-database and XML files.
-
-\subsubsection{ligolw\_segment\_query}
-
-The program \verb|ligolw_segment_query| replaced the S5
-\verb|LSCsegFind| as the command line interface to query for data
-quality and science segments.  \verb|ligolw_segment_query| only provided
-read access to the segment database.  \verb|ligolw_segment_query|
-was primarily intended for human interaction with the segment database.
-Automated generation of DQ files for online searches used the
-program \verb|ligolw_veto_segments|.
-
-Below are the questions that \texttt{ligolw\_segment\_query} was
-designed to answer:
-
-\begin{itemize}
-\item What DQ flags exist in the database?
-\texttt{ligolw\_segment\_query --show-types}
-\item When was a given flag inserted? \texttt{ligolw\_segment\_query
---query-types}
-\item When was a given DQ flag defined? \texttt{ligolw\_segment\_query
---query-types}
-\item When was a given flag active? \texttt{ligolw\_segment\_query
---query-segments}
-\end{itemize}
-
-The built-in help message, generated by \texttt{ligolw\_segment\_query
---help} is shown below:
-
-DESCRIPTION:
-{\small
-\begin{verbatim}
-  --version             show program's version number and exit
-  -h, --help            show this help message and exit
-  -p, --ping            Ping the target server
-  -y, --show-types      Returns a xml table containing segment type
-                        information: ifos, name, version,
-                        segment_definer.comment, segment_summary.start_time,
-                        segment_summary.end_time, segment_summary.comment
-  -u, --query-types     Returns a ligolw document whose segment_definer table
-                        includes all segment types defined in the given period
-                        and included by include-segments and whose
-                        segment_summary table indicates the times for which
-                        those segments are defined.
-  -q, --query-segments  Returns a ligolw document whose segment table contains
-                        the times included by the include-segments flag and
-                        excluded by exclude-segments
-  -s gps_start_time, --gps-start-time=gps_start_time
-                        Start of GPS time range
-  -e gps_end_time, --gps-end-time=gps_end_time
-                        End of GPS time range
-  -t segment_url, --segment-url=segment_url
-                        Segment URL. Users have to specify either 'https://'
-                        for a secure connection or 'http://' for an insecure
-                        connection in the segment database url. For example,
-                        '--segment-url=https://segdb.ligo.caltech.edu'. No
-                        need to specify port number.
-  -d, --database        use database specified by environment variable
-                        S6_SEGMENT_SERVER. For example,
-                        'S6_SEGMENT_SERVER=https://segdb.ligo.caltech.edu'
-  -f, --dmt-files       use files in directory specified by environment
-                        variable ONLINEDQ, for example,
-                        'ONLINEDQ=file:///path_to_dmt'. 'file://' is the
-                        prefix, the acutal directory to DMT xml files starts
-                        with '/'.
-  -a include_segments, --include-segments=include_segments
-                        This option expects a comma separated list of a colon
-                        separated sublist of interferometer, segment type, and
-                        version. The union of segments from all types and
-                        versions specified is returned. Use --show-types to
-                        see what types are available.   For example:
-                        --include-segment-types H1:DMT-SCIENCE:1,H1:DMT-
-                        INJECTION:2 will return the segments for which H1 is
-                        in either SCIENCE version 1 or INJECTION version 2
-                        mode. If version information is not provided, the
-                        union of the segments of the latest version of
-                        requested segment type(s) will be returned.
-  -b exclude_segments, --exclude-segments=exclude_segments
-                        This option has to be used in conjunction with
-                        --include-segment-types --exclude-segment-types
-                        subtracts the union of unwanted segments from the
-                        specified types from the results of --include-segment-
-                        types. If version information is not provided,
-                        --exclude-segment-types subtracts the union of
-                        segments from the latest version of the specified
-                        segment types. For example, --include-segment-types H1
-                        :DMT-SCIENCE:1,H1:DMT-INJECTION:2 --exclude-segment-
-                        types H1:DMT-WIND:1,H1:DMT-NOT_LOCKED:2,H2:DMT-
-                        NOT_LOCKED:2 will subtract the union of segments which
-                        H1 is in version 1 WIND and H1,H2 is version 2
-                        NOT_LOCKED from the result of --include-segment-types
-                        H1:DMT-SCIENCE:1,H1:DMT-INJECTION:2
-  -S, --strict-off      The default behavior is to truncate segments so that
-                        returned segments are entirely in the interval [gps-
-                        start-time, gps-end-time).  However if this option is
-                        given, the entire non-truncated segment is returned if
-                        any part of it overlaps the interval.
-  -o output_file, --output-file=output_file
-                        File to which output should be written.  Defaults to
-                        stdout.
-\end{verbatim}
-}
-
-\subsubsection{ligolw\_dq\_query}
-
-\texttt{ligolw\_dq\_query} could query either the segment database or directories
-containing XML segment files generated by the DMT.
-\texttt{ligolw\_dq\_query}
-only provided read access to the segment database. 
-
-Below are the questions that \texttt{ligolw\_dq\_query} was designed
-to answer:
-
-\begin{itemize}
-\item is a given flag active at a given time?
-\texttt{ligolw\_dq\_query --active}
-\item is a given flag defined at a given time?
-\texttt{ligolw\_dq\_query --defined}
-\item what is the status of all flags at a given time?
-\texttt{ligolw\_dq\_query --report}
-\end{itemize}
-
-
-The built-in help message, generated by \texttt{ligolw\_dq\_query
---help} is shown below:
-
-DESCRIPTION:
-{\small
-\begin{verbatim}
-  --version             show program's version number and exit
-  -h, --help            show this help message and exit
-  -p, --ping            Ping the target server
-  -y, --defined         Returns a segment summary table containing segments
-                        defined at the given time(s).
-  -u, --active          Returns a segment table containing segments active at
-                        the given time(s).
-  -q, --report          Prints which flags are defined/undefined at the given
-                        time(s). For the flags which were defined, it
-                        determines if the flag was active or inactive at that
-                        time. For an active flag, it prints the start and end
-                        time of the segment to which the active. For an
-                        inactive flag, it prints the end time of the previous
-                        adjacent active segment and the start time of the next
-                        adjacent active segment
-  -s start_pad, --start-pad=start_pad
-                        Seconds before given time(s) to include in query
-  -e end_pad, --end-pad=end_pad
-                        Seconds after given time(s) to include in query
-  -t segment_url, --segment-url=segment_url
-                        Segment URL
-  -d, --database        use database specified by environment variable
-                        S6_SEGMENT_SERVER
-  -f, --dmt-files       use files in directory specified by environment
-                        variable ONLINEDQ
-  -a include_segments, --include-segments=include_segments
-                        This option expects a comma separated list of a colon
-                        separated sublist of interferometer, segment type, and
-                        version. The union of segments from all types and
-                        versions specified is returned. Use --show-types to
-                        see what types are available.   For example:
-                        --include-segment-types H1:SCIENCE:1,H1:INJECTION:2
-                        will return the segments for which H1 is in either
-                        SCIENCE version 1 or INJECTION version 2 mode. If
-                        version information is not provided, the union of the
-                        segments of the latest version of requested segment
-                        type(s) will be returned.
-  -o output_file, --output-file=output_file
-                        File to which output should be written.  Defaults to
-                        stdout.
-  -i, --in-segments-only
-                        If set, report will only return segments that given
-                        times were within
-\end{verbatim}
-}
-
-
-
-\subsubsection{ligolw\_segments\_from\_cats}
-\label{ssec:from_cats}
-
-\texttt{ligolw\_segments\_from\_cats} read a veto definer file (see
-section~\ref{sec:veto_definer}) and accessed either segment XML files
-or the segment database in order to produce a list of times to be
-vetoed.  The built-in help message is displayed below:
-
-DESCRIPTION:
-\begin{verbatim}
-  --version             show program's version number and exit
-  -h, --help            show this help message and exit
-  -v veto_file, --veto-file=veto_file
-                        veto XML file (required).
-  -o output_dir, --output-dir=output_dir
-                        Directory to write output (default=cwd).
-  -k, --keep-db         Keep sqlite database.
-  -t segment_url, --segment-url=segment_url
-                        Segment URL
-  -d, --database        use database specified by environment variable
-                        S6_SEGMENT_SERVER
-  -f, --dmt-file        use files in directory specified by environment
-                        variable ONLINEDQ
-  -c, --cumulative-categories
-                        If set the category N files will contain all segments
-                        in categories <= N
-  -p, --separate-categories
-                        If set the category N files will contain only category
-                        N
-  -s gps_start_time, --gps-start-time=gps_start_time
-                        Start of GPS time range
-  -e gps_end_time, --gps-end-time=gps_end_time
-                        End of GPS time range
-\end{verbatim}
-
-
-For example:
-\begin{alltt}
-ligolw\_segments\_from\_cats
-  --gps-start-time 930960015
-  --gps-end-time 931564887
-  --segment-url https://segdb.ligo.caltech.edu:30015
-  --cumulative-categories
-  --veto-file H1L1V1-S6\_CBC\_LOWMASS\_ONLINE-928271454-0.xml
-\end{alltt}
-
-
-
-
-\subsubsection{ligolw\_segment\_insert}
-
-\texttt{ligolw\_segment\_insert} was the replacement for S5's 
-LSCdqInsert.   It handled two tasks:
-
-\begin{itemize}
-\item Insert segments and/or segment types into the segment database.
-\item Append segments to the existing segment types.
-\end{itemize}
-
-The built-in help message is displayed below:
-
-DESCRIPTION:
-\begin{verbatim}
-  -h, --help            show this help message and exit
-  -p, --ping            Ping the target server
-  -t URL, --segment-url=URL
-                        Users have to specify protocol 'https://' for a secure
-                        connection in the segment database url. For example,
-                        '--segment-url=https://segdb.ligo.caltech.edu'. No
-                        need to specify port number'.
-  -o FILE, --output=FILE
-                        Write segments to FILE rather than the segment
-                        database
-  -j IDENTITY, --identity=IDENTITY
-                        Set the subject line of the server's service
-                        certificate to IDENTITY
-  -I, --insert          Insert segments to the segment database
-  -A, --append          Append segments to an existing segment type
-  -i IFOS, --ifos=IFOS  Set the segment interferometer to IFOS (e.g. H1)
-  -n NAME, --name=NAME  Set the name of the segment to NAME (e.g. DMT-
-                        BADMONTH)
-  -v VERSION, --version=VERSION
-                        Set the numeric version of the segment to VERSION
-                        (e.g. 1)
-  -e EXPLAIN, --explain=EXPLAIN
-                        Set the segment_definer:comment to COMMENT. This
-                        should explaining WHAT this flag mean (e.g. "Light dip
-                        10%"). Required when --Insert/-I is specified.
-  -c COMMENT, --comment=COMMENT
-                        Set the segment_summary:comment to COMMENT. This
-                        should explaining WHY these segments were inserted
-                        (e.g. "Created from hveto results")
-  -S FILE, --summary-file=FILE
-                        Read the segment_summary rows from FILE. This should
-                        be a file containing the gps start and end times that
-                        the flag was defined, deliminated by comma (i.e. the union of on and off)
-  -G FILE, --segment-file=FILE
-                        Read the segment rows from FILE. This should containin
-                        the gps start and end times when the flag was active deliminated by comma
-\end{verbatim}
-
-As an example, the command to insert segments of a new type would 
-look like:
-
-\begin{alltt}
-ligolw\_segment\_insert
-  --segment-url https://segdb.ligo.caltech.edu
-  --ifos 'H1'
-  --name 'DCH-TEST'
-  --version 1
-  --comment 'testing if insert works'
-  --explain 'test insert'
-  --segment-file segment.txt
-  --summary-file summary.txt
-  --insert
-\end{alltt}
-
-To append segments to an existing segment, the command would look like:
-
-\begin{alltt}
-ligolw\_segment\_insert 
-  --segment-url https://segdb.ligo.caltech.edu
-  --ifos 'H1'
-  --name 'DCH-TEST'
-  --version 1
-  --comment 'testing if append works'
-  --segment-file append\_segment.txt
-  --summary-file append\_summary.txt
-  --append
-\end{alltt}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Functionality Supported in S6}
-With the above described infrastructure and command line tools
-users were able to determine
-
-\begin{itemize}
-\item When was a given flag defined?
-\item Was a given flag defined at this time?
-\item When was a given flag active?
-\item What is the dead time for a given flag? 
-\item At a given point of time, is the given flag active? If yes, find
-out the start and end time of the segment to which the specified point
-of time belongs.
-\item At a given point of time, is the given flag active? If no, find
-out the end time of the previous adjacent active segment and the start
-time of the next adjacent active segment.
-\item Provide the same supports described above for a set of flags.
-\item What flags were active at this time, near this time ($\pm 1$~s
-interval or specified by user)?
-\item What is the efficiency for a flag for burst and inspiral and
-plot it.
-\item Export answer to ascii or xml file
-\item Handle padding windows for deadtime queries
-\item Export config files, start, end times
-\end{itemize}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Authentication}
-
-In S6, data insertion requires authentication. Retrieving from on-site
-requires no authentication. Retrieving from off-site requires
-authentication.  The authentication system is beyond the scope of this
-dissertation.
-
 \section{Segment Data File Format}
+\label{sec:data_file_format}
 
 To be ingested into the segment database, segment data must be in the
 format described in this section. Data should be in a valid LIGO LW
@@ -655,26 +217,26 @@ segment generation.
 The \verb|process| table should contain the columns given in the XML
 file below which describe the name, version, cvs repository and
 revision of the program used generate the data. The comment column can
-be used to add additional human-readable data. The node, username,
-unix\_procid, start\_time and end\_time columns should store metadata
-describing who ran the process and where it ran. The ifos column
+be used to add additional human-readable data. The \verb|node|,
+\verb|username|,
+\verb|unix_procid|, \verb|start_time| and \verb|end_time| columns should store metadata
+describing who ran the process and where it ran. The \verb|ifos| column
 should contain an alphabetical list of all ifo data using as input to
-the process. The process\_id column is used to link the defined
+the process. The \verb|process_id| column is used to link the defined
 process to other rows in the file created by that process.
 
 The \verb|segment_definer| table should contain a definition of the
-segments included in the file. The ifos, name and version column
-should contain the name and version of the segment. The name should be
-upper case for all segments. DMT-derived segments should be prefixed
-with the string \verb|DMT-|, Kleinewelle derived veto segments should
-be prefixed with the string \verb|KWV-|, data derived from the
-detector state vector channels should be prefixed with \verb|IFO-|,
-segments created by the detchar group should be prefixes with
-\verb|DCH-| and segments from the Virgo database should be prefixed
-with \verb|VDB-|.  The comment column can be used to add a
-human-readable description of the segment. The segment\_definer column
-is used to link this type of segment to the intervals in the
-\verb|segment| and \verb|segment_summary| tables.
+segments included in the file. The \verb|ifos|, \verb|name| and
+\verb|version| columns should contain the name and version of the
+segment. The name should be upper case for all segments. DMT-derived
+segments should be prefixed with the string \verb|DMT-|, data derived
+from the detector state vector channels should be prefixed with
+\verb|IFO-|, segments created by the detector characterization group
+should be prefixed with \verb|DCH-| and segments from the Virgo
+database should be prefixed with \verb|VDB-|.  The comment column can
+be used to add a human-readable description of the segment. The
+\verb|segment_definer| column is used to link this type of segment to
+the intervals in the \verb|segment| and \verb|segment_summary| tables.
 
 The \verb|segment| table should contain the GPS start and end time
 when the segment described in the \verb|segment_definer| table was
@@ -771,6 +333,347 @@ being down).
 \end{verbatim}
 }
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{S6 segment database design}
+\label{sec:segment_database_design}
+
+The five tables used for the S6 segment database are shown in
+figure~\ref{f:schema}.  Each table has a corresponding structure in
+the XML files.  In addition to the \verb|segment_definer|,
+\verb|segment_summary| and \verb|segment| tables discussed above, we
+add \verb|process| and \verb|process_params| tables that indicate the
+program that created each flag and how that program was run.
+
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[width=0.9\linewidth]{figures/segdb/T0900005_fig3}
+  \end{center}
+  \label{f:schema}
+  \caption[S6 Segment Database Scheme]{
+Structure of the S6 segment database.  Each box represents a
+\emph{table} (a set of structured data), the name of which is in grey.
+The lines within the boxes are the names of \emph{columns}, individual
+data elements within the table.  For example, the
+\texttt{process\_params} table contains a set of \emph{rows}, each row
+contains data elements named \texttt{program}, \texttt{type},
+\texttt{value} and \texttt{intertion\_time}.
+
+The lines between boxes indicate relations between tables.  For
+example, the \texttt{segment\_definer} is connected to the
+\texttt{segment\_summary} and \texttt{segment} tables through the 
+\texttt{segment\_def\_id}.  This implements the conceptual relations
+between these entities discussed above.
+}
+\end{figure}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Command Line Tools}
+
+We now turn to the tools that implemented the various mappings between
+flags and sets of times discussed above.  Except where noted these
+programs could all operate on either XML files or the segment
+database.  Except for \texttt{ligolw\_segment\_insert} all programs
+could only read information from the database, they could not add or
+change existing data.  Flags were specified in the form
+\texttt{ifo:name:version}.  For many programs the version could be
+omitted and the program would report on the latest defined version.
+
+\subsection{ligolw\_segment\_query}
+
+\texttt{ligolw\_segment\_query} was designed to answer the following
+questions:
+%
+\begin{itemize}
+\item What DQ flags exist in the database?
+\texttt{ligolw\_segment\_query --show-types}
+\item When was a given flag inserted? \texttt{ligolw\_segment\_query
+--query-types}
+\item When was a given DQ flag defined? \texttt{ligolw\_segment\_query
+--query-types}
+\item When was a given flag active? \texttt{ligolw\_segment\_query
+--query-segments}
+\end{itemize}
+%
+The built-in help message, generated by \texttt{ligolw\_segment\_query
+--help} is shown below:
+%
+{\small
+\begin{verbatim}
+DESCRIPTION:
+  --version             show program's version number and exit
+  -h, --help            show this help message and exit
+  -p, --ping            Ping the target server
+  -y, --show-types      Returns a xml table containing segment type
+                        information: ifos, name, version,
+                        segment_definer.comment, segment_summary.start_time,
+                        segment_summary.end_time, segment_summary.comment
+  -u, --query-types     Returns a ligolw document whose segment_definer table
+                        includes all segment types defined in the given period
+                        and included by include-segments and whose
+                        segment_summary table indicates the times for which
+                        those segments are defined.
+  -q, --query-segments  Returns a ligolw document whose segment table contains
+                        the times included by the include-segments flag and
+                        excluded by exclude-segments
+  -s gps_start_time, --gps-start-time=gps_start_time
+                        Start of GPS time range
+  -e gps_end_time, --gps-end-time=gps_end_time
+                        End of GPS time range
+  -t segment_url, --segment-url=segment_url
+                        Segment URL. Users have to specify either 'https://'
+                        for a secure connection or 'http://' for an insecure
+                        connection in the segment database url. For example,
+                        '--segment-url=https://segdb.ligo.caltech.edu'. No
+                        need to specify port number.
+  -d, --database        use database specified by environment variable
+                        S6_SEGMENT_SERVER. For example,
+                        'S6_SEGMENT_SERVER=https://segdb.ligo.caltech.edu'
+  -f, --dmt-files       use files in directory specified by environment
+                        variable ONLINEDQ, for example,
+                        'ONLINEDQ=file:///path_to_dmt'. 'file://' is the
+                        prefix, the acutal directory to DMT xml files starts
+                        with '/'.
+  -a include_segments, --include-segments=include_segments
+                        This option expects a comma separated list of a colon
+                        separated sublist of interferometer, segment type, and
+                        version. The union of segments from all types and
+                        versions specified is returned. Use --show-types to
+                        see what types are available.   For example:
+                        --include-segment-types H1:DMT-SCIENCE:1,H1:DMT-
+                        INJECTION:2 will return the segments for which H1 is
+                        in either SCIENCE version 1 or INJECTION version 2
+                        mode. If version information is not provided, the
+                        union of the segments of the latest version of
+                        requested segment type(s) will be returned.
+  -b exclude_segments, --exclude-segments=exclude_segments
+                        This option has to be used in conjunction with
+                        --include-segment-types --exclude-segment-types
+                        subtracts the union of unwanted segments from the
+                        specified types from the results of --include-segment-
+                        types. If version information is not provided,
+                        --exclude-segment-types subtracts the union of
+                        segments from the latest version of the specified
+                        segment types. For example, --include-segment-types H1
+                        :DMT-SCIENCE:1,H1:DMT-INJECTION:2 --exclude-segment-
+                        types H1:DMT-WIND:1,H1:DMT-NOT_LOCKED:2,H2:DMT-
+                        NOT_LOCKED:2 will subtract the union of segments which
+                        H1 is in version 1 WIND and H1,H2 is version 2
+                        NOT_LOCKED from the result of --include-segment-types
+                        H1:DMT-SCIENCE:1,H1:DMT-INJECTION:2
+  -S, --strict-off      The default behavior is to truncate segments so that
+                        returned segments are entirely in the interval [gps-
+                        start-time, gps-end-time).  However if this option is
+                        given, the entire non-truncated segment is returned if
+                        any part of it overlaps the interval.
+  -o output_file, --output-file=output_file
+                        File to which output should be written.  Defaults to
+                        stdout.
+\end{verbatim}
+}
+
+\subsubsection{ligolw\_dq\_query}
+
+Below are the questions that \texttt{ligolw\_dq\_query} was designed
+to answer:
+%
+\begin{itemize}
+\item is a given flag active at a given time?
+\texttt{ligolw\_dq\_query --active}
+\item is a given flag defined at a given time?
+\texttt{ligolw\_dq\_query --defined}
+\item what is the status of all flags at a given time?
+\texttt{ligolw\_dq\_query --report}
+\end{itemize}
+%
+The built-in help message, generated by \texttt{ligolw\_dq\_query
+--help} is shown below:
+%
+{\small
+\begin{verbatim}
+DESCRIPTION:
+  --version             show program's version number and exit
+  -h, --help            show this help message and exit
+  -p, --ping            Ping the target server
+  -y, --defined         Returns a segment summary table containing segments
+                        defined at the given time(s).
+  -u, --active          Returns a segment table containing segments active at
+                        the given time(s).
+  -q, --report          Prints which flags are defined/undefined at the given
+                        time(s). For the flags which were defined, it
+                        determines if the flag was active or inactive at that
+                        time. For an active flag, it prints the start and end
+                        time of the segment to which the active. For an
+                        inactive flag, it prints the end time of the previous
+                        adjacent active segment and the start time of the next
+                        adjacent active segment
+  -s start_pad, --start-pad=start_pad
+                        Seconds before given time(s) to include in query
+  -e end_pad, --end-pad=end_pad
+                        Seconds after given time(s) to include in query
+  -t segment_url, --segment-url=segment_url
+                        Segment URL
+  -d, --database        use database specified by environment variable
+                        S6_SEGMENT_SERVER
+  -f, --dmt-files       use files in directory specified by environment
+                        variable ONLINEDQ
+  -a include_segments, --include-segments=include_segments
+                        This option expects a comma separated list of a colon
+                        separated sublist of interferometer, segment type, and
+                        version. The union of segments from all types and
+                        versions specified is returned. Use --show-types to
+                        see what types are available.   For example:
+                        --include-segment-types H1:SCIENCE:1,H1:INJECTION:2
+                        will return the segments for which H1 is in either
+                        SCIENCE version 1 or INJECTION version 2 mode. If
+                        version information is not provided, the union of the
+                        segments of the latest version of requested segment
+                        type(s) will be returned.
+  -o output_file, --output-file=output_file
+                        File to which output should be written.  Defaults to
+                        stdout.
+  -i, --in-segments-only
+                        If set, report will only return segments that given
+                        times were within
+\end{verbatim}
+}
+
+
+
+\subsubsection{ligolw\_segments\_from\_cats}
+\label{ssec:from_cats}
+
+\texttt{ligolw\_segments\_from\_cats} read a veto definer file (see
+section~\ref{sec:veto_definer}) and accessed either segment XML files
+or the segment database in order to produce a list of times to be
+vetoed.  The built-in help message is displayed below:
+%
+{\small
+\begin{verbatim}
+DESCRIPTION:
+  --version             show program's version number and exit
+  -h, --help            show this help message and exit
+  -v veto_file, --veto-file=veto_file
+                        veto XML file (required).
+  -o output_dir, --output-dir=output_dir
+                        Directory to write output (default=cwd).
+  -k, --keep-db         Keep sqlite database.
+  -t segment_url, --segment-url=segment_url
+                        Segment URL
+  -d, --database        use database specified by environment variable
+                        S6_SEGMENT_SERVER
+  -f, --dmt-file        use files in directory specified by environment
+                        variable ONLINEDQ
+  -c, --cumulative-categories
+                        If set the category N files will contain all segments
+                        in categories <= N
+  -p, --separate-categories
+                        If set the category N files will contain only category
+                        N
+  -s gps_start_time, --gps-start-time=gps_start_time
+                        Start of GPS time range
+  -e gps_end_time, --gps-end-time=gps_end_time
+                        End of GPS time range
+\end{verbatim}
+}
+
+For example:
+\begin{alltt}
+ligolw\_segments\_from\_cats
+  --gps-start-time 930960015
+  --gps-end-time 931564887
+  --segment-url https://segdb.ligo.caltech.edu:30015
+  --cumulative-categories
+  --veto-file H1L1V1-S6\_CBC\_LOWMASS\_ONLINE-928271454-0.xml
+\end{alltt}
+
+
+
+
+\subsubsection{ligolw\_segment\_insert}
+
+\texttt{ligolw\_segment\_insert} handled two tasks:
+%
+\begin{itemize}
+\item Insert segments and/or segment types into the segment database.
+\item Append segments to the existing segment types.
+\end{itemize}
+%
+The built-in help message is displayed below:
+%
+{\small
+\begin{verbatim}
+DESCRIPTION:
+  -h, --help            show this help message and exit
+  -p, --ping            Ping the target server
+  -t URL, --segment-url=URL
+                        Users have to specify protocol 'https://' for a secure
+                        connection in the segment database url. For example,
+                        '--segment-url=https://segdb.ligo.caltech.edu'. No
+                        need to specify port number'.
+  -o FILE, --output=FILE
+                        Write segments to FILE rather than the segment
+                        database
+  -j IDENTITY, --identity=IDENTITY
+                        Set the subject line of the server's service
+                        certificate to IDENTITY
+  -I, --insert          Insert segments to the segment database
+  -A, --append          Append segments to an existing segment type
+  -i IFOS, --ifos=IFOS  Set the segment interferometer to IFOS (e.g. H1)
+  -n NAME, --name=NAME  Set the name of the segment to NAME (e.g. DMT-
+                        BADMONTH)
+  -v VERSION, --version=VERSION
+                        Set the numeric version of the segment to VERSION
+                        (e.g. 1)
+  -e EXPLAIN, --explain=EXPLAIN
+                        Set the segment_definer:comment to COMMENT. This
+                        should explaining WHAT this flag mean (e.g. "Light dip
+                        10%"). Required when --Insert/-I is specified.
+  -c COMMENT, --comment=COMMENT
+                        Set the segment_summary:comment to COMMENT. This
+                        should explaining WHY these segments were inserted
+                        (e.g. "Created from hveto results")
+  -S FILE, --summary-file=FILE
+                        Read the segment_summary rows from FILE. This should
+                        be a file containing the gps start and end times that
+                        the flag was defined, deliminated by comma (i.e. the union of on and off)
+  -G FILE, --segment-file=FILE
+                        Read the segment rows from FILE. This should containin
+                        the gps start and end times when the flag was active deliminated by comma
+\end{verbatim}
+%
+As an example, the command to insert segments of a new type would 
+look like:
+%
+\begin{alltt}
+ligolw\_segment\_insert
+  --segment-url https://segdb.ligo.caltech.edu
+  --ifos 'H1'
+  --name 'DCH-TEST'
+  --version 1
+  --comment 'testing if insert works'
+  --explain 'test insert'
+  --segment-file segment.txt
+  --summary-file summary.txt
+  --insert
+\end{alltt}
+
+To append segments to an existing segment, the command would look like:
+%
+\begin{alltt}
+ligolw\_segment\_insert 
+  --segment-url https://segdb.ligo.caltech.edu
+  --ifos 'H1'
+  --name 'DCH-TEST'
+  --version 1
+  --comment 'testing if append works'
+  --segment-file append\_segment.txt
+  --summary-file append\_summary.txt
+  --append
+\end{alltt}
+
+
 \subsection{The Veto Definer}
 \label{sec:veto_definer}
 
@@ -778,14 +681,16 @@ Problems in the data may have differing levels of severity, and
 consequently we define several \emph{veto categories} to characterize
 them.  We defer discussion of the meaning of these categories until
 the next chapter, but note here that the categories are indicated by
-integers from 1 to 4, in decreasing levels of severity.  We also note
-that time marked with category 1 is entirely excluded form the
-analysis.  4091 seconds of data with one second of category 1 time in
-the middle will be split into two 2045-second chunks.  Neither of
-these will be analyzable, as ihope requires 2048 seconds of data in
-order to computer the PSD.  Short category 1 vetos can therefore
-effectively veto much larger times, and such vetoes are therefore to
-be avoided whenever possible. 
+integers from 1 to 4, in decreasing levels of severity.  These
+categories are commonly referred to as \emph{CAT1} through
+\emph{CAT4}.  We also note that time marked with category 1 is
+entirely excluded form the analysis.  4091 seconds of data with one
+second of category 1 time in the middle will be split into two
+2045-second chunks.  Neither of these will be analyzable by the ihope
+pipeline, which requires 2048 seconds of data in order to compute the
+PSD as discussed in Sec.~\ref{sec:search_pipeline}.  Short category 1
+vetos can therefore effectively veto much larger times, and such
+vetoes are therefore to be avoided whenever possible. 
 
 In order to veto a chunk of time it is necessary to map a data quality
 flag to a veto category.  This is accomplished with a \emph{veto
@@ -798,10 +703,14 @@ performed on times marked as science with no CAT1 vetoes.  Triggers
 from times marked as CAT2, CAT3 and CAT4 are discarded from both
 foreground and background.
 
-Sometimes the threshold on a DQ flag is such that the data is
-unsuitable for analysis close to, but outside, the range of the flag.
-The veto definer file therefore allows for \emph{padding}, offsets 
-which effectively extend the flags.
+In some circumstances the search is more sensitive to anomalous
+conditions than the DMT and excess triggers may be produced outside
+the time covered by the flag.  This is one motivation for using the
+search itself as a data quality tool, as discussed in the next
+chapter.  The veto definer file therefore allows for \emph{padding},
+offsets which effectively extend the flags.  The padding used will be
+specific to each search, as different searches will be sensitive to
+different classes of problems over different extents.
 
 \subsection{Example Veto Configuration File}
 
