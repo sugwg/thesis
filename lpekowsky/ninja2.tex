@@ -12,12 +12,11 @@ NINJA-2 aims to remove some of the shortcomings of NINJA-1 and allow
 quantitative studies of the performance of gravitational-wave searches
 in varying regions of signal parameter space.  Specifically, NINJA-2
 addresses issues with both the waveform submissions and the noise used
-to construct the data sets.
-
-This chapter describes the contributed waveforms and the studies that
-have been performed to validate them.  The next chapter will discuss
-the construction of the data sets and will present preliminary results
-from the low- and high-mass CBC pipelines.
+to construct the data sets.  This chapter describes the contributed
+waveforms and the studies that have been performed to validate them.
+The next chapter will discuss the construction of the data sets and
+will present preliminary results from the low- and high-mass CBC
+pipelines.
 
 \section{Contributed waveforms}
 
@@ -34,7 +33,7 @@ injection was missed due to the parameters of the signal or an
 unintended feature of the waveform.
 
 The lack of length requirement limited the available mass range to $M
-< 36 \msun$ for reasons that can be seen in
+> 36 \msun$ for reasons that can be seen in
 figure~\ref{fig:Ninja2StildesAndInitialPSD}.  This plot shows the
 $q=2$, non-spinning MayaKrac submission to NINJA-2, along with the
 initial LIGO and advanced LIGO noise curves (see the discussion of
@@ -63,38 +62,46 @@ about 40 $\msun$.
     the Initial-LIGO noise curve.}
 \end{figure}%
 
-To address these issues NINJA-2 specifies the following minimal
-requirements~\cite{ninja2-wiki}.  The raw numerical simulation should
-include at least five orbits of usable data before merger (i.e., not
-counting bursts of junk radiation or other significant noise).  Given
-the computation cost of extending the NR waveforms, we instead require
-stitching to a post-Newtonian inspiral approximant, which should be
-performed at a GW frequency of $M\omega \leq 0.075$, where $M\omega$
-is the frequency of the $(l = 2, m = \pm 2)$ harmonic. The full
-waveform should be long enough to be entirely within the sensitivity
-bands of LIGO and Virgo down to $10 \msun$ with a lower cutoff
-frequency of 10 Hz, which corresponds to a starting GW frequency of
-$M\omega = 0.003$.  The numerical-waveform (before any hybridization)
-amplitude should be accurate to within 5\%, and the phase (as a
-function of GW frequency) should have an accumulated uncertainty over
-the entire inspiral, merger and ringdown, of no more than 0.5 radian.
-The PN approximants used for hybridization should ideally use the
-highest PN orders available, both in phase and amplitude.  These
-minimal accuracy requirements are motivated by the results of the
-Samurai project~\cite{Hannam:2009hh}, and studies performed in
-preparation for the NR-AR collaboration project~\cite{ninja-wiki}.
+To address these issues NINJA-2 specifies the following requirements
+on the submitted waveforms~\cite{ninja2-wiki}.  The raw numerical
+simulation should include at least five orbits of usable data before
+merger (i.e., not counting bursts of junk radiation or other
+significant noise).  Given the computation cost of extending the NR
+waveforms, we instead require ``stitching'' to a post-Newtonian
+inspiral approximant, which should be performed at a GW frequency of
+$M\omega \leq 0.075$, where $M\omega$ is the frequency of the $(l = 2,
+m = \pm 2)$ harmonic. The full waveform should be long enough to be
+entirely within the sensitivity bands of LIGO and Virgo down to $10
+\msun$ with a lower cutoff frequency of 10 Hz, which corresponds to a
+starting GW frequency of $M\omega = 0.003$.  The numerical-waveform
+(before any hybridization) amplitude should be accurate to within 5\%,
+and the phase (as a function of GW frequency) should have an
+accumulated uncertainty over the entire inspiral, merger and ringdown,
+of no more than 0.5 radian.  The PN approximants used for
+hybridization should ideally use the highest PN orders available, both
+in phase and amplitude.  These minimal accuracy requirements are
+motivated by the results of the Samurai project~\cite{Hannam:2009hh},
+and studies performed in preparation for the NR-AR collaboration
+project~\cite{ninja-wiki}.
 
-The NINJA-2 project encourages although does not require the addition
-of higher-order modes.  We chose to restrict attention to non-spinning
-waveforms and waveforms with spins aligned or anti-aligned with the
-orbital angular momentum.  There are sufficient open questions
-regarding these restricted cases to make this analysis interesting,
-without adding the additional complications on both the NR and data
-analysis sides associated with precession. 
+As noted in equation~\ref{eq:mode_decomposition} the complex function
+$h_+-ih_\times$ can be decomposed into modes using spin-weighted
+spherical harmonics $\Ytwo_{lm}$ of weight -2.  Although the
+$(l,m)=(2,2)$ mode dominates the NINJA-2 project encourages, although
+does not require, the inclusion of higher-order modes.  We chose to
+restrict attention to non-spinning waveforms and waveforms with spins
+aligned or anti-aligned with the orbital angular momentum.  Systems
+where the component spins are at other angles to the angular momentum
+exhibit precession, which complicates the waveform generation, the
+hybridization, and the data analysis significantly.  There are
+sufficient open questions regarding these restricted cases to make
+this analysis interesting, without adding these additional
+complications.  However, we plan to include precessing waveforms in
+a forthcoming NINJA-3.
 
-A total of 60 waveforms from 8 groups were contributed, these are
-summarized in tables ~\ref{tab:ninja2_bam}, \ref{tab:ninja2_fau},
-\ref{tab:ninja2_gatech}, \ref{tab:ninja2_lean},
+A total of 60 waveforms from 8 groups were contributed to NINJA-2.
+These are summarized in tables ~\ref{tab:ninja2_bam},
+\ref{tab:ninja2_fau}, \ref{tab:ninja2_gatech}, \ref{tab:ninja2_lean},
 \ref{tab:ninja2_llama}, \ref{tab:ninja2_rit}, \ref{tab:ninja2_spec},
 \ref{tab:ninja2_uiuc} and a map of the parameter values is shown in
 figure~\ref{f:ninja2_param_map}.
@@ -291,7 +298,6 @@ how many distinct waveforms with the specified parameters were submitted.}
 Each NR group verified that their waveforms met the minimum NINJA-2
 requirements before submission.  Once submitted, a series of checks
 were performed in order to validate the waveforms against each other.
-
 In the first stage the post-Newtonian expressions and codes were
 compared against each other and the literature.  This required several
 iterations, but resulted in a set of codes in various languages that
@@ -299,27 +305,18 @@ produce waveforms that all agree in both phase and amplitude.
 
 \subsection{Time-domain and frequency-domain checks}
 
-In the second stage the complete hybrid waveforms were examined.
-We first plotted the last 40 cycles of each waveform -- enough to
-include the full NR portion, the hybridization region, and some of the
-pN portion -- and looked for any anomalies such as those present in
-some of the NINJA-1 waveforms in figure~\ref{fig:NR-Reh22}.
-
-\iffalse
-  A few such
-features were indeed visible, spotting them in this way allowed them
-to be corrected.  One example is shown in figure (\Note{show the dq4
-waveform before and after, note this was due to a problem integrating
-psi4, and discuss this stage a little in the NR section of chapter
-3}).
-\fi
-
+In the second stage of validation, the complete hybrid waveforms were
+examined.  We first plotted the last 40 cycles of each waveform --
+enough to include the full NR portion, the hybridization region, and
+some of the pN portion -- and looked for any anomalies such as those
+present in some of the NINJA-1 waveforms in figure~\ref{fig:NR-Reh22}.
 The amplitudes of the Fourier transform of the complete waveforms were
 also plotted.  This analysis revealed unphysical features, primarily
-due to hybridization.  An example is shown in
+due to errors in the hybridization.  An example is shown in
 figure~\ref{f:ninja2_freq_hybrids}, which shows a visible ``kink'' in
 the waveform at the hybridization frequency.  This feature is no
-longer present in the waveform after the hybrid was reconstructed.
+longer present in the waveform after the hybrid was reconstructed
+correctly.
 
 \begin{figure}
   \includegraphics[width=0.5\linewidth]{figures/ninja2/BAM_D13smm85Nep_88_T1_hyb_n2_amp_old}
@@ -336,7 +333,14 @@ there is a small visible ``kink'' in the waveform at around 100 Hz.
 The waveform on the top right has been re-hybridized and
 there is no longer a visible kink.  On the bottom, the same waveform
 before and after rehybridization, zoomed into the region in question.
-This feature did not show up in the time domain view of the waveform.}
+This feature did not show up in the time domain view of the waveform.
+Recall that the in the post-Newtonian waveform Eq.~\ref{spa_waveform}
+the amplitude evolved as $f^{-7/6}$.  This can be seen here as a
+straight line (on the log scale) that extends up to $\approx
+400$ Hz.  Above this point the slope changes as the system transitions
+to merger.  The power then drops and approaches a constant frequency
+as the system rings down.  
+}
 \end{figure}%
 
 
@@ -349,8 +353,8 @@ in equation~\ref{eq:OverlapDefinition}  using the initial LIGO noise
 curve.  The waveforms were grouped into sets with identical
 parameters.  For each set one waveform was chosen as the reference and
 the overlap with all the other waveforms was calculated over a range of
-masses, optimizing over the unknown coalescence time and phase as
-usual.  This process was then repeated, taking each of the other
+masses, optimizing over the unknown coalescence time and phase. 
+This process was then repeated, taking each of the other
 waveforms as the reference in turn.
 
 There is an important subtlety involved in calculating these overlaps.
@@ -358,22 +362,26 @@ Recall from section~\ref{sec:ihope_match_filter} that the output of
 the matched filter is a time series from which the point with the
 largest value is chosen in order to maximize over time.  When
 comparing two very similar waveforms, such as two numeric simulations
-of the same system, the overlap function becomes very sharply peaked.
-It is therefore imperative that the sample rate used in calculating 
-the overlap be large enough to find the true maximum.
+of the same system, the overlap function becomes very sharply peaked
+in time.  It is therefore imperative that the sample rate used in
+calculating the overlap be large enough to find the true maximum.
 
 This issue is demonstrated in figure~\ref{f:overlap_sample_frequency}.
 This figure shows the overlap function resulting from the comparison
 of two equal-mass, non-spinning waveforms sampled at four different
-rates.  At 40906 Hz, the sample rate used within the LIGO pipeline,
-the peak of the function is missed and the overlap is underestimated.
-The consequence of this is illustrated in
+rates.  At 4096 Hz the peak of the function is missed and the overlap
+is underestimated.  The consequence of this is illustrated in
 figure~\ref{f:overlap_wiggles} which shows that the overlap as a
-function of mass exhibits oscillations.  The mass determines the length
-of the waveform, as this length changes the waveforms slide with
-respect to the grid of sample points, and the overlap function traces
-out this beating.  Consequently, all overlaps in this chapter were
-calculated at 32768 Hz.
+function of mass exhibits oscillations.  The mass determines the
+length of the waveform, as this length changes the waveforms slide
+with respect to the grid of sample points, and the overlap function
+traces out this beating.  Consequently, all overlaps in this chapter
+were calculated at 32768 Hz.  The LIGO/Virgo matched filter searches
+operate on data at 4096 Hz, however this issue is not a problem in
+these searches for reasons that can be seen in these two images.  The
+loss of overlap by undersampling is no larger than 0.2\%.  In
+constructing the template bank (Sec.~\ref{sec:bank}) we have already 
+incurred a potential loss of 3\%, this effect is therefore negligible.
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/ninja2/overlap_time_series}
@@ -387,7 +395,6 @@ comparisons, where we are interested in differences to one part in
 $10^{-5}$.
 }
 \end{figure}%
-
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/ninja2/resolutions}
@@ -407,8 +414,32 @@ waveforms.  These are shown in figure~\ref{f:pn_overlaps}.  Overlaps
 between hybrid waveforms constructed using different pN approximants
 will not agree better than the values presented here at low mass,
 where the pN portion of the waveform extends through the most
-sensitive portion of the LIGO band.
+sensitive portion of the LIGO band.  A sample set of overlaps,
+comparing all equal-mass, non-spinning waveforms submissions is shown
+in figure~\ref{f:ninja2_overlap_test}.  At the high-mass end, where
+the numeric portion of the waveform dominates the overlap, the
+overlaps approach 1.   Since all these waveforms model the same
+physical system, this is the expected behavior.  This is nevertheless
+a significant result, as the waveforms were produced with different
+codes.  At the low-mass end, where the overlap is dominated by the
+post-Newtonian portions of the waveform, the behavior is qualitatively
+as expected from figure~\ref{f:pn_overlaps}.  Although some of the
+overlaps, such as between the SpEC and BAM T1 waveforms, are notably
+lower than would be expected based on pN considerations alone.  This
+is because different submissions hybridize at different frequencies,
+so in some cases there is a loss in overlap due to comparing pN
+waveforms against the hybridization.
 
+This is more pronounced in the region of $\approx 20 \msun$ where all
+the overlaps drop, some more significantly than others.  This is the
+region where the hybridization is passing through the sensitive band.
+The goal of hybridization is to smoothly interpolate between the pN
+and NR waveforms, and in cases where the pN and NR separately agree we
+would expect this agreement to extend through the hybridization
+region.  We see here, however, that this is not the case.  Different
+choices of hybridization methods and parameters, as well as the
+frequencies over which the hybridization is performed, can lead to
+waveforms with significant mismatches.  
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/ninja2/pn_figure03}
@@ -420,31 +451,6 @@ these were used in the majority of the hybrid waveforms.
 }
 \end{figure}%
 
-A sample set of overlaps, comparing all equal-mass, non-spinning
-waveforms submissions is shown in figure~\ref{f:ninja2_overlap_test}.
-
-At the high-mass end, where the numeric portion of the waveform
-dominates the overlap, the overlaps approach 1.  This is as expected,
-since all these waveforms model the same physical system.  This result
-is nonetheless important, however, as the waveforms were produced with
-different codes.
-
-At the low-mass end, where the overlap is dominated by the
-post-Newtonian portions of the waveform, the behavior is qualitatively
-as expected from figure~\ref{f:pn_overlaps}.  Although some of the
-overlaps, such as between the SpEC and BAM T1 waveforms, are notably
-lower than would be expected based on pN considerations alone.  
-
-In the region of $\approx 20 \msun$ all the overlaps drop, some more
-significantly than others.  This is the region where the hybridization
-is passing through the sensitive band.  The goal of
-hybridization is to smoothly interpolate between the pN and NR
-waveforms, and in cases where the pN and NR separately agree we would
-expect this agreement to extend through the hybridization region.  We
-see here, however, that this is not the case.  Different choices of
-hybridization methods and parameters, as well as the frequencies over
-which the hybridization is performed, can lead to waveforms with
-significant mismatches.  
 
 These initial results prompted a number of the NR groups to revise
 their hybridization procedures, after which the overlaps were more in
@@ -516,29 +522,25 @@ the overlap.}
 At the high-mass end the overlap is dominated by NR data, and as in
 figure~\ref{f:ninja2_overlap_test} the overlaps are high without
 needing to move off the signal mass.  At the low-mass end the same
-result would be expected in a pure pN/pN comparison although there
-is enough of the hybridization in-band to reduce the overlaps.  However,
+result would be expected in a pure pN/pN comparison although there is
+enough of the hybridization in-band to reduce the overlaps.  However,
 changing the mass introduces a phase difference that accumulates over
 all the cycles in-band, and so higher overlaps can not be achieved.
 The result is optimal mass values close to the correct mass value, but
-with a low overlap.
-
-In the middle region these factors compete.  At higher masses the
-overlap is reduced less by changing the mass and so the recovered
-value can stray further from the injected value.  However as the
-hybridization passes out of band this adjustment is no longer needed.
-
-The same general behavior can be seen in comparisons between 
-non-spinning, unequal-mass ($q=2$) waveforms, shown in
-figure~\ref{f:max_over_m_q2}.  However, the overlaps drop slightly 
+with a low overlap.  In the middle region these factors compete.  At
+higher masses the overlap is reduced less by changing the mass and so
+the recovered value can stray further from the injected value.
+However as the hybridization passes out of band this adjustment is no
+longer needed.  The same general behavior can be seen in comparisons
+between non-spinning, unequal-mass ($q=2$) waveforms, shown in
+figure~\ref{f:max_over_m_q2}.  However, the overlaps drop slightly
 above $\approx 60 \msun$, suggesting a disagreement in the NR portion
-of the waveforms.
-
-The comparison between two equal-mass, spinning ($s_{1z} = s_{2z} =
-0.4$) waveforms is shown in figure~\ref{f:max_over_m_z4}.  Here there
-is a bias in recovered mass at the high-mass end, although the
-overlaps are high.  This could suggest a problem with the overall
-scaling of one of the waveforms, but more study is needed.
+of the waveforms.  The comparison between two equal-mass, spinning
+($s_{1z} = s_{2z} = 0.4$) waveforms is shown in
+figure~\ref{f:max_over_m_z4}.  Here there is a bias in recovered mass
+at the high-mass end, although the overlaps are high.  This could
+suggest a problem with the overall scaling of one of the waveforms,
+but more study is needed.
 
 
 \begin{figure}
@@ -551,10 +553,9 @@ hybridized with TaylorT4 taken as the templates.  Maximization is done
 over the mass of the template, as well as over time and phase.  The
 x-axis gives the mass of the signal, the y-axis gives the fractional
 difference between the injected mass and the mass of the template that
-maximizes the overlap.  The low overlaps above $60 \msun$ may be due
+maximizes the overlap.  The low overlaps above $60 \msun$ are due
 to differences in the NR waveforms.}
 \end{figure}%
-
 
 
 \begin{figure}
@@ -568,9 +569,9 @@ as the template.  Maximization is done over the mass of the template,
 as well as over time and phase.  The x-axis gives the mass of the
 signal, the y-axis gives the fractional difference between the
 injected mass and the mass of the template that maximizes the overlap.
-The low overlaps above $60 \msun$ may be due to differences in the NR
+The low overlaps above $60 \msun$ are due to differences in the NR
 waveforms.  The reason for the systematic bias at the high-mass end is
-not clear.}
+under investogation.}
 \end{figure}%
 
 
@@ -581,23 +582,18 @@ project.  Although many groups have contributed many waveforms, these
 primarily cover only two lines  in the (mass ratio, $\chi$) plane,
 leaving large regions of parameter space unexplored.  We also do not
 consider precessing signals, which adds several dimensions to
-parameter space.  These issues will be further explored in NINJA-3.
-
-A major feature of NINJA-2, not present in NINJA-1, is the validation 
-and comparisons of the submissions discussed in this chapter.  These 
+parameter space.  These issues will be further explored in NINJA-3.  A
+major feature of NINJA-2, not present in NINJA-1, is the validation
+and comparisons of the submissions discussed in this chapter.  These
 efforts lead to dramatic improvements in the quality of the waveforms,
-which in turn will enable data analysts to draw more quantitative 
+which in turn will enable data analysts to draw more quantitative
 conclusions on the behavior of their pipelines with respect to the
-underlying physics.
-
-There is evidence that hybridization choices and methods effect both
-overlaps and parameter estimation.   The degree to which these effects
-will bias searches is a question we hope NINJA-2 will be able to
-answer.
-
-In the next chapter we discuss the construction of data sets using
-these waveforms, and present preliminary results from the CBC low-
-high-mass pipelines.
+underlying physics.  There is evidence that hybridization choices and
+methods effect both overlaps and parameter estimation.   The degree to
+which these effects will bias searches is a question we hope NINJA-2
+will be able to answer.  In the next chapter we discuss the
+construction of data sets using these waveforms, and present
+preliminary results from the CBC low- high-mass pipelines.
 
 
 %%%%%%%%%%%%%%%%
@@ -616,20 +612,17 @@ Overlap of time-domain pN waveforms, $q=1$ $S_{z1} = S_{z2} = 0$}
 \fi
 
 \begin{figure}
-  \includegraphics[width=\linewidth]{figures/ninja2/figure_1_-0d5_01.png}
-  \caption[Overlap plots for $q=1$ $S_{z1} = S_{z2} = -0.5$]{
+  \includegraphics[width=0.5\linewidth]{figures/ninja2/figure_1_-0d5_01.png}
+  \includegraphics[width=0.5\linewidth]{figures/ninja2/figure_1_-0d4_01.png} \\
+  \includegraphics[width=0.5\linewidth]{figures/ninja2/figure_1_-0d2_01.png}
+  \includegraphics[width=0.5\linewidth]{figures/ninja2/figure_1_0d8_01.png}
+  \caption[Multiple NINJA-2 overlap plots]{
   \label{f:figure_1_-0d5}
-Overlap plots for $q=1$ $S_{z1} = S_{z2} = -0.5$}
+Top left: overlap plot for $q=1$ $S_{z1} = S_{z2} = -0.5$
+Top right: overlap plot for $q=1$ $S_{z1} = S_{z2} = -0.4$
+Bottom left overlap plot for $q=1$ $S_{z1} = S_{z2} = -0.2$
+Bottom right: overlap plot for $q=1$ $S_{z1} = S_{z2} = 0.8$}
 \end{figure}%
-
-
-\begin{figure}
-  \includegraphics[width=\linewidth]{figures/ninja2/figure_1_-0d4_01.png}
-  \caption[Overlap plots for $q=1$ $S_{z1} = S_{z2} = -0.4$]{
-  \label{f:figure_1_-0d4}
-Overlap plots for $q=1$ $S_{z1} = S_{z2} = -0.4$}
-\end{figure}%
-
 
 \begin{figure}
   \includegraphics[width=0.5\linewidth]{figures/ninja2/figure_3_0_02.png} 
@@ -662,13 +655,6 @@ Overlap plots for $q=1$ $S_{z1} = S_{z2} = -0.25$}
 \end{figure}%
 
 
-\begin{figure}
-  \includegraphics[width=\linewidth]{figures/ninja2/figure_1_-0d2_01.png}
-  \caption[Overlap plots for $q=1$ $S_{z1} = S_{z2} = -0.2$]{
-  \label{f:figure_1_-0d2}
-Overlap plots for $q=1$ $S_{z1} = S_{z2} = -0.2$}
-\end{figure}%
-
 
 \begin{figure}
   \includegraphics[width=0.5\linewidth]{figures/ninja2/figure_2_0_04.png} 
@@ -681,13 +667,6 @@ Overlap plots for $q=1$ $S_{z1} = S_{z2} = -0.2$}
 Overlap plots for $q=2$ $S_{z1} = S_{z2} = 0$}
 \end{figure}%
 
-
-\begin{figure}
-  \includegraphics[width=\linewidth]{figures/ninja2/figure_1_0d8_01.png}
-  \caption[Overlap plots for $q=1$ $S_{z1} = S_{z2} = 0.8$]{
-  \label{f:figure_1_0d8}
-Overlap plots for $q=1$ $S_{z1} = S_{z2} = 0.8$}
-\end{figure}%
 
 
 \begin{figure}
@@ -703,20 +682,19 @@ Overlap plots for $q=1$ $S_{z1} = S_{z2} = 0$}
 
 
 \begin{figure}
-  \includegraphics[width=\linewidth]{figures/ninja2/figure_1_0d5_01.png}
-  \caption[Overlap plots for $q=1$ $S_{z1} = S_{z2} = 0.5$]{
+  \includegraphics[width=0.5\linewidth]{figures/ninja2/figure_1_0d5_01.png}
+  \includegraphics[width=0.5\linewidth]{figures/ninja2/figure_1_0d25_01.png} \\
+  \includegraphics[width=0.5\linewidth]{figures/ninja2/figure_1_-0d75_01.png}
+  \includegraphics[width=0.5\linewidth]{figures/ninja2/figure_1_-0d85_01.png} \\
+  \includegraphics[width=0.5\linewidth]{figures/ninja2/figure_1_0d75_01.png}
+  \caption[Multiple NINJA-2 overlap plots]{
   \label{f:figure_1_0d5}
-Overlap plots for $q=1$ $S_{z1} = S_{z2} = 0.5$}
+Top left: overlap plot for $q=1$ $S_{z1} = S_{z2} = 0.5$
+Top right: overlap plot for $q=1$ $S_{z1} = S_{z2} = 0.25$
+Middle left: overlap plot for $q=1$ $S_{z1} = S_{z2} = -0.75$
+Middle right: overlap plot for $q=1$ $S_{z1} = S_{z2} = -0.85$
+Bottom left: overlap plot for $q=1$ $S_{z1} = S_{z2} = 0.75$}
 \end{figure}%
-
-
-\begin{figure}
-  \includegraphics[width=\linewidth]{figures/ninja2/figure_1_0d25_01.png}
-  \caption[Overlap plots for $q=1$ $S_{z1} = S_{z2} = 0.25$]{
-  \label{f:figure_1_0d25}
-Overlap plots for $q=1$ $S_{z1} = S_{z2} = 0.25$}
-\end{figure}%
-
 
 \begin{figure}
   \includegraphics[width=0.5\linewidth]{figures/ninja2/figure_1_0d4_03.png} 
@@ -730,22 +708,6 @@ Overlap plots for $q=1$ $S_{z1} = S_{z2} = 0.4$}
 
 
 \begin{figure}
-  \includegraphics[width=\linewidth]{figures/ninja2/figure_1_-0d75_01.png}
-  \caption[Overlap plots for $q=1$ $S_{z1} = S_{z2} = -0.75$]{
-  \label{f:figure_1_-0d75}
-Overlap plots for $q=1$ $S_{z1} = S_{z2} = -0.75$}
-\end{figure}%
-
-
-\begin{figure}
-  \includegraphics[width=\linewidth]{figures/ninja2/figure_1_-0d85_01.png}
-  \caption[Overlap plots for $q=1$ $S_{z1} = S_{z2} = -0.85$]{
-  \label{f:figure_1_-0d85}
-Overlap plots for $q=1$ $S_{z1} = S_{z2} = -0.85$}
-\end{figure}%
-
-
-\begin{figure}
   \includegraphics[width=0.5\linewidth]{figures/ninja2/figure_4_0_03.png} 
   \includegraphics[width=0.5\linewidth]{figures/ninja2/figure_4_0_06.png} \\
   \includegraphics[width=0.5\linewidth]{figures/ninja2/figure_4_0_09.png} 
@@ -753,14 +715,6 @@ Overlap plots for $q=1$ $S_{z1} = S_{z2} = -0.85$}
   \caption[Overlap plots for $q=4$ $S_{z1} = S_{z2} = 0$]{
   \label{f:figure_4_0}
 Overlap plots for $q=4$ $S_{z1} = S_{z2} = 0$}
-\end{figure}%
-
-
-\begin{figure}
-  \includegraphics[width=\linewidth]{figures/ninja2/figure_1_0d75_01.png}
-  \caption[Overlap plots for $q=1$ $S_{z1} = S_{z2} = 0.75$]{
-  \label{f:figure_1_0d75}
-Overlap plots for $q=1$ $S_{z1} = S_{z2} = 0.75$}
 \end{figure}%
 
 

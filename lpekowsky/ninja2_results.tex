@@ -1,9 +1,27 @@
 In the previous chapter we discussed the hybrid pN/NR waveforms
 contributed to the NINJA-2 project, along with the studies performed
 to validate them.  We now turn to the data analysis portion of
-NINJA-2, including the data sets and some preliminary results.
+NINJA-2, including the preliminary data sets and some results.  We
+will be focusing on two CBC searches:
+\begin{itemize}
+\item The S6 ``low mass'' search, which uses TaylorF2 waveforms taken to
+3.5 pN order and a bank spanning total masses from $2\msun$ to
+$25\msun$.
+\item The preliminary S6 ``high mass'' search, which uses EOBNR 
+waveforms and a bank spanning $25\msun$ to $100\msun$.  As of writing
+the tuning of this parameters in this search are ongoing.  The final
+version of this search will be the one used for NINJA-2.
+\end{itemize}
 
-\section{Construction of the NINJA-2 data set}
+\section{Construction of the preliminary NINJA-2 data set}
+
+Thus far the NINJA-2 data sets have been used to test the codes used
+to construct these sets and to run preliminary sanity checks.  The
+full run of NINJA-2 will use real detector data from S5 and VSR2.  As
+we have noted in chapter~\ref{ch:search}, real data contains
+non-Gaussian features that can impact searches.  These features were
+not captured in NINJA-1, but their inclusion is essential in order to
+derive realistic results.
 
 In broad terms the plans for the NINJA-2 data sets follow those for
 NINJA-1 (ch.~\ref{ch:ninja1}).  Simulated Gaussian noise was generated
@@ -16,9 +34,15 @@ details of this process in order to correct shortcomings in NINJA-1.
 
 The NINJA-2 data was sampled at 16384 Hz rather than the 4096 Hz used
 by NINJA-1.  This was done because investigations showed that there is
-power above 4096 Hz in the waveforms, which would get aliased down to 
+power above 4096 Hz in the waveforms, which would get aliased down to
 lower frequencies if the sample rate is too low.  This problem is
-illustrated in figure~\ref{f:ninja2_aliasing}.
+illustrated in figure~\ref{f:ninja2_aliasing}.  Note that this is a
+different issue from the one that motivated performing the waveform
+overlaps at 32768 Hz, discussed in
+section~\ref{ssec:ninja2_overlap_comparisons}.  The issue there was
+that undersampling could miss the maximum of the overlap function.
+The issue here is that undersampling can distort the end of the
+waveform due to aliasing.
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/ninja2_results/ninja2_aliasing}
@@ -29,14 +53,7 @@ sampling rates.  At a sample rate of 4096 Hz the late portion of the
 waveform are distorted due to aliasing of power to lower frequencies.
 }
 \end{figure}%
-
-Note that this is a different issue from the one that motivated
-performing the waveform overlaps at 32768 Hz, discussed in
-section~\ref{ssec:ninja2_overlap_comparisons}.  The issue there was
-that undersampling could miss the maximum of the overlap function.
-The issue here is that undersampling can distort the end of the
-waveform.
-
+%
 NINJA-1 consisted of only 127 injections in one day of data, which
 severely limited the ability to draw statistical conclusions on the
 behavior of the pipelines.  To correct this in NINJA-2 we extended the
@@ -59,19 +76,18 @@ falls as the reciprocal of the network SNR (uniform in
 $\log(\mathrm{SNR})$) in order to better model the expected
 astrophysical distribution.
 
-The mass and waveform selection were also done slightly differently in
-NINJA-2.  For each injection a mass was first selected uniformly over
-the specified range; for the full 2-month run this range is from
-$10-350 \msun$.  Then waveforms were selected at random until one was
-found that could be injected at the chosen mass such that the waveform
-turns on below 35 Hz.  In practice this condition never caused any
-waveform to be rejected, as all submitted waveforms were long enough
-to be injected down to the lowest mass in the range.  The mass ratio
-and spins are intrinsic to the waveforms, so choosing a submission
-amounts to a choice of these parameters as well. 
-
-As in NINJA-1 the sky location and inclination were chosen uniformly
-at random.
+The mass and waveform selection were also performed slightly
+differently in NINJA-2.  For each injection a mass was first selected
+uniformly over the specified range; for the full 2-month run this
+range is from $10-350 \msun$.  Then waveforms were selected at random
+until one was found that could be injected at the chosen mass such
+that the waveform turns on below 35 Hz.  In practice this condition
+never caused any waveform to be rejected, as all submitted waveforms
+were long enough to be injected down to the lowest mass in the range.
+The mass ratio and spins are intrinsic to the waveforms, so choosing a
+submission amounts to a choice of these parameters as well.  As in
+NINJA-1 the sky location and inclination were chosen uniformly at
+random.
 
 Four NINJA-2 data sets were released:
 
@@ -103,7 +119,7 @@ LIGO-Virgo ``blind injection challenge'' (see
 section~\ref{sec:applications_dog}).  However, it was during this time
 that the validations discussed in the previous chapter were performed.
 It was also in this gap that studies discovered the need to move to
-16Hz sampling.   This quadrupled the size of the data and made the
+16 kHz sampling.   This quadrupled the size of the data and made the
 release of 3 separate mass ranges unfeasable.  Therefore a single set
 spanning two months and containing injections from $10 \msun - 350
 \msun$ was released on June 13, 2011.  Analysis on this set has begun
@@ -158,11 +174,9 @@ largely a testing and debugging exercise no effort was made to draw
 conclusions about the pipelines.  In particular, no runs were
 performed with a bank extended to unphysical $\eta$ or the other
 pipeline modifications suggested by the studies in
-chapter~\ref{ch:comparison} and tested in NINJA-1.
-
-The injection parameters were chosen as described above, the selected
-masses, spins and distances are shown in
-figure~\ref{f:ninja2_test_dataset}.
+chapter~\ref{ch:comparison} and tested in NINJA-1.  The injection
+parameters were chosen as described above, the selected masses, spins
+and distances are shown in figure~\ref{f:ninja2_test_dataset}.
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/ninja2_results/ninja2_test_dataset.png}
@@ -407,7 +421,7 @@ will return to this issue below.
   \label{f:high_mass_efficiencies}
 Efficiencies of the high-mass pipeline as a function of mass.  As
 can be seen in figure ~\ref{f:ninja2_cbc_results_high_second} the
-efficiencies decrease as mass increases.  However, the jaggedness in
+efficiencies decrease as mass increases.  However, the scatter in
 these plots indicates that there are not enough injections to draw
 definitive conclusions.
 }
@@ -421,7 +435,7 @@ of the high-mass pipeline as a function of the spin parameter $\chi$
 in figure~\ref{f:high_spin_efficiencies}.  There is a general trend
 suggesting that the efficiency increases with $\chi$, and in
 particular that the search performs worse on anti-aligned systems than
-aligned systems.  Again, the jaggedness of the plots makes it
+aligned systems.  Again, the scatter of the plots makes it
 impossible to draw definitive conclusions, this will be remedied in
 follow up studies with more injections.
 
@@ -515,7 +529,7 @@ systems with aligned spins than anti-aligned.
   \label{f:low_mass_efficiencies}
 Efficiencies of the low-mass pipeline as a function of mass.  As
 can be seen in figure~\ref{f:ninja2_cbc_results_low_second} the
-efficiencies decrease as mass increases.  However, the jaggedness in
+efficiencies decrease as mass increases.  However, the scatter in
 these plots indicates that there are not enough injections to draw
 definitive conclusions.
 }
@@ -678,5 +692,7 @@ consider a few possibilities to explain this, but as of this writing
 no explanation has been found.  It seems more likely to be a bug in
 the data set generation than in the analysis, as the latter has been
 much more extensively reviewed.  In either case, more study is needed.
+Once these issues are resolved we will proceed with the full runs
+using real detector data.
 
 
