@@ -13,7 +13,7 @@
 \def\Tb{\ensuremath{\mathrm{T_b}}}
 
 
-Once triggers have been obtained from the matched filter, re-weighted using the $\chi^2$ statistic, and vetted via coincidence test, they need to be evaluated for their statistical significance. In the low-mass CBC search we do this by computing a \ac{FAR} for each coincident trigger we obtain. This chapter details how that is done. We begin by reviewing properties of a Poisson distribution. Next, in section \ref{sec:coincidence_modelling}, we model the expected number of coincident triggers from a single template using the single-\ac{IFO} distribution of triggers. In section \ref{sec:using_time_slides} we show how time sliding data between detectors allows us to estimate a background in order to measure a \ac{FAR}. Section \ref{sec:multiple_templates} describes how to extend the time-slide method across the template space to compute a \emph{combined \ac{FAR}} for all triggers in a search. In section \ref{sec:alternate_cfar_method} we describe an alternate method to compute the combined \ac{FAR}. Finally, in section \ref{sec:far_slide_algorithm} we summarize the time-slide method into an algorithm that can be used for computing \acp{FAR} for a \ac{CBC} search.
+Once triggers have been obtained from the matched filter, re-weighted using the $\chi^2$ statistic, and vetted via coincidence test, they need to be evaluated for their statistical significance. In the low-mass CBC search we do this by computing a \ac{FAR} for each coincident trigger we obtain. This chapter details how that is done. We begin by reviewing properties of a Poisson distribution. Next, in section \ref{sec:coincidence_modelling}, we model the expected number of coincident triggers from a single template using the single-\ac{IFO} distribution of triggers. In section \ref{sec:using_time_slides} we show how time sliding data between detectors allows us to estimate a background in order to measure a \ac{FAR}. Section \ref{sec:multiple_templates} describes how to extend the time-slide method across the template space to compute a \emph{combined \ac{FAR}} for all triggers in a search. In section \ref{sec:alternate_cfar_method} we describe an alternate method to compute the combined \ac{FAR}. Finally, in section \ref{sec:far_slide_algorithm} we summarize the time-slide method in an algorithm that can be used for computing \acp{FAR} for a \ac{CBC} search.
 
 \section{Poisson Process}
 \label{sec:poisson}
@@ -182,7 +182,8 @@ where $\d\Omega$ is the solid angle. The factor $(2.26)^{-3}$ comes from approxi
 \label{eqn:DtoRhoGW}
 D = \frac{\sigma_{\mathrm{GW}}}{\rho}
 \end{equation}
-(The need for the ``$\mathrm{GW}$" subscript will become clear later.) Plugging this into the above, and setting $\rho^\dagger / \sqrt{N_d} = \sigma_{\mathrm{GW}} / D^\dagger$ we have:
+%(The need for the ``$\mathrm{GW}$" subscript will become clear below.) Plugging this into the above, and setting $\rho^\dagger / \sqrt{N_d} = \sigma_{\mathrm{GW}} / D^\dagger$ we have:
+Plugging this into the above, and setting $\rho^\dagger / \sqrt{N_d} = \sigma_{\mathrm{GW}} / D^\dagger$ we have:
 \begin{equation}
 (2.26)^{-3} \int_{0}^{D} D' \d D' \int d\Omega = \frac{4\pi}{(2.26)^3} \int_{\rho^\dagger/\sqrt{N_d}}^{\infty} \frac{\sigma_{\mathrm{GW}}^3 \d\rho}{\rho^4}
 \end{equation}
@@ -198,20 +199,31 @@ which gives:
 \end{equation}
 (Note that we only have one $\sigma_{\mathrm{GW}}^3$ in the equation. This is because we assumed that all the detectors had the same sensitivity. If we had not made this assumption, the $\sqrt{N_d}\,\sigma_{\mathrm{GW}}^3$ term would instead be $\sqrt{ \sum_i^{N_d} \sigma_{i,\mathrm{GW}}^6 }$.) Adding this term to equation \ref{eqn:N_rate_general} and dividing by $\Tf$ gives the overall rate-density $\widetilde{\RP}_{\mathrm{all}}(\rho^\dagger)$.
 
-As an example, consider two arbitrary detectors, $\varH$ and $\varL$, that are roughly co-located and have similar sensitivities. Let us assume that each \ac{IFO} has only one non-gravitational wave source, which we call ``noise", and that this noise is Gaussian distributed in $\rho$ with some constant rate-density in time:
+As an example, consider two arbitrary detectors, $\varH$ and $\varL$, that are roughly co-located and have similar sensitivities. Let us assume that each \ac{IFO} has only one non-gravitational wave source, which we call ``noise;" let the \ac{PDF} of the noise in each detector be given by:
 \begin{equation}
-\Exptd\left(n_{i,\mathrm{noise}}(\rho_i,t_i)\right)\d t_i \d\rho_i = \frac{\rsrc_{i,\mathrm{noise}}}{\sqrt{2\pi} \sigma_{i,\mathrm{noise}}} e^{-\rho_i^2 / 2\sigma_{i,\mathrm{noise}}^2} \d t_i \d\rho_i
+P_{i,j}(k|\rho_i,t_i) = \rsrc_{i,\mathrm{noise}}\Phi(\rho_{i}^2, \sigma_{i,\mathrm{noise}})
 \end{equation}
-Given the large tail in the \ac{SNR} distribution, as seen in chapter \ref{ch:pipeline_principles}, it may seem absurd to make this assumption. However, if we use \emph{New \ac{SNR}} for our ranking statistic (which we still label $\rho$) instead of \emph{\ac{SNR}}, then, as seen in Figure \ref{fig:new_snr_dist} in Chapter \ref{ch:pipeline_principles}, this is not such a bad assumption, especially if the template we are considering is from a binary neutron star. The caveat is that the $\sigma_{i,\mathrm{noise}}$ in the above equation is not the same as the $\sigma_{\mathrm{GW}}$ in equations \ref{eqn:DtoRhoGW}--\ref{eqn:expectedN_GW}. Although $\sigma_{\mathrm{GW}}$ is also the variance of the matched filter in Gaussian noise, that noise is for an idealized detector that has a stationary Gaussian distribution in \ac{SNR}. The noise we are considering here comes from the actual detectors; as such, $\sigma_{i,\mathrm{noise}}$ can only be determined by fitting a Gaussian to the New \ac{SNR} distribution of the detector data. How, then, do we determine $\sigma_{\mathrm{GW}}$? Contrary to noise, we will assume that gravitational waves match the template well, resulting in $\chi^2 \approx 1$. In this case, New \ac{SNR} reduces to \ac{SNR}, and so we can use equation \ref{eqn:DtoRhoGW} to relate $D$ to $\rho$. One other caveat is that we currently do not use a New \ac{SNR} cut as we do in \ac{SNR}. Due to the cut in \ac{SNR}, the distribution in Figure \ref{fig:new_snr_dist} ceases to be Gaussian and falls off at low New \ac{SNR}. However, for simplicity, we assume the same cut in New SNR here, and set $a = 5.5$.
-
+where $\sigma_{i,\mathrm{noise}}^2$ is the variance of the noise and $\Phi$ is some distribution in $\rho_i^2$.
+%, and that this noise is Gaussian distributed in $\rho$ with some constant rate-density in time:
+%\begin{equation}
+%\Exptd\left(n_{i,\mathrm{noise}}(\rho_i,t_i)\right)\d t_i \d\rho_i = \frac{\rsrc_{i,\mathrm{noise}}}{\sqrt{2\pi} \sigma_{i,\mathrm{noise}}} e^{-\rho_i^2 / 2\sigma_{i,\mathrm{noise}}^2} \d t_i \d\rho_i
+%\end{equation}
+%Given the large tail in the \ac{SNR} distribution, as seen in chapter \ref{ch:pipeline_principles}, it may seem absurd to make this assumption. However, if we use \emph{New \ac{SNR}} for our ranking statistic (which we still label $\rho$) instead of \emph{\ac{SNR}}, then, as seen in Figure \ref{fig:new_snr_dist} in Chapter \ref{ch:pipeline_principles}, this is not such a bad assumption, especially if the template we are considering is from a binary neutron star. The caveat is that the $\sigma_{i,\mathrm{noise}}$ in the above equation is not the same as the $\sigma_{\mathrm{GW}}$ in equations \ref{eqn:DtoRhoGW}--\ref{eqn:expectedN_GW}. Although $\sigma_{\mathrm{GW}}$ is also the variance of the matched filter in Gaussian noise, that noise is for an idealized detector that has a stationary Gaussian distribution in \ac{SNR}. The noise we are considering here comes from the actual detectors; as such, $\sigma_{i,\mathrm{noise}}$ can only be determined by fitting a Gaussian to the New \ac{SNR} distribution of the detector data. How, then, do we determine $\sigma_{\mathrm{GW}}$? Contrary to noise, we will assume that gravitational waves match the template well, resulting in $\chi^2 \approx 1$. In this case, New \ac{SNR} reduces to \ac{SNR}, and so we can use equation \ref{eqn:DtoRhoGW} to relate $D$ to $\rho$. One other caveat is that we currently do not use a New \ac{SNR} cut as we do in \ac{SNR}. Due to the cut in \ac{SNR}, the distribution in Figure \ref{fig:new_snr_dist} ceases to be Gaussian and falls off at low New \ac{SNR}. However, for simplicity, we assume the same cut in New SNR here, and set $a = 5.5$.
 With these assumptions in mind, the rate density of coincident triggers from all sources would be:
 
 \begin{eqnarray}
 \label{eqn:exampleSources}
 \lefteqn{ \tR_{\mathrm{all}} \left(\rho^\dagger \leq \sqrt{\rho_\varH^2 + \rho_\varL^2} \right) } \nonumber \\
-& = & \frac{\coincT_{\varH\varL}(2\Tf - \coincT_{\varH\varL})}{\Tf} \frac{\rsrc_{\varH,\mathrm{noise}}\rsrc_{\varL,\mathrm{noise}}}{2\pi \sigma_{\varH,\mathrm{noise}} \sigma_{\varL,\mathrm{noise}}} \int_{\mathcal{S}} e^{-(\rho_{\varH}^2 / 2\sigma_{\varH,\mathrm{noise}}^2 + \rho_{\varL}^2 / 2\sigma_{\varL,\mathrm{noise}}^2 )} \d \rho_{\varH} \d \rho_{\varL} \nonumber \\
+& = & \frac{\coincT_{\varH\varL}(2\Tf - \coincT_{\varH\varL})}{\Tf} \rsrc_{\varH,\mathrm{noise}}\rsrc_{\varL,\mathrm{noise}} \int_{\mathcal{S}} \Phi(\rho_{\varH}^2, \sigma_{\varH,\mathrm{noise}})\Phi(\rho_{\varL}^2,\sigma_{\varL,\mathrm{noise}}) \d \rho_{\varH} \d \rho_{\varL} \nonumber \\
  & + & \frac{4}{3} \pi \frac{\sqrt{2} \sigma_{\mathrm{GW}}^3}{(2.26)^3 (\rho^\dagger / \sqrt{2})^3} \rsrc_{\mathrm{GW}}(\vec{\theta})
 \end{eqnarray}
+
+%\begin{eqnarray}
+%\label{eqn:exampleSources}
+%\lefteqn{ \tR_{\mathrm{all}} \left(\rho^\dagger \leq \sqrt{\rho_\varH^2 + \rho_\varL^2} \right) } \nonumber \\
+%& = & \frac{\coincT_{\varH\varL}(2\Tf - \coincT_{\varH\varL})}{\Tf} \frac{\rsrc_{\varH,\mathrm{noise}}\rsrc_{\varL,\mathrm{noise}}}{2\pi \sigma_{\varH,\mathrm{noise}} \sigma_{\varL,\mathrm{noise}}} \int_{\mathcal{S}} e^{-(\rho_{\varH}^2 / 2\sigma_{\varH,\mathrm{noise}}^2 + \rho_{\varL}^2 / 2\sigma_{\varL,\mathrm{noise}}^2 )} \d \rho_{\varH} \d \rho_{\varL} \nonumber \\
+% & + & \frac{4}{3} \pi \frac{\sqrt{2} \sigma_{\mathrm{GW}}^3}{(2.26)^3 (\rho^\dagger / \sqrt{2})^3} \rsrc_{\mathrm{GW}}(\vec{\theta})
+%\end{eqnarray}
 
 \begin{figure}[p]
 \label{fig:snr_time_integral}
@@ -256,15 +268,25 @@ For example, in our two-detector case, the expected number of coincidences becom
 where:
 \begin{eqnarray}
 \label{eqn:HnoiseLnoiseIntegral}
-\mathcal{I}_{\mathrm{H,noise; L,noise}} & = & \frac{1}{2\pi \sigma_{\varH,\mathrm{noise}} \sigma_{\varL,\mathrm{noise}}} \int_{\mathcal{S}} e^{-(\rho_{\varH}^2 / 2\sigma_{\varH,\mathrm{noise}}^2 + \rho_{\varL}^2 / 2\sigma_{\varL,\mathrm{noise}}^2 )} \d \rho_{\varH} \d \rho_{\varL} \\
+\mathcal{I}_{\mathrm{H,noise; L,noise}} & = & \int_{\mathcal{S}} \Phi(\rho_{\varH}^2, \sigma_{\varH,\mathrm{noise}})\Phi(\rho_{\varL}^2, \sigma_{\varL,\mathrm{noise}} ) \d \rho_{\varH} \d \rho_{\varL} \\
 \label{eqn:HnoiseLgwIntegral}
-\mathcal{I}_{\mathrm{H,noise; L,GW}} & = & \frac{4\pi \sigma_{\mathrm{GW}}^3}{(2.26)^3 \sqrt{2\pi} \sigma_{\varH,\mathrm{noise}}} \int_{\mathcal{S}} \rho_\varL^{-4} e^{-\rho_{\varH}^2 / 2\sigma_{\varH,\mathrm{noise}}^2} \d \rho_\varH \d \rho_\varL \\
+\mathcal{I}_{\mathrm{H,noise; L,GW}} & = & \frac{4\pi \sigma_{\mathrm{GW}}^3}{(2.26)^3} \int_{\mathcal{S}} \rho_\varL^{-4} \Phi(\rho_{\varH}^2, \sigma_{\varH,\mathrm{noise}}) \d \rho_\varH \d \rho_\varL \\
 \label{eqn:HgwLnoiseIntegral}
-\mathcal{I}_{\mathrm{H,GW; L,noise}} & = & \frac{4\pi \sigma_{\mathrm{GW}}^3}{(2.26)^3 \sqrt{2\pi} \sigma_{\varL,\mathrm{noise}}} \int_{\mathcal{S}} \rho_\varH^{-4} e^{-\rho_{\varL}^2 / 2\sigma_{\varL,\mathrm{noise}}^2} \d \rho_\varH \d \rho_\varL \\
+\mathcal{I}_{\mathrm{H,GW; L,noise}} & = & \frac{4\pi \sigma_{\mathrm{GW}}^3}{(2.26)^3} \int_{\mathcal{S}} \rho_\varH^{-4} \Phi(\rho_{\varL}^2, \sigma_{\varL,\mathrm{noise}}) \d \rho_\varH \d \rho_\varL \\
 \label{eqn:HgwLgwIntegral}
 \mathcal{I}_{\mathrm{H,GW; L,GW}} & = & \left( \frac{4\pi \sigma_{\mathrm{GW}}^3}{(2.26)^3} \right)^2 \int_{\mathcal{S}} \rho_\varH^{-4} \rho_\varL^{-4} \d \rho_\varH \d \rho_\varL
 \end{eqnarray}
-(Of the four, the only integral that can be solved analytically in region $\mathcal{S}$ is the GW/GW term\footnote{Note that if we did not impose the \ac{SNR} cut-off at $a$ then the GW/GW integral would give infinity; i.e., we would expect an infinite number of events in the detector from gravitational waves! This is a result of the model we have chosen for \acp{GW}. If the limits of integration were $\rho = 0,\infty$, then, from equation \ref{eqn:DtoRhoGW}, we would be considering every source from here to infinity. By assuming that the distribution of sources is uniform throughout the universe (which we did by setting $\rsrc_{\mathrm{GW}}(\vec{\theta})$ to a constant), this means that if we look for an infinite distance, we will get an infinite number of sources --- a \ac{GW} version of Oblier's paradox \cite{obliers_paradox}. Of course, the real universe is not infinitely old; beyond $\sim 1\,\mathrm{Gpc}$ the number of \acp{CBC} begins to fall off \cite{rates_paper}. Further, we have assumed that the GW/GW term is independent of the noise. In practice, however, we do clustering, which couples these terms. Even if we had an ideal detector with stationary Gaussian noise in \ac{SNR}, below some \ac{SNR} the noise triggers would effectively cluster away all \ac{GW} events, even if the universe was infinitely old. We get around both of these difficulties by assuming that the \ac{SNR} cutoff is high enough that these effects do not affect our model (which, with $a=5.5$, is valid for both enhanced and advanced \ac{LIGO}.}, which is:
+%\begin{eqnarray}
+%\label{eqn:HnoiseLnoiseIntegral}
+%\mathcal{I}_{\mathrm{H,noise; L,noise}} & = & \frac{1}{2\pi \sigma_{\varH,\mathrm{noise}} \sigma_{\varL,\mathrm{noise}}} \int_{\mathcal{S}} e^{-(\rho_{\varH}^2 / 2\sigma_{\varH,\mathrm{noise}}^2 + \rho_{\varL}^2 / 2\sigma_{\varL,\mathrm{noise}}^2 )} \d \rho_{\varH} \d \rho_{\varL} \\
+%\label{eqn:HnoiseLgwIntegral}
+%\mathcal{I}_{\mathrm{H,noise; L,GW}} & = & \frac{4\pi \sigma_{\mathrm{GW}}^3}{(2.26)^3 \sqrt{2\pi} \sigma_{\varH,\mathrm{noise}}} \int_{\mathcal{S}} \rho_\varL^{-4} e^{-\rho_{\varH}^2 / 2\sigma_{\varH,\mathrm{noise}}^2} \d \rho_\varH \d \rho_\varL \\
+%\label{eqn:HgwLnoiseIntegral}
+%\mathcal{I}_{\mathrm{H,GW; L,noise}} & = & \frac{4\pi \sigma_{\mathrm{GW}}^3}{(2.26)^3 \sqrt{2\pi} \sigma_{\varL,\mathrm{noise}}} \int_{\mathcal{S}} \rho_\varH^{-4} e^{-\rho_{\varL}^2 / 2\sigma_{\varL,\mathrm{noise}}^2} \d \rho_\varH \d \rho_\varL \\
+%\label{eqn:HgwLgwIntegral}
+%\mathcal{I}_{\mathrm{H,GW; L,GW}} & = & \left( \frac{4\pi \sigma_{\mathrm{GW}}^3}{(2.26)^3} \right)^2 \int_{\mathcal{S}} \rho_\varH^{-4} \rho_\varL^{-4} \d \rho_\varH \d \rho_\varL
+%\end{eqnarray}
+We can solve the GW/GW integral\footnote{Note that if we did not impose the \ac{SNR} cut-off at $a$ then the GW/GW integral would give infinity; i.e., we would expect an infinite number of events in the detector from gravitational waves! This is a result of the model we have chosen for \acp{GW}. If the limits of integration were $\rho = 0,\infty$, then, from equation \ref{eqn:DtoRhoGW}, we would be considering every source from here to infinity. By assuming that the distribution of sources is uniform throughout the universe (which we did by setting $\rsrc_{\mathrm{GW}}(\vec{\theta})$ to a constant), this means that if we look for an infinite distance, we will get an infinite number of sources --- a \ac{GW} version of Oblier's paradox \cite{obliers_paradox}. Of course, the real universe is not infinitely old; beyond $\sim 1\,\mathrm{Gpc}$ the number of \acp{CBC} begins to fall off \cite{rates_paper}. Further, we have assumed that the GW/GW term is independent of the noise. In practice, however, we do clustering, which couples these terms. Even if we had an ideal detector with stationary Gaussian noise in \ac{SNR}, below some \ac{SNR} the noise triggers would effectively cluster away all \ac{GW} events, even if the universe was infinitely old. We get around both of these difficulties by assuming that the \ac{SNR} cutoff is high enough that these effects do not affect our model (which, with $a=5.5$, is valid for both enhanced and advanced \ac{LIGO}.}, getting:
 \begin{eqnarray}
 \lefteqn{ \mathcal{I}_{\mathrm{H,GW;L,GW}} = } \nonumber \\
  & & \left( \frac{4\pi \sigma_{\mathrm{GW}}^3}{(2.26)^3} \right)^2 \left( \frac{\rho^{\dagger2} - 2a^2}{18 \rho^{\dagger6} a \sqrt{\rho^{\dagger2} - a^2}} \left( 1 + \frac{\rho^{\dagger4}}{8a^2\left(\rho^{\dagger2} - a^2 \right)} \right) + \frac{1}{9a^3 \left(\rho^{\dagger2} - a^2 \right)^{3/2}} \right)
@@ -275,7 +297,7 @@ if $\rho^\dagger \geq \sqrt{2}a$;
 \end{equation}
 otherwise. The other three integrals can be solved numerically, however; see Chapter \ref{ch:future_developments} for details.)
 
-By de-coupling the gravitational waves in each detector, the GW/GW term is now much smaller than in the zero-lag case. For example, we can calculate the expected number of GW/GW coincidences for a $1.4/1.4\,\Msun$ binary neutron star system in each case. From \cite{rates paper}, the rate of \ac{BNS} coalescences in the universe is $\rsrc_{\mathrm{GW}} = 1 \times 10^{-6} \Mpc^{-3}\,\mathrm{yr}^{-1}$. During enhanced \ac{LIGO}, the $4\,\mathrm{km}$ \ac{LIGO} interferometers had a peak horizon distance to \ac{BNS} systems of $\sim40\Mpc$, which gives a sensitivity of $\sigma_{\mathrm{GW}} = \rho D_{\mathrm{horizon}} = 8 \times 40\Mpc = 320\Mpc$. Thus, if our two hypothetical detectors had the same sensitivity, then in one year we would expect:
+By de-coupling the gravitational waves in each detector, the GW/GW term is now much smaller than in the zero-lag case. For example, we can calculate the expected number of GW/GW coincidences for a $1.4/1.4\,\Msun$ binary neutron star system in each case. From table \ref{tab:bns_bbh_rates}, the rate of \ac{BNS} coalescences in the universe is $\rsrc_{\mathrm{GW}} = 1 \times 10^{-6} \Mpc^{-3}\,\mathrm{yr}^{-1}$. During enhanced \ac{LIGO}, the $4\,\mathrm{km}$ \ac{LIGO} interferometers had a peak horizon distance to \ac{BNS} systems of $\sim40\Mpc$, which gives a sensitivity of $\sigma_{\mathrm{GW}} = \rho D_{\mathrm{horizon}} = 8 \times 40\Mpc = 320\Mpc$. Thus, if our two hypothetical detectors had the same sensitivity, then in one year we would expect:
 
 \begin{eqnarray}
 \Exptd\left( N_{\mathrm{GW}} \left( \rho^{\dagger}  =  11.3, \Tf = 1 \,\mathrm{yr} \right)\right) & = & \frac{4}{3} \pi \frac{\sqrt{2} (320\Mpc)^3}{(2.26)^3 (11.3 / \sqrt{2})^3} (1 \times 10^{-6}\Mpc^{-3}\,\mathrm{yr^{-1}}) (1\,\mathrm{yr}) \nonumber \\
@@ -290,7 +312,7 @@ gravitational-wave events in zero-lag at a New \ac{SNR} of $8$ in each detector 
 \end{eqnarray}
 Here, we have a coincidence window of $\coincT_{\varH\varL} = 10\,\mathrm{ms} \approx 3.2\times10^{-10}\yr$. This is about the light-travel time between Hanford and Livingston.
 
-As can be seen in equation \ref{eqn:slideTerms}, doing the time slide has introduced mixing terms between \acs{GW} and noise. However, evaluating the integrals \ref{eqn:HnoiseLnoiseIntegral}--\ref{eqn:HgwLnoiseIntegral} requires fitting to data in order to determine $\sigma_{i,\mathrm{noise}}$ and $\rsrc_{i,\mathrm{noise}}$. Here we will assume the noise/GW terms are small relative to the noise/noise term, using the fact that number of expected gravitational waves in enhanced \ac{LIGO} is less than one as our reasoning. For a further discussion of the effect of these mixing terms, see Chapter \ref{ch:future_developments}.
+As can be seen in equation \ref{eqn:slideTerms}, doing the time slide has introduced mixing terms between \acs{GW} and noise. However, evaluating the integrals \ref{eqn:HnoiseLnoiseIntegral}--\ref{eqn:HgwLnoiseIntegral} requires knowledge of $\Phi$, and a fit to the data in order to determine $\sigma_{i,\mathrm{noise}}$ and $\rsrc_{i,\mathrm{noise}}$. Here we will assume the noise/GW terms are small relative to the noise/noise term, using the fact that number of expected gravitational waves in enhanced \ac{LIGO} is less than one as our reasoning. %For a further discussion of the effect of these mixing terms, see Chapter \ref{ch:future_developments}.
 
 Since the noise/noise term is the dominate source in a time-slide, we have:
 \begin{equation}

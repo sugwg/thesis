@@ -1,9 +1,9 @@
-Using General Relativity we were able to write down an expression for the strain induced in an interferometer from a passing gravitational wave. In this chapter we detail how to detect gravitational-wave signals from \acp{CBC} in the interferometer data in the presence of noise. We begin by deriving the \emph{matched filter} for a single template, which is the optimal filter if the detector noise is stationary and Gaussian. Next, we show how matched filtering can be done for a bank of templates in order to recover the parameters of a signal. This is followed by a discussion of the $\chi^2$ test, which can be used to suppress triggers from non-Gaussian transients that are present in real detector data. Finally, we detail how a coincidence test can be done across multiple detectors to further decrease the number of false noise triggers produced by a search.
+Using General Relativity we were able to write down an expression for the strain induced in an interferometer from a passing gravitational wave. In this chapter we detail how to detect gravitational-wave signals from \acp{CBC} in the interferometer data in the presence of noise. We begin by deriving the \emph{matched filter} for a single template, which is the optimal filter if the detector noise is stationary and Gaussian. Next, we show how matched filtering can be performed for a bank of templates in order to recover the parameters of a signal. This is followed by a discussion of the $\chi^2$ test, which can be used to suppress triggers from non-Gaussian transients that are present in real detector data. Finally, we describe how a coincidence test can be performed across multiple detectors to further decrease the number of false noise triggers produced by a search.
 
 \section{Detecting a Gravitational Wave Using a Matched Filter}
 \label{sec:matched_filter}
 
-Equation \ref{eqn:non_spin_template} gave the strain, $h(t)$, induced in an \ac{IFO} when a gravitational-wave from an inspiraling compact binary with non-spinning component masses passes through. The strain was a function of chirp mass, $\mchirp$, and symmetric-mass ratio, $\eta$. If we wish to search for a gravitational wave that came from a binary with given $\mchirp$ and $\eta$, we can generate a waveform, or template, that characterizes it. We now address the question: if a gravitational wave that matches our template exists in the \ac{IFO} data, how do we find it?
+Equation \ref{eqn:GW_strain} gave the strain, $h(t)$, induced in an interferometer when a gravitational-wave from an inspiraling compact binary with non-spinning component masses passes through. The strain was a function of chirp mass, $\mchirp$, and symmetric-mass ratio, $\eta$. If we wish to search for a gravitational wave that came from a binary with given $\mchirp$ and $\eta$, we can generate a waveform, or template, that characterizes it. We now address the question: if a gravitational wave that matches our template exists in the \ac{IFO} data, how do we find it?
 
 Let the output of the detector be the time series $s(t)$, which is a measure of the displacement of the \ac{IFO}'s mirrors as a function of time. If a gravitational wave with waveform $h(t)$ exists in the data, then:
 
@@ -258,7 +258,6 @@ In order to find the intrinsic parameters we use a discreet \emph{bank} of templ
 \end{eqnarray}
 
 where 
-
 \begin{equation}
 \label{eqn:templateMetric}
 g_{\mu \nu} = -\frac{1}{2} \left.\frac{\partial^2\mathcal{O}}{\partial \Delta\theta^\mu \partial \Delta\theta^\nu} \right|_{\Delta\theta^\kappa = 0}
@@ -410,6 +409,21 @@ where $\chi_r^2$ is the reduced $\chi^2$, defined above, and $m$ is a tunable pa
  \frac{\rho^2}{[(1+(\chi_r^2)^3)/2]^{1/6}}, \ & \chi^2_{r} > 1,  \end{cases}  
 \end{equation}
 Lines of constant $\rhonew$ are shown on Figure \ref{fig:snr_chisq}. As can be seen, they are particularily effective at separting noise triggers from injections. Figure \ref{fig:newsnr_hist} shows a histogram of the same triggers shown in figure \ref{fig:snr_hist}, this time plotted against New \ac{SNR}. Most of the non-Gaussian tail has been down-weighted, and moved below the \ac{SNR} threshold (in this case, 5.5). For reference, a $\chi^2$ distribution with two degrees of freedom is plotted. There is still some excess however; for this, we apply a coincidence test, described in the next section, and data-quality vetoes, discussed in chapter \ref{ch:ihope_pipeline}.
+
+\section{Coincidence Testing}
+
+To further cut down on the number non-\ac{GW} triggers we employ a coincidence test across detectors. We expect gravitational-waves to be the only correlated trigger source across detectors that are not co-located. Therefore, if we get a trigger in one detector, we can check the other detectors to see if a trigger exists. If none does, we can be confident the trigger was from a noise source, and so we can discard it.\footnote{Due to the antenna pattern of the detectors, and due to varying sensitivies, it is possible to have a GW in one detector and none in another. The chance of this happening decreases with the number of detectors in the network, however. We account for signals that may have been missed due to their location and orientation by performing injection studies and calculating efficiency.}
+
+Since the detectors are not co-located, we must allow for a discrepancy in the time-of-arrival of signals that is on order of the light-travel time between the detectors. Additionally, since the template bank is constructed separately for each detector, the trigger is likely to be found with slightly different parameters in each detector. We account for these differences by constructing an error, or ``ethinca," ellipsoid around each trigger. Recall equation \ref{eqn:templateMetric}, which related how quickly the overlap falls off around a point in paramter space to the metric of the signal manifold. We can use the metric to calculate the ``volume", $\mathcal{E}(\theta^\mu)$, of parameter space within which a signal with parameters $\theta^\mu$ could be expected to fall to some probability. The surface of this volume is defined by \cite{ethincaPaper}:
+\begin{equation}
+\label{eqn:ethinca}
+g_{\mu\nu}\d\theta^\mu \d\theta^\nu = \left(\frac{r}{\rho}\right)^2
+\end{equation}
+where $r$ is determined by the target probability and $\rho$ is the \ac{SNR} of the signal. That the size of the volume depends inversely on \ac{SNR} gels with expectation: the higher the \ac{SNR} of the signal, the more confident we are in its recovered parameters; therefore, the smaller the size of the ambiguity ellipse.
+
+By constructing error ellipses around the triggers in each detector we can look for coincidence. If the ellipsoid of a trigger in one \ac{IFO} overlaps with the ellipsoid in the other, they are considered to be coincident. We parameterize the size of the ellipsoids to construct by an \emph{ethinca paramter}, which is related to the parameter $r$ in the above equation. However, the ethinca parameter is currently not \ac{SNR} dependent. Instead, we choose the size of the parameter based on Monte Carlo studies of injections. We chose it to maximize the number of injections recovered and to minimize the number of noise coincidences, or false alarms. The same size parameter is then used for all triggers.  
+
+How the overlap between two ellipsoids is determined and how exactly $r$ relates to a desired probability is beyond the scope of this thesis. For more details, see \cite{ethincaPaper}.
 
 \begin{figure}
 \label{fig:snr_hist}
