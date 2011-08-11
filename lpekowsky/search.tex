@@ -368,30 +368,28 @@ subsequent chapters.
 \subsection{Trigger Selection}
 \label{ssec:analysis_trigger_selection}
 
-Equation~\ref{eq:prob_of_signal} says that there is a finite
-probability of a \emph{false alarm}, random fluctuations mimicking a
-signal.  We must therefore choose a threshold on $\rho(t)$ that is
-high enough to keep the false alarm rate to an acceptable level, but
-not so high as to prevent detection of realistic signals.  LIGO has
-chosen 5.5 as this threshold.  However, it would be wasteful to store
-every value in excess of this threshold.  The LIGO data is sampled
-rapidly enough that adjacent points do not differ by values that are
-large relative to numeric precision.  This feature is inherited by the
-SNR time series.  Therefore, points close to a large value will also
-be large, despite coming from the same event.  We therefore need only
-consider the largest SNR.  This SNR,  the time at which it occurred,
-and information about the template to be discussed below will
-constitute a \emph{trigger}.
-
-The probability of seeing two gravitational waves in an analysis time
-is vanishingly small, but the possibility of a gravitational wave and
-a random excursion above threshold is large enough that we must
-consider it.  We therefore choose the largest SNR not from the whole
-analysis, but from a smaller window.  A logical choice for the length
-of this window is the time length of the template.  For pN waveforms
-described in section~\ref{sec:PNWaveforms} this is defined as the time
-from which the instantaneous frequency is 40 Hz to the time where it
-becomes infinite.
+From the SNR time series, $\rho(t)$ we wish to select \emph{triggers},
+discreet points whose time and $\rho$ value correspond to the time and
+significance of a potential detection.
+Equation~\ref{eq:prob_of_signal} says that even in the absence of a
+signal there will be random fluctuations in $\rho(t)$.  We therefore
+require a threshold on $\rho(t)$ that will eliminate most of the
+triggers arising from random fluctuations, but not so high as to
+prevent detection of realistic signals.  LIGO has chosen 5.5 as this
+threshold.  However, it is unnecessary and would be wasteful to create
+a trigger from every point of $\rho(t)$in excess of this threshold.
+$\rho(t)$ may be thought of as ``sliding'' the template against the
+signal.  As the two line up $\rho(t)$ will increase, achieving a
+maximum when they are perfectly aligned, and then decreasing.  We
+therefore need only create a trigger from the largest value of
+$\rho(t)$.  Since glitches can also elevate the $\rho(t)$, and indeed
+may have larger values than real signals we can not simply take the
+largest value across the entire analysis but must instead choose a
+\emph{window}.  A logical choice for the length of this window is the
+time length of the template.  For pN waveforms described in
+section~\ref{sec:PNWaveforms} this is defined as the time from which
+the instantaneous frequency is 40 Hz to the time where it becomes
+infinite.
 
 The full trigger selection algorithm is:
 \newpage
@@ -410,9 +408,34 @@ for each sample point j
       event\_start = j
       event\_snr   = \(\rho\sb{j}\)
 \end{alltt}
-
-We will discuss some implications of this algorithm in
+%
+This is illustrated in figure~\ref{f:snr_cartoon}.  We will discuss
+some implications of this algorithm in
 section~\ref{sec:daily_ihope_open_questions}.
+
+
+\begin{figure}
+  \includegraphics[width=\linewidth]{figures/search/snr_cartoon}
+  \caption[The trigger-selection algorithm]{
+  \label{f:snr_cartoon}
+A ``cartoon'' illustrating the trigger-selection algorithm.  The graph
+shows an SNR time series of the kind produced by
+equation~\ref{eq:snr_time_series}.  Assume the template is one second
+long.  As the SNR rises above threshold just before point (1) the
+``window'' opens.  Point (1) is found as the nearest maximum.  One
+second after point (1) the window closes and point (1) is 
+recorded as a trigger.  The SNR rises above threshold just
+before point point (2).  This is more than one second away from point
+(1), so a new window opens.  When point (3) is encountered it is
+recorded as the largest value, resetting the window.  One second after
+point (3) the window closes and point (3) is recorded as a trigger.
+The two peaks following point (3) are within the one-second window,
+they are not recorded as triggers.  Point (4) is likewise recorded as
+a trigger, as it is more than one second from (3).
+}
+\end{figure}%
+
+
 
 \section{The $\chisq$ test}
 \label{sec:ihope_chisq}
