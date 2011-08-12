@@ -7,7 +7,8 @@ ninja2.tex \
 questions.tex \
 search.tex \
 theory.tex \
-thesis.tex 
+thesis.tex \
+PNEqns.tex 
 
 
 PNGFILES=figures/detchar/966222827_940673828_H0_PEM-ISCT1_ACCX_1_00_spectrogram_whitened.png \

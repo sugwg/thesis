@@ -1,0 +1,584 @@
+\newcommand{\xhat}{\vec{e}_x}
+\newcommand{\yhat}{\vec{e}_y}
+\newcommand{\zhat}{\vec{e}_z}
+\newcommand{\ihat}{\vec{e}_i}
+\newcommand{\jhat}{\vec{e}_j}
+\newcommand{\rhat}{\vec{e}_{r}}
+\newcommand{\iotahat}{\vec{e}_{\iota}}
+\newcommand{\phihat}{\vec{e}_{\phi}}
+\newcommand{\eplus}{\tens{e}_+}
+\newcommand{\ecross}{\tens{e}_\times}
+\newcommand{\Sl}{S_\ell}
+\newcommand{\Sigmal}{\Sigma_\ell}
+\newcommand{\Flux}{\mathcal{F}}
+\newcommand{\coloneq}{\mathrel{\mathop:}=}
+\newcommand{\define}{\coloneq}
+
+\section{Post-Newtonian waveforms in the adiabatic approximation}
+\renewcommand{\theequation}{A.\arabic{equation}}
+
+There are two basic elements to obtaining a post-Newtonian waveform:
+(1) finding the orbital phase of the binary, and (2) using that phase
+to find the so-called ``amplitude'' of the waveform.  Previous
+references have been incomplete, or predate recent errata involving
+spin terms \cite{Blanchet:2006gy,Arun:2009}.  Here, we gather together the most complete and current
+formulas for phase and amplitude when spins are \emph{non-precessing}
+ (i.e. spins aligned or anti-aligned with the
+  orbital angular momentum), using consistent
+notation.
+
+\subsection{Phasing}
+The orbital phase evolution $\Phi(t)$ of the binary can be computed by
+considering energy conservation.  The energy of the full system is
+accounted for in three parts, each computed as a function of the
+post-Newtonian expansion parameter
+\begin{equation}
+  \label{eq:DefinevParameter}
+  v \define \left( M \frac{d\Phi}{dt} \right)^{1/3}~.
+\end{equation}
+The first part is the kinetic and gravitational binding energy of the
+binary---the orbital energy $E(v)$.  As the system evolves, it gives
+off energy to infinity in the form of gravitational waves accounted
+for as the flux $\Flux(v)$ leaving the system.  Finally, we must also
+account for the tide raised on each black hole by the other, and the
+flow of energy into the black holes due to the motion of these tides,
+given as a rate of change in the mass of the black holes $\dot{M}(v)$.
+Using this threefold accounting for the energy, we can express the
+conservation of energy as
+\begin{equation}
+  \label{eq:EnergyConservation}
+  \frac{dE}{dt} + \Flux + \dot{M} = 0~.
+\end{equation}
+Now, because the expression for the orbital energy is written in terms
+of $v$, we can straightforwardly differentiate to find $E'(v)$.  With
+the chain rule, $dE/dt = E'(v)\, dv/dt$, we can rearrange this into a
+differential equation for $v$:
+\begin{equation}
+  \label{eq:BalanceEquation}
+  \frac{dv}{dt} = - \frac{\Flux(v) + \dot{M}(v)} {E'(v)}~.
+\end{equation}
+Given the expressions for $\Flux(v)$, $\dot{M}(v)$, and $E'(v)$, this
+equation can be integrated to find $v(t)$.  Then, using the definition
+of $v$, we see that
+\begin{equation}
+  \label{eq:PhaseFormula}
+  \frac{d\Phi}{dt} = \frac{v^{3}}{M}~,
+\end{equation}
+which can be integrated in turn to find $\Phi(t)$.  We now exhibit the
+formulas for $\Flux(v)$, $\dot{M}(v)$, and $E'(v)$, and discuss
+various methods for integrating the balance
+equation~\eqref{eq:BalanceEquation}.
+
+Given the masses $M_1$ and $M_2$ and spin vectors $\mathbf{S}_1$ and
+$\mathbf{S}_2$, we define the following parameters:
+\begin{align}
+  \label{eq:SSigma}
+  M &\define M_1 + M_2~, \\
+  \eta  &\define M_1 \, M_2 / M^2~, \\
+  \delta  &\define (M_1 - M_2) / M~,\\
+  % \mathbf{S} &\define \mathbf{S}_1 + \mathbf{S}_2~,\\
+  % \bm{\Sigma} &\define M \left[\frac{\mathbf{S}_2}{M_2} -
+  %   \frac{\mathbf{S}_1}{M_1}\right]~,\\
+  \bm{\chi}_i &\define \mathbf{S}_i/M_i^2~, \\
+  \bm{\chi}_s &\define (\bm{\chi}_1 + \bm{\chi}_2)/2~, \\
+  \bm{\chi}_a &\define (\bm{\chi}_1 - \bm{\chi}_2)/2~.
+\end{align}
+We also define the quantities $\chi_s$ and $\chi_a$ to be the
+components of the spin vectors perpendicular to the orbital plane,
+namely $\chi_s\define \bm{\chi}_s \cdot \bm{\ell}$ and $\chi_a \define
+\bm{\chi}_a \cdot \bm{\ell}$, where $\bm{\ell}$ is the unit vector
+along the Newtonian angular momentum.
+
+The orbital energy function can be written in terms of the PN
+expansion parameter $v$ defined above as~\cite{Blanchet:2002,
+  Blanchet:2005a, Blanchet:2005b, Arun:2009, Blanchet:2006gy,
+  Blanchet:2007, Blanchet:2010}\footnote{The 1.5PN and 2.5PN spin
+  terms were taken from Eq.~(7.9) of \cite{Blanchet:2006gy}. The 2PN
+  spin term and all nonspinning terms were taken from Eq.~(C4) of
+  \cite{Arun:2009}.  Note that Eq.~(C5) in the original published
+  version of \cite{Arun:2009} is erroneous.}
+\begin{equation}\label{eq:Energy}
+  \begin{split}
+    E(v) & = -\frac{M \eta v^2}{2}\, \left\{1 + v^2\left( -
+\frac{3}{4}
+        - \frac{\eta}{12} \right) + v^{3} \left[\frac{8 \, \delta
+          \chi_a}{3}+\left(\frac{8}{3}
+          -\frac{4 \eta }{3}\right) \chi_s \right] \right. \\
+    &\qquad\qquad\quad + v^{4} \left[-2 \delta \chi_a
+      \chi_s-\frac{\eta ^2}{24}
+      +(4 \eta -1) \chi_a^2+\frac{19 \eta }{8}-\chi_s^2-\frac{27}{8}\right] \\
+    &\qquad\qquad\quad + v^{5} \left[\chi_a \left(8 \, \delta
+        -\frac{31 \delta \eta }{9}\right)
+      +\left(\frac{2 \eta^2}{9}-\frac{121 \eta }{9}+8\right) \chi_s \right] \\
+    &\qquad\qquad\quad \left. + v^{6} \left[-\frac{35 \eta
+          ^3}{5184}-\frac{155 \eta ^2}{96}
+        +\left(\frac{34445}{576}-\frac{205 \pi^2}{96}\right) \eta
+        -\frac{675}{64} \right] \right\}.
+  \end{split}
+\end{equation}
+We simply take the derivative of this formula with respect to $v$ to
+find the energy function appearing in the phasing formula:
+\begin{equation}\label{eq:dEnergy}
+  \begin{split}
+    E'(v) & = -M \eta v\, \left\{ 1 + v^2\left( - \frac{3}{2} -
+        \frac{\eta}{6} \right) + v^{3} \left[ \frac{20 \delta
+          \chi_a}{3}+\left(\frac{20}{3}
+          -\frac{10 \eta }{3}\right) \chi_s \right] \right. \\
+    & \hphantom{\quad -\eta v\, \Bigg\{} + v^{4} \left[ -6 \, \delta
+      \chi_a \chi_s-\frac{\eta ^2}{8}
+      +(12 \eta -3) \chi_a^2+\frac{57 \eta }{8}-3 \chi_s^2-\frac{81}{8} \right]\\
+    & \hphantom{\quad -\eta v\, \Bigg\{} + v^{5} \left[ \chi_a
+      \left(28 \delta -\frac{217 \delta \eta }{18}\right)
+      +\left(\frac{7 \eta^2}{9}-\frac{847 \eta }{18}+28\right) \chi_s \right] \\
+    & \hphantom{\quad -\eta v\, \Bigg\{} \left. + v^{6} \left[
+        -\frac{35 \eta ^3}{1296}-\frac{155 \eta ^2}{24}
+        +\left(\frac{34445}{144}-\frac{205 \pi^2}{24}\right) \eta
+        -\frac{675}{16} \right] \right\}~.
+  \end{split}
+\end{equation}
+Similarly, the flux function can be written as~\cite{Blanchet:2002,
+  Blanchet:2005a, Blanchet:2005b, Arun:2009, Blanchet:2006gy,
+  Blanchet:2007, Blanchet:2010}\footnote{The 1.5PN and 2.5PN spin
+  terms were taken from Eq.~(7.11) of \cite{Blanchet:2006gy}. The 2PN
+  spin term and all nonspinning terms were taken from Eq.~(C10) of
+  \cite{Arun:2009}, except that the term $\eta
+  \left\{-\frac{103}{48}(\bm{\chi}_s^2 - \bm{\chi}_a^2) +
+    \frac{289}{48} [(\bm{\chi}_{s} \cdot \bm{\ell})^{2} -
+    (\bm{\chi}_{a} \cdot \bm{\ell})^{2}] \right\}$ is omitted.  (The
+  authors of \cite{Arun:2009} have confirmed that this term should not
+  be present.)  Also note that Eq.~(C11) in the original published
+  version of \cite{Arun:2009} is erroneous.}
+{\footnotesize
+\begin{equation}\label{fluxx}
+  \begin{split}
+    \Flux(v) & = \frac{32}{5}\, v^{10}\, \eta^2 \left\{ 1 + v^2 \left(
+        - \frac{1247}{336} - \frac{35}{12} \eta \right) + v^3
+      \left[-\frac{11 \delta \chi_a}{4}+\left(3 \eta
+          -\frac{11}{4}\right)
+        \chi_s+4 \pi \right] \right.\\
+    %
+    &\qquad\qquad\qquad + v^4 \left[\frac{33 \delta \chi_a
+        \chi_s}{8}+\frac{65 \eta^2}{18} +\left(\frac{33}{16}-8 \eta
+      \right) \chi_a^2+\left(\frac{33}{16} -\frac{\eta }{4}\right)
+      \chi_s^2
+      +\frac{9271 \eta}{504}-\frac{44711}{9072} \right] \\
+    %
+    &\qquad\qquad\qquad + v^5 \left[\left(\frac{701 \delta \eta }{36}
+        -\frac{59 \delta }{16}\right) \chi_a +\left(-\frac{157 \eta
+          ^2}{9} +\frac{227 \eta }{9}-\frac{59}{16}\right) \chi_s
+      -\frac{583 \pi  \eta }{24}-\frac{8191 \pi }{672} \right] \\
+    %
+    &\qquad\qquad\qquad + v^6 \left[-\frac{1712}{105} \ln (4
+      v)-\frac{1712 \gamma }{105} -\frac{775 \eta ^3}{324}-\frac{94403
+        \eta ^2}{3024}+\left(\frac{41 \pi
+          ^2}{48}-\frac{134543}{7776}\right) \eta +\frac{16 \pi^2}{3}
+      +\frac{6643739519}{69854400} \right] \\
+    %
+    &\qquad\qquad\qquad \left.  + v^7 \left[\frac{193385 \pi \eta
+          ^2}{3024} +\frac{214745 \pi \eta }{1728}-\frac{16285 \pi
+        }{504} \right] \right\}~,
+  \end{split}
+\end{equation}
+}
+where $\gamma$ is the Euler Gamma.
+
+Alvi~\cite{Alvi:2001} derived an expression for the transfer of energy
+from the orbit to each black hole by means of tidal heating.  The
+calculation involves computing the deformation of each hole's horizon
+due to the Newtonian field of the other, then using that expression in
+formulas for energy absorption due to tidal deformation.  In
+particular, his expression is applicable in the comparable-mass case.
+By combining the rates of mass change for both black holes, we obtain
+the total rate of change:
+\begin{equation}
+  \label{eq:MassRateOfChange}
+  \begin{split}
+    % \dot{M}(v) &= \frac{32}{5} v^{10} \eta^{2} \left\{
+    %   -\frac{v^{5}}{4}\, \left[ \left( \frac{M_{1}}{M} \right)^{3}
+    %     (1+3\chi_1^2) \frac{\mathbf{S}_{1} \cdot \bm{\ell}}{M^{2}} +
+    %     \left( \frac{M_{2}}{M} \right)^{3} (1+3\chi_2^2)
+    %     \frac{\mathbf{S}_{2} \cdot \bm{\ell}}{M^{2}} \right]
+    % \right\}
+    % \\
+    % &= \frac{32}{5} v^{10} \eta^{2} \left\{ -\frac{v^{5}}{4}\,
+    %   \left[ \frac{(1 - 2\eta) \Sl - \eta \delta \Sigmal}{M^{2}} +
+    %     \frac{3(2 \Sl + \delta \Sigmal) \big( \Sl^{2} + \delta \Sl
+    %       \Sigmal + (1-\eta)\Sigmal^{2} \big)}{M^{6}} \right]
+    % \right\}
+    % \\
+    \dot{M}(v) &= \frac{32}{5} v^{10} \eta^{2} \left\{
+      -\frac{v^{5}}{4}\, \Big[ (1 - 3\eta) \chi_{s} (1 + 3\chi_{s}^{2}
+      + 9\chi_{a}^{2}) + (1 - \eta) \delta \chi_{a} (1 + 3\chi_{a}^{2}
+      + 9\chi_{s}^{2}) \Big] \right\}~.
+  \end{split}
+\end{equation}
+The coefficient above is the leading-order term in the flux, meaning
+that this term is comparable to a relative 2.5PN spin effect in the
+flux.  A similar calculation has been carried out in the
+extreme-mass-ratio limit~\cite{Tagoshi:1997}, and agrees with this
+formula in that limit.  Note that higher-order spin terms were
+calculated in~\cite{Alvi:2001}, but are not included here, as they are
+at relative 3.5PN order, which is higher than the relative 2.5PN order
+to which other spin terms are known.  Except for its explicit presence
+in the balance equation~\eqref{eq:BalanceEquation}, we always treat
+the mass as a constant.  This leads to additional errors at the 3.5PN
+spin level, which we ignore.
+
+
+Below we will define some of the standard variants of computing
+the post-Newtonian phase from the energy and flux functions,
+using the naming convention of \cite{Damour:2000zb}.
+
+\subsubsection{TaylorT1 phasing}
+The TaylorT1 approximant is computed by numerically integrating the
+ordinary differential equation for $v(t)$ in
+Eq.~\eqref{eq:BalanceEquation}, using the expressions for orbital
+energy, flux, and mass change given in Eqs.~\eqref{eq:dEnergy},
+\eqref{fluxx}, and~\eqref{eq:MassRateOfChange}.  The phase is then
+computed using this result for $v(t)$ in Eq.~\eqref{eq:PhaseFormula}.
+
+\subsubsection{TaylorT4 phasing}
+The TaylorT4 approximant is similar to the TaylorT1 approximant,
+except that the ratio of the polynomials on the right-hand side of
+Eq.~\eqref{eq:BalanceEquation} is first expanded as a Taylor series,
+and truncated at consistent PN order.  Explicitly, the formula to be
+integrated is
+{\footnotesize
+\begin{equation}\label{eq:dvByDt}
+  \begin{split}
+    \frac{dv}{dt} & = \frac{32}{5M} v^9 \eta \left\{1 + v^2
+      \left[-\frac{11 \eta }{4}-\frac{743}{336} \right] + v^3
+      \left[-\frac{113 \delta \chi_a}{12}+\left(\frac{19 \eta }{3}
+          -\frac{113}{12}\right) \chi_s+4 \pi \right] \right. \\
+    %
+    & \qquad\qquad\quad + v^4 \left[\frac{81 \delta \chi_a
+        \chi_s}{8}+\frac{59 \eta ^2}{18} +\left(\frac{81}{16}-20 \eta
+      \right) \chi_a^2+\left(\frac{81}{16}-\frac{\eta }{4}\right)
+      \chi_s^2+\frac{13661 \eta
+      }{2016}+\frac{34103}{18144} \right] \\
+    %
+    & \qquad\qquad\quad + v^5 \left[-\frac{189 \pi \eta
+      }{8}-\frac{4159 \pi }{672} + \left(\frac{3 \eta
+        }{4}-\frac{3}{4}\right) \delta \chi_a^3 + \left(\frac{9 \eta
+        }{4}-\frac{9}{4}\right) \delta \chi_a \chi_s^2
+      + \left(\frac{1165 \eta }{24}-\frac{31571}{1008}\right) \delta \chi_a \right. \\
+    & \qquad\qquad\qquad \qquad \left. + \left(-\frac{79 \eta ^2}{3}+
+        \frac{27 \eta \chi_a^2}{4} -\frac{9 \chi_a^2}{4}+\frac{5791
+          \eta }{63}-\frac{31571}{1008}\right) \chi_s
+      +\left(\frac{9 \eta }{4}-\frac{3}{4}\right) \chi_s^3 \right] \\
+    %
+    & \qquad\qquad\quad + v^6 \left[-\frac{1712 \gamma }{105}
+      -\frac{5605 \eta ^3}{2592}+\frac{541 \eta
+        ^2}{896}+\left(\frac{451 \pi ^2}{48}
+        -\frac{56198689}{217728}\right) \eta +\frac{16 \pi ^2}{3}
+      +\frac{16447322263}{139708800} \right. \\
+    & \qquad\qquad\qquad \qquad -\frac{1712 \ln (4v)}{105} +
+    \left(\frac{1517 \eta ^2}{72}-\frac{23441 \eta }{288}
+      +\frac{128495}{2016} \right) \chi_s^2 + \left(\frac{565 \delta
+        ^2}{9}+\frac{89 \eta ^2}{3}-\frac{2435 \eta }{224}
+      +\frac{215}{224} \right) \chi_a^2 \\
+    & \qquad\qquad\qquad \qquad \left. + \left(\left(\frac{128495
+            \delta }{1008} -\frac{12733 \delta \eta }{144}\right)
+        \chi_a +\frac{40 \pi \eta }{3}
+        -\frac{80 \pi }{3}\right) \chi_s -\frac{80 \pi  \delta \chi_a}{3} \right] \\
+    %
+    & \qquad\qquad\quad + v^7 \left[\frac{91495 \pi \eta ^2}{1512}
+      +\frac{358675 \pi  \eta }{6048}-\frac{4415 \pi }{4032} \right. \\
+    & \qquad\qquad\qquad \qquad \left.  + \left(-\frac{11 \eta ^2}{24}
+        +\frac{979 \eta }{24}-\frac{505}{8} \right) \chi_s^3 +
+      \left(\frac{\delta \eta ^2}{8}+\frac{742 \delta \eta }{3}
+        -\frac{505 \delta }{8} \right) \chi_a^3 \right.\\
+    & \qquad\qquad\qquad \qquad \left. + \left(\left(\frac{3 \eta
+            ^2}{8}+\frac{917 \eta }{12}
+          -\frac{1515}{8}\right) \delta \chi_a + 12 \pi \right) \chi_s^2 \right. \\
+    & \qquad\qquad\qquad \qquad \left.  + \left( \left(-124 \delta ^2
+          -\frac{3397 \eta ^2}{24}+\frac{7007 \eta}{24}
+          -\frac{523}{8}\right) \chi_s -48 \pi  \eta +12 \pi \right) \chi_a^2 \right. \\
+    & \qquad\qquad\qquad \qquad \left. + \left(\frac{2045 \eta
+          ^3}{216} -\frac{398017 \eta ^2}{2016} +\frac{10772921
+          \eta}{54432} -\frac{2529407}{27216}\right) \chi_s
+      + 24 \pi  \delta  \chi_a \chi_s \right. \\
+    & \qquad\qquad\qquad \qquad \left. \left. + \left(-\frac{41551
+            \delta \eta ^2}{864} +\frac{845827 \delta
+            \eta}{6048}-\frac{2529407 \delta }{27216}\right) \chi_a
+      \right] \right\}~.
+  \end{split}
+\end{equation}
+}%
+Note that this expression does not include \emph{all} of the
+spin-dependent terms at 3PN and 3.5PN, since the spin terms in the
+energy and flux functions are known only up to 2PN and 2.5PN,
+respectively.  However, the 3PN and 3.5PN terms shown here will still
+be present in this formula when the higher-order terms are included in
+the energy and flux formulas.
+
+
+\subsubsection{TaylorT2 phasing}
+
+Expanding the inverse of Eq.~\eqref{eq:BalanceEquation} allows for
+the analytical integration of $t(v)$. The result reads
+{\footnotesize
+\begin{align} \label{eq:T2time}
+\begin{split}
+ t(v) &=  t_0 -  \frac{5M}{256 \eta \, v^8} \Bigg \{ 1 + v^2 \left[
+\frac{11 \eta }{3}+\frac{743}{252} \right] + 
+v^3 \left[ -\frac{32 \pi}{5} + \frac{226 \delta  \chi_a}{15} + \left(
+ \frac{226}{15} -\frac{152 \eta}{15} \right) \chi_s
+\right] \\
+& \quad + v^4 \left[ 
+\frac{3058673}{508032} + \frac{5429 \eta }{504} + \frac{617 \eta
+^2}{72} -\frac{81}{4} \delta  \chi _a \chi _s
+- \left(\frac{81}{8} - \frac{\eta}{2} \right) \chi_s^2 -
+\left(\frac{81}{8} - 40 \eta \right)\chi _a^2 \right] \\
+& \quad + v^5 \left[
+-\frac{7729\pi }{252} - \frac{13 \pi  \eta }{3} + 
+\left( \frac{147101}{756} -\frac{4906 \eta }{27}-\frac{68 \eta
+^2}{3}\right) \chi_s
++ \left( \frac{147101
+}{756} + \frac{26 \eta }{3} \right) \delta \chi_a \right. \\
+& \qquad +  (6- 6\eta) \delta \chi_s^2 \chi_a + (6 - 18 \eta)
+\chi_s \chi_a^2 + (2- 6 \eta) \chi_s^3 + (2 - 2\eta) \delta \chi_a^3 
+\Bigg] \\
+& \quad + v^6 \left[  \frac{6848\gamma}{105} -
+\frac{10052469856691}{23471078400} +\frac{128 \pi ^2}{3}
++\left(\frac{3147553127 }{3048192} -\frac{451 \pi ^2}{12}
+\right) \eta -\frac{15211 \eta ^2}{1728} + \frac{25565 \eta ^3}{1296} 
+\right. \\
+& \qquad  + \frac{6848 \ln (4v)}{105} - \left( \frac{584 \pi }{3} -
+\frac{448 \pi  \eta }{3} \right) \chi_s -\frac{584 \pi  \delta \,
+\chi_a }{3} + \left( \frac{6845}{672} -\frac{43427 \eta }{168} +
+\frac{245 \eta ^2}{3} \right) \chi_s^2 \\
+& \qquad + \left. \left(  \frac{6845}{672} -\frac{1541 \eta }{12} +
+\frac{964 \eta ^2}{3} \right) \chi_a^2 
++ \left( \frac{6845}{336}-\frac{2077 \eta }{6} \right) \delta \,
+\chi_s \chi_a
+\right] \\
+& \quad + v^7 \left[  -\frac{15419335 \pi }{127008} -\frac{75703 \pi 
+\eta }{756} + \frac{14809 \pi  \eta ^2}{378} 
++ \left(\frac{4074790483}{1524096} +\frac{30187 \eta }{112}
+-\frac{115739 \eta ^2}{216} \right) \delta \, \chi_a
+\right. \\
+& \qquad + \left( 
+\frac{4074790483}{1524096} -\frac{869712071 \eta }{381024}
+-\frac{2237903 \eta ^2}{1512} + \frac{14341 \eta ^3}{54}
+\right) \chi_s + \left( 228 \pi -16 \pi  \eta \right) \chi_s^2 \\
+& \qquad + \left( 228 \pi -896 \pi  \eta \right) \chi_a^2 + 456 \pi 
+\delta \, \chi_s \chi_a - \left( \frac{3237}{14} - \frac{14929 \eta
+}{84} +  \frac{362 \eta ^2}{3}\right) \chi_s^3 \\
+& \qquad - \left( \frac{3237}{14} - \frac{87455 \eta }{84} + 34 \eta
+^2 \right) \delta \chi_a^3 - \left( \frac{9711}{14} - \frac{39625 \eta
+}{84} +  102 \eta ^2\right) \delta \, \chi_s^2 \chi_a \\
+& \qquad \left . - \left(
+\frac{9711}{14} -\frac{267527 \eta }{84} + \frac{3574 \eta
+^2}{3} \right) \chi_s \chi_a^2 \right] \Bigg\}~.
+\end{split}
+\end{align}
+}
+The comment made below Eq.~\eqref{eq:dvByDt} about spin
+contributions at 3PN and 3.5PN order is valid for Eq.~\eqref{eq:T2time}
+and the following expansions as well.
+
+The orbital phase $\Phi$ can be integrated similarly to the time $t$. 
+Eq.~\eqref{eq:PhaseFormula} and Eq.~\eqref{eq:BalanceEquation} yield
+\begin{equation}
+ \frac{d\Phi}{dv} = \frac{v^{3}}{M} \, \frac{dt}{dv} = -
+\frac{v^{3}}{M} \, \frac{E'(v)}{\Flux(v) + \dot{M}(v)} ~,
+\end{equation}
+which, after re-expanding in a Taylor series, can be integrated
+analytically. The final result reads
+{\footnotesize
+{ \allowdisplaybreaks
+\begin{align} \label{eq:T2phase}
+ \Phi (v) &= \Phi_0 - \frac{1}{32 \eta \, v^5} \Bigg\{
+1+ v^2 \left[ \frac{3715}{1008} + \frac{55 \eta }{12} \right] 
++ v^3 \left[ -10 \pi  + \frac{565 \delta  \chi _a}{24} + \left(
+ \frac{565}{24} -\frac{95 \eta }{6} \right) \chi_s
+\right] \nonumber \\
+& \quad + v^4 \left[ \frac{15293365}{1016064} +\frac{27145 \eta
+}{1008} + \frac{3085 \eta ^2}{144} -\frac{405 }{8} \delta \,
+\chi_a \chi_s - \left( \frac{405}{16} - \frac{5 \eta }{4} \right)
+\chi_s^2 - \left( \frac{405}{16} - 100 \eta \right) \chi_a^2 \right]
+\nonumber \\
+& \quad + v^5 \ln v \left[  \frac{38645 \pi }{672}-\frac{65 \pi  \eta
+}{8} - \left( \frac{735505}{2016} - \frac{12265 \eta }{36} - \frac{85
+\eta ^2}{2} \right) \chi_s - \left( \frac{735505}{2016}+\frac{65 \eta
+}{4} \right) \delta \chi_a  \right. \nonumber \\
+& \qquad \left. - \left( \frac{45}{4}-\frac{45 \eta }{4} \right)
+\delta \chi_s^2 \chi_a - \left( \frac{45}{4}-\frac{135 \eta }{4}
+\right) \chi_s \chi_a^2 - \left( \frac{15}{4}-\frac{45 \eta }{4}
+\right) \chi_s^3 - \left( \frac{15}{4}-\frac{15 \eta }{4} \right)
+\delta \chi_a^3 \right]  \\
+& \quad + v^6 \left[ \frac{12348611926451}{18776862720}-\frac{1712
+\gamma}{21}-\frac{160 \pi ^2}{3}-\left( \frac{15737765635 
+}{12192768} - \frac{2255 \pi ^2}{48} \right) \eta +\frac{76055 \eta
+^2}{6912}-\frac{127825 \eta ^3}{5184} \right. \nonumber \\
+& \qquad -\frac{1712 \ln{(4v)}}{21} + \left(\frac{730 \pi
+}{3}-\frac{560 \pi  \eta }{3} \right) \chi_s + \frac{730 \pi \delta
+\chi_a }{3} -
+\left( \frac{34225}{2688}-\frac{217135 \eta }{672}+\frac{1225 \eta
+^2}{12} \right) \chi_s^2  \nonumber \\
+& \qquad - \left. \left( \frac{34225}{2688}-\frac{7705 \eta
+}{48}+\frac{1205 \eta ^2}{3} \right) \chi_a^2 - \left(
+\frac{34225}{1344}-\frac{10385 \eta }{24} \right) \delta \, \chi_s
+\chi_a \right] \nonumber \\
+& \quad + v^7 \left[ \frac{77096675 \pi }{2032128}+\frac{378515 \pi 
+\eta }{12096}-\frac{74045 \pi  \eta ^2}{6048} - \left( 
+\frac{20373952415}{24385536}+\frac{150935 \eta }{1792}-\frac{578695
+\eta ^2}{3456}\right) \delta \chi_a
+\right. \nonumber \\
+& \qquad - \left( \frac{20373952415}{24385536}-\frac{4348560355 \eta
+}{6096384}-\frac{11189515 \eta ^2}{24192}+\frac{71705 \eta ^3}{864}
+\right) \chi_s - \left( \frac{285 \pi }{4}-5 \pi  \eta \right)
+\chi_s^2 \nonumber \\
+& \qquad - \left( \frac{285 \pi }{4}-280 \pi  \eta \right) \chi_a^2 -
+\frac{285 \pi }{2} \delta \, \chi_s \chi_a + \left(
+\frac{16185}{224}-\frac{74645 \eta }{1344}+\frac{905 \eta ^2}{24}
+\right) \chi_s^3 \nonumber \\
+& \qquad + \left( \frac{16185}{224}-\frac{437275 \eta }{1344}+\frac{85
+\eta ^2}{8} \right) \delta \chi_a^3 + \left(
+\frac{48555}{224}-\frac{198125 \eta }{1344}+\frac{255 \eta ^2}{8}
+\right) \delta \, \chi_s^2 \chi_a \nonumber \\
+& \qquad + \left. \left(  \frac{48555}{224}-\frac{1337635 \eta
+}{1344}+\frac{8935 \eta ^2}{24} \right) \chi_s \chi_a^2 \right]
+\Bigg\}. \nonumber
+\end{align}}}
+Eq.~\eqref{eq:T2time} and Eq.~\eqref{eq:T2phase} together define
+$\Phi(t)$ implicitly.
+
+
+\subsubsection{TaylorF2 phasing}
+
+Starting from the explicit expressions for time and orbital phase in
+the TaylorT2 approximant, it is possible to analytically construct the
+Fourier transform of the GW strain in the
+framework of the stationary phase approximation (SPA)
+\cite{Damour:2000zb,Damour:2002kr,Arun:2004hn}. Denoting the Fourier
+transform of the strain by $\tilde A_{\ell m} e^{i
+\psi_{\ell m}}$, the phase in the frequency domain can be approximated
+by
+\begin{equation}
+ \psi_{\ell m}(f) = 2 \pi f \, t_f - m \Phi(t_f) - \frac{\pi}{4}. 
+\end{equation}
+Here, $f$ is the Fourier variable and $t_f$ corresponds to the time
+when the instantaneous GW frequency coincides with $f$, i.e.,
+\begin{equation}
+ \frac{d (m \Phi)}{dt} (t_f) = 2 \pi f \qquad \Rightarrow \quad
+v(t_f) = \left( \frac{2 \pi M f}{m} \right)^{1/3}. \label{eq:vfreq}
+\end{equation}
+%
+The form of the Taylor series of $\psi_{\ell m}$ obviously depends on
+the spherical harmonic mode's $m$. For the sake of brevity, only the
+expansion
+for $m=2$ is given below.
+{\footnotesize
+{\allowdisplaybreaks
+\begin{align}
+ \psi_{\ell 2} (v) &= 2 t_0 v^3 - 2\Phi_0 - \frac{\pi}{4} +
+\frac{3}{128 \eta \, v^5} \Bigg\{ 1 + v^2
+\left[\frac{3715}{756}+\frac{55 \eta }{9}  \right] + v^3 \left[ 
+ -16 \pi +\left( \frac{113}{3}-\frac{76 \eta }{3} \right) \chi_s
++\frac{113 \delta  \chi _a}{3} \nonumber \right] \\
+& \quad + v^4 \left[ \frac{15293365}{508032}+\frac{27145 \eta
+}{504}+\frac{3085 \eta ^2}{72} - \left( \frac{405}{8}-\frac{5 \eta
+}{2} \right) \chi_s^2 - \left( \frac{405}{8}-200 \eta \right) \chi_a^2
+-\frac{405  }{4} \delta \, \chi_s \chi_a \right] \nonumber \\
+& \quad + v^5 \left( 1+ 3  \ln v \right) \left[ \frac{38645
+\pi }{756}-\frac{65 \pi  \eta }{9} - \left(
+\frac{735505}{2268}-\frac{24530 \eta }{81}-\frac{340 \eta ^2}{9}
+\right) \chi_s - \left( \frac{735505}{2268}+\frac{130 \eta }{9}
+\right) \delta \chi_a \nonumber \right. \\
+& \qquad - \left. (10-10 \eta) \delta \, \chi_s^2 \chi_a - (10-30
+\eta) \chi_s \chi_a^2 - \left( \frac{10}{3}-10 \eta \right) \chi_s^3 -
+\left( \frac{10}{3}-\frac{10 \eta }{3} \right) \delta \chi_a^3
+\right] \nonumber \\
+& \quad + v^6 \left[  \frac{11583231236531}{4694215680}-\frac{6848
+\gamma}{21}-\frac{640 \pi ^2}{3}-\left(
+\frac{15737765635}{3048192}-\frac{2255 \pi ^2}{12} \right) \eta
++ \frac{76055 \eta ^2}{1728} - \frac{127825 \eta ^3}{1296} 
+\right. \nonumber \\
+& \qquad -\frac{6848  \ln(4v)}{21} + \left( \frac{2920 \pi
+}{3}-\frac{2240 \pi  \eta }{3} \right) \chi_s + \frac{2920 \pi 
+}{3}\delta \chi_a - \left( \frac{34225}{672}-\frac{217135 \eta
+}{168}+\frac{1225 \eta ^2}{3} \right) \chi_s^2 \nonumber \\
+& \qquad - \left. \left( \frac{34225}{672}-\frac{7705 \eta
+}{12}+\frac{4820 \eta ^2}{3} \right) \chi_a^2 
+- \left( \frac{34225}{336}-\frac{10385 \eta }{6} \right) \delta \,
+\chi_s \chi_a
+\right] \nonumber \\
+& \quad + v^7 \left[  \frac{77096675 \pi }{254016}+\frac{378515 \pi 
+\eta }{1512}-\frac{74045 \pi  \eta ^2}{756} -
+\left( \frac{20373952415}{3048192}+\frac{150935 \eta
+}{224}-\frac{578695 \eta ^2}{432} \right) \delta \chi_a
+\right. \nonumber \\
+& \qquad - \left( \frac{20373952415}{3048192}-\frac{4348560355 \eta
+}{762048}-\frac{11189515 \eta ^2}{3024}+\frac{71705 \eta ^3}{108} 
+\right) \chi_s - (570 \pi -40 \pi  \eta) \chi_s^2 \nonumber \\
+& \qquad - (570 \pi -2240 \pi  \eta) \chi_a^2 -1140 \pi  \delta \,
+\chi_s \chi_a + \left( \frac{16185}{28}-\frac{74645 \eta
+}{168}+\frac{905 \eta ^2}{3} \right) \chi_s^3 \nonumber \\
+& \qquad + \left( \frac{16185}{28}-\frac{437275 \eta }{168}+85 \eta ^2
+\right) \delta \chi_a^3 + \left( \frac{48555}{28}-\frac{198125 \eta
+}{168}+255 \eta ^2 \right) \delta \, \chi_s^2 \chi_a \nonumber \\
+& \qquad \left. + \left( \frac{48555}{28}-\frac{1337635 \eta
+}{168}+\frac{8935 \eta ^2}{3} \right) \chi_s \chi_a^2  \right] \Bigg
+\}.
+\end{align}
+}}%
+%
+According to Eq.~(\ref{eq:vfreq}), $v$ should be understood as $v =
+(M \pi f)^{1/3}$ in the equation above.
+
+\subsection{Waveform amplitudes}
+\label{sec:WaveformAmplitudes}
+Now, given the orbital phase $\Phi$ and the related post-Newtonian
+expansion parameter $v$ defined in Eq.~\eqref{eq:DefinevParameter}, we
+can obtain the waveform observed at infinity.  Currently, the most complete
+expressions for the nonspinning parts of the waveform are
+found in~\cite{Blanchet:2008}.  In particular, Eqs.~(9.3) and~(9.4) of
+that reference give the decomposition of $h_+ - ih_\times$ into
+harmonics.  Due to space
+considerations and the danger of transcription errors, we do not
+reproduce those equations here, but simply refer the reader to that
+paper.  To these, we must add\footnote{Note that
+  Refs.~\cite{Blanchet:2008} and~\cite{WillWiseman:1996} share the
+  notation set forth in~\cite{Blanchet:1996}, so that we can simply
+  add the relevant terms.  Also note that each of those references
+  uses a different normalization for the variable $H$ compared to the
+  one used here.}  the spin terms given most completely
+in~\cite{WillWiseman:1996}.  There, the spin terms were not explicitly
+decomposed into harmonics, however, using Eq.~(9.2)
+of~\cite{Blanchet:2008}, it is a simple matter to deduce them.  Using
+Eqs.~(F24) and (F25) of~\cite{WillWiseman:1996}, and noting the
+overall sign error in Eq.~(F25c), we obtain the only nonzero spin
+contributions to the harmonics:
+\begin{align}
+  \label{eq:SpinAmplitudeTerms}
+  H_{2,2} &= -\frac{16}{3} \sqrt{\frac{\pi}{5}} v^5 \eta \left[2 \delta
+    \chi_{a} + 2(1-\eta) \chi_{s} + 3 v \eta \left(\chi_{a}^2 -
+      \chi_{s}^2 \right) \right] e^{-2 i \Phi}~, \\
+  H_{2,1} &= 4 i \sqrt{\frac{\pi}{5}} v^4 \eta (\delta \chi_{s} +
+  \chi_{a}) e^{-i \Phi}~, \\
+  H_{3,2} &= \frac{32}{3} \sqrt{\frac{\pi}{7}} v^5 \eta^2 \chi_{s}
+  e^{-2 i \Phi}~.
+\end{align}
+In all cases, modes with negative values of $m$ can be obtained from
+\begin{equation}
+  \label{eq:NegativeMModes}
+  H_{\ell, -m} = (-1)^{\ell}\, \bar{H}_{\ell,m}~.
+\end{equation}
+
+The appropriate SPA amplitude in Fourier space can easily be deduced
+from its time-domain description $A_{\ell m}$ by
+\begin{equation}
+ \tilde A_{\ell m} = A_{\ell m} \sqrt{\frac{2\pi}{m \ddot \Phi}} =
+A_{\ell m} \sqrt{\frac{2 \pi M}{3m v^2 \, \dot v}}~,
+\end{equation}
+where $\dot v$ can be taken for instance from Eq.~(\ref{eq:dvByDt})
+and all arguments should be replaced according to
+Eq.~(\ref{eq:vfreq}).
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "NRDataFormat"
+%%% End: 
