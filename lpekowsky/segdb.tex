@@ -26,14 +26,14 @@ The LIGO and Virgo detectors are extremely sophisticated, complex, and
 sensitive.  Glitches can be produced in and by many parts of the
 instrument, and may ultimately be caused by either environmental
 conditions or conditions internal to the detectors.  A great deal of
-information is about the state of the detector is recorded in
-\emph{channels}, which are time-series sampled from 1 Hz to 16 kHz,
+information about the state of the detector is recorded in
+\emph{channels}, which are time series sampled from 1 Hz to 16 kHz,
 depending on the channel.  These include such information as
 \begin{itemize}
-\item The power at which the Laser is operating
-\item The output of every photodiode throughout the detector
-\item The power in seismic noise in various frequency bands
-\item The activity of the control servos
+\item the power at which the Laser is operating
+\item the output of every photodiode throughout the detector
+\item the power in seismic noise in various frequency bands
+\item the activity of the control servos
 \end{itemize}
 %
 and a great deal more.  When any of these exceed normal operating
@@ -49,9 +49,9 @@ LIGO labs, and a science monitor (``SciMon'') who is a member of the
 LIGO Scientific Collaboration (LSC).  Either may flag times of unusual
 activity such as
 \begin{itemize}
-\item Movement of heavy machinery on site
-\item Nearby storms
-\item Modification of control parameters
+\item movement of heavy machinery on site
+\item nearby storms
+\item modification of control parameters
 \end{itemize}
 %
 The operator and sciMon also jointly decide when to flag time as
@@ -67,13 +67,13 @@ called the \emph{Data Monitoring Tool} (DMT) which records conditions
 such as
 %
 \begin{itemize}
-\item An instrumental channel has exceeded a threshold
-\item The standard deviation of a channel has exceeded its expected
+\item an instrumental channel has exceeded a threshold
+\item the standard deviation of a channel has exceeded its expected
 value
-\item Elevated seismic noise in a frequency band
-\item The detector is properly locked
+\item elevated seismic noise in a frequency band
+\item the detector is properly locked
 \end{itemize}
-
+%
 Note that these are all yes-or-no conditions.  Flags do not store
 values, such as the level of seismic noise.  That information is
 available in the channel data, the flags are intended to provide the
@@ -83,19 +83,19 @@ during times when the responsible DMT process was not running.
 
 In order to be useful flags must be represented in a standard format
 and accessible to members of the LSC.  We start by identifying a flag
-as a triple of (ifo id, flag name, version number), where \emph{ifo
-id} identifies the instrument, \emph{flag name} is a unique
-identifier, and \emph{version number} is an integer starting from 1.
-Version numbers can change if, for example, a bug is found in one of
-the DMT processes.  Once the bug is fixed it can be rerun over the
-original channel data to produce the next subsequent version of the
-flag.  However, by storing all prior versions we are able to
-reconstruct the results of earlier searches.  To prevent confusion
-with case sensitivity in processing tools, all DQ flag names were
-required to be in upper case case. Additionally, a 3-letter prefix was
-be added to each flag name to better identify the source where data
-came from. For example: the flag indicating high wind speed would be
-\texttt{DMT-WIND\_OVER\_30MPH}.
+as a triple of (ifo id, flag name, version number). \emph{ifo id}
+identifies the instrument.  \emph{flag name} is a unique identifier To
+prevent confusion with case sensitivity in processing tools, all DQ
+flag names were required to be in upper case case. Additionally, a
+3-letter prefix was be added to each flag name to better identify the
+source where data came from. For example: the flag indicating high
+wind speed would be \texttt{DMT-WIND\_OVER\_30MPH}.  \emph{version
+number} is an integer starting from 1.  Version numbers can change if,
+for example, a bug is found in one of the DMT processes.  Once the bug
+is fixed the DMT can be rerun over the original channel data to
+produce the next subsequent version of the flag.  However, by storing
+all prior versions we are able to reconstruct the results of earlier
+searches. 
 
 Conceptually, managing flag information consists of providing
 functions that
@@ -107,8 +107,7 @@ times where the flag was defined
 times where the flag was active
 \end{itemize}
 %
-We represent sets of times as sets of \emph{segments}, which are
-half-open intervals aligned on GPS-second boundaries.  The times
+The times
 during which the flag was inactive, if needed, can be obtained from the
 difference between these two.  It is also useful to think of these
 functions as mapping (ifo id, flag name, version number, time) to an
@@ -124,15 +123,17 @@ set of flags that are on.
 
 \section{Implementation Details}
 
-The implementation of the maps between flags and sets of segments is
-conceptually straightforward.  We can assign to each flag triple a
-unique integer identifier, and then store segments as triples of (id, start
-time, end time).  The functions above then consist of looking up the
-flag, determining the identifier, then returning all segments with
-matching identifiers.  We will need two such segment stores, one for
-``defined'' segments and one for ``active'' segments.  We will call the
-map between flags and identifiers the \texttt{segment\_definer}, the
-store of ``defined'' segments will be called the
+The implementation of the maps between flags and sets of times is
+conceptually straightforward.  We represent sets of times as sets of
+\emph{segments}, which are half-open intervals aligned on GPS-second
+boundaries.  We can assign to each flag triple a unique integer
+identifier, and then store segments as triples of (id, start time, end
+time).  The functions above then consist of looking up the flag,
+determining the identifier, then returning all segments with matching
+identifiers.  We will need two such segment stores, one for
+``defined'' segments and one for ``active'' segments.  We will call
+the map between flags and identifiers the \texttt{segment\_definer},
+the store of ``defined'' segments will be called the
 \texttt{segment\_summary}, and we we reserve the name \texttt{segment}
 for the store of active segments.
 
@@ -143,12 +144,12 @@ In S6 flags were stored in two ways
 \item as files in eXtensible Markup Language (XML) format.  XML is a
 scheme for adding structure to documents.  It is relatively
 simple in that XML files can be opened with standard editors.  The LSC
-utilities specialized form of XML called \emph{LIGO light weight} or
+utilizes a specialized form of XML called \emph{LIGO light weight} or
 LIGO LW.  The names of most programs that produce or consume such files
 begin with the prefix \texttt{ligolw\_}.  See
 Sec.~\ref{sec:data_file_format} for more on this format.
 
-\item In a relational database called the \emph{segment database},
+\item in a relational database called the \emph{segment database},
 hosted at CalTech.  This allowed high-speed, distributed
 access to flag information.  See
 Sec.~\ref{sec:segment_database_design} for more on the structure of
@@ -180,7 +181,7 @@ the \texttt{dmtdq\_seg\_insert} program to insert the XML data into
 the segment database.
 
 \item \textbf{Archival of DMT segment data:} The 60 second XML files
-generated by the DMT were replication to Caltech and other LSC
+generated by the DMT were replicated to Caltech and other LSC
 computing centers. Files were compressed using the gzip algorithm.
 
 \item Software was developed to combine the segment

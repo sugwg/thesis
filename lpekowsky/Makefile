@@ -1,10 +1,8 @@
 TEXFILES= comparison.tex \
 detchar.tex \
 introduction.tex \
-modeling.tex \
 ninja1.tex \
 ninja2.tex \
-questions.tex \
 search.tex \
 theory.tex \
 thesis.tex \
