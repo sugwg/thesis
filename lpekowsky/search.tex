@@ -23,7 +23,7 @@ provided by standard code libraries.
 
 
 
-\section{Detecting signals in noise}
+\section{Detecting Signals in Noise}
 \label{sec:ihope_match_filter}
 
 There are many ways to search for evidence of gravitational waves in
@@ -119,7 +119,7 @@ It can also be shown that
 \delta(f-f')
 \end{equation}
 
-\subsection{The matched filter}
+\subsection{The Matched Filter}
 \label{ssec:matched_filter}
 
 We now specialize to the case of LIGO.  We denote the noise in the
@@ -177,7 +177,7 @@ N^2 &= \langle \hat{s}^2(t) \rangle - \langle \hat{s}(t) \rangle^2 \\
 \tilde{n}^\star(f) \tilde{n}(f')\rangle \\
 \end{align}
 %
-Using equation~\ref{eq:psd2} this becomes
+Using Eqn.~\ref{eq:psd2} this becomes
 %
 \begin{equation}
 N^2 = \int_{-\infty}^\infty df\,\frac{1}{2} S_n(f) |\tilde{K}(f)|^2
@@ -247,7 +247,7 @@ pattern $h(t)$ in the data is, up to normalization~\cite{Finn1992},
 p(h) \propto \exp\left(- \frac{1}{2} \InnerProduct{h|h} \right)
 \end{equation}
 
-Now using equation~\ref{eq:InnerProduct} the SNR becomes
+Now using Eqn.~\ref{eq:InnerProduct} the SNR becomes
 %
 \begin{equation}
 \label{eq:InnerProductSNR}
@@ -274,7 +274,7 @@ called the \emph{template} waveform) is
 \end{equation}
 
 The template has an unknown phase, denoted $\phi_0$ in
-equation~\ref{eq:spa_waveform}.  As this term has no frequency
+Eqn.~\ref{eq:spa_waveform}.  As this term has no frequency
 dependence it gives rise to a constant of the form $\exp(i\phi_0)$,
 which can be pulled out of the integral.  We can then maximize over
 this value by taking the absolute value. 
@@ -387,7 +387,7 @@ may have larger values than real signals we can not simply take the
 largest value across the entire analysis but must instead choose a
 \emph{window}.  A logical choice for the length of this window is the
 time length of the template.  For pN waveforms described in
-section~\ref{sec:PNWaveforms} this is defined as the time from which
+Sec.~\ref{sec:PNWaveforms} this is defined as the time from which
 the instantaneous frequency is 40 Hz to the time where it becomes
 infinite.
 
@@ -409,9 +409,9 @@ for each sample point j
       event\_snr   = \(\rho\sb{j}\)
 \end{alltt}
 %
-This is illustrated in figure~\ref{f:snr_cartoon}.  We will discuss
+This is illustrated in Fig.~\ref{f:snr_cartoon}.  We will discuss
 some implications of this algorithm in
-section~\ref{sec:daily_ihope_open_questions}.
+Sec.~\ref{sec:daily_ihope_open_questions}.
 
 
 \begin{figure}
@@ -420,7 +420,7 @@ section~\ref{sec:daily_ihope_open_questions}.
   \label{f:snr_cartoon}
 A ``cartoon'' illustrating the trigger-selection algorithm.  The graph
 shows an SNR time series of the kind produced by
-equation~\ref{eq:snr_time_series}.  Assume the template is one second
+Eqn.~\ref{eq:snr_time_series}.  Assume the template is one second
 long.  As the SNR rises above threshold just before point (1) the
 ``window'' opens.  Point (1) is found as the nearest maximum.  One
 second after point (1) the window closes and point (1) is 
@@ -437,10 +437,10 @@ a trigger, as it is more than one second from (3).
 
 
 
-\section{The $\chisq$ test}
+\section{The $\chisq$ Test}
 \label{sec:ihope_chisq}
 
-Consider again the SNR time series, equation~\ref{eq:snr_time_series},
+Consider again the SNR time series, Eqn.~\ref{eq:snr_time_series},
 which we now write as
 %
 \begin{equation*}
@@ -480,7 +480,7 @@ and are zero elsewhere and the $f_i$ are chosen such that
 \end{equation*}
 %
 where $f_0$ is the starting frequency (40 Hz in LIGO) and $f_c$ is, as
-in equation~\ref{eq:spa_waveform}, the frequency at which we terminate
+in Eqn.~\ref{eq:spa_waveform}, the frequency at which we terminate
 the waveform.  We then filter with these sub-templates independently
 to produce the $p$ time series $\rho_i(t)$ and construct the quantity
 %
@@ -510,13 +510,13 @@ factors of the second clause have been chosen based on studies to test
 the ability of the search to distinguish between simulated injected
 signals and glitches.
 
-\section{Choosing the templates}
+\section{Choosing the Templates}
 \label{sec:bank_metric}
 
 We have thus far referred to the $h$ as ``the template'', but recall
-from equation~\ref{eq:spa_waveform} that the waveforms depend on
+from Eqn.~\ref{eq:spa_waveform} that the waveforms depend on
 the parameters of the binary, such as total mass $M$ and symmetric
-mass ratio $\eta$.  As discussed in section~\ref{ssec:overlap},
+mass ratio $\eta$.  As discussed in Sec.~\ref{ssec:overlap},
 the difference between the signal and the template used in the matched filter 
 corresponds directly to a reduction in $\rho$.  We must therefore
 construct a \emph{bank} of templates arranged to capture, to within
@@ -602,7 +602,7 @@ flat and, when written in appropriate coordinates, the coefficients
 are constant.
 
 
-\section{The search pipeline}
+\section{The Search Pipeline}
 \label{sec:search_pipeline}
 
 We now discuss how the above elements are incorporated into a
@@ -631,7 +631,7 @@ frequencies, we must first filter the data to remove power below 40 Hz.
 The PSD for each IFO is then calculated by a variation of
 \emph{Welch's method}.  The 2048 seconds are split into 15 256-second
 chunks, overlapping by 128 seconds.  The PSD of each chunk is then
-calculated using the defining equation~\ref{eq:psd1}.  The final PSD
+calculated using the defining Eqn.~\ref{eq:psd1}.  The final PSD
 is obtained by taking the median values of each frequency bin. This is
 done in order to make the PSD estimation robust against loud, short
 events.  As an extreme example, if there were a loud gravitational
@@ -640,7 +640,7 @@ the SNR.
 
 This PSD is then used to construct the template bank.  In S6/VSR2,3 we
 used stationary-phase templates of the form of
-equation~\ref{eq:spa_waveform}.   We take the phase evolution, $\Psi$
+Eqn.~\ref{eq:spa_waveform}.   We take the phase evolution, $\Psi$
 to 3.5 pN order, corresponding to an expansion in $v$ to seventh
 order.   See chapter~\ref{ch:comparison} for more on this choice.
 
@@ -657,13 +657,13 @@ not enabled at this stage, as it is computationally expensive.
 The PSD used at this stage is not exactly the PSD that was calculated,
 it has been modified to avoid wrap-around issues and prevent a loud
 impulse from corrupting the entire chunk.  We return to this issue in
-section~\ref{ssec:penguins}, but for the moment recall that the
+Sec.~\ref{ssec:penguins}, but for the moment recall that the
 response of the matched filter to an impulse can elevate the SNR for
 an extended time.
 
 The outcome of this stage is a set of triggers for each IFO.  We then
 apply a \emph{coincidence test} by testing whether each trigger is
-close (in the sense of the metric equation~\ref{eq:bank_matric}) to
+close (in the sense of the metric Eqn.~\ref{eq:bank_matric}) to
 triggers from the other instruments.  We allow the trigger time to
 differ by the maximum time it could take a gravitational wave to
 travel between instruments.
@@ -684,7 +684,7 @@ where $i$ ranges over the set of detectors.
 In order to determine how significant a foreground trigger is it must
 be compared against the background distribution.  In pure Gaussian
 noise the probability distribution for cumulative new SNR could be
-calculated from equation~\ref{eq:prob_of_signal}.  As the real data is
+calculated from Eqn.~\ref{eq:prob_of_signal}.  As the real data is
 not Gaussian, this distribution must instead be measured.  We do so by
 performing \emph{time slides}.  The data from each IFO is slid by more
 than the light-travel time between instruments.  Assuming at most one
@@ -711,7 +711,7 @@ parameters of the injections are known, allowing complete end-to-end
 tests of the pipeline.  However, there have been ``blind'' injection
 challenges, signals injected at \texttt{ETMY} by a small group within
 the collaboration which are not announced.  We will have much more to
-say about one such injection in section~\ref{sec:applications_dog}.
+say about one such injection in Sec.~\ref{sec:applications_dog}.
 
 \section{Conclusions}
 
