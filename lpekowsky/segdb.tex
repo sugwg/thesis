@@ -21,10 +21,11 @@ determine times that needed to be vetoed.
 
 
 \section{Data Quality Flags}
+\label{sec:dq_flags}
 
 The LIGO and Virgo detectors are extremely sophisticated, complex, and
 sensitive.  Glitches can be produced in and by many parts of the
-instrument, and may ultimately be caused by either environmental
+detector, and may ultimately be caused by either environmental
 conditions or conditions internal to the detectors.  A great deal of
 information about the state of the detector is recorded in
 \emph{channels}, which are time series sampled from 1 Hz to 16 kHz,
@@ -39,22 +40,23 @@ depending on the channel.  These include such information as
 and a great deal more.  When any of these exceed normal operating
 values it may indicate the presence of glitches, or even be their root
 cause.  It is therefore extremely valuable to both data analysts and 
-commissioners working on the instrument to be able to \emph{flag} any
+commissioners working on the detector to be able to \emph{flag} any
 anomalous conditions.
 
 The first line of defense against glitches is on-site as the
-instrument is running.  At all such times the control room is staffed
-by an operator who is an expert in running the instrument employed by
-LIGO labs, and a science monitor (``SciMon'') who is a member of the
-LIGO Scientific Collaboration (LSC).  Either may flag times of unusual
-activity such as
+detector is running.  At all such times the control room is staffed
+by an operator, an employee of LIGO labs who is an expert in running
+the detector, and a science monitor
+(``SciMon'') who is a member of the LIGO Scientific Collaboration
+(LSC).  Either may flag times of unusual activity such as
+
 \begin{itemize}
-\item movement of heavy machinery on site
-\item nearby storms
-\item modification of control parameters
+\item movement of heavy machinery on the site 
+\item nearby storms 
+\item modification of control parameters 
 \end{itemize}
 %
-The operator and sciMon also jointly decide when to flag time as
+The operator and SciMon also jointly decide when to flag time as
 suitable for analysis.  This depends on a few conditions; there must
 be laser light in both arms and the detector must be \emph{locked},
 meaning the cavities are on resonance.  When such conditions are met
@@ -83,19 +85,20 @@ during times when the responsible DMT process was not running.
 
 In order to be useful flags must be represented in a standard format
 and accessible to members of the LSC.  We start by identifying a flag
-as a triple of (ifo id, flag name, version number). \emph{ifo id}
-identifies the instrument.  \emph{flag name} is a unique identifier To
-prevent confusion with case sensitivity in processing tools, all DQ
-flag names were required to be in upper case case. Additionally, a
-3-letter prefix was be added to each flag name to better identify the
-source where data came from. For example: the flag indicating high
-wind speed would be \texttt{DMT-WIND\_OVER\_30MPH}.  \emph{version
-number} is an integer starting from 1.  Version numbers can change if,
-for example, a bug is found in one of the DMT processes.  Once the bug
-is fixed the DMT can be rerun over the original channel data to
-produce the next subsequent version of the flag.  However, by storing
-all prior versions we are able to reconstruct the results of earlier
-searches. 
+as a triple of (detector id, flag name, version number).
+\emph{detector id} identifies the detector with a two-letter
+abbreviation; H1, L1, V1 for Hanford, Livingston and Virgo
+respectively.  \emph{flag name} is a unique identifier, to prevent
+confusion with case sensitivity in processing tools, all DQ flag names
+were required to be in upper case case. Additionally, a 3-letter
+prefix was be added to each flag name to better identify the source
+where data came from. For example: the flag indicating high wind speed
+would be \texttt{DMT-WIND\_OVER\_30MPH}.  \emph{version number} is an
+integer starting from 1.  Version numbers can change if, for example,
+a bug is found in one of the DMT processes.  Once the bug is fixed the
+DMT can be rerun over the original channel data to produce the next
+subsequent version of the flag.  However, by storing all prior
+versions we are able to reconstruct the results of earlier searches. 
 
 Conceptually, managing flag information consists of providing
 functions that
@@ -112,7 +115,7 @@ during which the flag was inactive, if needed, can be obtained from the
 difference between these two.  It is also useful to think of these
 functions as mapping (ifo id, flag name, version number, time) to an
 ``active, inactive or undefined'' indicator, or mapping a time to a
-set of flags that are on.
+set of flags that are active.
 
 
 % https://www.lsc-group.phys.uwm.edu/daswg/wiki/content_of_segment_publication_and_discovery
@@ -138,15 +141,16 @@ the store of ``defined'' segments will be called the
 for the store of active segments.
 
 We now have a structure in which data quality flags can be stored.
-In S6 flags were stored in two ways
+In S6 this was implemented in two ways:
 %
 \begin{enumerate}
 \item as files in eXtensible Markup Language (XML) format.  XML is a
-scheme for adding structure to documents.  It is relatively
-simple in that XML files can be opened with standard editors.  The LSC
-utilizes a specialized form of XML called \emph{LIGO light weight} or
-LIGO LW.  The names of most programs that produce or consume such files
-begin with the prefix \texttt{ligolw\_}.  See
+scheme for adding structure to documents~\cite{xmlconsortium}.  It is
+relatively simple in that XML files can be read and modified by
+standard text editors.  The LSC utilizes a specialized form of XML
+called \emph{LIGO light weight} or LIGO LW~\cite{LIGO-T990023-01}.
+The names of most programs that produce or consume such files begin
+with the prefix \texttt{ligolw\_}.  See
 Sec.~\ref{sec:data_file_format} for more on this format.
 
 \item in a relational database called the \emph{segment database},
@@ -176,7 +180,7 @@ Fig.~\ref{f:segment_flow}:
 \item \textbf{DMT} The DMT handled
 the creation of all science segments and online data quality segments
 in S6. Every 60 seconds, the DMT wrote segment
-information in XML format to disk at the Observatories. The DMT called
+information in XML format to disk at each of the detectors. The DMT called
 the \texttt{dmtdq\_seg\_insert} program to insert the XML data into
 the segment database.
 
@@ -230,14 +234,13 @@ The \verb|segment_definer| table should contain a definition of the
 segments included in the file. The \verb|ifos|, \verb|name| and
 \verb|version| columns should contain the name and version of the
 segment. The name should be upper case for all segments. DMT-derived
-segments should be prefixed with the string \verb|DMT-|, data derived
-from the detector state vector channels should be prefixed with
-\verb|IFO-|, segments created by the detector characterization group
-should be prefixed with \verb|DCH-| and segments from the Virgo
-database should be prefixed with \verb|VDB-|.  The comment column can
-be used to add a human-readable description of the segment. The
-\verb|segment_definer| column is used to link this type of segment to
-the intervals in the \verb|segment| and \verb|segment_summary| tables.
+segments should be prefixed with the string \verb|DMT-|, segments
+created by the detector characterization group should be prefixed with
+\verb|DCH-| and segments from the Virgo database should be prefixed
+with \verb|VDB-|.  The comment column can be used to add a
+human-readable description of the segment. The \verb|segment_definer|
+column is used to link this type of segment to the intervals in the
+\verb|segment| and \verb|segment_summary| tables.
 
 The \verb|segment| table should contain the GPS start and end time
 when the segment described in the \verb|segment_definer| table was
@@ -601,7 +604,8 @@ ligolw\_segments\_from\_cats
 \item Append segments to the existing segment types.
 \end{itemize}
 %
-The built-in help message is displayed below:
+This program uses the terminology IFO (\emph{Interferometric Observatory})
+instead of ``detector.''  The built-in help message is displayed below:
 %
 {\small
 \begin{verbatim}
@@ -684,12 +688,12 @@ them.  We defer discussion of the meaning of these categories until
 the next chapter, but note here that the categories are indicated by
 integers from 1 to 4, in decreasing levels of severity.  These
 categories are commonly referred to as \emph{CAT1} through
-\emph{CAT4}.  We also note that time marked with category 1 is
+\emph{CAT4}.  We also note that time marked with CAT1 is
 entirely excluded form the analysis.  4091 seconds of data with one
-second of category 1 time in the middle will be split into two
+second of CAT1 time in the middle will be split into two
 2045-second chunks.  Neither of these will be analyzable by the ihope
 pipeline, which requires 2048 seconds of data in order to compute the
-PSD as discussed in Sec.~\ref{sec:search_pipeline}.  Short category 1
+PSD as discussed in Sec.~\ref{sec:search_pipeline}.  Short CAT1
 vetos can therefore effectively veto much larger times, and such
 vetoes are therefore to be avoided whenever possible. 
 
@@ -721,8 +725,8 @@ describing the flags to be applied at different levels. The comment
 column of the process table should contain the version of the file.
 The columns in the \verb|veto_definer| table are as follows:
 \verb|ifo|, \verb|name| and \verb|version| uniquely define a
-particular DQ/veto flag. \verb|category| described which veto category
-it should be applied at (i.e. $0, 1, 2, 3, \ldots$), \verb|start_time|
+particular DQ/veto flag. \verb|category| indicates at which category
+the veto should be applied, \verb|start_time|
 and \verb|end_time| denote the GPS time interval for which the DQ/veto
 flag should be applied (Note: if \verb|end_time| is zero, then the
 current GPS time is assumed). \verb|start_pad| and \verb|end_pad| are

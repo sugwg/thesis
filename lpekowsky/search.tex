@@ -40,23 +40,22 @@ we will return to this question in subsequent chapters.
 \subsection{Random Processes}
 \label{ssec:random_processes}
 
-We start by modelling the noise in the instruments, following the
+We start by modelling the noise in the detectors, following the
 treatment in~\cite{BlandfordThorne}.  Seismic noise is not predictable
 in any detailed way, and thermal and shot noise are quantum-mechanical
 in nature and therefore can not be predicted even in principle.  The
 noise is therefore a \emph{random process}.  Such a process is
 described by a collection of probability density functions of the form
-
+%
 \begin{equation*}
 \label{eq:pdfs}
 p(y_n, t_n; y_{n-1}, t_{n-1}; \ldots y_0 t_0) dy_n dy_{n-1} \ldots
 dy_0
 \end{equation*}
-
+%
 which gives the probability that the value at time $t_0$ will will
 lie between $y_0$ and $y_0 + dy_0$ and that the value at time $t_1$
 will will lie between $y_1$ and $y_1 + dy_1$, and so on.
-
 By considering a hypothetical ensemble of such processes we can
 construct average values of functions of the process at one or more
 times.  We denote the ensemble average of a quantity $x$ by angle
@@ -304,7 +303,7 @@ Substituting this into the matched filter,
 %
 where we have added the absolute value from the maximization over
 $\phi_0$.  This is just the inverse Fourier transform of the quantity
-$\tilde{s}(f)\tilde{h}(f)^\star/S_n$.  
+$\tilde{s}(f)\tilde{h}^\star(f)/S_n(f)$.  
 
 \subsection{The Overlap}
 \label{ssec:overlap}
@@ -370,7 +369,9 @@ subsequent chapters.
 
 From the SNR time series, $\rho(t)$ we wish to select \emph{triggers},
 discreet points whose time and $\rho$ value correspond to the time and
-significance of a potential detection.
+significance of a potential detection.  This is done using an
+algorithm described in Ref.~\cite{Allen:2005fk}.
+
 Equation~\ref{eq:prob_of_signal} says that even in the absence of a
 signal there will be random fluctuations in $\rho(t)$.  We therefore
 require a threshold on $\rho(t)$ that will eliminate most of the
@@ -382,7 +383,7 @@ $\rho(t)$ may be thought of as ``sliding'' the template against the
 signal.  As the two line up $\rho(t)$ will increase, achieving a
 maximum when they are perfectly aligned, and then decreasing.  We
 therefore need only create a trigger from the largest value of
-$\rho(t)$.  Since glitches can also elevate the $\rho(t)$, and indeed
+$\rho(t)$.  Since glitches can also elevate $\rho(t)$, and indeed
 may have larger values than real signals we can not simply take the
 largest value across the entire analysis but must instead choose a
 \emph{window}.  A logical choice for the length of this window is the
@@ -471,7 +472,7 @@ only that $\rho$ is large, but also that the SNR was accumulated over the
 frequency integration in a way consistent with a real signal.  We do
 this by dividing the template into $p$ sub-templates $h_i$, which
 match the original template between frequencies $f_i$ and $f_{i+1}$
-and are zero elsewhere and the $f_i$ are chosen such that
+and are zero elsewhere.  The $f_i$ are chosen such that
 %
 \begin{equation*}
 \int_{f_i}^{f_{i+1}} \frac{|h_i|^2}{S_n(f)}\,df
@@ -524,7 +525,7 @@ some acceptable loss of SNR, all the signals of interest.  To do so we
 consider the space of templates as a manifold, as in
 chapter~\ref{ch:theory}, and we use the parameter values (or functions
 of these values) as coordinates.  The distance between two points
-$\mathbf{p}$ and $\mathbf{q}$, with coordinates=parameters $p_i$ and
+$\mathbf{p}$ and $\mathbf{q}$, with coordinates (=parameters) $p_i$ and
 $q_i$, is defined in terms of the overlap of templates at those
 parameters
 %
@@ -565,8 +566,8 @@ minimal match, discard it
 candidates, where $N$ is chosen to give a reasonable probability that
 the space has been covered.
 \end{itemize}
-
-In many cases however we can do better then this.  Since we are
+%
+In many cases we can do better then this.  Since we are
 interested in distances on a manifold it makes sense to seek a metric
 on this space.  Such a metric can be obtained by expanding the
 overlap function~\cite{Owen:1995tm, Owen:1998dk}
@@ -585,7 +586,7 @@ overlap function~\cite{Owen:1995tm, Owen:1998dk}
 where we can drop the linear term because the overlap is a maximum at
 $\Delta \mathbf{\lambda} = 0$.  When using frequency-domain,
 stationary-phase templates of the form~\ref{eq:spa_waveform}, the
-calculation of this metric can be done analytically, and gives a
+calculation of this metric can be done analytically and gives a
 result in terms of moments of the noise curve
 %
 \begin{equation*}
@@ -595,11 +596,11 @@ I(q) = S_n(f_0) \int_{f_0}^{f_c} \frac{x^{-q/3}}{S_n(x f_0)}\,dx
 where $f_0$ is a chosen reference frequency.
 
 The metric can then be used to efficiently lay out a grid of
-templates.  In general it is impossible to lay out a grid on a curved
-surface such that every point is the same distance from its nearest
-neighbors, but the metric on the template manifold is approximately
-flat and, when written in appropriate coordinates, the coefficients
-are constant.
+templates~\cite{hexabank}.  In general it is impossible to lay out a
+grid on a curved surface such that every point is the same distance
+from its nearest neighbors, but the metric on the template manifold is
+approximately flat and, when written in appropriate coordinates, the
+coefficients are constant.
 
 
 \section{The Search Pipeline}
@@ -620,7 +621,7 @@ binaries.  We focus in particular on LIGO's sixth science run which
 overlaps Virgo's second and third.  For more details on this search
 see Ref.~\cite{Capano:thesis}.
 
-In the first step the data from each IFO the analysis is broken into
+In the first step the data from each detector the analysis is broken into
 2048-second segments.  This is done for computational efficiency, as
 well as to restrict to timespans over which the PSD is nearly
 stationary.  Next, we filter to remove power below 40 Hz.  This is
@@ -631,21 +632,22 @@ below 40 Hz is orders of magnitude greater than the noise at higher
 frequencies signals at higher frequencies would be completely lost due
 to rounding errors.
 
-The PSD for each IFO is then calculated by a variation of
-\emph{Welch's method}.  The 2048 seconds are split into 15 256-second
-chunks, overlapping by 128 seconds.  The PSD of each chunk is then
-calculated using the defining Eqn.~\ref{eq:psd1}.  The final PSD
-is obtained by taking the median values of each frequency bin. This is
-done in order to make the PSD estimation robust against loud, short
-events.  As an extreme example, if there were a loud gravitational
-wave in the data the PSD would be elevated, paradoxically suppressing
-the SNR. 
+The PSD for each detector is then calculated by a variation of
+\emph{Welch's method}~\cite{Allen:2005fk}.  The 2048 seconds are split
+into 15 256-second chunks, overlapping by 128 seconds.  The PSD of
+each chunk is then calculated using the defining Eqn.~\ref{eq:psd1}.
+The final PSD is obtained by taking the median values of each
+frequency bin. This is done in order to make the PSD estimation robust
+against loud, short events.  As an extreme example, if there were a
+loud gravitational wave in the data the PSD would be elevated,
+paradoxically suppressing the SNR. 
 
-This PSD is then used to construct the template bank.  In S6/VSR2,3 we
-used stationary-phase templates of the form of
-Eqn.~\ref{eq:spa_waveform}.   We take the phase evolution, $\Psi$
-to 3.5 pN order, corresponding to an expansion in $v$ to seventh
-order.   See chapter~\ref{ch:comparison} for more on this choice.
+This PSD is then used to construct the template
+bank~\cite{Owen:1995tm, Owen:1998dk, hexbank}.  In S6/VSR2,3 we used
+stationary-phase templates of the form of Eqn.~\ref{eq:spa_waveform}.
+We take the phase evolution, $\Psi$ to 3.5 pN order, corresponding to
+an expansion in $v$ to seventh order.   See
+chapter~\ref{ch:comparison} for more on this choice.
 
 We then break the 2048-second segment into 256-second chunks (to match
 the resolution of the PSD) and filter the data with each template in
@@ -654,22 +656,23 @@ as periodic, it identifies the times $t=0$ and $t=256$.  This
 correlates the data at the beginning and end of the segment, we
 therefore discard the first and last 64 seconds in each segment, and
 overlap the segments so as to cover the entire time.  See
-Ref.~\cite{DBrownThesis} for more on this issue.  The $\chisq$ test is
-not enabled at this stage, as it is computationally expensive.  
+Refs.~\cite{Allen:2005fk,DBrownThesis} for more on this issue.  The
+$\chisq$ test is not enabled at this stage, as it is computationally
+expensive.  
 
 The PSD used at this stage is not exactly the PSD that was calculated,
 it has been modified to avoid wrap-around issues and prevent a loud
-impulse from corrupting the entire chunk.  We return to this issue in
-Sec.~\ref{ssec:penguins}, but for the moment recall that the
-response of the matched filter to an impulse can elevate the SNR for
-an extended time.
+impulse from corrupting the entire chunk~\cite{Allen:2005fk}}.  We
+return to this issue in Sec.~\ref{ssec:penguins}, but for the moment
+recall that the response of the matched filter to an impulse can
+elevate the SNR for an extended time.
 
-The outcome of this stage is a set of triggers for each IFO.  We then
-apply a \emph{coincidence test} by testing whether each trigger is
-close (in the sense of the metric Eqn.~\ref{eq:bank_matric}) to
-triggers from the other instruments.  We allow the trigger time to
-differ by the maximum time it could take a gravitational wave to
-travel between instruments.
+The outcome of this stage is a set of triggers for each detector.  We then
+apply a \emph{coincidence test}~\cite{Robinson:2008} by testing
+whether each trigger is close (in the sense of the metric
+Eqn.~\ref{eq:bank_matric}) to triggers from the other detectors.  We
+allow the trigger time to differ by the maximum time it could take a
+gravitational wave to travel between detectors.
 
 There is now a second stage of the process.  Templates in each bank
 that have not produced coincident triggers are discarded.  The
@@ -687,18 +690,18 @@ where $i$ ranges over the set of detectors.
 In order to determine how significant a foreground trigger is it must
 be compared against the background distribution.  In pure Gaussian
 noise the probability distribution for cumulative new SNR could be
-calculated from Eqn.~\ref{eq:prob_of_signal}.  As the real data is
-not Gaussian, this distribution must instead be measured.  We do so by
-performing \emph{time slides}.  The data from each IFO is slid by more
-than the light-travel time between instruments.  Assuming at most one
-gravitational wave in the data, this ensures that any coincidences are
-entirely due to triggers produced by noise.  We repeat this 100 times
-in order to build up more statistics.  At the end we have a
-probability (or equivalently a rate) of obtaining triggers at each
-combined new SNR value.  The foreground triggers are then compared to
-this distribution, those with values that are sufficiently
-rare/improbable are potential detection candidates, which are then
-subjected to extensive follow up analysis.
+calculated from Eqn.~\ref{eq:prob_of_signal}.  As the real data is not
+Gaussian, this distribution must instead be measured.  We do so by
+performing \emph{time slides}~\ref{Keppel:thesis}.  The data from each
+detector is slid by more than the light-travel time between detectors.
+Assuming at most one gravitational wave in the data, this ensures that
+any coincidences are entirely due to triggers produced by noise.  We
+repeat this 100 times in order to build up more statistics.  At the
+end we have a probability (or equivalently a rate) of obtaining
+triggers at each combined new SNR value.  The foreground triggers are
+then compared to this distribution, those with values that are
+sufficiently rare/improbable are potential detection candidates, which
+are then subjected to extensive follow up analysis.
 
 The order to test and tune the pipeline we perform numerous
 \emph{software injections}, where simulated signals are added to the

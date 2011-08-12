@@ -1,17 +1,17 @@
-In chapter~\ref{ch:detectors} we noted the presence of
+In chapter~\ref{ch:ligo_detectors} we noted the presence of
 \emph{glitches}, short transients, in the detector noise.  In
 chapter~\ref{ch:search} we noted that such glitches could produce
 triggers.  We have also noted that, in order to claim a detection, a
 candidate gravitational-wave trigger must stand out above the
 background comprised of triggers from noise sources, including
 glitches.  There is therefore a need to identify and remove glitches.
-Ideal, glitches would be removed at the source, by addressing the
+Ideally glitches would be removed at the source, by addressing the
 underlying cause in the detector.  However, by the time a glitch has
 been seen, and often long before a cause can be identified and
 addressed, it is already in the data.  We must therefore devise ways
 to remove glitches from the data as part of the analysis.  The
 activities of identifying glitches and glitch mechanisms and removing
-them from analyses all fall into the category of \emph{detector
+them from analyses fall into the category of \emph{detector
 characterization}.
 
 In the preceding chapter we discussed data quality flags, which
@@ -21,28 +21,26 @@ accessing them.  We also discussed the veto definer file, which maps
 flags to veto levels.  By combining a veto definer with a set of data
 quality flags we produce a set of \emph{veto segments}, intervals of
 time that should either not be analyzed at all or which should be
-removed from the analysis.
-
-We have thus far not discussed the construction of the veto definer
-file.  This file may be thought of as the product of detector
-characterization studies.  In broad terms the goal is to identify
-glitches, correlate them with existing flags or create new ones, and
-remove the glitches from analyses by associating the flag with a veto
-severity level through the veto definer file.  One of the most
-significant features of the S6 run is that the data analysts working
-on detector characterization were in close contact with the people
-commissioning the instrument.  This meant that, in addition to
-cleaning the search, information about problematic behavior in the
-instrument could be used to fix the problems at the source, in turn
-allowing more time to be analyzed and the prospects for making a
-detection to improve.
+removed from the analysis.  We have thus far not discussed the
+construction of the veto definer file.  This file may be thought of as
+the product of detector characterization studies.  In broad terms the
+goal is to identify glitches, correlate them with existing flags or
+create new ones, and remove the glitches from analyses by associating
+the flag with a veto severity level through the veto definer file.
+One of the most significant features of the S6 run is that the data
+analysts working on detector characterization were in close contact
+with the commissioners working on the detectors.  This meant that, in
+addition to cleaning the search, information about problematic
+behavior in the detector could be used to fix the problems at the
+source, in turn allowing more time to be analyzed and the prospects
+for making a detection to improve.
 
 Detector characterization in S6 was a major undertaking, much more
 information can be found in an upcoming paper by the LIGO Scientific
 Collaboration (LSC) and Virgo.  Three primary tools were run either
 continuously or with low-latencies to provide views into the data,
 although these were supplemented with numerous short special-purpose
-scripts.  Two of these tools, the Klinewelle
+programs.  Two of these tools, the Klinewelle
 pipeline~\cite{LIGO-T060221-00-Z} and the Omega
 pipeline~\cite{Chatterji:thesis} project data onto a wavelet basis and
 identify as triggers times and frequencies with amplitudes above a
@@ -66,7 +64,7 @@ of daily ihope in constructing the veto definer file used in the
 low-mass search.
 
 We next discuss applications of daily ihope to the study of a specific
-event, a potential gravitation wave candidate that ultimately was
+event, a potential gravitational wave candidate that ultimately was
 revealed to be a hardware injection that was performed as a ``blind
 injection challenge'' meant to test the search pipelines.  Until the
 nature of the candidate was revealed the collaboration followed it up
@@ -103,12 +101,13 @@ more significantly it leaves the full search unbiased.
 Recall that ihope is a templated, matched-filter search.  For the
 low-mass search, which was the focus of the daily runs, the templates
 are restricted, stationary-phase frequency-domain waveforms with phase
-evolution taken to 3.5 PN order.  The templates are laid out in a bank
-with 97\% overlap between nearest neighbors, and the mass range is
-from 2 $\msun - 25 \msun$.  A $\chisq$ discriminator is constructed to
-better separate signals from glitches (eqn.\ref{eq:chisq}), and the
-information from this discriminator is used along with the SNR to
-construct the new SNR detection statistic (eqn.~\ref{eq:new_snr}).
+evolution taken to 3.5 pN order (see Appendix A).  The templates are
+laid out in a bank with 97\% overlap between nearest neighbors, and
+the mass range is from 2 $\msun - 25 \msun$.  A $\chisq$ discriminator
+is constructed to better separate signals from glitches
+(eqn.\ref{eq:chisq}), and the information from this discriminator is
+used along with the SNR to construct the $\newsnr$ detection statistic
+(eqn.~\ref{eq:new_snr}).
 
 By construction, a great deal of the information provided by the full
 bank search is redundant.  This is necessary in the full search to
@@ -116,11 +115,11 @@ avoid losing more than 3\% of the SNR from a real signal.  However, as
 daily ihope is not a search this requirement no longer holds.
 Further, the evaluation of each additional template and the initial
 layout of the bank incurs significant computational overhead.
-Therefore a number of simplifications were applied to the daily ihope
+Therefore a number of simplifications were made to the daily ihope
 bank.
 
-First, a static bank was used for each IFO, based on the layout at a
-time in each instrument when the inspiral range was high, no
+First, a static bank was used for each detector, based on the layout at a
+time in each detector when the inspiral range was high, no
 operational problems were noted by the scimon or operator, and the
 Omega, Klinewelle, and daily ihope pipelines showed no anomalous behavior.
 Second, the number of templates was reduced.  Lower-mass systems have
@@ -128,7 +127,7 @@ more cycles in the sensitive LIGO band, there is therefore ample
 information to distinguish between waveforms with close parameters.
 Conversely, this means that the low-mass end of the bank is very dense
 (in the sense of number of templates per unit square in parameter
-space, they are still equidistant in the sense of the bank metric.
+space, they are still equidistant in the sense of the bank metric).
 Such fine resolution is not needed when looking for glitches,
 therefore the minimal match between templates in the region below a
 chirp mass ($\mathcal{M} = M \eta^{3/5}$) of 3.46 $M_\odot$ was set to
@@ -160,19 +159,20 @@ complication in doing so.
 
 Daily ihope processing ran at 03:00 GMT and examined data spanning the
 24 hours ending at 00:00 GMT.  Unlike full ihope, the analysis was
-done on all science time, including that which would be vetoed at CAT
-1 by the full analysis.  This was done so that we could see the effect
-of the CAT 1 vetoes.  It is plausible, for example, that some such
-vetoes would be too aggressive and we could decide based on the daily
-results to include such times back into the analysis.  For consistency
-science time was denoted CAT 0.  In addition CAT 3 vetoes to remove
-hardware injections were not applied, so that we could see how many
-injections would be lost by CAT 4 vetoes.  The daily pages therefore
-displayed results for categories 0, 1, 1+2, and 1+2+4.
+done on all time marked as \emph{science} by the operator and SciMon
+(see Sec.~\ref{sec:dq_flags}), including that which would be vetoed at
+CAT1 in the full analysis.  This was done so that we could see the
+effect of the CAT1 vetoes.  It is plausible, for example, that some
+such vetoes would be too aggressive and we could decide based on the
+daily results to include such times back into the analysis.  For
+consistency science time was denoted CAT0.  In addition CAT3 vetoes
+to remove hardware injections were not applied, so that we could see
+how many injections would be lost by CAT4 vetoes.  The daily pages
+therefore displayed results for categories 0, 1, 1+2, and 1+2+4.
 
-For each 2048-second chunk of contiguous data, at each IFO, the data
-was run through each template in the bank and triggers selected as
-described in Sec.~\ref{ssec:analysis_trigger_selection}. For each
+For each 2048-second chunk of contiguous data, at each detector, the
+data was run through each template in the bank and triggers selected
+as described in Sec.~\ref{ssec:analysis_trigger_selection}. For each
 trigger $\chisq$ and new SNR were calculated and recorded.  Clustering
 was then done in order to focus attention on glitches that were most
 likely to cause problems in the full search.  Two sets of clustered
@@ -180,9 +180,9 @@ triggers were recorded using windows of 30 milliseconds and 16
 seconds.  For each set the trigger with the largest value of new SNR
 across all templates within the window length was recorded.
 
-A version of the veto definer file designated as ``online'' was placed
-on a web site from where it could be downloaded by daily ihope.  This
-file was used to generate veto segments using the
+A version of the veto definer file designated for low-latency use  was
+placed on a web site from where it could be downloaded by daily ihope.
+This file was used to generate veto segments using the
 \verb|ligolw_segments_from_cats| program discussed in
 Sec.~\ref{ssec:from_cats}.  Any trigger that fell within the vetoed
 segments was removed.
@@ -201,7 +201,7 @@ split into sub-banks to speed up the process, as described in the
 text.  Each sub-bank is filtered with $\chisq$ turned on.  Triggers
 are then grouped and clustered.  The vetoes are applied sequentially,
 and at each stage plots are generated.  The entire diagram is
-replicated for each 2048-second block and for each IFO.}
+replicated for each 2048-second block and for each detector.}
 \end{figure}%
 
 
@@ -230,7 +230,9 @@ now present a walk-through of the daily pages.
 Each report and plot is made for each combination of the following:
 
 \begin{itemize}
-\item IFO: H1, L1 and V1
+\item Detector: H1, L1 and V1 for the Hanford, Livingston and Virgo
+detectors.  Daily ihope refers to these as \emph{Interferometric
+Observatories} or IFOs.
 \item Cluster level: Unclustered, 30 ms clustering, 16 second
 clustering
 \item Veto level: Show all triggers in science time (level ``0''),
@@ -294,12 +296,12 @@ Fig.~\ref{f:daily_ihope_loudest}.  For the five triggers with
 highest new SNR in each category a summary was presented along with a
 link to an \emph{omega scan}.  The omega pipeline is described
 in~\cite{Chatterji:thesis}.  Omega scans are a time-frequency plot
-which are run on all auxiliary channels recorded by the instruments
+which are run on all auxiliary channels recorded by the detectors
 and therefore provide a visual aid to detect coupling between
 auxiliary channels and \darmerr.  These can be used to suggest
 mechanisms behind glitches, especially those that were not already
-marked by a DQ flag.  In addition, over time repeated shapes in the
-omega scan can pinpoint underlying problems in the instruments that
+marked by a data quality flag.  In addition, over time repeated shapes in the
+omega scan can pinpoint underlying problems in the detectors that
 need to be addressed.  A few images from one of the glitches in
 Fig.~\ref{f:daily_ihope_loudest} is shown in
 Fig.~\ref{f:daily_ihope_loudest_omega}.
@@ -328,7 +330,7 @@ significant triggers are simulated signals rather than glitches.
   \includegraphics[width=0.5\linewidth]{figures/detchar/966222827_940673828_H0_PEM-ISCT1_ACCX_1_00_spectrogram_whitened.png}
   \caption[Omega scans from the loudest H1 trigger in figure \ref{f:daily_ihope_loudest}]{
   \label{f:daily_ihope_loudest_omega}
-Omega scans from the loudest H1 trigger in figure
+Omega scans from the loudest trigger in the Hanford detector in figure
 \ref{f:daily_ihope_loudest}.
 Note the trigger closely follows a loud
 event in one of the accelerometers on an instrument table.}
@@ -338,24 +340,24 @@ event in one of the accelerometers on an instrument table.}
 \weakheader{3. Hardware injections}
 
 This report was generated by code written by John Veitch  at Cardiff
-University.  It compared the list of injections, published as an XML
-file available from a web site, with the list of analysis times and
-triggers.  The results were plotted to indicate whether each injection
-was found, missed, or not analyzed.
+University.  It compared the list of hardware injections, published as
+an XML file available from a web site, with the list of analysis times
+and triggers.  The results were plotted to indicate whether each
+injection was found, missed, or not analyzed.
 
 
 \weakheader{4. SNR histograms}
 
-These plots show the number of triggers as a function of SNR and new
-SNR.  As noted in Sec.~\ref{sec:ihope_match_filter}, in Gaussian
+These plots show the number of triggers as a function of $\rho$ and
+$\newsnr$.  As noted in Sec.~\ref{sec:ihope_match_filter}, in Gaussian
 noise the number of triggers should be proportional to
 $\exp(-\rho^2/2)$.  These plots therefore show the degree of
 ``non-Gausianity'' in the data.  A common use for these plots was to
-compare different veto levels to get a sense of how well the cumulative
-vetoes were cleaning the data, as shown in figure
+compare different veto levels to get a sense of how well the
+cumulative vetoes were cleaning the data, as shown in figure
 \ref{f:daily_ihope_gaussianity}.
 
-Similarly Fig.~\ref{f:daily_ihope_gaussianity_newsnr} shows histograms
+Similarly, Fig.~\ref{f:daily_ihope_gaussianity_newsnr} shows histograms
 of the triggers in new SNR.  The total number of triggers is greatly
 reduced because many high-SNR triggers have $\newsnr < 5$ , where the
 plot cuts off.  While triggers with such low $\newsnr$ values are not
@@ -386,7 +388,7 @@ is necessary.
   \label{f:daily_ihope_gaussianity}
 Sample trigger histograms by SNR.  The dashed line shows the
 expected values in Gaussian noise.  The dot indicates the cumulative
-number of triggers with new SNR greater than 200.  Note that at veto
+number of triggers with $\newsnr$ greater than 200.  Note that at veto
 category 4 (right) the histogram is closer to the expected line than
 it is at category 1 (left).  This indicates the degree to which data
 quality has removed non-Guassian noise.}
@@ -531,12 +533,11 @@ entire bank.
 \weakheader{8.  The $\chisq$ test}
 
 These plots showed all triggers with SNR values on the $x$-axis and
-$\chisq / (2p-2)$ (the reduced $\chisq$) on the $y$-axis as a way to
-visualize the glitchiness of the data.  These plots are most useful
-when compared to a reference plot generated from a day of simulated
-Gaussian noise, shown in figure \ref{f:gaussian_snr_chisq}, and
-comparing the plots at different veto levels, shown in figure
-\ref{f:daily_ihope_snr_chisq}.
+$\chisq / (2p-2)$ (the reduced $\chisq$) on the $y$-axis.  These plots
+are most useful when compared to a reference plot generated from a day
+of simulated Gaussian noise, shown in figure
+\ref{f:gaussian_snr_chisq}, and comparing the plots at different veto
+levels, shown in figure \ref{f:daily_ihope_snr_chisq}.
 
 \begin{figure}
 \includegraphics[width=0.85\linewidth]{figures/detchar/GAUSSIAN_0_UNCLUSTERED_chisq.png}
@@ -575,13 +576,13 @@ Early in S6 there were frequent instances where we were unable to
 complete the full analysis.  This was due to individual programs
 taking abnormally long to complete, consuming far more than the
 expected amount of memory, or failing outright.  The problematic jobs
-tended to be individual runs of the \texttt{trigbank} program (see
-Fig.~\ref{f:hipe}); this is the step where triggers from the first
-stage are examined to determine which templates need to be used at the
-second stage.  Comparing the times that caused problems to the daily
-pages immediately revealed a correlation -- times over which
-\texttt{trigbank} were unable to run were those where the rates of
-triggers were abnormally high.
+tended to be individual runs of the \texttt{trigbank} program.  This
+is the step at which triggers from the first stage are examined to
+determine which templates need to be used at the second stage (see
+Sec.~\ref{sec:search_pipeline}.  Comparing the times that caused
+problems to the daily pages immediately revealed a correlation --
+times over which \texttt{trigbank} were unable to run were those where
+the rates of triggers were abnormally high.
 
 In S5 and the early weeks of S6 triggers were clustered using a method
 called \emph{trigscan}~\cite{SenguptaTrigScan:2008} which attempts to
@@ -591,7 +592,7 @@ did this clustering as well, and comparison between the unclustered
 and trigscan-clustered triggers revealed that even after clustering
 periods of high trigger rates remained~\footnote{Trigscan worked well
 in S5, it is not known why it did not work as well in S6.  It is
-possible that the instruments were simply more glitchy in the early
+possible that the detectors were simply more glitchy in the early
 days of S6.  However, in order to group triggers together trigscan
 must use the bank metric, which was correct in S5 when 2.0 pN
 templates were used but incorrect in S6 when the analysis moved to 3.5
@@ -603,13 +604,13 @@ after clustering.  A run of \texttt{trigbank} processing this time was
 unable to complete.
 
 The possibility of vetoing such glitchy periods was raised, and this
-could have been easy to accomplished using the rate information from
-daily ihope.  However, such vetoes would have needed to be category 1 to
+would have been easy to accomplish using the rate information from
+daily ihope.  However, such vetoes would have needed to be CAT1 to
 avoid the problem, which would mean subdividing science segments and
 possibly losing short segments.  Instead we replaced trigscan with
-fixed 30-millisecond clustering windows, after studies of found/missed
-injections determined that this change did not harm the search
-efficiency. 
+fixed 30-millisecond clustering windows, after studies of software
+injections determined that this change did not harm the ability of the
+search to make detections.
 
 \begin{figure}
   \includegraphics[width=0.5\linewidth]{figures/detchar/20090806_H1_0_UNCLUSTERED_rate_vs_time}
@@ -649,10 +650,10 @@ The fixed clustering window means that only the loudest trigger in a
 analysis.  Given the numbers of triggers from short templates there
 was concern that a loud, short glitch could mask a quieter trigger
 from a binary neutron star coalescence.  We therefore decided to limit
-the low-mass search to $M < 25 \msun$ after comparing found/missed
-plots of injections in the same data made with the different mass
-ranges.  These comparisons showed that the search with the smaller
-bank recovered injections in the mass range as well or better than the
+the low-mass search to $M < 25 \msun$ after comparing plots of
+injections in the same data made with the different mass ranges.
+These comparisons showed that the search with the smaller bank
+recovered injections in the mass range as well or better than the
 larger bank.
 
 
@@ -823,7 +824,7 @@ channels that were associated with this class of glitch.
 
 \subsection{Category 2}
 
-Category 2 vetoes indicates time during which there was a problem,
+Category 2 vetoes indicate times during which there was a problem,
 instrumental or environmental, with well-understood coupling into
 \texttt{DARM\_ERR}.  Such time can be analyzed without problem, but
 resulting triggers will be discarded from both the foreground and
@@ -856,11 +857,11 @@ identified.  However, the distinctive shape allowed the creation of an
 automated veto.  \texttt{LSC\_STRAIN} was sampled every
 half-millisecond, giving a time series $x_i$.  For each sample $i$ the
 quantity 
-
+%
 \begin{equation*}
 x_i - 2 x_{i+1} + x_{i+2} 
 \end{equation*}
-
+%
 was calculated, values exceeding a threshold indicated a possible
 spike and the time was flagged in the segment database.  Not every
 time so-flagged was a spike, but every instance indicated a
@@ -978,14 +979,7 @@ meaning it was not used in daily ihope.
 Category 4 is for time that appears to be ill-behaved according to 
 data quality studies, but where there is no clearly-understood 
 cause.  In the full analysis this is denoted category 3.
-In addition to tracking the performance of the pipeline as a whole,
-daily ihope was used to flag numerous glitch mechanisms throughout the
-course of S6.  Such glitches typically showed up in the rate vs. time
-plot, the SNR vs. time plot, and/or the list of loudest triggers.
-Often these were spotted either by individuals reviewing the pages on
-a daily basis, by an individual in the CBC group assigned  to do
-glitch studies preceding a run of the full analysis pipeline, or by
-the group during reviews of these studies.
+
 % https://wiki.ligo.org/foswiki/bin/view/DetChar/H1LVEASEISZS6Cflag
 
 \weakheader{Automated vetoes}
@@ -996,10 +990,10 @@ discussed.  The third was as input to systematic automated veto
 studies.
 
 \emph{SeisVeto}~\cite{Macleod:2011} compared low-frequency triggers
-from Omega running on seismic PEM channels to daily ihope triggers.
-This was done using the \emph{HVeto}~\cite{Smith:2011} algorithm,
-which determines the significance of the correlation between two
-channels by computing
+from Omega running on seismic monitoring channels to daily ihope
+triggers.  This was done using the \emph{HVeto}~\cite{Smith:2011}
+algorithm, which determines the significance of the correlation
+between two channels by computing
 %
 \begin{equation*} S = -\log{10}\left(\sum_{k=n}^\infty P(\mu,k)\right)
 \end{equation*}
@@ -1022,10 +1016,10 @@ channels using a figure of merit defined as
 \textrm{Used Percentage}(\rho) \equiv 100 \times
 N_\textrm{coinc}(\rho) / N_\textrm{total}(\rho)
 \end{equation*}
-
+%
 where $N_\textrm{total}(\rho)$ is the total number of triggers from
 the auxiliary channel above significance threshold $\rho$ in the
-analysis time, and $N_\textrm{coinc}(\rho)$ is the number of trigger
+analysis time, and $N_\textrm{coinc}(\rho)$ is the number of triggers
 from the auxiliary channel that lie within a second of a trigger from
 \darmerr.  Intervals where this percentage exceeded 50\% were entered
 into the segment database and applied as category 4 vetoes.  Although
@@ -1063,7 +1057,7 @@ triggers correlate with daily ihope darmerr triggers.}
 
 Through the S6 run the \emph{horizon distance}, the distance at which
 the coalescence of an optimally-oriented binary system consisting of
-two $1.4 \msun$ neutron stars would have an SNR of 8, was roughly 30
+two $1.4 \msun$ neutron stars would have an SNR of 8, was roughly 45
 Mpc.  The SNR scales inversely with distance, hence the distance at
 which we would expect to see such a system at, say, SNR 250 is 0.12
 Mpc.  Assuming uniform volume distribution, this makes an SNR 250
@@ -1121,10 +1115,10 @@ noise transients.}
 It is at least as important to preserve time in which a detection
 could be made as it is to veto problematic time.  On occasion there
 were potential problems seen in another pipeline or reported by
-scimons or operators that daily ihope confirmed were not a problem for
+SciMons or operators that daily ihope confirmed were not a problem for
 the CBC low-mass search (though they might have been problematic for
 other searches).  One example is shown in
-Fig.~\ref{f:non_vetoed_time}.  The omega pipeline reports excess
+Fig.~\ref{f:non_vetoed_time}.  The Omega pipeline reports excess
 noise at 200Hz, which was traced to runoff from a nearby dam coupling
 into the detector.  The corresponding daily ihope report shows no
 issues with excess or loud triggers, and the day was able to be
@@ -1146,20 +1140,19 @@ or SNR, and hence the time did not need to be vetoed}
 \label{sec:applications_dog}
 
 We now move from general uses of daily ihope to its applications in
-following up a particular event.
-
-In addition to the hardware injections discussed in
-Sec.~\ref{sec:search_pipeline} it was known at the start
-of S6 that there would be any from zero to ``a few'' unannounced,
-blind hardware injections performed in order to provide an unbiased
-test of the search pipelines.  One such injection was performed on Sep
-16 2010 at 06:42 UTC, and showed up in multiple searches as a strong
-gravitational-wave candidate.  This candidate was followed up to the
-point of writing a detection paper and submitting it to the
-collaboration for publication approval.  Once approval had been
-granted the fact that it had been an injection was revealed.  For more
-details on the event and how it was followed up, see the S6 low-mass
-results paper, in preparation as of the time of writing.
+following up a particular event.  In addition to the hardware
+injections discussed in Sec.~\ref{sec:search_pipeline} it was known at
+the start of S6 that there would be any from zero to ``a few''
+unannounced, blind hardware injections performed in order to provide
+an unbiased test of the search pipelines.  One such injection was
+performed on Sep 16 2010 at 06:42 UTC, and showed up in multiple
+searches as a strong gravitational-wave candidate.  This candidate was
+followed up by the CBC group to the point of writing a detection paper
+and submitting it to the collaboration for publication approval.  Once
+approval had been granted the fact that it had been an injection was
+revealed.  For more details on the event and how it was followed up,
+see the forthcoming S6 low-mass results paper, which is in preparation
+as of the time of writing.
 
 Although daily ihope was not a search, the injection showed up on the
 page of loudest triggers for H1 and L1, with parameters shown in table
@@ -1235,11 +1228,6 @@ although this will be better accomplished with more time
 slides~\cite{Weiss:injection}.
 \end{quote}
 
-The existing daily ihope triggers were ideal for this purpose, as they
-spanned all of S6 but with a reduced set of templates.  This sampled the
-parameter space but produced a smaller set of triggers that made
-rapid significance studies computationally feasible.
-
 % https://www.lsc-group.phys.uwm.edu/ligovirgo/cbcnote/DailyDogHistograms
 
 \iffalse
@@ -1262,14 +1250,18 @@ differs from the full ihope pipeline in several respects.  However,
 the goal was not a publishable result but only a rapid estimate.
 \fi
 
-The significance was estimated by plotting histograms of all triggers
-throughout S6 and locating the candidate triggers in the resulting
-distribution.  To parallel the full analysis the results were broken
-into mass bins.  The low mass bin spans chirp masses up to
-$3.48\msun$, the medium mass bin from $3.48-7.40 \msun$.  Likewise,
-category 1,2 and 3 vetoes were applied to parallel the results of the
-full search.  30-millisecond clustering was chosen to parallel the
-clustering used in the full search.  There are several ways of
+
+The existing daily ihope triggers were ideal for this purpose, as they
+spanned all of S6 but with a reduced set of templates.  This sampled
+the parameter space but produced a smaller set of triggers that made
+rapid significance studies computationally feasible.  The significance
+was estimated by plotting histograms of all triggers throughout S6 and
+locating the candidate triggers in the resulting distribution.  To
+parallel the full analysis the results were broken into mass bins.
+The low mass bin spans chirp masses up to $3.48\msun$, the medium mass
+bin from $3.48-7.40 \msun$.  Likewise, category 1,2 and 3 vetoes were
+applied and triggers were clustered with a 30-millisecond window to to
+parallel the results of the full search.  There are several ways of
 reporting the new SNR of the injection; the largest values reported by
 daily ihope, the largest single-detector values reported by the full
 search, and the component values of the largest combined new SNR
@@ -1567,7 +1559,7 @@ feedback loop between the photodiodes and servos that keeps the
 detector locked.  This code is updated occasionally as new systems are
 added or bugs are found and fixed.   To verify that the most recent
 change preceding the event did not significantly change the behavior
-of the instruments we compared histograms of triggers from daily ihope
+of the detectors we compared histograms of triggers from daily ihope
 before and after these changes.
 
 Two weeks prior to and following the most recent code changes at each
@@ -1695,7 +1687,7 @@ truncation then proceeds as follows:
 \end{enumerate}
 %
 If the signal is then a delta function with strength $M$, $s(t) = M
-\delta(t)$ then $\tilde{s} = M$  and the SNR time series is then
+\delta(t)$ then $\tilde{s} = M$  and the SNR time series is 
 given by the matched filter,
 %
 \begin{align*}
@@ -1764,10 +1756,10 @@ window suggests replacing this length with the larger of the length of
 the truncation window or 1.1 times the currently used length (the
 exact value to be obtained by further investigation).
 
-So far we have not used the $\chisq$ test.  When $\chisq$ is
-enabled the trigger clustering algorithm is modified as follows
-
-
+So far we have not used the $\chisq$ test.  When $\chisq$ is enabled
+the trigger clustering algorithm
+(Sec.~\ref{ssec:analysis_trigger_selection}) is modified as follows
+%
 \begin{alltt}
 for each sample point j
   if \(\rho\sb{j}\) > threshold
@@ -1783,7 +1775,7 @@ for each sample point j
         event\_start = j
         event\_snr   = \(\rho\sb{j}\)
 \end{alltt}
-
+%
 That is, an additional constraint is placed on triggers even before
 new SNR is calculated.  We would expect that this would quash many,
 and hopefully all, triggers resulting from the glitch.  The results of
@@ -1817,6 +1809,7 @@ triggers, especially the ones from long templates, have good $\chisq$
 values.  We can attempt to remove them by altering the clustering
 algorithm as follows:
 
+\newpage
 
 \begin{alltt}
 for each sample point j
@@ -1833,7 +1826,7 @@ for each sample point j
       event\_start = j
       event\_snr   = \(\rho\sb{j}\)
 \end{alltt}
-
+%
 Rather than applying the $\chisq$ test at each sample point, we
 cluster only on SNR and then use the $\chisq$ test to validate the 
 candidate trigger.  This was implemented, along with altering the
@@ -1927,7 +1920,7 @@ is estimated by a variation of Welch's method, and the value of the
 PSD at each frequency $f$ is the median over 15 256-second intervals,
 overlapped to span 2048 seconds.  The median is used instead of the
 mean precisely because it is more robust against glitches.  However, a
-values well outside the expected distribution can still bias the
+value well outside the expected distribution can still bias the
 results to a significant extent.  To demonstrate this we calculate the
 PSD in two ways, once by considering the median of all 15 PSDs and
 once by consider the median of 14, removing the one containing the
@@ -1956,11 +1949,11 @@ glitch at category 1.  This would be conceptually straightforward
 using something like the existing category 4 ``loud SNR'' veto, but it
 is far from an ideal solution.  This is especially true in Advanced
 LIGO, where the low-mass templates will be significantly longer.  A
-glitch in the middle of such a signal could cause it to be lost, as
-the category 1 veto would split the SNR accumulation into two disjoint
-segments.   A better option would be to ``gate'' the data around a
-glitch; smoothly window out a second or so with a Tukey window or
-similar.  This is an area of ongoing research.
+glitch in the middle of such a signal could cause the signal to be
+lost, as the category 1 veto would split the SNR accumulation into two
+disjoint segments.   A better option would be to ``gate'' the data
+around a glitch; smoothly window out a second or so with a Tukey
+window or similar.  This is an area of ongoing research.
 
 % tot_time, tot_count
 % veto_time, veto_count
