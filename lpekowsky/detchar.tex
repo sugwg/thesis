@@ -1,3 +1,19 @@
+In chapter~\ref{ch:detectors} we noted the presence of
+\emph{glitches}, short transients, in the detector noise.  In
+chapter~\ref{ch:search} we noted that such glitches could produce
+triggers.  We have also noted that, in order to claim a detection, a
+candidate gravitational-wave trigger must stand out above the
+background comprised of triggers from noise sources, including
+glitches.  There is therefore a need to identify and remove glitches.
+Ideal, glitches would be removed at the source, by addressing the
+underlying cause in the detector.  However, by the time a glitch has
+been seen, and often long before a cause can be identified and
+addressed, it is already in the data.  We must therefore devise ways
+to remove glitches from the data as part of the analysis.  The
+activities of identifying glitches and glitch mechanisms and removing
+them from analyses all fall into the category of \emph{detector
+characterization}.
+
 In the preceding chapter we discussed data quality flags, which
 characterize the state of the detectors at any time, the various
 repositories for storing these flags, and the tools for creating and
@@ -8,40 +24,36 @@ time that should either not be analyzed at all or which should be
 removed from the analysis.
 
 We have thus far not discussed the construction of the veto definer
-file.  It is in the interest of the collaboration to remove as many
-background triggers as possible, so that real events will stand out
-well above the background.  However this removal must be done in an
-automated way in advance of looking at the results from the analysis.
-The LIGO and Virgo collaborations would be justly criticized if the
-background were to be adjusted after the analysis in order to make a
-marginal candidate appear more significant.
-
-There is therefore a need for a process of detector characterization
-(henceforth ``detchar''), a way to remove times from the analysis that
-are more likely to produce background triggers than gravitational-wave
-detections.  One of the most significant features of the S6 run is
-that the people working on detchar were in close contact with the
-people commissioning the instrument.  This meant that, in addition to
+file.  This file may be thought of as the product of detector
+characterization studies.  In broad terms the goal is to identify
+glitches, correlate them with existing flags or create new ones, and
+remove the glitches from analyses by associating the flag with a veto
+severity level through the veto definer file.  One of the most
+significant features of the S6 run is that the data analysts working
+on detector characterization were in close contact with the people
+commissioning the instrument.  This meant that, in addition to
 cleaning the search, information about problematic behavior in the
 instrument could be used to fix the problems at the source, in turn
 allowing more time to be analyzed and the prospects for making a
 detection to improve.
 
-Detchar was a major undertaking, much more information can be found in
-an upcoming paper by Josh Smith and Andrew Lundgren.  Three primary
-tools were run either continuously or with low-latencies to provide
-views into the data, although these were supplemented with numerous
-short special-purpose scripts.  Two of these tools, the klinewelle
+Detector characterization in S6 was a major undertaking, much more
+information can be found in an upcoming paper by the LIGO Scientific
+Collaboration (LSC) and Virgo.  Three primary tools were run either
+continuously or with low-latencies to provide views into the data,
+although these were supplemented with numerous short special-purpose
+scripts.  Two of these tools, the Klinewelle
 pipeline~\cite{LIGO-T060221-00-Z} and the Omega
 pipeline~\cite{Chatterji:thesis} project data onto a wavelet basis and
 identify as triggers times and frequencies with amplitudes above a
-given threshold.  Both these tools were run on many auxiliary channels
-in addition to the detector output.  The third tool, daily ihope, is
-the focus of the current chapter.  We proceed as follows:  
+given threshold.  They thus look for ``bursts'' of excess power.  Both
+these tools were run on many auxiliary channels in addition to the
+detector output.  The third tool, daily ihope, is the focus of the
+current chapter.  We proceed as follows:  
 
 In section~\ref{sec:daily_ihope} we introduce the daily ihope
 pipeline, focusing on the differences between daily ihope and the full
-analysis.
+ihope pipeline discussed in~\ref{sec:search_pipeline}.
 
 We then move to general applications of the daily ihope results.
 Section~\ref{sec:daily_pages} gives a walk-through of a web-based
@@ -75,17 +87,16 @@ problems remain unsolved and are areas of active research.
 As discussed in chapter~\ref{ch:search}, the CBC group uses the
 \emph{ihope} pipeline to search for gravitational waves produced by
 the inspiral of binary systems consisting of neutron stars and/or
-black holes.  During S6/VSR2,3 the goal of the group was to run the
-full analysis every two weeks with latencies as low as possible.
+black holes.  During S6/VSR2,3 the goal of the CBC group was to run
+the full analysis every two weeks with latencies as low as possible.
 The daily ihope runs were conceived of as a way to characterize the
 detector in order to look for potential problems in advance of the
 full analysis, particularly problems specific to the CBC search.
 
 It is important to stress that daily ihope was not itself a
-gravitational-wave search, it was a tool to help determine whether the
-data in each instrument was suitable to analyze.  This goal determined
-the specifics of the daily runs, but more significantly it leaves the
-full search unbiased.
+gravitational-wave search, rather it was a tool to characterise the
+detectors.  This goal determined the specifics of the daily runs, but
+more significantly it leaves the full search unbiased.
 
 \subsection{The Daily Ihope Pipeline}
 
@@ -99,31 +110,19 @@ better separate signals from glitches (eqn.\ref{eq:chisq}), and the
 information from this discriminator is used along with the SNR to
 construct the new SNR detection statistic (eqn.~\ref{eq:new_snr}).
 
-The structure of the full search is shown in
-figure~\ref{f:hipe}~\footnote{Figure by Collin Capano, used with
-permission} and discussed in section~\ref{sec:search_pipeline}.  We
-will not go over it in detail here, but note that it is a two-stage,
-coincident pipeline.
-
-\begin{figure}
-  \includegraphics[width=\linewidth]{figures/detchar/HIPEDiagram}
-  \caption[Structure of the full iHope search]{
-  \label{f:hipe}
-Structure of the full iHope search.  For details see
-reference~\cite{Capano:thesis}.
-}
-\end{figure}%
-
-By construction, a great deal of the information provided by
-the full bank search is redundant.  Further, the evaluation of each
-additional template and the initial layout of the bank incurs
-significant computational overhead.  Therefore a number of
-simplifications were applied to the daily ihope bank.
+By construction, a great deal of the information provided by the full
+bank search is redundant.  This is necessary in the full search to
+avoid losing more than 3\% of the SNR from a real signal.  However, as
+daily ihope is not a search this requirement no longer holds.
+Further, the evaluation of each additional template and the initial
+layout of the bank incurs significant computational overhead.
+Therefore a number of simplifications were applied to the daily ihope
+bank.
 
 First, a static bank was used for each IFO, based on the layout at a
 time in each instrument when the inspiral range was high, no
 operational problems were noted by the scimon or operator, and the
-Omega, klinewelle, and daily ihope pipelines showed no anomalous behavior.
+Omega, Klinewelle, and daily ihope pipelines showed no anomalous behavior.
 Second, the number of templates was reduced.  Lower-mass systems have
 more cycles in the sensitive LIGO band, there is therefore ample
 information to distinguish between waveforms with close parameters.
@@ -181,13 +180,17 @@ triggers were recorded using windows of 30 milliseconds and 16
 seconds.  For each set the trigger with the largest value of new SNR
 across all templates within the window length was recorded.
 
-The triggers were also filtered.  A version of the veto definer file
-designated as ``online'' was maintained and used by daily ihope to
-identify times with veto categories.  These vetoed times were then
-removed from the original and clustered files.  
+A version of the veto definer file designated as ``online'' was placed
+on a web site from where it could be downloaded by daily ihope.  This
+file was used to generate veto segments using the
+\verb|ligolw_segments_from_cats| program discussed in
+section~\ref{ssec:from_cats}.  Any trigger that fell within the vetoed
+segments was removed.
 
 The structure of daily ihope is summarized in
-figure~\ref{f:daily_flowchart}.
+figure~\ref{f:daily_flowchart}.  The result is, for each 2048-second
+block in each ifo, 3 cluster levels times 4 veto levels = 12 sets of
+triggers.
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/detchar/daily_flowchart}
@@ -200,10 +203,6 @@ are then grouped and clustered.  The vetoes are applied sequentially,
 and at each stage plots are generated.  The entire diagram is
 replicated for each 2048-second block and for each IFO.}
 \end{figure}%
-
-The result is, for each 2048-second block in each ifo, 3 cluster
-levels times 4 veto levels = 12 sets of triggers.
-
 
 
 %do analysis
@@ -278,7 +277,9 @@ shown in figure~\ref{f:daily_ihope_vetousage}.
   \label{f:daily_ihope_vetousage}
 A sample veto usage report, see text for explanation.  Note that 62.66\% of
 all triggers were contained in 14.51\% of time, and the DMT flagged this time
-with elevated seismic activity from 3-10 Hz at the LVEA.}
+with elevated seismic activity from 3-10 Hz in the 
+Laser Vacuum Equipment Area (LVEA), as indicated by the 
+\texttt{DMT-BRMS\_SEISMIC\_LVEA\_Z\_3\_10\_HZ\_THRESH\_2E3} flag.}
 \end{figure}%
 
 \weakheader{2. Loudest triggers}
@@ -292,15 +293,15 @@ active.  A sample report is shown in
 figure~\ref{f:daily_ihope_loudest}.  For the five triggers with
 highest new SNR in each category a summary was presented along with a
 link to an \emph{omega scan}.  The omega pipeline is described
-in~\cite{Chatterji:thesis}.  Omega scans are a kind of time-frequency
-plot.  They are especially useful as they may be run on all auxiliary
-channels recorded by the instruments and therefore provide a visual
-aid to detect coupling between auxiliary channels and \darmerr.  These
-can be used to suggest mechanisms behind glitches, especially those
-that were not already marked by a DQ flag.  In addition, over time
-repeated shapes in the omega scan can pinpoint underlying problems in
-the instruments that need to be addressed.  A few images from one of
-the glitches in figure~\ref{f:daily_ihope_loudest} is shown in
+in~\cite{Chatterji:thesis}.  Omega scans are a time-frequency plot
+which are run on all auxiliary channels recorded by the instruments
+and therefore provide a visual aid to detect coupling between
+auxiliary channels and \darmerr.  These can be used to suggest
+mechanisms behind glitches, especially those that were not already
+marked by a DQ flag.  In addition, over time repeated shapes in the
+omega scan can pinpoint underlying problems in the instruments that
+need to be addressed.  A few images from one of the glitches in
+figure~\ref{f:daily_ihope_loudest} is shown in
 figure~\ref{f:daily_ihope_loudest_omega}.
 
 \begin{figure}
@@ -309,9 +310,17 @@ figure~\ref{f:daily_ihope_loudest_omega}.
   \label{f:daily_ihope_loudest}
 A sample report on loudest triggers, see text for explanation.  Note the
 rightmost column is populated by
-the \texttt{ligolw\_dq\_query} program in the \texttt{--report} mode.}
+the \texttt{ligolw\_dq\_query} program in the \texttt{--report} mode.
+Note also that there are several triggers with no corresponding data
+quality flags.  This would call for further investigation, the first
+step of which is to examine the associated omega scans, which we show
+in figure~\ref{f:daily_ihope_loudest_omega}.  Finally, note that of
+the loud triggers that do have data quality flags all are marked with
+the \texttt{DMT-INJECTION-INSPIRAL} flag, meaning these triggers are
+from hardware injections.  This is a good sign, it means that the most
+significant triggers are simulated signals rather than glitches.
+}
 \end{figure}%
-
 
 
 \begin{figure}
@@ -342,7 +351,7 @@ SNR.  As noted in section \ref{sec:ihope_match_filter}, in Gaussian
 noise the number of triggers should be proportional to
 $\exp(-\rho^2/2)$.  These plots therefore show the degree of
 ``non-Gausianity'' in the data.  A common use for these plots was to
-flip between veto levels to get a sense of how well the cumulative
+compare different veto levels to get a sense of how well the cumulative
 vetoes were cleaning the data, as shown in figure
 \ref{f:daily_ihope_gaussianity}.
 
@@ -356,9 +365,9 @@ enough to stand above background.
 
 In addition to the lower number of triggers overall, the new SNR plot
 is closer to a straight line indicating behavior closer to that
-expected in Gaussian noise.  However, detchar improves the situation
-still further, as the number of triggers is reduced at veto category
-4.
+expected in Gaussian noise.  However, detector characterization
+improves the situation still further, as the number of triggers is
+reduced at veto category 4.
 
 However, there is one trigger with $\newsnr = 8$ that is not removed
 by any veto.  Such an outlier warrants further investigation, which
@@ -367,7 +376,8 @@ is shown in~\ref{f:daily_ihope_loudest}.  The omega scan from the time
 of this event is shown in figure~\ref{f:daily_loudest_glitch}, and it
 clearly rules out a gravitational wave as the source of this trigger.
 This illustrates the important point that new SNR can be fooled, and
-hence continued human participation in detchar is necessary.
+hence continued human participation in detector characterization
+is necessary.
 
 \begin{figure}
   \includegraphics[width=0.5\linewidth]{figures/detchar/H1_1_UNCLUSTERED_snr_hist.png}
@@ -397,9 +407,9 @@ the SNR histograms, but there is still an outlier at $\newsnr=8$.}
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/detchar/966281824_963867187_H1_LSC-DARM_ERR_1_00_spectrogram_whitened}
-  \caption[Omega scan of the loudest new SNR trigger]{
+  \caption[Omega scan of the loudest $\newsnr$ trigger]{
   \label{f:daily_loudest_glitch}
-The omega scan from the outlier with new SNR=8 that survives all
+The omega scan from the outlier with $\newsnr=8$ that survives all
 automated data quality vetoes.  Many auxiliary channels showed the
 same behavior at this time.  This is clearly not a gravitational wave,
 but was not removed by either signal-based vetoes or data quality
@@ -410,8 +420,10 @@ vetoes.}
 \weakheader{5. The ``glitchgram''}
 
 This was an ``at-a-glance'' summary of the day, showing every trigger
-color-coded by SNR.  This highlighted times of loud triggers as well
-as dense regions indicating ``grumbly'' times.  A sample is shown in
+color-coded by SNR.  This highlighted times of loud triggers.  In
+addition dense regions of the plot indicated times of numerous quiet
+glitches, which might not show up on the rate-vs-time, snr-vs-time or
+loudest triggers pages.  A sample is shown in
 figure \ref{f:daily_ihope_glitchgram}.
 
 \begin{figure}
@@ -419,7 +431,7 @@ figure \ref{f:daily_ihope_glitchgram}.
   \caption[The Aug 19th daily ihope ``glitchgram'']{
   \label{f:daily_ihope_glitchgram}
 A sample ``glitchgram.'' Blue dots have
-new snr values below 8, green have values between 8 and 16,
+$\newsnr$ values below 8, green have values between 8 and 16,
 and red have values above 16.  Template length was chosen as the Y
 axis in order to capture a feature of the templates that is not
 specific to gravitational-wave signals, such as chirp mass.
@@ -471,12 +483,10 @@ standard histograms are shown in
 figure~\ref{f:daily_ihope_trig_histograms}, they show that most of the
 triggers come from short templates, and templates shorter than 5
 seconds produce up to six times as many triggers as shorter templates.
-
 Figure~\ref{f:count_per_template} shows the same information as a map
 of the template bank, color-coded to indicate how many triggers each
 template produced.  Figure~\ref{f:daily_ihope_time_mass} breaks this
 same information up by time and template mass.
-
 Qualitatively these plots do not change much day-by-day, and so these
 plots were not often used.  However, they did prompt a change to
 the analysis made early in the S6 run, see
@@ -683,7 +693,7 @@ triggers over the specified time range.  The file could be generated
 from an existing flag in the database using {\texttt
 ligolw\_dq\_query} (see chapter~\ref{ch:segdb}), or it could be
 generated by a script looking at auxiliary channel information
-provided by Omega or klinewelle triggers.
+provided by Omega or Klinewelle triggers.
 \fi
 
 \subsection{Category 1}
@@ -704,25 +714,26 @@ they may break data into segments that are too short to be analyzed.
 
 The design of the LIGO mirrors accounted for the fact that in
 operation they would be heated by the laser and the radius of
-curvature would change.  However, in S6 as we moved to higher laser
-power the mirror's absorption of energy was larger than expected and
-the mirror overheated and deformed more than
-expected~\cite{LIGO-T050064-00-R}.  To correct for this a compensating
-laser was added that would heat the mirror in a ring in order to
-restore the radius of curvature to an optimal value.  However, this
-laser would occasionally glitch, kicking the mirror through radiation
-pressure and producing loud noise in the detector.
+curvature would change.  However, the mirror's absorption of energy
+was larger than expected and the mirror overheated and deformed more
+than expected~\cite{LIGO-T050064-00-R}.  To correct for this a
+compensating laser was added that would heat the mirror in a ring in
+order to restore the radius of curvature to an optimal value.
+However, this laser would occasionally fluctuate, kicking the mirror
+through radiation pressure and producing a loud noise transient in the
+detector and loud triggers in the search.
 
 The identification of these glitches was straightforward; they were
 often the loudest glitches of the day and were readily visible in the
 daily ihope ``loudest trigger'' report, as well as similar reports
-generated by klinewelle and Omega.  The cause was similarly easy to identify,
-as the omega scans generated by daily ihope showed egregious behavior
-in the TCS channels.  An automated veto based on a threshold value in
-the TCS channel was added to the DMT at category 2.  However, some
-instances were loud enough to interfere with the CBC pipeline in
-surrounding times, hence it was decided to veto these times at
-category 1.  These features are illustrated in
+generated by Klinewelle and Omega.  The cause was similarly easy to
+identify, as the omega scans generated by daily ihope showed egregious
+behavior in the TCS channels.  An automated veto based on a threshold
+value in the TCS channel was added to the DMT at category 2.  However,
+some instances were loud enough to interfere with the CBC pipeline in
+surrounding times for reasons we will discuss in
+section~\ref{sec:daily_ihope_open_questions}.  Hence it was decided to
+veto these times at category 1.  These features are illustrated in
 figure~\ref{f:daily_ihope_tcs}.  
 
 
@@ -762,7 +773,7 @@ identifying it as the source of the glitch.}
 \weakheader{Grid glitches}
 
 This was a loud, broad-band glitch that produced a grid of triggers in
-the klinewelle pipeline's time-frequency plane, where the phenomena was first
+the Klinewelle pipeline's time-frequency plane, where the phenomena was first
 seen.  They also showed up in the daily ihope rate and SNR plots as
 loud triggers accompanied by elevated trigger rates, as shown in
 figure~\ref{f:omega_grid}.  These also often appeared on the
@@ -841,11 +852,11 @@ A sample spike glitches in \darmerr.  Note the characteristic
 down-up-down pattern, and short timespan.}
 \end{figure}%
 
-Despite a great deal of effort by lots of people, the cause of these
-glitches was never identified.  However, the distinctive shape allowed
-the creation of an automated veto.  \texttt{LSC\_STRAIN} was sampled
-every half-millisecond, giving a time series $x_i$.  For each sample
-$i$ the quantity 
+Despite a great deal of effort the cause of these glitches was never
+identified.  However, the distinctive shape allowed the creation of an
+automated veto.  \texttt{LSC\_STRAIN} was sampled every
+half-millisecond, giving a time series $x_i$.  For each sample $i$ the
+quantity 
 
 \begin{equation*}
 x_i - 2 x_{i+1} + x_{i+2} 
@@ -986,10 +997,23 @@ discussed.  The third was as input to systematic automated veto
 studies.
 
 \emph{SeisVeto}~\cite{Macleod:2011} compared low-frequency triggers
-from Omega running on seismic PEM channels to daily ihope triggers
-using the \emph{HVeto}~\cite{Smith:2011} algorithm.  Times of high
-correlation were flagged with category 4 vetoes, which could achieve
-up to 62\% efficiency with only 6\% deadtime.
+from Omega running on seismic PEM channels to daily ihope triggers.
+This was done using the \emph{HVeto}~\cite{Smith:2011} algorithm,
+which determines the significance of the correlation between two
+channels by computing
+%
+\begin{equation*} S = -\log{10}\left(\sum_{k=n}^\infty P(\mu,k)\right)
+\end{equation*}
+%
+where $n$ is the number of coincidences found between Omega triggers
+and daily ihope triggers, $\mu$ is the number expected to see by
+chance, and $P(\mu.k)$ is the Poisson probability of obtaining $k$
+instances when the expected value is $\mu$.  In other words, $S$ is
+$-\log_{10}$ of the probability of observing as many or more
+coincidences between two series of random occurrences than were
+actually observed.  Times of high correlation were flagged with
+category 4 vetoes, which could achieve up to 62\% efficiency with only
+6\% deadtime.
 
 The \emph{Used Percentage Veto} (UPV)~\cite{Isogai:2010} program
 looked for correlations between triggers from \darmerr and auxiliary
@@ -1006,7 +1030,7 @@ analysis time, and $N_\textrm{coinc}(\rho)$ is the number of trigger
 from the auxiliary channel that lie within a second of a trigger from
 \darmerr.  Intervals where this percentage exceeded 50\% were entered
 into the segment database and applied as category 4 vetoes.  Although
-UPV was originally developed using klinewelle triggers for both \darmerr and
+UPV was originally developed using Klinewelle triggers for both \darmerr and
 auxiliary channels, it was modified during S6 to accept triggers from
 daily ihope.  The resulting analysis was rerun weekly.
 
@@ -1032,7 +1056,7 @@ impacted the search and should therefore be flagged at category 4.
   \label{f:daily_upv}
 A glitch found by UPV using the daily triggers.  On the top the daily
 rate and SNR plots, including the glitch in question at 14:29.  On the
-bottom the omega scan of \darmerr and the auxiliary channel whose klinewelle
+bottom the omega scan of \darmerr and the auxiliary channel whose Klinewelle
 triggers correlate with daily ihope darmerr triggers.}
 \end{figure}%
 
@@ -1086,7 +1110,8 @@ H1  & 1692904 &  6452 & 0.38 & 647168 & 416 & 0.06 & 5.92 \\
 Effectiveness of the ``SNR $>$ 250'' flag over the weeks
 09/04/2010  to 09/17/2010.  Note that the flag was used almost twice
 as often in L1 as H1, although there is only 23\% more analysis time.
-This is another indication that L1 was glitchier overall.}
+This is another indication that L1 overall contained more non-Gaussian
+noise transients.}
 \end{center}
 \end{table*}
 
@@ -1101,9 +1126,10 @@ scimons or operators that daily ihope confirmed were not a problem for
 the CBC low-mass search (though they might have been problematic for
 other searches).  One example is shown in
 figure~\ref{f:non_vetoed_time}.  The omega pipeline reports excess
-noise at 200Hz, which was traced to runoff from a nearby dam.  The
-corresponding daily ihope report shows no issues with excess or loud
-triggers, and the day was able to be analyzed.
+noise at 200Hz, which was traced to runoff from a nearby dam coupling
+into the detector.  The corresponding daily ihope report shows no
+issues with excess or loud triggers, and the day was able to be
+analyzed.
 
 \begin{figure}
   \includegraphics[width=0.5\linewidth]{figures/detchar/20100604_H1_0_100MILLISEC_CLUSTERED_snr_vs_time}
@@ -1190,11 +1216,11 @@ expected pattern from a compact binary inspiral.}
 
 The potential detection occurred close to the end of S6 as the
 collaboration was preparing to take the LIGO detectors apart 
-to install advanced LIGO.  The shutdown could potentially have been
+to install Advanced LIGO.  The shutdown could potentially have been
 delayed if the existing configuration were necessary to vet
 the candidate.  An ad-hoc committee was formed to determine whether
 this would be required, and while they found no immediate reason to
-delay the advanced LIGO plans the report did include several
+delay the Advanced LIGO plans the report did include several
 recommendations, including:
 
 % https://dcc.ligo.org/cgi-bin/private/DocDB/ShowDocument?docid=22752
@@ -1256,7 +1282,7 @@ low-mass bin and \ref{f:daily_histogram_medium} for the medium-mass
 bin.  The result in both bins is qualitatively the same.  The
 injection is close to the loudest event in H1 for all measures of new
 SNR.  The injection does not stand out as far in L1, which was known
-to be glitchier over the course of S6.
+to contain more non-Gaussian noise transients over the course of S6.
 
 
 \begin{figure}
@@ -1537,13 +1563,13 @@ perform extensive checks to remove, or at least reduce, the
 possibility that the trigger was due to any source other than a
 gravitational wave.  Consequently many components of the
 interferometer were subject to scrutiny.  One such component was the
-\emph{front-end control code}, which is responsible for interfacing
-between the data-acquisition and data-recording systems.  This code is
-updated occasionally as new systems are added or bugs are found and
-fixed.   To verify that the most recent change preceding the event did
-not significantly change the behavior of the instruments we compared
-histograms of triggers from daily ihope before and after these
-changes.
+\emph{front-end control code}, which is responsible for providing the
+feedback loop between the photodiodes and servos that keeps the
+detector locked.  This code is updated occasionally as new systems are
+added or bugs are found and fixed.   To verify that the most recent
+change preceding the event did not significantly change the behavior
+of the instruments we compared histograms of triggers from daily ihope
+before and after these changes.
 
 Two weeks prior to and following the most recent code changes at each
 site were selected.  SNR histograms are shown in figure
@@ -1584,9 +1610,9 @@ issues with the pipeline seen through daily ihope, both of which
 relate to the effect of loud glitches on the matched filter.  Of course
 the ultimate goal is to remove such glitches at the source.  However,
 it is likely that such glitches will continue to be present in the
-advanced LIGO era and the search pipeline must be robust against them.
+Advanced LIGO era and the search pipeline must be robust against them.
 We note here the problems and some initial attempts to remedy them,
-but more research will be needed to resolve them before advanced LIGO
+but more research will be needed to resolve them before Advanced LIGO
 comes on-line around 2015.
 
 
@@ -1615,11 +1641,6 @@ trigger per template at approximately the time of the impulse.
 However this would not account for the number of templates seen or the
 length of time for which the trigger rate is elevated. 
 
-To study this in more detail simulated Gaussian noise was produced (as
-in the NINJA project) and the value of a single sample was increased to
-simulate a sharp glitch.  The triggers produced for two values of the
-glitch amplitude are shown in
-figure~\ref{f:impulses_original_no_chisq}.
 
 \begin{figure}
   \includegraphics[width=0.5\linewidth]{figures/detchar/raw1_1e-17}
@@ -1635,14 +1656,17 @@ See the text for discussion.
 }
 \end{figure}%
 
-The expected behavior is seen in the rainbow ``tower'' at the top of
-both plots, successively longer templates have lower SNRs and trigger
-slightly later.
-
-Below this in both plots there is a ``plateau'' of triggers from short
+To study this in more detail simulated Gaussian noise was produced (as
+in the NINJA project) and the value of a single sample was increased
+to simulate a sharp glitch.  The triggers produced for two values of
+the glitch amplitude are shown in
+figure~\ref{f:impulses_original_no_chisq}.  The expected behavior is
+seen in the rainbow ``tower'' at the top of both plots, successively
+longer templates have lower SNRs and trigger slightly later.  Below
+this in both plots there is a ``plateau'' of triggers from short
 templates.  This results from the inverse spectrum truncation,
 described more fully in~\cite{findchirp}.  This behavior can be
-understood qualitatively as follows.
+understood qualitatively as follows:
 
 For simplicity denote the square root of the inverse PSD,
 $(S_n(|f|))^{-1/2}$ as $\tilde{S}(f)$, and its inverse Fourier
@@ -1650,32 +1674,31 @@ transform in the time domain as $S(t)$.  Likewise, denote the
 frequency-domain template as $\tilde{h}(f)$ as usual, and its inverse
 Fourier transform as $h(t)$.  Finally, let $W(t)$ be a windowing
 function in the time domain with Fourier transform $\tilde{W}(f)$.  In
-addition, denote multiplication of functions by $\cdot$ and convolution
-by $\star$.
+addition, denote multiplication of functions by $\cdot$ and
+convolution by $\star$.  The application of the inverse spectrum
+truncation then proceeds as follows:
 
-The application of the inverse spectrum truncation then proceeds as
-follows 
+\begin{enumerate}
+\item Calculate $\tilde{S}(f)$ and from it $S(t)$.
 
-1. Calculate $\tilde{S}(f)$ and from it $S(t)$.
+\item Apply the window in the time domain, giving $S(t) \cdot W(t)$.
 
-2. Apply the window in the time domain, giving $S(t) \cdot W(t)$.
-
-3. Return to to the frequency domain, giving $\tilde{S}(f) \star
+\item Return to to the frequency domain, giving $\tilde{S}(f) \star
 \tilde{W}(f)$.
 
-4. Square this (and correct the normalization, not shown here) giving 
-
+\item Square this (and correct the normalization, not shown here) giving 
+%
 \begin{equation*}
 (\tilde{S}(f) \star \tilde{W}(f)) \cdot (\tilde{S}(f) \star \tilde{W}(f)) 
 \end{equation*}
-
-This replaces the $S_n(|f|)$ in the denominator of the match filter.
-
+%
+\item This replaces the $S_n(|f|)$ in the denominator of the match filter.
+\end{enumerate}
+%
 If the signal is then a delta function with strength $M$, $s(t) = M
 \delta(t)$ then $\tilde{s} = M$  and the SNR time series is then
 given by the matched filter,
-
-
+%
 \begin{align*}
 \rho^2(t) &= \int df\, e^{-2 i\pi i f t} M \tilde{h}^\star(f) \cdot
 (\tilde{S}(f) \star \tilde{W}(f)) \cdot 
@@ -1684,7 +1707,7 @@ given by the matched filter,
 (S(t) \cdot W(t)) \star
 (W(t) \cdot W(t))
 \end{align*}
-
+%
 Note that if the window function is zero outside a region then the
 elevated SNR from an impulse will likewise be bounded in time.  This
 is the motivation for the truncation; without it a loud glitch would
@@ -1711,7 +1734,7 @@ produce several triggers.
 \end{figure}%
 
 The plateau persists as the strength of the impulse is increased.
-Beyond a certain point we also get a second ``rainbow'' of triggers
+Beyond a certain point we also get a second cluster of triggers
 from templates across the bank, seen to the right in
 figure~\ref{f:impulses_original_no_chisq}.  Note that the difference
 between triggers of the same color is precisely the length of
@@ -1901,14 +1924,14 @@ shows a marked decrease in the number of triggers.
 
 This behavior is due the effect of a glitch on the PSD estimation for
 the analysis period.  Recall from chapter~\ref{ch:search} that the PSD
-is estimated by Welch's method, and the value of the PSD at each
-frequency $f$ is the median over 15 256-second intervals, overlapped
-to span 2048 seconds.  The median is used instead of the mean
-precisely because it is more robust against glitches.  However, a
+is estimated by a variation of Welch's method, and the value of the
+PSD at each frequency $f$ is the median over 15 256-second intervals,
+overlapped to span 2048 seconds.  The median is used instead of the
+mean precisely because it is more robust against glitches.  However, a
 values well outside the expected distribution can still bias the
 results to a significant extent.  To demonstrate this we calculate the
 PSD in two ways, once by considering the median of all 15 PSDs and
-once by consider the median of 14, removing the one containing the 
+once by consider the median of 14, removing the one containing the
 glitch.  We plot the fractional difference of each frequency bin in
 figure~\ref{f:median_bias}.
 
@@ -1932,7 +1955,7 @@ inconclusive.  At present the only way to ensure that a loud glitch
 won't suppress a quiet signal is to veto the time containing the
 glitch at category 1.  This would be conceptually straightforward
 using something like the existing category 4 ``loud SNR'' veto, but it
-is far from an ideal solution.  This is especially true in advanced
+is far from an ideal solution.  This is especially true in Advanced
 LIGO, where the low-mass templates will be significantly longer.  A
 glitch in the middle of such a signal could cause it to be lost, as
 the category 1 veto would split the SNR accumulation into two disjoint
