@@ -13,24 +13,37 @@
 \def\Tb{\ensuremath{\mathrm{T_b}}}
 
 
-Once triggers have been obtained from the matched filter, re-weighted using the $\chi^2$ statistic, and vetted via coincidence test, they need to be evaluated for their statistical significance. In the low-mass CBC search we do this by computing a \ac{FAR} for each coincident trigger we obtain. This chapter details how that is done. We begin by reviewing properties of a Poisson distribution. Next, in section \ref{sec:coincidence_modelling}, we model the expected number of coincident triggers from a single template using the single-\ac{IFO} distribution of triggers. In section \ref{sec:using_time_slides} we show how time sliding data between detectors allows us to estimate a background in order to measure a \ac{FAR}. Section \ref{sec:multiple_templates} describes how to extend the time-slide method across the template space to compute a \emph{combined \ac{FAR}} for all triggers in a search. In section \ref{sec:alternate_cfar_method} we describe an alternate method to compute the combined \ac{FAR}. Finally, in section \ref{sec:far_slide_algorithm} we summarize the time-slide method in an algorithm that can be used for computing \acp{FAR} for a \ac{CBC} search.
+Once triggers have been obtained from the matched filter, re-weighted using the
+$\chi^2$ statistic, and vetted via coincidence test, they need to be evaluated
+for their statistical significance. In the low-mass CBC search we do this by
+computing a \ac{FAR} for each coincident trigger we obtain. This chapter
+details how that is done. We begin by reviewing properties of a Poisson
+distribution. Next, in section \ref{sec:coincidence_modelling}, we model the
+expected number of coincident triggers from a single template using the
+single-detector distribution of triggers. In section
+\ref{sec:using_time_slides} we show how time sliding data between detectors
+allows us to estimate a background in order to measure a \ac{FAR}. Section
+\ref{sec:far-multiple_templates} describes how to extend the time-slide method
+across the template bank to compute a \emph{combined \ac{FAR}} for all triggers
+in a search. In section \ref{sec:alternate_cfar_method} we describe an
+alternate method to compute the combined \ac{FAR}. Finally, in section
+\ref{sec:far_slide_algorithm} we summarize the time-slide method in an
+algorithm that can be used for computing \acp{FAR} for a \ac{CBC} search.
 
 \section{Poisson Process}
 \label{sec:poisson}
-If a system is a Poisson process, then on average, it will produce a mean number of events $\Lambda$ in a length of time $t$. The probability of getting $k$ events from this system in the same amount of time is \cite{ref:Poisson}:
-\begin{equation}
-\label{eqn:poisson}
-P(k|\Lambda) = \frac{\Lambda^k e^{-\Lambda}}{k!}
-\end{equation}
 
-$\Lambda$ is known as the \emph{rate parameter} of the system. It is a monotonically increasing function of time (for longer periods of time, we will expect a larger mean number of events). For a \emph{stationary} source $\Lambda$ will be linear in time. In other words, the mean number of events a stationary source would produce in several (hypothetical) iterations over the same period of time, $\tau$, will be the same as the mean number produced in several iterations over any other period of equal duration. For a \emph{non-stationary} source, the time dependence will be non-linear; i.e., two independent periods of time of equal duration would produce a different mean number of events. To get a duration-independent quantity, we define the source's \emph{rate density}, $\RP(t)$, which is the derivative of $\Lambda$ with respect to time:
+Imagine that we have a detector with which we can measure triggers emitted from an arbitrary source. Let us assume that the triggers that the source emmits occur at random intervals, and that the time at which a trigger is emitted is independent of the last event.
+
+Now imagine that we perform an experiment of duration $\tau$, during which we use our detector to monitor and count the cumulative number of events produced by the source as a function of time, $\Lambda(t)$. Let us repeat the experiment several times, taking the average $\Lambda(t)$ at set time intervals. If the source was \emph{stationary}, we would find that $\overline{\Lambda}(t)$ is a linear function of time. In other words, the mean number of events a stationary source produces in several (hypothetical) iterations over the same period of time, $\tau$, is the same as the mean number produced in several iterations over any other period of equal duration. If the source is \emph{non-stationary}, the time dependence will be non-linear; i.e., two independent periods of time of equal duration would produce a different mean number of events.
+
+To get a duration-independent quantity, we define the source's \emph{rate density}, $\RP(t)$, which is the derivative of $\Lambda(t)$ with respect to time:
 
 \begin{equation}
 \label{eqn:rate_param_def}
 \mathcal{R}(t) \equiv \frac{\mathrm{d}\Lambda}{\mathrm{d}t}
 \end{equation}
-
-For stationary sources, $\RP(t)$ will be constant; for non-stationary sources, it will have a time dependence. The rate density is an \emph{intrinsic} parameter of the source: it depends on the source's physical characteristics and is independent of the duration of time it is observed for. (Contrast this with $\Lambda$, which mixes the intrinsic parameters with the period of time that the source is observed, which is an \emph{extrinsic} parameter). Whether or not a source produces a trigger in a given period of time is random; thus any measurement of the rate density is subject to uncertainty. We therefore define the ``true" rate density as the value obtained if an infinite number of independent measurements with identical initial conditions were carried out over the same duration of time:
+For stationary sources, $\RP$ will be constant; for non-stationary sources, it will have a time dependence. The rate density is an \emph{intrinsic} parameter of the source: it depends on the source's physical characteristics and is independent of the duration of time it is observed for. (Contrast this with $\Lambda$, which mixes the intrinsic parameters with the period of time that the source is observed, which is an \emph{extrinsic} parameter). Whether or not a source produces a trigger in a given period of time is random; thus any measurement of the rate density is subject to uncertainty. We therefore define the ``true" rate density as the value obtained if an infinite number of independent measurements with identical initial conditions were carried out over the same duration of time:
 \begin{equation}
 \label{eqn:true_rate_param_def}
 \widetilde{\mathcal{R}}(t) \equiv \lim_{N_m \to \infty} \frac{\sum_{k=1}^{N_m} \widehat{\mathcal{R}}(t)_{k}}{N_m}
@@ -44,7 +57,13 @@ If the source is stationary, then $\tR$ exists (at least theoretically; in pract
     & = & \int_{0}^{t} \tR(t')\, \mathrm{d}t' \\
     & \stackrel{=}{_{\tR(t') \rightarrow \tR}} & \tR t
 \end{eqnarray}
-$\widetilde{\RP} t$ is also the expectation value of the number of events \cite{ref:Poisson}:
+Furthermore, if the source is stationary, then the probability distribution of getting $k$ events from this system in the samer period of time $t$ is given by the well-known Poisson distribution \cite{Taylor:ErrorAnalysis:2E}:
+
+\begin{equation}
+\label{eqn:poisson}
+P(k|\Lambda) = \frac{\Lambda^k e^{-\Lambda}}{k!}
+\end{equation}
+From this, we find that $\widetilde{\RP} t$ is also the expectation value of the number of events \cite{Taylor:ErrorAnalysis:2E}:
 \begin{eqnarray}
 \Exptd(N) & = & \sum_{k=1}^{\infty} k P(k|\Lambda) \nonumber \\
  & = & \sum_{k=1}^{\infty} k \frac{(\tR t)^k e^{-\tR t}}{k!} \nonumber \\
@@ -66,7 +85,7 @@ where $t_k$ and $\widehat{N}_k$ are the duration and number of triggers produced
 \overline{\RP} & = & \frac{\sum_{k=1}^{N_t} \widehat{N_k}}{\tau N_t} \\
  & = & \frac{\overline{N}}{\tau}
  \end{eqnarray}
-Since $\overline{N}$ is the mean number of events produced by a Poisson process, the variance is simply $\overline{N}$ \cite{ref:Poisson}. Thus, the error in $\overline{\RP}$ is:
+Since $\overline{N}$ is the mean number of events produced by a Poisson process, the variance is simply $\overline{N}$ \cite{Taylor:ErrorAnalysis:2E}. Thus, the error in $\overline{\RP}$ is:
 \begin{equation}
 \label{eqn:err_R}
 \delta \overline{\RP} = \frac{1}{\tau}\sqrt{\frac{\overline{N}}{N_t}}
@@ -93,27 +112,68 @@ P(k\geq1 | \overline{\RP},t) & = & 1 - P(0 | \overline{\RP},t) \nonumber \\
  & = & 1 - e^{-\overline{\RP}t}
  \end{eqnarray}
 
-If the source is non-stationary, then an exact value of $\tR(t)$ does not exist. This is due to the fact that it is impossible to distinguish between fluctuations in the number of triggers produced by a random process from statistical variation and fluctuations due to a changing rate density. Since we can only do a finite number of experiments, in order to get a better measurement of $\tR$, we must observe it for a longer period of time. However, this results in a worse measurement of the time dependence of $\tR$, since any fluctuations that occur on a time scale smaller than the period of time we observe for will be indiscernible. 
+If the source is non-stationary, then an exact value of $\tR(t)$ does not
+exist. This is due to the fact that it is impossible to distinguish between
+fluctuations in the number of triggers produced by a random process from
+statistical variation and fluctuations due to a changing rate density. In order
+to get a better measurement of $\tR$, we must observe it for a longer period of
+time. However, since we can only observe the source for a finite period of
+time, this results in a worse measurement of the time dependence of $\tR$,
+since any fluctuations that occur on a time scale smaller than the period of
+time we observe for will be indiscernible. 
 
-In this analysis, we will assume that the sources we observe are roughly stationary over the periods we observe them for. Although the interferometers do change over time, we leave it to other indicators, such as environmental and instrumental monitors, to inform us when these changes happen so that we can adjust our observation time accordingly.
+In this analysis, we will assume that the sources we observe are roughly
+stationary over the periods we observe them for. Although the interferometers
+do change over time, we leave it to other indicators, such as environmental and
+instrumental monitors, to inform us when these changes happen so that we can
+adjust our observation time accordingly.
 
 \section{Modelling the Expected Number of Coincident Triggers}
 \label{sec:coincidence_modelling}
 
-Consider a coincident event produced by a network of detectors in an experiment with \emph{combined} \ac{SNR} $\rho^\dagger$. We wish to know the significance of the event; that is, we want to know the probability that the event was created by a specific source. To determine that probability we have two choices: we can compare the event to the distribution of the desired source's triggers or we can compare the event to a distribution of triggers from all other, \emph{background}, sources, which gives the \emph{false alarm probability}. Since we do not know \emph{a priori} the distribution of gravitational-wave triggers in the \acp{IFO}, in \ac{CBC} searches we aim to compute false alarm probabilities. We define the false alarm probability, $P_F$, as being the probability of getting one or more triggers with a \ac{SNR} $\geq \rho^\dagger$ from a background distribution of triggers in the time searched, $\Tf$ (where ``$\mathrm{f}$" is used for \emph{foreground}). From equation \ref{eqn:one_or_more} this is:
+Consider a coincident trigger produced by a network of \ac{GW} detectors with
+\emph{combined} New \ac{SNR} $\rho^\dagger$.\footnote{Elsewhere in this thesis
+we denote combined New \ac{SNR} by $\rhonewc$, reserving $\rho$ for
+single-detector \ac{SNR}. We will be making use of a number of subscripts in
+this chapter, however. For notational simplicity, we drop the subscript on
+combined New \acp{SNR} here, and denote them by $\rho$. We will not discuss
+\ac{SNR} in this chapter, only New \ac{SNR}.} We wish to know the significance
+of the event; that is, we want to know the probability that the event was
+created by a specific source. To determine that probability we have two
+choices: we can compare the event to the distribution of the desired source's
+triggers or we can compare the event to a distribution of triggers from all
+other, \emph{background}, sources, which gives the \emph{false alarm
+probability}. Since we do not know \emph{a priori} the distribution of
+gravitational-wave triggers in the \acp{IFO}, in \ac{CBC} searches we aim to
+compute false alarm probabilities. We define the false alarm probability,
+$P_F$, as being the probability of getting one or more triggers with a combined
+New \ac{SNR} $\geq \rho^\dagger$ from a background distribution of triggers in
+the time searched, $\Tf$ (where ``$\mathrm{f}$" is used for \emph{foreground}).
+From equation \ref{eqn:one_or_more} this is:
 
 \begin{equation}
 P_F(k\geq1 | \far(\rho^\dagger), \Tf) = 1 - e^{-\far(\rho^\dagger) \Tf}
 \end{equation}
 
-$\far(\rho^\dagger)$ is the false alarm rate of a trigger with \ac{SNR} $\rho^\dagger$. It is the rate density of all background coincident triggers; i.e., it is the rate density of all coincident triggers occurring from every source \emph{except} gravitational waves. Since we do not have an analytic model for the interferometers' noise sources we must measure $\far(\rho^\dagger)$ directly. To see how this is done, we first consider the true rate density of coincident triggers from \emph{all} sources in the \acp{IFO} (gravitational waves included), $\widetilde{\RP}_\mathrm{all}(\rho^\dagger)$. We then model the coincidence algorithm to derive an equation for this parameter. For simplicity, we only consider a single template; multiple templates are discussed in section \ref{sec:multiple_templates}.
+$\far(\rho^\dagger)$ is the false alarm rate of a trigger with combined New
+\ac{SNR} $\rho^\dagger$. It is the rate density of all background coincident
+triggers; i.e., it is the rate density of all coincident triggers occurring
+from every source \emph{except} gravitational waves. Since we do not have an
+analytic model for the interferometers' noise sources we must measure
+$\far(\rho^\dagger)$ directly. To see how this is done, we first consider the
+true rate density of coincident triggers from \emph{all} sources in the
+\acp{IFO} (gravitational waves included),
+$\widetilde{\RP}_\mathrm{all}(\rho^\dagger)$. We then model the coincidence
+algorithm to derive an equation for this parameter. For simplicity, we only
+consider a single template; multiple templates are discussed in section
+\ref{sec:far-multiple_templates}.
 
 Assuming stationary sources, in a single experiment of duration $\Tf$, $\widetilde{\RP}_\mathrm{all}(\rho^\dagger)$ is given by:
 \begin{equation}
 \label{eqn:rate_param}
 \widetilde{\RP}_{\mathrm{all}}(\rho^\dagger) = \frac{\Exptd\left(N_{\mathrm{uncorr}}(\rho^{\dagger2} \leq \sum_i\rho_i^2),\Tf\right) + \Exptd\left(N_{\mathrm{corr}}(\rho^{\dagger2} \leq \sum_i\rho_i^2),\Tf\right)}{\Tf}
 \end{equation}
-Here, $\Exptd\left(N_{\mathrm{uncorr}}(\rho^{\dagger2} \leq \sum_i\rho_i^2, \Tf)\right)$ is the expected number of triggers from all \emph{uncorrelated} sources that give a combined $\rho^2$ greater than or equal to $\rho^{\dagger2}$ in time $\Tf$. Uncorrelated means that a source that causes a trigger in one detector has no effect on the others. Conversely, $\Exptd\left(N_{\mathrm{corr}}(\rho^{\dagger2} \leq \sum_i\rho_i^2, \Tf)\right)$ is the expected number of \emph{correlated} coincident triggers, which means they come from a source that causes triggers all of the detectors.
+Here, $\Exptd\left(N_{\mathrm{uncorr}}(\rho^{\dagger2} \leq \sum_i\rho_i^2, \Tf)\right)$ is the expected number of triggers from all \emph{uncorrelated} sources that give a combined $\rho^2$ greater than or equal to $\rho^{\dagger2}$ in time $\Tf$. Uncorrelated means that a source that causes a trigger in one detector has no effect on the others. Conversely, $\Exptd\left(N_{\mathrm{corr}}(\rho^{\dagger2} \leq \sum_i\rho_i^2, \Tf)\right)$ is the expected number of \emph{correlated} coincident triggers, which means they come from a source that causes triggers in all of the detectors.
 
 If we have $N_d$ detectors and $N_s$ independent trigger sources in each detector, then the expected number of \emph{uncorrelated} sources is given by:
 
@@ -124,9 +184,7 @@ If we have $N_d$ detectors and $N_s$ independent trigger sources in each detecto
 \label{eqn:N_general_prob}
 & = & \int_{\mathcal{S}(\rho^\dagger)} \int_{\mathcal{T}(\Tf)} \prod_i^{N_d} \sum_j^{N_s}  \sum_{k=1}^{\infty} k\,P_{i,j}(k|\rho_i,t_i) \d t_i \d\rho_i 
 \end{eqnarray}
-$\Exptd\left( n_{i,j}(\rho_i, t_i ) \right)$ in equation \ref{eqn:N_general} and $P_{i,j}(k|\rho_i,t_i)$ in equation \ref{eqn:N_general_prob} are, respectively, the expected number of triggers, and the probability of getting $k$ triggers, from the $j^{\mathrm{th}}$ source in the $i^{\mathrm{th}}$ detector with \ac{SNR} $\rho_i$ at time $t_i$. (In going from equation \ref{eqn:N_general} to equation \ref{eqn:N_general_prob} we have used the fact that the expected number of triggers produced by a source with \ac{PDF} $P(k)$ is $\sum_{k=1}^{\infty} k\,P(k)$.)
-
-The regions of integration over $\rho$ and $t$ ($\mathcal{S}$ and $\mathcal{T}$, respectively) for a two-detector network are shown in Figure \ref{fig:snr_time_integrals}. The \ac{SNR} integral is carried out such that the quadrature sum of the single-\ac{IFO} \acp{SNR} are $\geq \rho^\dagger$, with a lower-cutoff at $a$. This lower cut-off is the \ac{SNR} cut that we impose in the matched-filter search; typically $a=5.5$. The time integral is carried out such that for each point in time in a given detector, $t_i$, we only integrate between $t_i \pm \coincT_{i,l}$ in every other detector. $\coincT_{i,l}$ is the duration of the coincidence window between the $i\th$ and the $l\th$ detector for the template we are considering. As discussed in chapter \ref{ch:pipeline_principles} it is an \ac{SNR}-dependent quantity. However, since it is mostly dominated by the light-travel time between the $i\th$ and $l\th$ \ac{IFO}, here we approximate it to be a constant for each $(i,l)$ pair of detectors. 
+Here, the $n_{i,j}$ is the ``number density" of triggers in the $i\th$ detector from the $j\th$ source per unit $\rho_i$ per unit time. The $P_{i,j}(k|\rho_i,t_i)$ is the probability of getting $k$ triggers from the $j\th$ source in the $i\th$ detector per unit $\rho_i$ per unit time. (In going from equation \ref{eqn:N_general} to equation \ref{eqn:N_general_prob} we have used the fact that the expected number of triggers produced by a source with \ac{PDF} $P(k)$ is $\sum_{k=1}^{\infty} k\,P(k)$.) The regions of integration over $\rho$ and $t$ ($\mathcal{S}$ and $\mathcal{T}$, respectively) for a two-detector network are shown in Figure \ref{fig:snr_time_integrals}. The \ac{SNR} integral is carried out such that the quadrature sum of the single-\ac{IFO} New \acp{SNR} are $\geq \rho^\dagger$, with a lower-cutoff at $a$. This lower cut-off is the \ac{SNR} cut that we impose in the matched-filter search; typically $a=5.5$.\footnote{Although we do not apply a New \ac{SNR} cut in the current search, for simplicity, we will assume that we do, and that it is the same as the \ac{SNR} cut.} The time integral is carried out such that for each point in time in a given detector, $t_i$, we only integrate between $t_i \pm \coincT_{i,l}$ in every other detector. $\coincT_{i,l}$ is the duration of the coincidence window between the $i\th$ and the $l\th$ detector for the template we are considering. As discussed in chapter \ref{ch:pipeline_principles} it is an \ac{SNR}-dependent quantity. However, since it is mostly dominated by the light-travel time between the $i\th$ and $l\th$ \ac{IFO}, here we approximate it to be a constant for each $(i,l)$ pair of detectors. 
 
 $P_{i,j}(k|\rho_i,t_i)$ is a two-dimensional \ac{PDF}: it has some distribution in time and some distribution in $\rho$. If we assume the sources' time and $\rho$ dependence are independent of each other, then \ac{PDF} is:
 
@@ -134,7 +192,7 @@ $P_{i,j}(k|\rho_i,t_i)$ is a two-dimensional \ac{PDF}: it has some distribution 
 \label{eqn:twoDpdf}
 P_{i,j}(k|\rho_i,t_i) = P(k|\rsrc_{i,j},t_i)P_{i,j}(\rho_i)
 \end{equation}
-In words: the probability of getting $k$ triggers from the $j\th$ source in the $i\th$ detector with \ac{SNR} $\rho_i$ in time $t_i$ is the probability of getting $k$ triggers from a source with rate-density $\rsrc_{i,j}$ in time $t_i$ times the probability of getting a trigger with \ac{SNR} $\rho_i$ from the source. If we again assume that all of the sources are stationary Poisson processes in the time domain, then:
+In words: the probability of getting $k$ triggers from the $j\th$ source in the $i\th$ detector with New \ac{SNR} $\rho_i$ in time $t_i$ is the probability of getting $k$ triggers from a source with rate-density $\rsrc_{i,j}$ in time $t_i$ times the probability of getting a trigger with New \ac{SNR} $\rho_i$ from the source. If we again assume that all of the sources are stationary Poisson processes in the time domain, then:
 
 \begin{equation}
 \sum_{k=1}^{\infty} k P(k|\rsrc_{i,j},t_i) \d t_i = \rsrc_{i,j} \d t_i
@@ -152,40 +210,45 @@ $\vT$ has units of $[\mathrm{time}]^{N_d}$. In the two detector case shown in Fi
 \Exptd\left(N_{\mathrm{uncorr}}\left(\rho^{\dagger2} \leq \sum_i\rho_i^2, \Tf \right)\right) = \vT(\Tf) \int_{\mathcal{S}} \prod_i^{N_d} \sum_j^{N_s} \rsrc_{i,j} P_{i,j}(\rho_i) \d\rho_i
 \end{equation}
 
-To estimate the expected number of coincident triggers with combined \ac{SNR} $\geq \rho^\dagger$ from \emph{correlated} sources, we assume that the sources create a trigger with the same $\rho$ at the same time (modulo the light-travel time) in all detectors. In this case, the expected number is the quadrature sum over the individual probabilities:
-
+To estimate the expected number of coincident triggers with combined New \ac{SNR} $\geq \rho^\dagger$ from \emph{correlated} sources, we assume that the sources create a trigger at the same time (modulo the light-travel time) in all detectors. Since we compute combined New \ac{SNR} by taking the quadruture sum of the single-detector New \acp{SNR}, the expected number is the quadrature sum over the individual probabilities:
 \begin{eqnarray}
 \label{eqn:correlated_sources1}
 \lefteqn{\Exptd\left(N_{\mathrm{corr}} \left( \rho^{\dagger2} \leq \sum_i\rho_i^2, \Tf \right) \right) } \nonumber \\
- & = & \sum_{j=1}^{N_s} \sqrt{ \sum_{i=1}^{N_d} \left( \int_{\rho^{\dagger}/\sqrt{N_d}}^\infty \int_{0}^{\Tf} \Exptd\left(n_{i,j}(\rho_i,t_i)\right)\d t_i \d \rho_i \right)^2 } \\
+ & = & \sum_{j=1}^{N_s} \sqrt{ \sum_{i=1}^{N_d} \left( \int_{\mathcal{S}(\rho^\dagger)} \int_{0}^{\Tf} \Exptd\left(n_{i,j}(\rho_i,t_i)\right)\d t_i \d \rho_i \right)^2 } \\
 \label{eqn:correlated_sources2}
- & = & \Tf \sum_{j=1}^{N_s} \sqrt{ \sum_{i=1}^{N_d} \left( \rsrc_{i,j} \int_{\rho^\dagger/\sqrt{N_d}}^\infty P_{i,j}(\rho_i) \d \rho_i \right)^2 }
+ & = & \Tf \sum_{j=1}^{N_s} \sqrt{ \sum_{i=1}^{N_d} \left( \rsrc_{i,j} \int_{\mathcal{S}(\rho^\dagger)} P_{i,j}(\rho_i) \d \rho_i \right)^2 }
 \end{eqnarray}
-In going from \ref{eqn:correlated_sources1} to \ref{eqn:correlated_sources2} we have used equation \ref{eqn:twoDpdf} and have assumed the correlated sources are stationary. Since all triggers will occur in each detector within the light-travel time between them the constraints are removed from the time integral, making it simply $\Tf$. Likewise, as we have assumed that each source will create triggers with the same $\rho$ in all detectors, there are no constraints on the \ac{SNR} integral and the single-\ac{IFO} \ac{SNR} is reduced to $\rho^\dagger/\sqrt{N_d}$.
+In going from \ref{eqn:correlated_sources1} to \ref{eqn:correlated_sources2} we have used equation \ref{eqn:twoDpdf} and have assumed the correlated sources are stationary. Since all triggers will occur in each detector within the light-travel time between them the constraints are removed from the time integral, making it simply $\Tf$. If we further assume that the correlated sources create the same single-detector New \ac{SNR} in the all detectors, then we can simply the expression to:
+\begin{eqnarray}
+\label{eqn:correlated_sources3}
+\lefteqn{\Exptd\left(N_{\mathrm{corr}} \left( \rho^{\dagger2} \leq \sum_i\rho_i^2, \Tf \right) \right) } \nonumber \\
+  & = & \Tf \sum_{j=1}^{N_s} \sqrt{N_d} \rsrc_{j} \int_{\rho^\dagger/\sqrt{N_d}}^\infty P_{j}(\rho_i) \d \rho_i
+\end{eqnarray}
+Here, we have removed the $i$ subscript since the rate parameter and New \ac{SNR} distribution will be the same in all detectors.
 
-Let us assume that the only source that can create correlated triggers across detectors is a gravitational wave. In this case, the sum over the number of sources in equation \ref{eqn:correlated_sources2} becomes a single term, with $j = \mathrm{GW}$. Assuming a \ac{GW} creates perfectly correlated triggers in all detectors is a bit of an oversimplification: due to the antenna patterns of the detectors and their varying sensitivities, a gravitational wave will only generate a trigger in all detectors with the same \ac{SNR} for certain sky locations and orientations. However, since we are ultimately interested in computing background rates in this analysis, and not \ac{GW} rates, we will assume that the detectors are roughly co-located with the same sensitivity. Under this assumption, the $P_{i,\mathrm{GW}}$ is the same for all detectors; thus the integral can be pulled out of the sum, and we have:
+Now let us assume that the only source that can create correlated triggers across detectors is a gravitational wave. In this case, the sum over the number of sources in equation \ref{eqn:correlated_sources3} becomes a single term, with $j = \mathrm{GW}$. Assuming a \ac{GW} creates perfectly correlated triggers in all detectors is a bit of an oversimplification: due to the antenna patterns of the detectors and their varying sensitivities, a gravitational wave will only generate a trigger in all detectors with the same \ac{SNR} for certain sky locations and orientations. However, since we are ultimately interested in computing background rates in this analysis, and not \ac{GW} rates, we will assume that the detectors are roughly co-located with the same sensitivity. Under this assumption, we can use equation \ref{eqn:correlated_sources3} to write:
 
 \begin{equation}
 \label{eqn:correlated_GW_colocated}
 \Exptd\left(N_{\mathrm{GW}} \left(\rho^{\dagger2} \leq  \sum_i\rho_i^2, \Tf \right) \right) = \rsrc_{\mathrm{GW}}(\vec{\theta}) \Tf \sqrt{N_d} \int_{\rho^\dagger/\sqrt{N_d}}^{\infty} P_{\mathrm{GW}}(\rho) \d \rho
 \end{equation}
-Note that $\rsrc_{i,j}$ has been replaced by $\rsrc_{GW}(\vec{\theta})$. This is the rate of \acp{CBC} in the universe; as it depends on the parameters of the source, $\vec{\theta}$, we have made the parameter dependence explicit, even though we are still only considering a single template.
+Note that $\rsrc_{j}$ has been replaced by $\rsrc_{GW}(\vec{\theta})$. This is the rate of \acp{CBC} in the universe; as it depends on the parameters of the source, $\vec{\theta}$, we have made the parameter dependence explicit, even though we are still only considering a single template.
 
-The integral in equation \ref{eqn:correlated_GW_colocated} gives the sensitivity of the detectors to \ac{GW} sources. To compute it, we need the dependence of the sensitivity as a function of $\rho$. This can be obtained as follows: we wish to know the number of sources the detector is sensitive to from here to some distance $D^\dagger$. If we assume that binary sources are distributed uniformly throughout space (which is a valid assumption for distances greater than $\sim10\,\mathrm{Mpc}$ and less than $\sim1\,\mathrm{Gpc}$ \cite{rates doc}), then this is:
+The integral in equation \ref{eqn:correlated_GW_colocated} gives the sensitivity of the detectors to \ac{GW} sources. To compute it, we need the dependence of the sensitivity as a function of $\rho$. This can be obtained as follows: we wish to know the number of sources the detector is sensitive to from here to some distance $D^\dagger$. If we assume that binary sources are distributed uniformly throughout the universe (which is a valid assumption for distances greater than $\sim10\,\mathrm{Mpc}$ and less than $\sim1\,\mathrm{Gpc}$ \cite{ratesdoc}), then this is:
 
 \begin{equation}
 (2.26)^{-3} \int_{0}^{D^\dagger} D^2 \d D \int \d\Omega
 \end{equation}
-where $\d\Omega$ is the solid angle. The factor $(2.26)^{-3}$ comes from approximating the volume enclosed by the detector's antenna pattern (which is peanut shaped) by a sphere with a radius equal to the detector's ``horizon distance". The ``horizon distance" is the distance to a binary with optimal orientation and location (i.e., it is the length of the longest part of the peanut) \cite{Finn and Chernoff}. As discussed in chapter \ref{ch:pipeline_principles}, the sensitive distance is related to \ac{SNR} by:
+where $\d\Omega$ is the solid angle. The factor $(2.26)^{-3}$ comes from approximating the volume enclosed by the detector's antenna pattern (which is peanut shaped; see Figure \ref{fig:anteanna_pattern}) by a sphere with a radius equal to the detector's ``horizon distance". The ``horizon distance" is the distance to a binary with optimal orientation and location (i.e., it is the length of the longest part of the peanut) \cite{Finn and Chernoff}. As discussed in chapter \ref{ch:pipeline_principles}, the sensitive distance is related to New \ac{SNR} by:
 
 \begin{equation}
 \label{eqn:DtoRhoGW}
 D = \frac{\sigma_{\mathrm{GW}}}{\rho}
 \end{equation}
 %(The need for the ``$\mathrm{GW}$" subscript will become clear below.) Plugging this into the above, and setting $\rho^\dagger / \sqrt{N_d} = \sigma_{\mathrm{GW}} / D^\dagger$ we have:
-Plugging this into the above, and setting $\rho^\dagger / \sqrt{N_d} = \sigma_{\mathrm{GW}} / D^\dagger$ we have:
+Substituting this into the above, and setting $\rho^\dagger / \sqrt{N_d} = \sigma_{\mathrm{GW}} / D^\dagger$ we have:
 \begin{equation}
-(2.26)^{-3} \int_{0}^{D} D' \d D' \int d\Omega = \frac{4\pi}{(2.26)^3} \int_{\rho^\dagger/\sqrt{N_d}}^{\infty} \frac{\sigma_{\mathrm{GW}}^3 \d\rho}{\rho^4}
+(2.26)^{-3} \int_{0}^{D} D'^2 \d D' \int d\Omega = \frac{4\pi}{(2.26)^3} \int_{\rho^\dagger/\sqrt{N_d}}^{\infty} \frac{\sigma_{\mathrm{GW}}^3 \d\rho}{\rho^4}
 \end{equation}
 Thus:
 \begin{equation}
@@ -195,7 +258,7 @@ P_{\mathrm{GW}}(\rho) = \frac{4\pi \sigma_{\mathrm{GW}}^3}{(2.26)^3} \rho^{-4}
 which gives:
 \begin{equation}
 \label{eqn:expectedN_GW}
-\Exptd\left(N_{\mathrm{GW}} \left(\rho^{\dagger2} \leq  \sum_i\rho_i^2, \Tf \right) \right) = \frac{4}{3} \pi \frac{\sqrt{N_d}\, \sigma_{\mathrm{GW}}^3}{(2.26)^3 (\rho^\dagger/\sqrt{N_d})^3} \rsrc_{\mathrm{GW}}(\theta) \Tf 
+\Exptd\left(N_{\mathrm{GW}} \left(\rho^{\dagger2} \leq  \sum_i\rho_i^2, \Tf \right) \right) = \frac{4\pi}{3} \frac{\sqrt{N_d}\, \sigma_{\mathrm{GW}}^3}{(2.26)^3 (\rho^\dagger/\sqrt{N_d})^3} \rsrc_{\mathrm{GW}}(\theta) \Tf 
 \end{equation}
 (Note that we only have one $\sigma_{\mathrm{GW}}^3$ in the equation. This is because we assumed that all the detectors had the same sensitivity. If we had not made this assumption, the $\sqrt{N_d}\,\sigma_{\mathrm{GW}}^3$ term would instead be $\sqrt{ \sum_i^{N_d} \sigma_{i,\mathrm{GW}}^6 }$.) Adding this term to equation \ref{eqn:N_rate_general} and dividing by $\Tf$ gives the overall rate-density $\widetilde{\RP}_{\mathrm{all}}(\rho^\dagger)$.
 
@@ -243,7 +306,7 @@ The first term in equation \ref{eqn:exampleSources} is the false alarm rate-dens
 \end{equation}
 When we do an experiment and perform the coincidence test, we get a measure of $\tR_{\mathrm{all}}$. To get $\widetilde{\far}$ we must separate out the \ac{GW} terms. Unfortunately, we cannot tell the difference between a coincident trigger that came from noise and one that came from a gravitational wave. (If we could, we would not have to do any of this.) Thus, we must find other ways to separate the two. One way to do so is to perform a \emph{time slide}.
 
-Consider what happens if we add a relative time offset to each detector's data-stream that is larger than the coincidence window between them. Doing so causes the gravitational wave triggers to become uncorrelated across the detectors. The rate of coincident noise triggers, however, is unaffected, since they were uncorrelated anyway. Thus, if we perform the same coincidence test on this ``slid" data as we did for the ``zero-lag" data, the expected number of coincidences is (assuming each detector only has one noise source):
+Consider what happens if we add a relative time offset to each detector's data-stream that is larger than the coincidence window between them. Doing so causes the gravitational wave triggers to become uncorrelated across the detectors. The rate of coincident noise triggers, however, is unaffected, since they were uncorrelated anyway. Thus, if we perform the same coincidence test on this \emph{slid} data as we did for the \emph{zero-lag} data, the expected number of coincidences is (assuming each detector only has one noise source):
 \begin{equation}
 \label{eqn:exptd_slid_coincs}
 \Exptd \left(N_{\mathrm{all}} \left( \rho^{\dagger2} \leq \sum_{i=1}^{N_d}, \Tf, \vec{\mathcal{O}} \right) \right) = \vT(\Tf) \int_{\mathcal{S}} \prod_{i=1}^{N_d} \left( \rsrc_{i,\mathrm{noise}} P_{i,\mathrm{noise}}(\rho_i) + \rsrc_{\mathrm{GW}} P_{i,\mathrm{GW}}(\rho_i) \right) \d \rho_i
@@ -286,7 +349,7 @@ where:
 %\label{eqn:HgwLgwIntegral}
 %\mathcal{I}_{\mathrm{H,GW; L,GW}} & = & \left( \frac{4\pi \sigma_{\mathrm{GW}}^3}{(2.26)^3} \right)^2 \int_{\mathcal{S}} \rho_\varH^{-4} \rho_\varL^{-4} \d \rho_\varH \d \rho_\varL
 %\end{eqnarray}
-We can solve the GW/GW integral\footnote{Note that if we did not impose the \ac{SNR} cut-off at $a$ then the GW/GW integral would give infinity; i.e., we would expect an infinite number of events in the detector from gravitational waves! This is a result of the model we have chosen for \acp{GW}. If the limits of integration were $\rho = 0,\infty$, then, from equation \ref{eqn:DtoRhoGW}, we would be considering every source from here to infinity. By assuming that the distribution of sources is uniform throughout the universe (which we did by setting $\rsrc_{\mathrm{GW}}(\vec{\theta})$ to a constant), this means that if we look for an infinite distance, we will get an infinite number of sources --- a \ac{GW} version of Oblier's paradox \cite{obliers_paradox}. Of course, the real universe is not infinitely old; beyond $\sim 1\,\mathrm{Gpc}$ the number of \acp{CBC} begins to fall off \cite{rates_paper}. Further, we have assumed that the GW/GW term is independent of the noise. In practice, however, we do clustering, which couples these terms. Even if we had an ideal detector with stationary Gaussian noise in \ac{SNR}, below some \ac{SNR} the noise triggers would effectively cluster away all \ac{GW} events, even if the universe was infinitely old. We get around both of these difficulties by assuming that the \ac{SNR} cutoff is high enough that these effects do not affect our model (which, with $a=5.5$, is valid for both enhanced and advanced \ac{LIGO}.}, getting:
+We can solve the GW/GW integral\footnote{Note that if we did not impose the New \ac{SNR} cut-off at $a$ then the GW/GW integral would give infinity; i.e., we would expect an infinite number of events in the detector from gravitational waves! This is a result of the model we have chosen for \acp{GW}. If the limits of integration were $\rho = 0,\infty$, then, from equation \ref{eqn:DtoRhoGW}, we would be considering every source from here to infinity. By assuming that the distribution of sources is uniform throughout the universe (which we did by setting $\rsrc_{\mathrm{GW}}(\vec{\theta})$ to a constant), this means that if we look for an infinite distance, we will get an infinite number of sources --- a \ac{GW} version of Oblier's paradox \cite{obliers_paradox}. Of course, the real universe is not infinitely old; beyond $\sim 1\,\mathrm{Gpc}$ the number of \acp{CBC} begins to fall off \cite{ratespaper}. Further, we have assumed that the GW/GW term is independent of the noise. In practice, however, we do clustering, which couples these terms. Even if we had an ideal detector with stationary Gaussian noise in \ac{SNR}, below some \ac{SNR} the noise triggers would effectively cluster away all \ac{GW} events, even if the universe was infinitely old. We get around both of these difficulties by assuming that the \ac{SNR} cutoff is high enough that these effects do not affect our model (which, with $a=5.5$, is valid for both enhanced and Advanced \ac{LIGO}.}, getting:
 \begin{eqnarray}
 \lefteqn{ \mathcal{I}_{\mathrm{H,GW;L,GW}} = } \nonumber \\
  & & \left( \frac{4\pi \sigma_{\mathrm{GW}}^3}{(2.26)^3} \right)^2 \left( \frac{\rho^{\dagger2} - 2a^2}{18 \rho^{\dagger6} a \sqrt{\rho^{\dagger2} - a^2}} \left( 1 + \frac{\rho^{\dagger4}}{8a^2\left(\rho^{\dagger2} - a^2 \right)} \right) + \frac{1}{9a^3 \left(\rho^{\dagger2} - a^2 \right)^{3/2}} \right)
