@@ -14,7 +14,7 @@ seen in figure \ref{fig:spike_glitch-cbc_response}, triggers can be last for
 several tens of seconds after the glitch; this duration increases with the size
 of the glitch.
 
-Another possiblity is to remove the glitch \emph{prior} to match filtering. We
+Another possibility is to remove the glitch \emph{prior} to match filtering. We
 can do this by applying a Tukey window to the data stream to ramp the output
 down to $0$ at the time of the glitch. We call this ``gating." Figure
 \ref{fig:gating-time_series} shows a time series in which a spike-glitch
@@ -28,7 +28,7 @@ data to the scan with the glitch gated out.
 
 Zeroing out the data around the glitch does mean that we will slightly
 underestimate the \ac{PSD}. However, if the gated data is only a few seconds
-out of an entire analaysis block, the effect should be small. It may also be
+out of an entire analysis block, the effect should be small. It may also be
 possible to correct for the zeroed out data by taking the average power across
 the segment, then add a correction factor. Even if we add a correction factor
 to the \ac{PSD}, we should probably limit the amount of time that is gated in
@@ -36,10 +36,10 @@ an analysis block. The upper limit on how much time can gated in a block
 requires more study.
 
 Knowing what to gate also needs study. In the case of the spike glitch, we
-could not find the cause, as we could not correlate it with any auxillarily
+could not find the cause, as we could not correlate it with any auxiliary
 environmental or instrumental channels. We got around this difficulty by
 applying the \ac{SNR} $> 250$ flag at CAT3, which allowed us to check the
-results at CAT2 to ensure we did not accidently veto a loud \ac{GW} trigger.
+results at CAT2 to ensure we did not accidentally veto a loud \ac{GW} trigger.
 Since gating involves removing the glitch before filtering, we would not have
 that luxury, unless we were to match filter the data multiple times. Another
 possibility is to establish a \ac{SNR} for which un-modelled ``Burst" searches
@@ -78,20 +78,20 @@ Figure \ref{fig:spike_glitch-example}.}
 \section{Single Stage Pipeline and Updates to Pipedown}
 
 Using a two stage-pipeline, as presented in chapter \ref{ch:ihope_pipeline},
-makes it difficult to followup triggers, and to do things such as perform more
-slides, as dicussed in chapter \ref{ch:s6_results}. \hipe~was developed to have
+makes it difficult to follow-up triggers, and to do things such as perform more
+slides, as discussed in chapter \ref{ch:s6_results}. \hipe~was developed to have
 two stages in order to save on the computational cost of calculating $\chi^2$.
 This was done several years ago. Since then, advancements in computing speed
 have made it possible to use a \emph{single-stage} pipeline. In this, $\chi^2$
 is calculated at first inspiral, and so no second stage is needed. Having such
-a pipeline would make it far simplier to followup triggers and to know how they
+a pipeline would make it far simpler to follow-up triggers and to know how they
 evolve through the pipeline.
 
 As mentioned in \ref{ch:s6_results} a prototype single-stage pipeline already
 exists. Some updates need to be made to Pipedown to be able to use this
 pipeline, however, as some of the programs rely on conventions of the current
-\ac{HIPE} pipeline. Of note: in the singe-stage pipeline, \verb|lalapps_thinca|
-is replaced by an updated verison, \verb|ligolw_thinca|, which natively makes
+\hipe~pipeline. Of note: in the singe-stage pipeline, \verb|lalapps_thinca|
+is replaced by an updated version, \verb|ligolw_thinca|, which natively makes
 use of the Coinc and Experiment tables discussed in chapter
 \ref{ch:ihope_pipeline}. It also performs linear slides as opposed to slides on
 a ring. This removes the need for \verb|ligolw_thinca_to_coinc| in Pipedown.

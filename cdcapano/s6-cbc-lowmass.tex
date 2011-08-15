@@ -1,0 +1,842 @@
+\documentclass[prd,superscriptaddress,showpacs,amssymb,amsmath,amsfonts,aps,altaffilletter,nofootinbib,letterpaper,twocolumn]{revtex4}
+
+\usepackage{color}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{float}
+\usepackage{ulem}
+\usepackage[raggedright]{subfigure}
+\usepackage{acronym}
+\usepackage{multirow}
+\usepackage{array}
+%\usepackage[style=altlist]{glossary} 
+
+\normalem
+
+\makeatletter
+\makeatletter
+\def\@fnsymbol#1{\ifcase#1\or * \or  $+$ \or  \$ \or \#  \or \dag \or \ddag \or
+$\mathsection$ \or $ \mathparagraph$ \or $\|$  \or \textordfeminine \or \textbul
+let   
+\or ** \or $++$ \or  \$\$ \or \#\#  \or \dag\dag \or \ddag\ddag \or
+$\mathsection\mathsection$ \or $ \mathparagraph\mathparagraph$ \or $\|\|$  \or 
+\textordfeminine\textordfeminine \or \textbullet \textbullet \or *** \or $+++$ 
+\or  \$\$\$ \or \#\#  \or \dag\dag \or \ddag\ddag \or
+$\mathsection \mathsection\mathsection$ \or $ \mathparagraph 
+\mathparagraph\mathparagraph$ \or $\|\|\|$  \or 
+\textordfeminine\textordfeminine\textordfeminine \or 
+\textbullet\textbullet\textbullet \or \else \@ctrerr\fi}
+%\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+\makeatother
+
+%% Macros comments
+
+
+\newcommand\fake[1]{\textcolor{red}{#1}}
+\newcommand\assign[1]{\begin{center}\textcolor{red}{#1}\end{center}}
+
+\newcommand\checkme[1]{\textcolor{blue}{\textbf{#1}}}
+\newcommand\checked[1]{#1}
+\newcommand\marginnote[2]{%
+  \mbox{}\marginpar{\raggedleft\hspace{0pt}\scriptsize
+    \textcolor{blue}{#1: #2}}}
+\newcommand\scapro[2]{< #1 , #2 >}
+%% RCS Id macro \rcsid
+\def\thercsid{\relax}
+\def\rcsid#1{\def\next##1#1{\def\thercsid{##1}}\next}
+
+
+
+\rcsid$Id: s6-cbc-lowmass.tex,v 1.28 2011/06/01 20:11:33 cdcapano Exp $
+
+
+
+%% Today macro \today
+\renewcommand{\today}{\number\day\space\ifcase\month\or
+  January\or February\or March\or April\or May\or June\or
+  July\or August\or September\or October\or November\or December\fi
+  \space\number\year}
+
+\def\Msun{\ensuremath{\mathrm{M_{\odot}}}}
+\def\Mtotal{\ensuremath{\mathrm{M}}}
+
+% loudest FARs
+\def\firstFAR{\ensuremath{\mathrm{2.2~yr^{-1}}}}
+\def\secondFAR{\ensuremath{\mathrm{5.6~yr^{-1}}}}
+\def\thirdFAR{\ensuremath{\mathrm{9.4~yr^{-1}}}}
+\def\expectedLoudestFAR{\ensuremath{\mathrm{\sim2~yr^{-1}}}}
+
+% livetime numbers
+\def\HLltpreVeto{\ensuremath{0.21} yr}
+\def\HVltpreVeto{\ensuremath{0.13} yr}
+\def\LVltpreVeto{\ensuremath{0.08} yr}
+\def\HLVltpreVeto{\ensuremath{0.14} yr}
+\def\totalpreVeto{\ensuremath{0.56} yr}
+\def\HLlt{\ensuremath{0.17} yr}
+\def\HVlt{\ensuremath{0.10} yr}
+\def\LVlt{\ensuremath{0.07} yr}
+\def\HLVlt{\ensuremath{0.09} yr}
+\def\totalTime{\ensuremath{0.43} yr}
+
+% citation shortcuts
+\def\12to18{Abbott:2009qj}
+\def\sfive1yr{Collaboration:2009tt}
+\def\sfivelvc{S5LowMassLV}
+
+
+% BNS NUMBERS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\BNShd{\ensuremath{50}}
+\def\BNSul{\ensuremath{7 \times 10^{-5}}}
+\def\LVBNS{\ensuremath{1.7 \times 10^{-4}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% NSBH NUMBERS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\NSBHhd{\ensuremath{80}}
+\def\NSBHul{\ensuremath{2 \times 10^{-5}}}
+\def\sNSBHul{\ensuremath{3 \times 10^{-5}}}
+\def\LVNSBH{\ensuremath{4.4 \times 10^{-5}}}
+
+% BBH NUMBERS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\BBHhd{\ensuremath{90}}
+\def\BBHul{\ensuremath{6 \times 10^{-6}}}
+\def\sBBHul{\ensuremath{10 \times 10^{-6}}}
+\def\LVBBH{\ensuremath{8.8 \times 10^{-6}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Dog Numbers
+\newcommand\perMpcyr{\ensuremath{\mathrm{Mpc}^{-3} \mathrm{yr}^{-1}}}
+\def\dogDate{16 September 2010}
+\def\injectedDogTime{06:42:23 UTC}
+\def\recoveredDogTime{06:42:23 UTC}
+\def\dogTrialFAR{1 in $4 \times 10^{4}$ years}
+\def\dogFAR{1 in $7,000$ years}
+\def\dogTrialFAP{\ensuremath{3 \times 10^{-6}}}
+\def\dogFAP{\ensuremath{7 \times 10^{-5}}}
+\def\dogChirp{between $4.4$ and $5.2 \Msun$}
+\def\dogEta{$0.16 \le \eta \le 0.25$}
+\def\dogDist{between $3$ and $60$ Mpc}
+\def\dogSNR{\ensuremath{\rho_c = 12.5}}
+
+\begin{document}
+
+\title{Search for Gravitational Waves from Low Mass Compact Binary Coalescence
+in LIGO's Sixth Science Run and Virgo's Science Runs 2 and 3\\ }
+
+
+\author{The LSC and Virgo (will add full author list)}
+%
+ \collaboration{The LIGO Scientific Collaboration, http://www.ligo.org}
+ \noaffiliation
+%
+%
+
+
+%\date[\relax]{ RCS \thercsid; compiled \today }
+%\fake{\pacs{95.85.Sz, 04.80.Nn, 07.05.Kf, 97.60.Jd, 97.60.Lf, 97.80.-d}}
+
+\begin{abstract}
+
+We report on a search for gravitational waves from coalescing compact
+binaries using LIGO and Virgo observations between July 7, 2009 and
+October 20, 2010.  Binaries with total mass between $2$ and $25~\Msun$
+were searched for; this includes binary neutron stars, binary black
+holes, and binaries consiting of a black hole and neutron star. No
+gravitational-wave signals were detected. We report upper limits on the
+rate of compact binary coalescence as a function of total mass. The
+cumulative 90\%-confidence rate upper limits of the binary coalescence
+of binary neutron star, neutron star--black hole and binary black holes
+systems are \BNSul, \NSBHul and \BBHul $\mathrm{Mpc^{-3}yr^{-1}}$,
+respectively.
+
+\end{abstract}
+
+\maketitle
+
+\acrodef{BBH}{binary black holes}
+\acrodef{BNS}{binary neutron stars}
+\acrodef{NSBH}{neutron star--black hole binaries}
+\acrodef{SNR}{signal-to-noise ratio}
+\acrodef{SPA}{stationary-phase approximation}
+\acrodef{LIGO}{Laser Interferometer Gravitational-wave Observatory}
+\acrodef{LHO}{LIGO Hanford Observatory}
+\acrodef{LLO}{LIGO Livingston Observatory}
+\acrodef{LSC}{LIGO Scientific Collaboration}
+\acrodef{CBC}{compact binary coalescence}
+\acrodef{GW}{gravitational wave}
+\acrodef{ISCO}{innermost stable circular orbit}
+\acrodef{FAR}{false alarm rate}
+\acrodef{cFAR}{combined FAR}
+\acrodef{IFAR}{inverse false alarm rate}
+\acrodef{CL}{confidence level}
+\acrodef{pN}{post-Newtonian}
+\acrodef{DQ}{data quality}
+\acrodef{VSR1}{first Virgo science run}
+\acrodef{VSR2}{Virgo's second science run}
+\acrodef{VSR3}{its third science run}
+\acrodef{S5}{LIGO's fifth science run}
+\acrodef{S6}{LIGO's sixth science run}
+\acrodef{DQ}{data quality}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}\label{sec:overview}
+
+During 2009 and 2010, both the \ac{LIGO}~\cite{Abbott:2007kv} and
+Virgo~\cite{Acernese:2008b} gravitational wave detectors undertook
+science runs with better sensitivity across a broader range of frequencies
+than previously achieved.  Among the most promising sources of
+gravitational waves for these detectors are those emitted by compact
+stellar mass binaries as they spiral in toward each other and eventually
+merge.    For such systems, which include \ac{BNS}, \ac{BBH}, and
+\ac{NSBH}, the late stages of inspiral and merger occur in the most
+sensitive band (between 40 and 1000 Hz) of the \ac{LIGO} and Virgo
+detectors.  In this paper, we report on a search for gravitational waves
+from binary systems with a maximum total mass of $25\Msun$, and a
+minimum component mass of $1\Msun$.  
+
+A hardware injection was performed during the analysis without the knowledge of
+the data analysis teams as apart of a ``blind injection challenge." This
+challenge was intended to test the data analysis procedures and processes for
+evaluating candidate events. The injection was performed by actuating the
+mirrors on the \ac{LIGO} and Virgo detectors to mimic a gravitational-wave
+signal. 
+
+The blind injection occurred on \dogDate~and was identified by multiple
+searches. It was initially observed by a low-latency search for unmodeled
+transients.  This search identified the injection as a gravitatioinal-wave
+candidate with high significance in both LIGO detectors, chirping upward in
+frequency from 40 to 400\,Hz. Virgo was observing with lower sensitivity and
+did not show a significant signal. Coherent analyses showed that the lack of a
+significant event in Virgo was consistent with the signal seen by the two LIGO
+detectors. The observed chirp waveform was consistent with gravitational waves
+radiated in the final moments of a coalescing compact binary system. The
+detectors were in normal operation at the time of detection and no evidence
+that the signal was of instrumental or environmental origin was found. The
+event had a false alarm rate of less than \dogFAR in the search
+reported here.
+
+After the analysis of the event was finished it was revealed to be a blind
+injection and removed from the data. With the injection removed, there were no
+gravitataional waves observed above the noise background. As a result we place
+upper limits on rates of \ac{CBC}, using upper limits from previous
+gravitational-wave searches \cite{\sfivelvc} as prior information. The upper
+limits presented here are a factor of two lower than previously
+derived limits but still two orders of magnitude above expected \ac{CBC} rates. 
+
+%The search revealed a single gravitational-wave candidate, observed on
+%\dogDate\ in coincident data taken from the \ac{LIGO}, Virgo and
+%GEO\,600~\cite{Grote:2008} gravitational-wave detectors. The event was
+%initially identified by a low-latency search for unmodeled transients.  This
+%search identified the event with high significance in both LIGO detectors,
+%chirping upward in frequency from 40 to 400\,Hz. Virgo and GEO\,600 were
+%observing with lower sensitivity and did not show a significant signal, but
+%coherent analyses showed their data to be consistent with the signal seen by
+%the two LIGO detectors, and there was some evidence (described below) for a
+%signal in Virgo. The observed chirp waveform was consistent with gravitational
+%waves radiated in the final moments of a coalescing compact binary system. The
+%detectors were in normal operation at the time of detection and no evidence
+%that the signal was of instrumental or environmental origin was found. The
+%event had a false alarm rate of less than \dogFAR in the search
+%reported here.
+
+%This event was later revealed to be a hardware injection performed by
+%actuating the mirrors on the \ac{LIGO} and Virgo detectors to mimic a
+%gravitational wave signal.  It was performed as part of a ``blind
+%injection challenge'' in which a small number (possibly zero) of
+%coherent hardware injections were performed without the knowledge of the
+%data analysis teams, and revealed only afterward.  The challenge was
+%intended to test the data analysis procedures and processes for
+%evaluating candidate events.
+
+%With the ``blind injection'' removed from the analysis, there were no
+%gravitataional waves observed above the noise background.  As a result
+%we place upper limits on rates of \ac{CBC}, using upper limits from
+%previous gravitational wave searches \cite{\sfivelvc} as prior
+%distributions.  
+  
+The paper is laid out as follows.  In Section \ref{sec:dets}, we provide
+a brief description of the detectors and their sensitivities during
+\ac{S6} and Virgo's second and third science runs (VSR2 and vSR3). In
+Section \ref{sec:search} we present a brief overview of the analysis
+methods used in performing the search.  In Section \ref{sec:results} we
+present the results of the search.  We discuss the results both with the
+blind injection present, and after it has been removed.  In Section
+\ref{sec:ul} we give the upper limits obtained from the search and close
+with a brief discussion in Section \ref{sec:discussion}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Detectors}
+\label{sec:dets}
+
+The \ac{LIGO} observatory comprises two sites, one in Hanford, WA and the
+second in Livingston, LA.  The data used in this search were taken during
+\ac{S6}, which took place between 7 July 2009 and 20 October 2010.  During
+\ac{S6} both of these sites operated a single 4km Laser interferometer (denoted
+H1 and L1 respectively).  The 2km H2 instrument at the Hanford site which
+operated in earlier science runs was not operational in \ac{S6}.  Following
+\ac{S5} \cite{Abbott:2007kv}, several hardware changes were made to the
+\ac{LIGO} detectors so that prototypes of advanced LIGO technology could be
+installed and tested. This included the installation of a more powerful,
+$35~\mathrm{W}$ laser, and the implementation of a DC readout system that
+included a new Output Mode Cleaner on an advanced LIGO seismic isolation
+table~\cite{Adhikari:2006}. In addition, the hydraulic seismic isolation system
+was improved by fine-tuning its feed-forward path.  
+
+The Virgo detector (denoted V1) is a single, 3km Laser Interferometer
+located in Cascina, Italy.  The data used in this search were taken from
+both \ac{VSR2},  which ran from 7 July 2009 to 11 January 2010, and
+\ac{VSR3},  which ran from 11 August 2010 to 20 October 2010.  In the
+period between \ac{VSR1} and \ac{VSR2}, several enhancements were made
+to the Virgo detector.  Specifically, a more powerful laser was
+installed in Virgo, along with a thermal compensation system and
+improved scattered light mitigation.  During early 2010, monolithic
+suspension was installed, which involved replacing Virgo's test masses
+with new mirrors hung from fused-silica fibers.  Following this upgrade
+Virgo undertook \ac{VSR3}. 
+
+The sensitivity of the detectors to binary coalescence signals is shown
+in Figure \ref{fig:sensitivity}.   This figure shows the distance at
+which an optimally oriented and located binary would produce a \ac{SNR}
+of 8 in a given detector.  The figure clearly demonstrates an
+improvement in sensitivity for the \ac{LIGO} detectors between \ac{S5}
+and \ac{S6} and for Virgo between \ac{VSR1} and \ac{VSR2}.  The
+reduction in the horizon distance of the Virgo detector in \ac{VSR3} is
+due to a mirror with an incorrect radius of curvature being installed
+during the conversion to monolithic suspension.
+
+\begin{figure}[ht]
+\includegraphics[width=\columnwidth]{Images/sensitivity.pdf}
+\caption{
+Inspiral horizon distance versus total mass from S5/VSR1 (gray lines)
+and S6/VSR2/VSR3 (colored lines). The horizon distance is the distance
+at which an optimally located and oriented binary would produce an
+expected signal-to-noise ratio of 8.  The figure shows the the best
+sensitivity achieved by each detector during the runs.} 
+\label{fig:sensitivity}
+\end{figure}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Binary Coalescence Search}
+\label{sec:search}
+
+To search for gravitational waves from compact binary
+coalescence~\cite{Collaboration:2009tt,Abbott:2009qj, S5LowMassLV}, we
+use matched filtering to correlate the detector's strain output with a
+theoretical model of the gravitational waveform~\cite{Allen:2005fk}.
+Each detector's output is separately correlated against a
+bank~\cite{BBCCS:2006} of template waveforms generated at 3.5
+post-Newtonian order in the frequency domain~\cite{Blanchet:1995ez,
+Blanchet:2004ek}.  Templates were laid out across the mass range such
+that no more than $3\%$ of the \ac{SNR} was lost due to the discreteness
+of the bank.  In the early stages of the run, as in previous searches
+\cite{\sfive1yr,\12to18,\sfivelvc}, the template bank included waveforms
+from binaries with a total mass $\leq 35\Msun$.  However, the search
+results indicated that the higher mass templates ($M > 25 \Msun$) were
+more susceptible to non-stationary noise in the data.  Furthermore, it
+is at these higher masses where the merger and ringdown phases of the
+signal come into the detector's sensitive band.  Consequently, the upper
+mass threshold of the search was reduced to $25 \Msun$ for this search.
+Results of a search for higher mass black holes using templates which
+incorporate a full coalescence (inspiral-merger-ringdown) template
+waveform will be presented in a future publication.  Although the
+template waveforms neglect the spin of the binary components, the search
+is still capable of detecting binaries whose waveforms are modulated by
+the effect of spin~\cite{VanDenBroeck:2009gd}. 
+
+We require signals to have a matched filter \ac{SNR} greater than 5.5
+and be coincident in template mass and time-of-arrival (allowing for
+travel-time difference) in at least two detectors~\cite{Robinson:2008}.
+We use a chi-squared test~\cite{Allen:2004} to suppress non-Gaussian
+noise transients, which have a high \ac{SNR} but whose time-frequency
+evolution is inconsistent with the template waveform. If the reduced
+chi-squared $\chi^2_r$ of a signal is greater than unity, we re-weight
+the \ac{SNR} $\rho$ as 
+%
+\begin{equation}\label{eq:new_snr}
+\hat{\rho} = \rho/[(1+(\chi^2_r)^3)/2]^{1/6}
+\end{equation}
+%
+to suppress the significance of false
+signals~\cite{Collaboration:S6CBClowmass}. Our analysis reports the time
+and the quadrature sum, $\rho_c$, of re-weighted SNRs for events
+coincident between the detectors. The statistic $\rho_c$ is then used to
+rank events by their significance above the expected background.  To
+measure the background rate of coincident events in the search, we
+time-shift data from the detectors by an amount greater than the
+gravitational-wave travel time difference between detector sites and
+re-analyze the data. Many independent time-shifts are performed to
+obtain a good estimate of the probability of single-site noise
+transients coinciding.  The analysis procedure described above is
+similar to the one used in previous searches of \ac{LIGO} and Virgo data ---
+such as \cite{\12to18} and \cite{\sfive1yr} --- and is described in greater
+detail in \cite{pipeline}.
+
+The background rates of coincident events were initially estimated using
+100 time-shifted analyses. These background rates vary depending on the
+binary's mass, via the waveform duration and frequency band, and also on
+the detectors involved in the coincidence (the {\it coincidence type}).
+Thus, we sort coincident events into three bins by chirp mass
+$\mathcal{M}$, and also sort by the coincidence type
+\cite{Collaboration:2009tt}.  During times when all three detectors were
+operational, there are four distinct {\it coincidence types}: H1L1V1,
+H1L1, H1V1, and L1V1. In S6/VSR2, all four coincidence types were kept.
+In S6/VSR3, H1V1 and L1V1 triggers in triple-coincident time were
+discarded due to the heightened rate of transient noise in Virgo and its
+decreased sensitivity.  For each candidate, a \ac{FAR} is computed by
+comparing its $\rho_c$ value to background events in the same mass bin
+and coincidence type. Candidates' \ac{FAR} values are then compared to
+background events in {\em all}\/ bins and coincidence types around the
+candidate time to calculate a combined \ac{FAR}. This is the detection
+statistic which is used to assess the significance of events over the
+entire analysis time.
+
+Due to the finite number of slides performed, the
+smallest non-zero FAR that can be calculated is $1/T_{\rm bg}$, where
+$T_{\rm bg}$ is the total background time obtained by summing the
+coincident live time in each time slide. If a trigger was found to be
+louder than all background triggers within its analysis period,
+additional background estimation was performed to calculate a \ac{FAR}
+for the event.
+
+The requirement of a coincident signal between at least two sites
+restricts the times that can be analyzed.  Between July 2009 and October
+2010, a total of \totalpreVeto~of two or more site coincident data was
+collected.  This comprised \HLVltpreVeto~of H1L1V1 coincident data,
+\HLltpreVeto~of H1L1 data, \HVltpreVeto~of H1V1 data, and
+\LVltpreVeto~of L1V1 data.  Although the detectors are enclosed in
+vacuum systems and isolated from vibrational, acoustic and
+electromagnetic disturbances, their typical output data contains a
+larger number of transient noise events (glitches) with higher amplitude
+than expected from Gaussian processes alone.  Each observatory is
+equipped with a system of environmental and instrumental monitors that
+are sensitive to glitch sources but have a negligible sensitivity to
+gravitational waves. These sensors were used to identify times when the
+detector output was corrupted~\cite{Christensen:2010}; any coincident
+events from these times were vetoed.  We constructed two categories of veto
+for use in the search~\cite{s6detchar}.  The primary search, both for
+the identification of detection candidates and calculation of upper
+limits, was performed with both categories of veto applied.  We also
+examined the data after only the most severe category of vetoes had been
+applied, in case a loud event occurred during a time that would have
+otherwise been vetoed.  Additionally, approximately $10\%$ of the data,
+designated {\it playground}, was used for tuning and data quality
+investigations.  This data was searched for gravitational waves, but not
+used in calculating upper limits.  After all vetoes were applied and
+playground time excluded, there was \HLVlt~of H1L1V1 time, \HLlt~of H1L1
+time, \HVlt~of H1V1 time, and \LVlt~of L1V1 time, giving a total
+analysis time of \totalTime.
+
+
+% \begin{equation} \label{eq:combined_newsnr}
+% \rho_{{\rm new}}^2 = \begin{cases}
+% \rho^2, & \chi^2_{r} \leq 1, \\ 
+% \frac{\displaystyle \rho^2}{\displaystyle[(1+(\chi^2_{r})^3)/2]^{1/3}}, \ & \chi^2_{r} > 1,  \end{cases}  
+% \end{equation}
+%where $\rho$ and $\chi^2_{r}$ are respectively the SNR and the signal-based
+%$\chi^{2}$ test \cite{Allen:2004} normalized to the number of degrees of
+%freedom. This functional form was an incremental improvement on the previously
+%used statistic.\cite{LIGOS3S4all}
+
+
+% One of the most substantial changes from \cite{\12to18} was that data was
+% analyzed in two-week blocks to reduce analysis latency and allow for feedback
+% to improve \ac{DQ}. Once preliminary results were obtained and \ac{DQ}
+% finalized, data was grouped into $\sim6$ week chunks for background estimation
+% and calculation of \acp{FAR}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Search results}
+\label{sec:results}
+
+The \ac{CBC} pipeline determined that a gravitational-wave candidate occurred
+on \dogDate~at \recoveredDogTime, with \dogSNR in
+coincidence between the two LIGO detectors in the {\it medium mass bin} ($3.48
+\le \mathcal{M}/\Msun < 7.40$).  Virgo was also operating at the time of the
+event, but its sensitivity was a factor of four lower than the LIGO detectors;
+the absence of a signal in Virgo above the single-detector SNR threshold of 5.5
+was consistent with this fact.  In the LIGO detectors, the signal was louder
+than all time-shifted H1L1 coincident events in the same mass bin throughout
+\ac{S6}. However, with only 100 time shifts, we could only bound the FAR to $<
+1/23$ years, even when folding in all data from the entire analysis. To obtain
+a better estimate of the event's FAR we performed all possible multiples of
+5-second time shifts on four calendar months of data around the event,
+corresponding to an effective analysis time of $2.0\times 10^5$
+years, and considered only events with values of $\rho_{c} \ge 11$.  We found
+five events with a value of $\rho_c$ equal to or larger than the
+candidate's, as shown in Figure~\ref{fig:far}.  These five events were all
+coincidences between the candidate's signal in H1 and time-shifted transient
+noise in L1.  When we excluded 8 seconds from around the event's time in the
+background estimation, we found {\em no}\/ background events with $\rho_c$
+greater than the candidate and we obtained a significantly different background
+distribution, also shown in Figure~\ref{fig:far}. 
+
+\begin{figure}[tp]
+\includegraphics[width=\columnwidth]{../s6-bigdog/Images/rate_vs_newsnr.png}
+\caption{ The cumulative rate of events with chirp mass $3.48 \le
+\mathcal{M}/\Msun < 7.40$ coincident in the H1 and L1, seen in four
+months of data around the 16 September candidate, as a function of the
+threshold ranking statistic $\rho_c$.  The blue triangles show
+coincident events.  Black dots show the background estimated from 100
+time shifts and black crosses show the extended background estimation
+from all possible 5-second shifts on this data.  The gray dots and
+crosses show the corresponding background estimates when a few seconds
+of data around the time of the candidate are excluded.  Gray shaded
+contours show the $1 - 5\sigma$ (dark to light) consistency of
+coincident events with the estimated background including the extended
+background estimate, for the events and analysis time shown, including
+the candidate time.  This event was late revealed to have been a blind
+injection. }
+\label{fig:far}
+\end{figure}
+
+
+Including the events at the time of the candidate in the background estimate,
+the FAR of the event in the $3.48 \le \mathcal{M}/\Msun < 7.40$ mass bin,
+coincident in the LIGO detectors, was estimated to be \dogTrialFAR.
+Since this event occurred in H1L1V1 time during VSR3, only two coincidence
+types were considered: H1L1 double-coincident events and H1L1V1
+triple-coincident events.  This resulted in a trials factor of 6 (accounting
+for the three mass bins and two coincidence types) and a combined FAR of
+\dogFAR.  The probability of a false alarm with this combined FAR
+value or lower, in this analysis, was \dogFAP.
+
+\begin{figure*}[htb]
+\begin{center}
+% 'hot' colorscheme plots
+\includegraphics[width=2.42in]{../s6-bigdog/Images/omegagram_h1h.png}
+\includegraphics[width=2.09in]{../s6-bigdog/Images/omegagram_l1h.png}
+\includegraphics[width=2.09in]{../s6-bigdog/Images/omegagram_v1h.png}
+\caption{A time-frequency decomposition of the signal power associated with the
+detection event observed in the \ac{LHO} (left), \ac{LLO} (middle), and Virgo
+(right) detectors~\cite{ref:omegagrams}.  The zero of time in these plots is
+the event time reported above.  The ``normalized tile energy'' is roughly
+equivalent to SNR$^2$/2 in a time-frequency tile. For Gaussian noise in the
+absence of signal, the normalized tile energy rarely exceeds 8.  The images
+from the LIGO detectors both show a significant signal with frequency
+increasing over time, characteristic of compact binary coalescence.
+This event was later revealed to have been a blind injection.}
+\label{fig:omegagrams}
+\end{center}
+\end{figure*}
+
+\begin{figure}[t]
+\includegraphics[width=\columnwidth]{../s6-bigdog/Images/lal_strain_16sample_average.pdf}
+\caption{Detector strain amplitude spectrum around the time of the injection:
+\ac{LHO} in red, \ac{LLO} in green and Virgo in magenta.  At these noise
+levels, an optimally located and oriented (5,5)$\Msun$ binary would give a
+matched-filter signal-to-noise ratio (SNR) of 8 at distances of 120, 130 and 30
+Mpc in LHO, LLO and Virgo respectively.  The diagonal lines show the strength
+of binary coalescence signals observed in the LHO (solid) and LLO (dashed)
+detectors with SNRs of 15 and 10, respectively, as explained in the text.
+\label{f:noise_curve}}
+\end{figure}
+
+Figure~\ref{fig:omegagrams} shows time-frequency plots of the detector data
+around the time of the injection. A ``chirp'' waveform was clearly visible in
+the H1 and L1 data. This signal was also audible in the whitened detector
+strain data. The highest matched-filter SNR obtained in the search was $15$ at
+$\mathcal{M} = 4.7\,\Msun$ in H1 and $10$ at $\mathcal{M} = 4.4\,\Msun$ in L1.
+This difference in SNRs is consistent with typical differences in antenna
+response factors for these differently-oriented detectors.  The quantity
+$|2\tilde{s}(f)\sqrt{f}|$, where $\tilde{s}(f)$ is the Fourier transform of the
+best-matched filter waveform, can be directly compared with the strain noise
+amplitude spectral density in each detector; this is shown in
+Figure~\ref{f:noise_curve} to illustrate the strength of the signal seen in the
+two LIGO detectors.
+
+We performed an extensive investigation to check for any
+non-gravitational-wave causes for the observed event. The injection
+passed all checks performed. We performed a thorough study of the
+coupling of environmental noise to the gravitational-wave channel. None
+of the environmental monitors recorded a transient during the time of
+the injection.  The LIGO observatories were in quiet night-time
+operation with near maximum astrophysical range; the Virgo detector
+had quiet environmental conditions, except for elevated micro-seismic
+levels. Most mechanisms that could cause coincident signals among widely
+separated detectors were ruled out. It is very unlikely that such mechanisms could
+cause a signal that monotonically increases in frequency and is visible
+in the LIGO data --- as seen in time-frequency spectrograms shown in
+Figure~\ref{fig:omegagrams} --- without leaving a clear signature in the
+environmental monitors. There were no significant earthquakes at the
+time, and seismic up-conversion through the Barkhausen effect, harmonic
+up-conversion or bilinear coupling were all ruled out as potential
+causes. Acoustic coupling was also ruled out. No extraordinary
+electromagnetic transients were seen at the observatories at the time,
+and the worldwide electromagnetic ``weather'' was calm, ruling out, e.g.,
+very low-frequency radio, whistlers, chorus and riser
+signals~\cite{Singh:2004}.  Observatory cosmic ray detectors showed no
+unusual activity.
+
+A loud transient occurred in L1 9 seconds before the coalescence time of the
+signal. The transient belonged to a known family of sharp ($\sim$ 10ms) and
+loud (SNR $\approx 200$-$80000$) glitches that appear 10-30 times per day in
+the output optical sensing system of this detector. Since the candidate signal
+swept through the sensitive band of the detector, from 40 Hz to coalescence,
+in less than 4 seconds, it did not overlap the loud transient.  Studies,
+including re-analysis of the data with the glitch removed, indicated that the
+signal was not related to the earlier instrumental glitch.  No evidence was
+found that the observed signal was associated with, or corrupted by, any
+instrumental effect.  
+
+Following the completion of this analysis, the event was revealed to be
+a blind injection.  The recovered parameters of the event identified by
+the search were broadly consistent with the injected values, and in
+particular the coalescence time and chirp mass reported above were in
+good agreement with the hardware injection.
+
+In order to more accurately determine the parameters of the event, we performed
+coherent Bayesian analyses of the data using models of both spinning and
+non-spinning compact binary objects prior to the unblinding. Parameter
+estimates varied signiﬁcantly depending on the exact model used for the
+gravitational waveform, particularly when we included spin effects. However,
+conservative unions of the confidence intervals from the different waveform
+models were consistent with most injected parameters, including chirp mass,
+time of coalescence, and sky location. In addition the signal was correctly
+identified as having at least one mis-aligned spin. We will describe the
+details of parameter estimation on signals from \acp{CBC} in a future paper.
+
+After the event was revealed to be a blind injection the data containing it was
+removed from the analysis. With the injection excluded, there were no
+gravitational-wave candidates observed in the data. Indeed the search result
+was consistent with the background estimated from time-shifting the data.  The
+most significant trigger was an H1L1 trigger in H1L1V1 time with a
+combined FAR of \firstFAR. The second and third most significant triggers had
+combined FARs of \secondFAR~and \thirdFAR, respectively. All of these triggers
+were consistent with background: having analyzed
+$\mathrm{\sim0.5~yr}$~of data, we would expect the loudest event to
+have a FAR of \expectedLoudestFAR. Although no detection candidates were found,
+a detailed investigation of the loudest triggers in each analysis period was
+performed, to improve our understanding of instrumental data quality.
+
+\section{Binary Coalescence Rate Limits}
+\label{sec:ul}
+
+Given the absence of gravitational-wave signals, we used our observations
+to set upper limits on coalescence rates of \ac{BNS}, \ac{BBH}, and
+\ac{NSBH} systems.  We used the procedure described in
+\cite{Fairhurst:2007qj,loudestGWDAW03,Biswas:2007ni} to compute 90\%
+rate upper limits for the various systems, making use of previous
+results \cite{\sfive1yr,\12to18,\sfivelvc} as prior information on the
+rates.
+
+The rate of binary coalescences in a spiral galaxy is expected to be
+proportional to the star formation rate, and hence blue light luminosity, of
+the galaxy \cite{LIGOS3S4Galaxies}. There are, however, numerous challenges to
+performing this calculation accurately, not least due to the large
+uncertainties in both the luminosity of and distance to nearby galaxies, as well
+as the lack of a complete galaxy catalogue at larger distances.  On large
+scales (greater than $\sim 20\mathrm{Mpc}$), the luminosity per unit volume is
+approximately constant (see Figure 6 of \cite{LIGOS3S4Galaxies}); consequently
+the analysis can be simplified by reporting upper limits per unit volume per
+unit time.  During the current analysis, the sensitivity of the detectors to
+the systems of interest (as shown in Figure \ref{fig:sensitivity}) was
+sufficiently large that we could assume signals were uniformly distributed in
+volume. We therefore quote upper limits in units of $\mathrm{Mpc^{-3}yr^{-1}}$.
+
+Previous searches \cite{\sfive1yr,\12to18,\sfivelvc} presented upper limits in
+terms of blue light luminosity, using units of $\mathrm{L_{10}^{-1}yr^{-1}}$,
+where one $\mathrm{L_{10}}$ is $10^{10}$ times the solar blue light luminosity.  To
+incorporate the previous results as prior distributions, we converted from
+$\mathrm{L_{10}}$ to $\mathrm{Mpc^3}$ using a conversion factor of $1 \,
+\mathrm{L_{10}} = 0.02 \, \mathrm{Mpc^3}$ \cite{LIGOS3S4Galaxies}.
+
+The volume to which the search is sensitive was determined by reanalyzing the
+data with signals injected into it that simulated the source population. Our
+ability to detect a signal depends upon the parameters of the source, including
+the component masses, the distance to the binary, its sky location, and its
+orientation with respect to the detectors. Numerous signals with randomly
+chosen parameters were therefore injected into the data. To compute the
+sensitive volume for a given binary mass, we performed a Monte Carlo
+integration over the other parameters to obtain the efficiency of the search
+--- determined by the fraction of simulated signals found louder than the
+loudest foreground event --- as a function of distance. Integrating the
+efficiency as a function of distance gave the sensitive volume.
+
+There are numerous systematic uncertainties, such as detector
+calibration errors, waveform errors, and Monte Carlo errors
+\cite{\sfive1yr}, that limit the accuracy of the measured search volume
+and therefore the upper limits. We propagate these uncertainties into an
+uncertainty in the search volume by a bootstrapping technique.  We then
+marginalize over the uncertainty in volume to obtain an upper limit
+which takes into account these systematic uncertainties.
+
+%\begin{figure}[ht]
+%\includegraphics[width=\columnwidth]{Images/BNS_rate_posterior.png}
+%\caption{The probability distribution of coalescence rate of binary
+%neutron star systems. The blue line shows the rate posterior from
+%\ac{S5}-\ac{VSR1}, which is used as a prior to this search.  The red
+%line shows the rate posterior from \ac{S6}-VSR2/3. Vertical lines
+%indicate the upper limit at the $90\%$ confidence level for the
+%distributions shown.}
+%\label{fig:bns_posterior}
+%\end{figure}
+
+
+%In Figure \ref{fig:bns_posterior}, we show the posterior rate
+%distribution for \ac{BNS} systems, assuming non-spinning components and
+%a canonical mass distributions for non-spinning \ac{BNS} ($m_1 = m_2 =
+%1.35 \pm 0.04 \Msun$), using the \ac{S5}-\ac{VSR1} results as a prior.
+%The distribution is peaked at zero, as expected since observations were
+%consistent with the estimated background.  The corresponding posterior
+%from \cite{\sfivelvc} is also shown; the improvement over
+%\ac{S5}-\ac{VSR1} is evident.  Even though the \ac{S5} run lasted longer
+%than \ac{S6} and VSR2/3, the improved sensitivity of the current runs
+%more than compensates for the shorter duration.  The vertical lines show
+%the 90\% upper limit values, and demonstrate an improvement of
+%approximately a factor of two over previous results. 
+
+In Table \ref{tab:ul} we present the marginalized upper limits at the $90\%$
+confidence level assuming canonical mass distributions for non-spinning
+\ac{BNS} ($m_1 = m_2 = 1.35 \pm 0.04 \Msun$), \ac{BBH} ($m_1 = m_2 = 5 \pm 1
+\Msun$), and \ac{NSBH} ($m_1 = 1.35 \pm 0.04 \Msun$, $m_2 = 5 \pm 1 \Msun$)
+systems. We also compute upper limits as a function of total mass using a
+uniformly distributed mass ratio and, for \ac{NSBH} systems, as a function of
+the black hole mass, keeping the neutron-star mass fixed in the range
+$1-3\Msun$. These are presented in Figure \ref{fig:ULplots}. Figure
+\ref{fig:rate_comp} compares the upper limits presented in this analysis
+(shaded gray regions) to limits obtained in S5-VSR1 (hatched gray region) and
+to astrophysically-predicted rates (blue regions) for \ac{BNS}, \ac{NSBH}, and
+\ac{BBH} systems. The improvement over S5-VSR1 is about a factor of
+two.
+
+
+\begin{table}
+\center
+\begin{tabular}{p{4cm}  c  c  c}
+\hline \hline
+\raggedright{System}                                                    &   BNS       &    NSBH    &    BBH      \\[2pt]
+\hline                                                                                             
+\raggedright{Component masses ($\Msun$)}                                & 1.35 / 1.35 & 1.35 / 5.0 & 5.0 / 5.0   \\[2pt]
+\raggedright{$D_{\rm horizon}$ ($\mathrm{Mpc}$)}                        &   \BNShd    &   \NSBHhd  &   \BBHhd    \\[2pt]
+\raggedright{Non-spinning upper limit ($\mathrm{Mpc^{-3} yr^{-1}}$)}    &   \BNSul    &   \NSBHul  &   \BBHul    \\[2pt]
+\raggedright{Spinning upper limit ($\mathrm{Mpc^{-3} yr^{-1}}$)}        &    ...      &   \sNSBHul &   \sBBHul   \\[2pt]
+\hline
+\hline
+\end{tabular}
+\caption{Rate upper limits of \ac{BNS}, \ac{BBH} and \ac{NSBH} coalescence,
+assuming canonical mass distributions.  $D_{\rm horizon}$ is the horizon
+distance averaged over the time of the search.  The first set of upper limits
+are those obtained for binaries with non-spinning components.  The second set
+of upper limits are produced using black holes with a spin uniformly
+distributed between zero and the maximal value of $Gm^{2}/c$.}
+\label{tab:ul}
+\end{table}
+
+
+\begin{figure}[htb]
+\begin{center}
+\includegraphics[width=\columnwidth]{Images/ULvTotalMass.png}
+\includegraphics[width=\columnwidth]{Images/ULvComponentMass.png}
+\caption{The marginalized upper limits as a function of mass. The top plot
+shows the limit as a function of total mass, using a uniformly distributed
+mass-ratio. The lower plot shows the limit as a function of the black hole
+mass, keeping the neutron start mass fixed in the range $1-3\Msun$. The
+light bars indicate upper limits from previous searches. The dark bars
+indicate the combined upper limits including the results of this search.}
+\label{fig:ULplots}
+\end{center}
+\end{figure}
+
+\begin{figure}[ht]
+\includegraphics[width=\columnwidth]{Images/rate_comparisons.pdf}
+\caption{Comparison of CBC upper limit rates for \ac{BNS}, \ac{NSBH} and \ac{BBH}
+systems.  The hatched gray regions display the upper limits obtained in the
+S5-VSR1 analysis; non-hatched gray regions show the upper limits obtained in
+this analysis, using the S5-VSR1 limits as priors.  The new limits represent a
+factor of $\sim 2$ improvement over the previous results.  The blue
+regions show the spread in the astrophysically predicted rates, with the
+dashed-black lines showing the best estimate.  \cite{ratesdoc} {\it Note}: To
+be consistent with \cite{ratesdoc}, the component masses used for the \ac{NSBH}
+and \ac{BBH} rates shown here are ($m_1 = 1.35\Msun,~m_2 = 10\Msun$) and ($m_1
+= m_2 = 10\Msun$), respectively.}
+\label{fig:rate_comp} 
+\end{figure}
+
+
+Although we searched with a bank of non-spinning templates, we also compute
+upper limits for \ac{NSBH} and \ac{BBH} systems in which one or both of the
+component masses are spinning. These results are also presented in Table
+\ref{tab:ul}. We did not compute upper limits for spinning \ac{BNS} systems
+because astrophysical observations indicate that neutron stars cannot have
+large enough spin to significantly affect waveforms observable in the \ac{LIGO}
+frequency band. \cite{ATNF:psrcat,Apostolatos:1994} Black hole spins were
+uniformly distributed in both orientation and magnitude, $S$, with $S$
+constrained to the range $0 \leq S \leq Gm^2/c$. As can be seen in Table
+\ref{tab:ul}, the spinning upper limits are $\sim20\%$ larger than
+non-spinning. This is due to poorer recovery efficiency inherent in using a
+non-spinning template bank.
+
+While the rates presented here represent an improvement over the
+previously published results from earlier \ac{LIGO} and Virgo science
+runs, they are still above the astrophysically predicted rates
+of binary coalescence.  There are numerous uncertainties involved in
+estimating astrophysical rates, including limited numbers of
+observations and unknown model parameters; consequently the rate
+estimates are rather uncertain.  For \ac{BNS} the estimated rates vary
+between $1 \times 10^{-8}$ and $1 \times 10^{-5}$ Mpc$^{-3}$ Myr$^{-1}$,
+with a best estimate of $1 \times 10^{-6}$ Mpc$^{-3}$ Myr$^{-1}$.  For
+\ac{BBH} and \ac{NSBH}, a realistic estimates of the rate are
+$5 \times 10^{-9}$ Mpc$^{-3}$ Myr$^{-1}$ and 
+$3 \times 10^{-8}$ Mpc$^{-3}$ Myr$^{-1}$ with at least an order of
+magnitude uncertainty in either direction \cite{ratesdoc}.  In all cases, the upper
+limits derived here are around two orders of magnitude above the ``best
+estimate'' rates, and about a factor of ten above the most optimistic
+predictions.  These results are summarized in Figure
+\ref{fig:rate_comp}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Discussion}
+\label{sec:discussion}
+
+
+We performed a search for gravitational waves from compact binary
+coalescences with total mass between $2$ and $25\Msun$ with the
+\ac{LIGO} and Virgo detectors using data taken between July 7, 2009 and
+October 20, 2010.  No gravitational waves candidates were detected, so
+we placed new upper limits on \ac{CBC} rates.  These new limits give a
+factor of two improvement over those achieved using the
+\ac{S5} and \ac{VSR1} data \cite{\sfivelvc}, but remain an order of
+magnitude or more above the astrophysically predicted rates.  The
+installation of the advanced \ac{LIGO} and Virgo detectors has begun.
+When operational, these detectors will provide a factor of ten increase
+in sensitivity over the initial detectors, providing a factor of
+$\sim1000$ increase in the sensitive volume.  At this time, we expect to
+observe tens of binary coalescences per year. \cite{ratesdoc}
+
+In order to detect this population of gravitational wave signals, we
+will have to be able to confidently discriminate it from backgrounds
+caused by both stationary and transient detector noise.  It is customary
+\cite{ratesdoc} to assume that a signal with \ac{SNR} 8 would stand far
+enough above background that we would consider it to be a detection
+candidate.  The blind injection had somewhat larger \ac{SNR} than 8 in
+each detector, and we were able estimate a \ac{FAR} of 1 in 7000 years
+for that event.  Alternatively, consider a coincident signal with
+\ac{SNR} 8 in two detectors.  Provided the signal is a good match to the
+template waveform ($\chi^{2}_{r} \approx 1$ in equation
+\ref{eq:new_snr}) this corresponds to $\rho_c = 11.3$. As can be seen
+from the extended background triggers with the blind injection removed
+in Figure \ref{fig:far} (light-gray crosses), this gives a \ac{FAR} of
+$\sim 1$ in $2 \times 10^{4}$ years in a single trial, or $1$ in 3000
+years over all trials.  Achieving similar-or-better background
+distributions in Advanced LIGO and Virgo will require detailed \ac{DQ}
+studies of the detectors and feedback from the \ac{CBC} pipeline, along
+with well-tuned signal-based vetoes. We have continued to develop the
+pipeline with these goals in mind. For this analysis we significantly
+decreased the latency between taking data and producing results, which
+allowed \ac{DQ} vetoes to be finely tuned for the \ac{CBC} search. These
+successes, along with the successful recovery of the blind injection,
+give us confidence that we will be able to detect gravitational waves
+from \ac{CBC}s at the expected rates in Advanced LIGO and Virgo.
+
+
+%%%%%%%%%%%%%%%%
+\bibliography{../bibtex/iulpapers}
+
+\end{document}
