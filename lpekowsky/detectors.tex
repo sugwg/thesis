@@ -12,11 +12,14 @@ We motivate our discussion of the LIGO interferometers with a toy
 model.  We wish to detect gravitational waves, and one method is
 suggested by the analysis of the preceding chapter; we look for the
 strain, $\Delta L/L$, by measuring change in length of some system.
-Simply measuring a length with a ruler will not work, as any ruler
-will itself be stretched and compressed by the wave.  However, we can
-also measure distance by sending a projectile, say a marble, with
-known velocity through the length and measuring the travel time.  To
-avoid complex issues of synchronizing clocks at different points in
+In principle we could measure the changing distance between two
+freely-falling masses with a rigid ruler.  The atoms in the ruler
+would not be freely-falling and therefore the distance change along
+the ruler would be different than that between the masses.  However,
+the accuracy needed makes this approach impractical.  A better
+approach is to measure distance by sending a projectile, say a marble,
+with known velocity through the length and measuring the travel time.
+To avoid complex issues of synchronizing clocks at different points in
 general relativity we add a (hypothetical perfectly elastic) rubber
 wall at the far end, and measure how long it takes to return.  If the
 velocity of the marble is much larger than the velocity of the wall
@@ -51,11 +54,11 @@ times before returning to the source.  This effectively extends $L$ by
 the distance between the two surfaces multiplied by the number of
 bounces.
 
-Our final extension to this toy model is rather unrealistic, but
-imagine that marbles vanish after a collision.  Our ability to detect a
-gravitational wave with statistical confidence then reduces to our
-ability to count marbles.  We can model this as a Poisson process, where
-probability of observing $N$ marbles is 
+Finally, in this toy model the readout will be the number of marbles
+that land in a ``bin'' subtending a recoil angle.  Our ability to
+detect a gravitational wave with statistical confidence then reduces
+to our ability to count marbles.  We can model this as a Poisson
+process, where probability of observing $N$ marbles is 
 %
 \begin{equation*}
 p(N) = \frac{\bar{N}^N \exp(-\bar{N})} {N!}
@@ -79,16 +82,15 @@ Block diagram of LIGO, see the text for description.
 The toy model presented above captures the essential principles behind
 LIGO, with the significant difference that light is used instead of
 marbles.  A cartoon of the LIGO detectors is shown in
-Fig.~\ref{f:ligo}.  The laser, beam splitter and two inner mirrors
-(labeled \texttt{ITMX} and \texttt{ITMY} for ``inner test masses'')
-form a \emph{Michelson interferometer}, and parallel the original toy
-model with two marbles and two reflecting surfaces.
-The use of light actually simplifies the analysis because light
-travels on null geodesics, so
+Fig.~\ref{f:ligo}.  Ignoring the two \texttt{ITM} mirrors for the
+moment, the laser, beam splitter and two end mirrors (labeled
+\texttt{ETMX} and \texttt{ETMY} for ``end test masses'') would form a
+\emph{Michelson interferometer}, and parallel the original toy model
+with marbles and two reflecting surfaces.  The use of light
+actually simplifies the analysis because light travels on null
+geodesics, so
 %
-\begin{equation*}
-ds^2 = 0 = g_{\mu\nu} dx^\mu dx^\nu
-\end{equation*}
+\begin{equation*} ds^2 = 0 = g_{\mu\nu} dx^\mu dx^\nu \end{equation*}
 
 We now consider a +-polarized gravitational wave travelling in the $z$
 direction, and place the arms on the $x$ and $y$ axes.  We again
@@ -141,25 +143,19 @@ corresponds to a phase difference of
 As in the marble example, we can increase the sensitivity of the
 detector by increasing $L$, but practical considerations prevent us
 from doing so.  One of these considerations is in fact the same for
-marbles and light; the travel path must be in vacuum.  We
-therefore employ the same trick and add two additional mirrors,
-indicated as \texttt{ETMX} and \texttt{ETMY} (for ``end test
-masses'').  The addition of these mirrors creates a \emph{Fabry-Perot
-cavity} in each arm.  By arranging the mirrors to be an integer
-number of wavelengths apart a resonance is built up that can trap the
-light for extended periods, approximately 200 bounces.  It can be seen
-that if the mirrors are not appropriately spaced there will be
-destructive interference between the light moving in different
-directions.  As the power in the beam must be conserved, this results
-in energy leaking out of the cavity, reducing the efficiency.
-
-The addition of the Fabry-Perot cavities would suggest an increase in
-phase difference of two orders of magnitude.  However, it is in fact
-better than that.  The light is now in flight sufficiently long that,
-for gravitational waves from astrophysical sources, $h_+$ will have
-changed during the interval and the above analysis is no longer
-valid.  A more careful analysis shows that the improvement is 
-three orders of magnitude.
+marbles and light; the travel path must be in vacuum.  We therefore
+employ the same trick and insert two additional mirrors, indicated as
+\texttt{ITMX} and \texttt{ITMY} (for ``inner test masses'').  The
+addition of these mirrors creates a \emph{Fabry-Perot cavity} in each
+arm.  By arranging the mirrors to be an integer number of wavelengths
+apart a resonance is built up that can trap the light for extended
+periods, approximately 200 bounces.  It can be seen that if the
+mirrors are not appropriately spaced there will be destructive
+interference between the light moving in different directions.  As the
+power in the beam must be conserved, this results in energy leaking
+out of the cavity, reducing the efficiency.  The addition of the
+Fabry-Perot cavities provides an increase in phase difference of
+approximately two orders of magnitude. 
 
 In interferometry it is typically most useful to think of light as a
 wave.  However, where in the toy example our ability to detect
@@ -270,9 +266,8 @@ noise can be modeled as a \emph{Gaussian random process}, as we will
 discuss in the next chapter.  These are best characterized by their
 frequency profiles.  The dominant source are:
 %
-\begin{itemize} 
-\item \emph{Seismic noise} is due to the coupling of the
-detector to the ground.  Much work has been been done, and much
+\begin{itemize} \item \emph{Seismic noise} is due to the coupling of
+the detector to the ground.  Much work has been been done, and much
 research continues to be done, to isolate the mirrors from the
 environment.  However, the isolation is not complete.  This noise
 source dominates at low frequency, rising sharply below 40 Hz in
@@ -280,14 +275,23 @@ Initial LIGO.  In Advanced LIGO we hope to push this so-called
 \emph{seismic wall} down to 10 Hz.  This noise source includes the
 natural constant vibrations of the Earth, wind blowing over nearby
 structures, and anthropogenic sources such as vehicles near the sites,
-logging activity, etc.
+logging activity, etc.  Seismic noise is not Gaussian~\footnote{For
+Gaussian noise the power spectral density has an exponential
+distribution at each frequency.  The mean equals the variance for an
+exponential distribution.  It is therefore possible to measure the
+``degree of Gaussianity'' in a noise source from the ratio of the mean
+to the variance of the PSD at each frequency.  For Gaussian noise this
+ratio will be 1, however it is larger for seismic noise.}, however the
+deviation from Gaussianity will not impact any of the following
+analysis.
 
-\item \emph{Thermal noise}. Any system possesses energy proportional
-to the product of Boltzmann's constant and the ambient temperature.
-This energy manifests as random motion throughout the detector,
-although the motion from the test masses and the wires from which they
-are hung are the largest contributors to noise.  The noise produced
-dominates from 40 Hz to approximately 200 Hz.
+\item \emph{Thermal noise}. In any system each degree of freedom has
+an expected energy of $E=k_B T/2$ where $T$ is the ambient temperature
+and $k_B$ is Boltzmann's constant.  In LIGO this energy manifests as
+random motion throughout the detector, although the motion from the
+test masses and the wires from which they are hung are the largest
+contributors to noise.  The noise produced dominates from 40 Hz to
+approximately 200 Hz.
 
 \item \emph{Shot noise} is the uncertainty inherent in counting
 photons, as discussed above.  It increases with frequency and
