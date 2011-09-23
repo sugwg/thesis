@@ -1,0 +1,438 @@
+%-----------------------------------------------------------------------
+%
+% File Name: thesis.tex
+%
+% Author: Pekowsky, L. P.
+%
+% Revision: $Id$
+%
+%-----------------------------------------------------------------------
+
+% document class and packages
+\documentclass[12pt,notitlepage]{report}
+\usepackage{bibunits}
+\usepackage{syrthesis}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{rotating}
+\usepackage{tensor}
+\usepackage{lscape}
+\usepackage{bm}
+\usepackage{units} %  do things like \units[1.234]{sec}i
+
+\makeatletter
+\let\protect\relax
+{\catcode`\|=\active
+  \xdef\InnerProduct{\protect\expandafter\noexpand\csname InnerProduct
+\endcsname}
+  \expandafter\gdef\csname InnerProduct \endcsname#1{%
+    \begingroup
+    \ifx\SavedDoubleVert\relax
+    \let\SavedDoubleVert\|\let\|\IpDoubleVert
+    \fi
+    \mathcode`\|32768\let|\IPVert
+    \left({#1}\right)
+    \endgroup
+  }
+}
+\def\IPVert{\@ifnextchar|{\|\@gobble}% turn || into \|
+     {\egroup\,\mid@vertical\,\bgroup}}
+\def\IPDoubleVert{\egroup\,\mid@dblvertical\,\bgroup}
+\let\SavedDoubleVert\relax
+\def\midvert{\egroup\mid\bgroup}
+\def\SetVert{\@ifnextchar|{\|\@gobble}% turn || into \|
+    {\egroup\;\mid@vertical\;\bgroup}}
+\def\SetDoubleVert{\egroup\;\mid@dblvertical\;\bgroup}
+\def\mid@vertical{\mskip1mu\vrule\mskip1mu}
+\def\mid@dblvertical{\mskip1mu\vrule\mskip2.5mu\vrule\mskip1mu}
+\makeatother
+\usepackage{braket}
+\newcommand{\Overlap}{\Braket}
+
+\usepackage{xspace}
+\usepackage{url}
+\usepackage{alltt}
+
+\pdfoutput=1
+\DeclareGraphicsExtensions{.pdf,.png}
+
+\hbadness=10000
+
+% new command definitions
+\newcommand{\half}{\frac{1}{2}}
+\newcommand{\ospsd}{\ensuremath{S_n\left(\left|f_{k}\right|\right)}}
+
+\newcommand{\msun}{M_\odot}
+\newcommand{\chisq}{\chi^2}
+\newcommand{\newsnr}{\rho_{\textrm{new}}}
+\newcommand{\erf}{\mathrm{erf}}
+\newcommand\fake[1]{\textcolor{red}{#1}}
+\newcommand\checkme[1]{\textcolor{blue}{\textbf{#1}}}
+\newcommand{\Note}[1]{\textcolor{red}{\textbf{[#1]}}}
+
+\newcommand\weakheader[1]{
+\vspace*{5mm}
+\noindent {\it #1}
+\vspace*{5mm}
+}
+
+
+\usepackage{hyperref} 
+
+\begin{document}
+
+% Front flyleaf
+\pagestyle{empty}
+\vspace*{5in}
+\newpage
+
+% The abstract is page 1, but not shown, so don't
+% bother setting up the counter
+
+
+
+Gravitational waves are a consequence of the general theory of
+relativity.  Direct detection of such waves will provide a wealth of
+information about physics, astronomy, and cosmology.  A worldwide
+effort is currently underway to make the first  direct detection of
+gravitational waves.  The global network of detectors includes the
+Laser Interferometer Gravitational-wave Observatory (LIGO), which
+recently completed its sixth science run.
+
+A particularly promising source of gravitational waves is a binary
+system consisting of two neutron stars and/or black holes.  As the
+objects orbit each other they emit gravitational radiation, lose
+energy, and spiral inwards.  This produces a characteristic ``chirp''
+signal for which we can search in the LIGO data.  Currently this is
+done using matched-filter techniques, which correlate the detector
+data against analytic models of the emitted gravitational waves.
+Several choices must be made in constructing a search for signals from
+such binary coalescences. 
+
+Any discrepancy between the signals and the models used will reduce
+the effectiveness of the matched filter.  However, the analytic models
+are based on approximations which are not valid through the entire
+evolution of the binary.  In recent years numerical relativity has had
+impressive success in simulating the final phases of the coalescence
+of binary black holes.  While numerical relativity is too
+computationally expensive to use directly in the search, this progress
+has made it possible to perform realistic tests of the LIGO searches.
+The results of such tests can be used to improve the efficiency of
+searches.
+
+Conversely, noise in the LIGO and Virgo detectors can reduce the
+efficiency.  This must be addressed by characterizing the quality of
+the data from the detectors, and removing from the analysis times that
+will be detrimental to the search.
+
+In this thesis we utilize recent results from numerical relativity to
+study both the degree to which analytic models match realistic
+waveforms and the ability of LIGO searches to make detections.  We
+also apply the matched-filter search to the problem of removing times
+of excess noise from the search.
+
+
+\newpage
+
+% title page
+\begin{center}
+\vspace*{0.75in}
+
+CHARACTERIZATION OF ENHANCED INTERFEROMETRIC GRAVITATIONAL-WAVE
+DETECTORS AND STUDIES OF NUMERIC SIMULATIONS FOR COMPACT-BINARY
+COALESCENCES
+
+\vspace*{0.75in}
+
+By
+\vspace*{0.25in}
+
+Larne Pekowsky
+
+B.A. New York University, 1988 \\
+M.S. Yale University, 1991 \\
+B.S. Stony Brook University, 2006 \\ 
+
+\vspace{0.75in}
+
+DISSERTATION \\
+
+\vspace{0.5 in}
+Submitted in partial fulfillment of the requirements for the degree of
+Doctor of Philosophy in Physics in the Graduate School of Syracuse
+University \\
+\vspace*{0.25in}
+August 2011
+\end{center}
+
+\vspace*{1.00in}
+
+\begin{flushright}
+
+Approved \underline{~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~} \\
+Professor Duncan Brown \\
+Date \underline{~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~} \\
+
+\end{flushright}
+
+\newpage
+% Copyright
+\begin{center}
+\vspace*{1.00in}
+Copyright 2011 Larne Pekowsky \\
+All rights Reserved
+\end{center}
+\newpage
+
+
+\iffalse
+\author{\bf Larne Pekowsky}
+\majorprof{Duncan Brown}
+\submitdate{August 2011}
+\degree{Doctor of Philosophy}
+\program{Physics}
+\copyrightyear{2011}
+\majordept{Physics}
+
+\havededicationtrue
+\dedication{to\\ my parents}
+\haveminorfalse
+\copyrighttrue
+\doctoratetrue
+\fi
+
+% TOC
+\pagestyle{syrheadings}
+\setcounter{page}{4}
+\tableofcontents
+
+\figurespagetrue
+\tablespagetrue
+
+% \beforepreface
+
+
+% We do "afterpreface" before the preface
+% because the grad school wants the list of figures
+% before the preface material.  DERP!
+
+\afterpreface
+\setcounter{page}{13}
+\prefacesection{Preface}
+The work presented in this thesis stems from my participation in the
+LIGO Scientific Collaboration (LSC) and the NINJA Collaboration.  This
+work does not reflect the scientific opinion of the LSC and it was not
+reviewed by the collaboration.
+
+\iffalse
+% The grad school will complain about copyright if this is left in.
+\vspace*{0.5cm}
+
+\noindent Chapter \ref{ch:comparison} is based on material from
+
+\vspace*{0.25cm}
+
+\noindent M. Boyle, D. A. Brown and L. Pekowsky, ``Comparison of high-accuracy
+numerical simulations of black-hole binaries with stationary phase
+post-Newtonian template waveforms for Initial and Advanced LIGO,''
+{\it Class. Quant. Grav.} {\bf 26}, 114006 (2009)
+
+\vspace*{0.5cm}
+
+\noindent Chapter \ref{ch:ninja1} is based on material from
+
+\vspace*{0.25cm}
+
+\noindent B. Aylott {\it et al} (The NINJA Collaboration), ``Testing
+gravitational-wave searches with numerical relativity waveforms:
+Results from the first Numerical INJection Analysis (NINJA) project,''
+{\it Class. Quant. Grav.} {\bf 26}, 165008 (2009)
+
+
+\vspace*{0.5cm}
+
+\noindent Chapter \ref{ch:segdb} is based on material from
+
+\vspace*{0.25cm}
+
+\noindent D. Brown {\it et al}, ``S6 Segment Database
+Infrastructure Proposal,'' {\it Technical document
+{LIGO}-T0900005-00-Z} (2010)
+
+
+\vspace*{0.5cm}
+
+\noindent Appendix A is taken from
+
+\vspace*{0.25cm}
+
+\noindent P. Ajith {\it et al}, ``Data formats for numerical
+relativity waves'', arXiv:0709.0093v3 (gr-qc), 2011.
+\fi
+
+
+\prefacesection{Acknowledgments}
+
+I have been fortunate to work with many wonderful people through my
+membership in the LIGO and NINJA collaborations.  Sadly space makes it
+impossible to thank them all individually, and I hope the vast
+majority I must omit will forgive me.
+
+I would first and foremost like to thank my advisor, Duncan Brown.  I
+have benefited immensely from Duncan's vast knowledge of and passion
+for gravitational-wave astronomy.  I could not have asked for a better
+mentor, nor did I ever expect to find one with whom I could share so
+many laughs.
+
+I would also like to thank Andrew Lundgren, with whom I worked on
+detchar.  Andy was great fun to work with, and his brilliance is
+matched only by his passion for squashing glitches in the detectors.
+Much of this work was also done with Josh Smith, to whom I am also
+grateful.
+
+I am indebted to the other members of the Syracuse University
+gravitational-wave faculty, Peter Saulson and Stefan Ballmer, for their
+many excellent questions and suggestions regarding my work, and clear
+and detailed explanations of their own.
+
+The NINJA project has introduced me to a great many numerical
+relativists from whom I have learned a great deal.  I would like
+especially to thank Mike Boyle, with whom I worked on the studies in
+chapter~\ref{ch:comparison}, Harald Pfeiffer, and Deirdre Shoemaker.
+
+On the data-analysis side of NINJA, I would like to thank Satya
+Mohapatra for his help in testing the data sets and numerous other
+contributions as well as many fascinating conversations at
+conferences.
+
+It has been a joy to share an office with Collin Capano, Justin
+Garofoli, and Matt West, and I would like to thank them for their
+innumerable assistance and physics bull sessions.
+
+I would also like to thank Ping Wei, with whom I worked on the segment
+database, and Peter Couvares for all his help with Condor and friendly
+chat about computer science and other things.
+
+None of this would have been possible without the love and support of
+my parents, to whom I am eternally grateful.  Finally, my thanks to my
+long-time friends, known collectively as "the canetoads" for their
+words of encouragement and all the good times.
+
+
+\prefacesection{Conventions}
+
+We adopt the Einstein summation convention where repeated indices are
+summed over.  Parenthesis are shorthand for the fully symmetric sum
+%
+\begin{equation*}
+A_{(\alpha\beta)}
+= \frac{1}{2} \left(A_{\alpha\beta} 
++ A_{\beta\alpha} \right)
+\end{equation*}
+%
+and square brackets are fully antisymmetric
+%
+\begin{equation*}
+A_{[\alpha\beta]}
+= \frac{1}{2} \left(A_{\alpha\beta} 
+- A_{\beta\alpha} \right)
+\end{equation*}
+%
+We take the signature of spacetime to be $(-1,+1,+1,+1)$.
+
+\noindent Except where otherwise noted we work in geometric units where
+$G=c=1$.  We will often measure masses in multiples of the mass of the
+sun $1 \msun \approx 1.99 \times 10^{30}$ kg 
+
+\vspace{0.5cm}
+
+\noindent We define the Fourier transform of a function of time $g(t)$ to be
+$\tilde{g}(f)$, where
+%
+\begin{equation*}
+\tilde{g}(f)=\int_{-\infty}^\infty g(t)\, e^{- 2 \pi i f t}\, dt
+\end{equation*}
+%
+and the inverse Fourier transform is
+%
+\begin{equation*}
+g(t)=\int_{-\infty}^\infty \tilde{g}(f)\, e^{2 \pi i f t}\, dt
+\end{equation*}
+%
+This convention differs from that used in some gravitational-wave
+literature, but is the adopted convention in the LIGO Scientific
+Collaboration.
+
+\vspace{0.5cm}
+
+\noindent The time-stamps of interferometer data are measured in
+Global Positioning System (GPS) seconds: seconds since 00:00.00 UTC
+January 6, 1980 as measured by an atomic clock.
+
+
+
+\Chapter{Introduction}
+\label{ch:introduction}
+\input{introduction}
+
+\Chapter{Gravitational wave Theory and Source Modeling}
+\label{ch:theory}
+	\input{theory}
+
+\Chapter{The LIGO Gravitational Wave Detectors}
+\label{ch:ligo_detectors}
+\input{detectors}
+
+\Chapter{Searching for Gravitational Waves from Compact-Binary
+Coalescences}
+\label{ch:search}
+\input{search}
+
+\Chapter{Comparison of Numerical Simulations of
+Black-Hole Binaries with Post-Newtonian Waveforms}
+\label{ch:comparison}
+\input{comparison}
+
+\Chapter{The First NINJA Project}
+\label{ch:ninja1}
+\input{ninja1}
+
+\Chapter{Waveform Analysis for the Second NINJA project}
+\label{ch:ninja2}
+\input{ninja2}
+
+\Chapter{Preliminary CBC Results from the Second NINJA project}
+\label{ch:ninja2_results}
+\input{ninja2_results}
+
+\Chapter{A Database for Instrumental Data Quality}
+\label{ch:segdb}
+\input{segdb}
+
+\Chapter{Characterization of a Gravitational Wave Detector}
+\label{ch:detchar}
+\input{detchar}
+
+\Chapter{Conclusions}
+\label{ch:conclusions}
+\input{conclusions}
+
+\appendix
+\Chapter{Post-Newtonian Waveforms}
+\label{ch:pn_waveforms}
+\input{PNEqns}
+
+\clearpage
+\bibliographystyle{unsrt}
+\bibliography{references}
+\addcontentsline{toc}{chapter}{\numberline {Bibliography}}
+
+\input{lp_cv}
+
+% Back flyleaf
+\newpage
+\end{document}
+
