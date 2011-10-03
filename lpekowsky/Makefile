@@ -48,7 +48,7 @@ BBLFILES=
 default: thesis.pdf
 
 thesis.pdf: $(TEXFILES) $(BIBFILES) $(STYFILES) $(BSTFILES)
-	pdflatex thesis && bibtex thesis && pdflatex thesis && pdflatex thesis
+	pdflatex thesis && bibtex thesis && bibtex thesis.1 && pdflatex thesis && pdflatex thesis
 
 gr-qc: thesis.tgz
 
