@@ -406,6 +406,7 @@ acceptable looking results, but it may be omitted to get smaller print.
 \def\submitdate#1{\gdef\@submitdate{#1}}
 \def\copyrightyear#1{\gdef\@copyrightyear{#1}} % \author, \title in report
 \def\degree#1{\gdef\@degree{#1}}
+\def\pastdegrees#1{\gdef\@pastdegrees{#1}}
 % \def\papertype#1{\gdef\@papertype{#1}}
 \def\program#1{\gdef\@program{#1}}
 \long\def\Abstract#1{\gdef\@AbstractText{#1}}
@@ -466,7 +467,7 @@ Metaphysics}
 % if multiple use minors ???
 \def\@minor{Zen}
 
-\def\@title{}\def\@author{}\def\@ABSTRACT{ABSTRACT}
+\def\@title{}\def\@author{}\def\@pastdegrees{}\def\@ABSTRACT{ABSTRACT}
 \def\@degree{Doctor of Philosophy}  
 \ifdoctorate
 	\def\@papertype{Disertation}  
@@ -485,17 +486,20 @@ Metaphysics}
 \else
     \def\@copyrightyear{\number\the\year}
 \fi
-\newif\ifcopyright \newif\iffigurespage \newif\iftablespage
-\copyrighttrue \figurespagetrue \tablespagetrue
+\newif\ifcopyright \newif\iffigurespage \newif\iftablespage \newif\ifsignedtitlep
+\copyrighttrue \figurespagetrue \tablespagetrue \signedtitleptrue
 \def\@dedication{to\\ None in Particular}
 
 %
 %
 
 \def\profsignature{%
-\hrule
-\vskip 0.2em
-\hspace{3em}\@majorprof\hfill Date\hspace{2em}
+\begin{flushright}
+Approved \underline{~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~}\\
+{\small \@majorprof}\\
+\vskip 1em
+Date \underline{~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~}
+\end{flushright}
 }
 
 \def\gradschapprov{%
@@ -506,80 +510,59 @@ Metaphysics}
 
 
 \def\stitlep{%
-	%\thispagestyle{empty}%
-	\null\vspace*{1.0in}%
-	\begin{center}
-		{\Large\bf\uppercase\expandafter{\@title}}\\
-		\rm By\\
-		{\bf Collin D. Capano}\\
-        B.S. Syracuse University, 2005 \\
-        M.S. Syracuse University, 2008 \\
-
-        \vspace{0.75in}
-
-        DISSERTATION \\
-
-        \vspace{0.5 in}
-        Submitted in partial fulfillment of the requirements for the degree of
-        Doctor of Philosophy in Physics in the Graduate School of Syracuse
-        University \\
-        \vspace*{0.25in}
-        August 2011
-    \end{center}
-
-    \vspace*{1.00in}
-
-    \begin{flushright}
-
-        Approved \underline{~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~} \\
-        Professor Duncan Brown \\
-        Date \underline{~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~} \\
-
-    \end{flushright}
-}
-
-\def\atitlep{%
+	\thispagestyle{empty}%
 	\null\vskip1in%
 	\begin{center}
 		{\Large\bf\uppercase\expandafter{\@title}}\\
+        \vskip 1em
 		\rm By\\
-		\@author
+        \vskip 1em
+		{\bf\@author}\\
+        \vskip 1em
+        \rm \@pastdegrees
 	\end{center}
 	\vskip 4em
 	\begin{center}
-		\sc A \@papertype\ Submitted in\\
-		Partial Fulfillment of the\\
-		Requirements for the degree of\\
+		\sc Dissertation\\
+        Submitted in partial fulfillment of the requirements\\
+        for the degree of\\
+        \@degree~in \@program
 	\end{center}
 %
-	\vskip 1em
+	\vskip 4em
 	\begin{center}
-		\sc \@degree
-	\end{center}
-	\vskip 1em
-	\begin{center}
-		\sc in\\
-		\@program
-	\end{center}
-	\vfill
-	\begin{center}
-		\rm at\\
 		Syracuse University \\
 		\@submitdate\\
-	\end{center}}
+	\end{center}
+    \vskip 3em \profsignature
+    }
 
-\def\titlep{%
-	\stitlep
-	\ifmultivolumes
-		\ifdoctorate 
-			\begin{center}
-				\rm Volume \Roman{volumenumber}\\
-			\end{center}
-		\else
-			\typeout{ Multi-Volume Master's Theses NOT allowed: volume no skipped}
-		\fi
-	\fi
-	\vskip.5in}
+\def\atitlep{%
+	\thispagestyle{empty}%
+	\null\vskip1in%
+	\begin{center}
+		{\Large\bf\uppercase\expandafter{\@title}}\\
+        \vskip 1em
+		\rm By\\
+        \vskip 1em
+		\@author\\
+        \vskip 1em
+        \rm \@pastdegrees
+	\end{center}
+	\vskip 4em
+	\begin{center}
+		\sc Dissertation\\
+        Submitted in partial fulfillment of the requirements\\
+        for the degree of\\
+        \@degree~in \@program
+	\end{center}
+%
+	\vskip 10em
+	\begin{center}
+		Syracuse University \\
+		\@submitdate\\
+	\end{center}
+    }
 
 	
 % volume command
@@ -596,45 +579,37 @@ Metaphysics}
 	\fi}
 \fi}
 
-\def\manuscriptp{%
-\titlep \vskip2em \newpage
+\def\titlep{%
+\ifsignedtitlep
+    \stitlep
+\else
+    \atitlep
+\fi
+\newpage
 }
 
 \def\officialaprovp{%
-\atitlep \vskip.5in \vskip 1em \profsignature \vskip 4em \gradschapprov \vskip 0.5in \newpage
+\thispagestyle{empty}
+\atitlep \vskip 3em \profsignature \newpage %\vskip 4em \gradschapprov \vskip 0.5in \newpage
 }
 \def\abstract{%
+	\thispagestyle{empty}%
 	\null\vskip1in%
-%	\begin{center}
-%		{\Large\bf\uppercase\expandafter{\@title}}\\
-%		\rm By\\
-%		\@author
-%	\end{center}
-%	\vskip 3em
-%	\begin{center}
-%		\rm Syracuse University, \number\year\\
-%		Under the Supervision of Professor \@majorprof
-%	\end{center}
-%
-%	\vskip 3em
 	\begin{center} 
 		\bf \@ABSTRACT
 	\end{center}
 	{\samepage 
 		\nopagebreak\paragraph{}\ \@AbstractText\nopagebreak
-	%\vskip 20ex
-	%\profsignature 
-	%\vskip.5in
 	}
 	\vfill
 }
 
 \def\copyrightpage{%
+	\thispagestyle{empty}%
 	\null\vfill
 	\begin{center}
-		\Large\copyright\ Copyright \@copyrightyear\\
-		by\\
-		\@author\\
+		\Large Copyright \copyright~\@copyrightyear~\@author\\
+        All rights reserved.
 	\end{center}
 	\vfill\newpage}
 
@@ -655,11 +630,9 @@ Metaphysics}
 % A the Abstract page
 	\abstract \endabstract \newpage
 % B the manuscript title page
-	\manuscriptp
+    \titlep
 % C the OPTIONAL copy right page
 	\ifcopyright\copyrightpage\fi
-% D the Official Approval page
-	\officialaprovp
 % E the Table of Contents
         \newpage
 	\tableofcontents
