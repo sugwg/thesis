@@ -1,0 +1,266 @@
+%-----------------------------------------------------------------------
+%
+% File Name: thesis.tex
+%
+% Author: Brown, D. A.
+%
+% Revision: $Id$
+%
+%-----------------------------------------------------------------------
+
+% document class and packages
+\documentclass[12pt,notitlepage]{report}
+\usepackage{bibunits}
+%\usepackage{hyperref}
+\usepackage{syrthesis}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{rotating}
+\usepackage{tensor}
+
+\pdfoutput=1
+\DeclareGraphicsExtensions{.pdf,.png}
+
+\hbadness=10000
+
+% new command definitions
+\newcommand{\half}{\frac{1}{2}}
+\newcommand{\ospsd}{\ensuremath{S_n\left(\left|f_{k}\right|\right)}}
+
+% journal definitions
+\newcommand{\apj}{{\it Astrophysical J.}}
+\newcommand{\apjl}{{\it Astrophysical J.}}
+\newcommand{\aap}{{\it Astron. and Astrophys.}}
+\newcommand{\cmp}{{\it Commun. Math. Phys.}}
+\newcommand{\grg}{{\it Gen. Rel. Grav.}}
+\newcommand{\cqg}{{\it Class. Quant. Grav.}}
+\newcommand{\lr}{{\it Living Reviews in Relativity}}
+\newcommand{\mnras}{{\it Mon. Not. Roy. Astr. Soc.}}
+\newcommand{\pr}{{\it Phys. Rev.}}
+\newcommand{\prl}{{\it Phys. Rev. Lett.}}
+\newcommand{\prd}{{\it Phys. Rev. D}}
+\newcommand{\prsl}{{\it Proc. R. Soc. Lond. A}}
+\newcommand{\ptrsl}{{\it Phil. Trans. Roy. Soc. London}}
+\newcommand{\rmp}{{\it Rev. Mod. Phys.}}
+
+\begin{document}
+\title{% taken from dissertator fellowship application
+Topics in Gravitational-Wave Astronomy
+}
+\author{\bf Prayush Kumar}
+\majorprof{Duncan A. Brown}
+\submitdate{July 2014}
+\degree{Doctor of Philosophy}
+\program{Physics}
+\copyrightyear{2014}
+\majordept{Physics}
+\havededicationtrue
+\dedication{to\\ the wind and the snow}
+\haveminorfalse
+\copyrighttrue
+\doctoratetrue
+\figurespagetrue
+\tablespagetrue
+
+\Abstract{% taken from dissertator fellowship application
+The Laser Interferometer Gravitational Wave Observatory (LIGO) is one of a new
+generation of detectors of gravitational radiation. The existence of
+gravitational radiation was first predicted by Einstein in 1916, however
+gravitational waves have not yet been directly observed.
+
+One source of gravitation radiation is binary inspiral. Two compact bodies
+orbiting each other, such as a pair of black holes, lose energy to
+gravitational radiation. As the system loses energy the bodies spiral towards
+each other. This causes their orbital speed and the amount of gravitational
+radiation to increase, producing a characteristic ``chirp'' waveform in the
+LIGO sensitive band.
+
+In this thesis, matched filtering of LIGO science data is used to search for
+low mass binary systems in the halo of dark matter surrounding the Milky Way.
+Observations of gravitational microlensing events of stars in the Large
+Magellanic Cloud suggest that some fraction of the dark matter in the halo may
+be in the form of Massive Astrophysical Compact Halo Objects (MACHOs). It has
+been proposed that low mass black holes formed in the early universe may be a
+component of the MACHO population; some fraction of these black hole MACHOs
+will be in binary systems and detectable by LIGO.
+
+The inspiral from a MACHO binary composed of two 0.5 solar mass black holes
+enters the LIGO sensitive band around 40 Hz.  The chirp signal increases in
+amplitude and frequency, sweeping through the sensitive band to 4400 Hz in 140
+seconds. By using evidence from microlensing events and theoretical
+predictions of the population an upper limit is placed on the rate of black
+hole MACHO inspirals in the galactic halo.
+}
+\beforepreface
+\prefacesection{Preface}
+The work presented in this thesis stems from my participation in the LIGO
+Scientific Collaboration. 
+
+\vspace*{0.5cm}
+\noindent The upper limit on the rate of binary neutron 
+star inspirals quoted in chapter \ref{ch:introduction} is based on
+
+\vspace*{0.25cm}
+
+\noindent B.~Abbott~{\it et~al.} (The LIGO Scientific Collaboration),
+``Analysis of LIGO data for gravitational waves from binary neutron stars,''
+\prd~{\bf 69} (2004) 122001.
+
+\vspace*{0.5cm}
+
+\noindent Chapter \ref{ch:pipeline} is based on material from
+
+\vspace*{0.25cm}
+
+\noindent Duncan A. Brown~{\it et~al.}, ``Searching for Gravitational Waves
+from Binary Inspirals with LIGO,'' \cqg~{\bf 21}, S1625 (2004).
+
+\vspace*{0.25cm}
+
+\noindent and
+
+\vspace*{0.25cm}
+
+\noindent B. Abbott~{\it et~al.} (The LIGO Scientific Collaboration), ``Search
+for binary neutron star coalescence in the Local Group,'' to be submitted to
+\cqg
+
+\vspace*{0.5cm}
+
+\noindent Chapter \ref{ch:hardware} is based on 
+
+\vspace*{0.25cm}
+
+\noindent Duncan A. Brown (for the LIGO Scientific Collaboration), ``Testing
+the LIGO inspiral analysis with hardware injections,'' \cqg~{\bf 21}, S797
+(2004).
+
+\vspace*{0.5cm}
+
+\noindent Chapter \ref{ch:result} is based on
+
+\vspace*{0.25cm}
+
+\noindent B. Abbott~{\it et~al.} (The LIGO Scientific Collaboration), ``Search
+for binary black hole MACHO coalescence in the Galactic Halo,'' to be
+submitted to \prd
+
+
+\prefacesection{Acknowledgments}
+\input{acknowledge}
+
+\prefacesection{Conventions}
+There are two possible sign conventions for the Fourier transform of a time
+domain quantity $v(t)$. In this thesis, we define the Fourier transform
+$\tilde{v}(f)$ of a $v(t)$ to be
+\begin{equation*}
+\tilde{v}(f)=\int_{-\infty}^\infty dt\,v(t)\, e^{- 2 \pi i f t}
+\end{equation*}
+and the inverse Fourier transform to be 
+\begin{equation*}
+v(t)=\int_{-\infty}^\infty df\,\tilde{v}(f)\, e^{2 \pi i f t}.
+\end{equation*}
+This convention differs from that used in some gravitational wave literature,
+but is the adopted convention in the LIGO Scientific Collaboration.
+
+\vspace{0.5cm}
+
+\noindent The time-stamps of interferometer data are measured in Global
+Positioning System (GPS) seconds: seconds since 00:00.00 UTC January 6, 1980
+as measured by an atomic clock.
+
+\vspace{0.5cm}
+
+\noindent Astronomical distances are quoted in parsecs
+\begin{equation*}
+1\,\mathrm{pc} = 3.0856775807 \times 10^{16}\,\mathrm{m}
+\end{equation*}
+and masses in units of solar mass
+\begin{equation*}
+1\,\mathrm{M}_\odot = 1.98892 \times 10^{30}\,\mathrm{kg}.
+\end{equation*}
+
+\afterpreface
+
+\Chapter{Introduction}
+\label{ch:introduction}
+\input{introduction}
+\Chapter{Gravitational Radiation from Binary Inspiral}
+\label{ch:inspiral}
+\input{inspiral}
+\Chapter{Binary Black Hole MACHOs}
+\label{ch:macho}
+\input{macho}
+\Chapter{Binary Inspiral Search Algorithms}
+\label{ch:findchirp}
+\input{findchirp}
+\Chapter{Detection Pipelines For Coalescing Binaries}
+\label{ch:pipeline}
+\input{pipeline}
+\Chapter{Hardware Signal Injections}
+\label{ch:hardware}
+\input{hardware}
+%\chapter{Searches for Binary Neutron Star Coalescence}
+%\label{ch:bns}
+%\input{bns}
+\Chapter{The Rate of Binary Black Hole MACHO Inspirals in the Halo}
+\label{ch:result}
+\input{result}
+\Chapter{Conclusion}
+\label{ch:conclusion}
+\input{conclusion}
+
+\clearpage
+\bibliographystyle{unsrt}
+\bibliography{references}
+\addcontentsline{toc}{chapter}{\numberline {Bibliography}}
+
+\clearpage
+\birthplacedate{Lucknow, India \>\>September 2, 1987}
+\collegewherewhen{%
+\>Birla Institute of Technology \& Science, Pilani, India \>\>2005--2009, \>B.E.~(Hons)\\
+\>\syr	\>\>2009--2014, \>Ph.D.}
+
+\newpage
+\null\vskip1in%
+\begin{center}
+{\Large\bf Curriculum Vitae}
+\end{center}
+\vskip 2em
+\begin{tabbing}
+\tabset
+Title of Dissertation\\
+\>Topics in Gravitational-Wave Astronomy \\
+\end{tabbing}
+\vskip 1em
+
+\begin{startvita}
+\end{startvita}
+
+\renewenvironment{thebibliography}[1]%
+  {\begin{list}{\labelenumi\hss}%
+     {\usecounter{enumi}\setlength{\labelwidth}{3em}%
+      \setlength{\leftmargin}{5em}}}%
+  {\end{list}}
+\renewcommand{\bibitem}[1]{\item\label{#1}\relax}%
+\renewcommand{\theenumi}{\arabic{enumi}}%
+\begin{publications}
+\putbib[papers]
+\end{publications}
+
+\begin{honorarysocieties}
+2003 \> UWM Chancellor's Graduate Student Fellowship\\
+2003 \> UWM Dissertator Fellowship\\
+2002 \> Physics Graduate Student Trust Fund Award\\
+2002 \> UWM Chancellor's Graduate Student Fellowship\\
+2002 \> UWM Graduate School Fellowship\\
+2001 \> Papastamatiou Scholarship\\
+1999 \> Institute of Mathematics and Its Applications Prize\\
+1997 \> Stroud Book Prize for Theoretical Physics
+\end{honorarysocieties}
+
+\finishvita
+\end{document}
