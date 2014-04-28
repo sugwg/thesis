@@ -2,265 +2,342 @@
 %
 % File Name: thesis.tex
 %
-% Author: Brown, D. A.
+% Author: Kumar, P.
 %
 % Revision: $Id$
 %
 %-----------------------------------------------------------------------
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % document class and packages
 \documentclass[12pt,notitlepage]{report}
 \usepackage{bibunits}
-%\usepackage{hyperref}
 \usepackage{syrthesis}
 \usepackage{graphicx}
 \usepackage{color}
-\usepackage{amsmath}
+\usepackage{amsmath,mathtools}
 \usepackage{amssymb}
 \usepackage{amsfonts}
 \usepackage{rotating}
 \usepackage{tensor}
+\usepackage{lscape}
+\usepackage{bm}
+\usepackage{units} %  do things like \units[1.234]{sec}i
+\usepackage{chapterfolder} % Organize the graphics etc of each chapter in a sub-directory
+
+\makeatletter
+\let\protect\relax
+{\catcode`\|=\active
+  \xdef\InnerProduct{\protect\expandafter\noexpand\csname InnerProduct
+\endcsname}
+  \expandafter\gdef\csname InnerProduct \endcsname#1{%
+    \begingroup
+    \ifx\SavedDoubleVert\relax
+    \let\SavedDoubleVert\|\let\|\IpDoubleVert
+    \fi
+    \mathcode`\|32768\let|\IPVert
+    \left({#1}\right)
+    \endgroup
+  }
+}
+\def\IPVert{\@ifnextchar|{\|\@gobble}% turn || into \|
+     {\egroup\,\mid@vertical\,\bgroup}}
+\def\IPDoubleVert{\egroup\,\mid@dblvertical\,\bgroup}
+\let\SavedDoubleVert\relax
+\def\midvert{\egroup\mid\bgroup}
+\def\SetVert{\@ifnextchar|{\|\@gobble}% turn || into \|
+    {\egroup\;\mid@vertical\;\bgroup}}
+\def\SetDoubleVert{\egroup\;\mid@dblvertical\;\bgroup}
+\def\mid@vertical{\mskip1mu\vrule\mskip1mu}
+\def\mid@dblvertical{\mskip1mu\vrule\mskip2.5mu\vrule\mskip1mu}
+\makeatother
+\usepackage{braket}
+\newcommand{\Overlap}{\Braket}
+
+\usepackage{xspace}
+\usepackage{url}
+\usepackage{alltt}
 
 \pdfoutput=1
-\DeclareGraphicsExtensions{.pdf,.png}
+\DeclareGraphicsExtensions{.pdf,.png,.eps}
 
 \hbadness=10000
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % new command definitions
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newcommand{\half}{\frac{1}{2}}
 \newcommand{\ospsd}{\ensuremath{S_n\left(\left|f_{k}\right|\right)}}
 
-% journal definitions
-\newcommand{\apj}{{\it Astrophysical J.}}
-\newcommand{\apjl}{{\it Astrophysical J.}}
-\newcommand{\aap}{{\it Astron. and Astrophys.}}
-\newcommand{\cmp}{{\it Commun. Math. Phys.}}
-\newcommand{\grg}{{\it Gen. Rel. Grav.}}
-\newcommand{\cqg}{{\it Class. Quant. Grav.}}
-\newcommand{\lr}{{\it Living Reviews in Relativity}}
-\newcommand{\mnras}{{\it Mon. Not. Roy. Astr. Soc.}}
-\newcommand{\pr}{{\it Phys. Rev.}}
-\newcommand{\prl}{{\it Phys. Rev. Lett.}}
-\newcommand{\prd}{{\it Phys. Rev. D}}
-\newcommand{\prsl}{{\it Proc. R. Soc. Lond. A}}
-\newcommand{\ptrsl}{{\it Phil. Trans. Roy. Soc. London}}
-\newcommand{\rmp}{{\it Rev. Mod. Phys.}}
+\newcommand{\msun}{M_\odot}
+\newcommand{\chisq}{\chi^2}
+\newcommand{\newsnr}{\rho_{\textrm{new}}}
+\newcommand{\erf}{\mathrm{erf}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% more new commands
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\Sum}{\displaystyle\sum\limits}
+\newcommand{\Int}{\displaystyle\int\limits}
+\newcommand{\ii}{{\rm i}}
+\newcommand{\D}{\mathrm{d}}
+\newcommand{\eff}{\mathrm{eff}}
+\newcommand{\phys}{\mathrm{phys}}
+\newcommand{\real}{\mathrm{real}}
+\newcommand{\peak}{\mathrm{peak}}
+% \newcommand{\EOB}{\mathrm{EOB}}
+\newcommand{\NR}{\mathrm{NR}}
+\newcommand{\RD}{\mathrm{RD}}
+\newcommand{\Olap}{\mathcal{O}}
+\newcommand{\FF}{\mathcal{FF}}
+\newcommand{\MM}{\mathrm{MM}}
+\newcommand{\EFF}{\mathrm{EFF}}
+\newcommand{\X}{\mathrm{X}}
+\newcommand{\Y}{\mathrm{Y}}
+\newcommand{\Z}{\mathrm{Z}}
+\newcommand{\horizon}{\mathrm{Horizon}}
+\newcommand{\opt}{\mathrm{opt}}
+\newcommand{\iso}{\mathrm{iso}}
+\newcommand{\refr}{\mathrm{ref}}
+\newcommand{\start}{\mathrm{start}}
+
+\def\l({\left(}
+\def\r){\right)}
+\newcommand{\lt}{\left}
+\newcommand{\rt}{\right}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% more new commands
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\EOB}{\mathrm{EOBNRv2}}
+\newcommand{\M}{\mathit{M}}
+\newcommand{\bnk}{\mathrm{bank}}
+\newcommand{\mn}{\mathrm{min}}
+\newcommand{\mx}{\mathrm{max}}
+\newcommand{\tr}{\mathrm{tr}}
+\newcommand{\mm}{\mathrm{mm}}
+\newcommand{\Hyb}{\mathrm{Hyb}}
+\newcommand{\leftn}{\left|\left|}
+\newcommand{\rightn}{\right|\right|}
+\newcommand{\lefti}{\left\langle}
+\newcommand{\righti}{\right\rangle}
+\newcommand{\Mis}{\mathcal{M}}
+\newcommand{\N}{\mathrm{N}}
+\newcommand{\cyc}{\mathrm{cyc}}
+\newcommand{\E}{\mathcal{E}}
+
+\newcommand{\red}{\textcolor{red}}
+\newcommand{\blue}{\textcolor{blue}}
+\newcommand{\etal}{\textit{et~al}\@ifnextchar{\relax}{.\relax}{\ifx\@let@token.\else\ifx\@let@token~.\else.\@\xspace\fi\fi}}
+
+
+%% Macros for comments
+\newcommand\fake[1]{\textcolor{red}{#1}}
+\newcommand\checkme[1]{\textcolor{blue}{\textbf{#1}}}
+\newcommand{\Note}[1]{\textcolor{red}{\textbf{[#1]}}}
+\newcommand\checked[1]{#1}
+\newcommand\marginnote[2]{%
+  \mbox{}\marginpar{\raggedleft\hspace{0pt}\scriptsize
+    \textcolor{blue}{#1: #2}}}
+
+
+\newcommand\weakheader[1]{
+\vspace*{5mm}
+\noindent {\it #1}
+\vspace*{5mm}
+}
+
+
+\usepackage{hyperref} 
 
 \begin{document}
-\title{% taken from dissertator fellowship application
+
+\title{
 Topics in Gravitational-Wave Astronomy
 }
 \author{\bf Prayush Kumar}
-\majorprof{Duncan A. Brown}
-\submitdate{July 2014}
+\majorprof{Duncan Brown}
+\submitdate{August 2014}
 \degree{Doctor of Philosophy}
 \program{Physics}
 \copyrightyear{2014}
 \majordept{Physics}
 \havededicationtrue
-\dedication{to\\ the wind and the snow}
+\dedication{to\\ my parents}
 \haveminorfalse
 \copyrighttrue
 \doctoratetrue
 \figurespagetrue
 \tablespagetrue
 
-\Abstract{% taken from dissertator fellowship application
-The Laser Interferometer Gravitational Wave Observatory (LIGO) is one of a new
-generation of detectors of gravitational radiation. The existence of
-gravitational radiation was first predicted by Einstein in 1916, however
-gravitational waves have not yet been directly observed.
 
-One source of gravitation radiation is binary inspiral. Two compact bodies
-orbiting each other, such as a pair of black holes, lose energy to
-gravitational radiation. As the system loses energy the bodies spiral towards
-each other. This causes their orbital speed and the amount of gravitational
-radiation to increase, producing a characteristic ``chirp'' waveform in the
-LIGO sensitive band.
+\Abstract{
+\color{blue}{Gravitational waves are a consequence of the general theory of
+relativity.  Direct detection of such waves will provide a wealth of
+information about physics, astronomy, and cosmology.  A worldwide
+effort is currently underway to make the first  direct detection of
+gravitational waves.  The global network of detectors includes the
+Laser Interferometer Gravitational-wave Observatory (LIGO), which
+recently completed its sixth science run.
 
-In this thesis, matched filtering of LIGO science data is used to search for
-low mass binary systems in the halo of dark matter surrounding the Milky Way.
-Observations of gravitational microlensing events of stars in the Large
-Magellanic Cloud suggest that some fraction of the dark matter in the halo may
-be in the form of Massive Astrophysical Compact Halo Objects (MACHOs). It has
-been proposed that low mass black holes formed in the early universe may be a
-component of the MACHO population; some fraction of these black hole MACHOs
-will be in binary systems and detectable by LIGO.
+A particularly promising source of gravitational waves is a binary
+system consisting of two neutron stars and/or black holes.  As the
+objects orbit each other they emit gravitational radiation, lose
+energy, and spiral inwards.  This produces a characteristic ``chirp''
+signal for which we can search in the LIGO data.  Currently this is
+done using matched-filter techniques, which correlate the detector
+data against analytic models of the emitted gravitational waves.
+Several choices must be made in constructing a search for signals from
+such binary coalescences. 
 
-The inspiral from a MACHO binary composed of two 0.5 solar mass black holes
-enters the LIGO sensitive band around 40 Hz.  The chirp signal increases in
-amplitude and frequency, sweeping through the sensitive band to 4400 Hz in 140
-seconds. By using evidence from microlensing events and theoretical
-predictions of the population an upper limit is placed on the rate of black
-hole MACHO inspirals in the galactic halo.
+Any discrepancy between the signals and the models used will reduce
+the effectiveness of the matched filter.  However, the analytic models
+are based on approximations which are not valid through the entire
+evolution of the binary.  In recent years numerical relativity has had
+impressive success in simulating the final phases of the coalescence
+of binary black holes.  While numerical relativity is too
+computationally expensive to use directly in the search, this progress
+has made it possible to perform realistic tests of the LIGO searches.
+The results of such tests can be used to improve the efficiency of
+searches.
+
+Conversely, noise in the LIGO and Virgo detectors can reduce the
+efficiency.  This must be addressed by characterizing the quality of
+the data from the detectors, and removing from the analysis times that
+will be detrimental to the search.
+
+In this thesis we utilize recent results from numerical relativity to
+study both the degree to which analytic models match realistic
+waveforms and the ability of LIGO searches to make detections.  We
+also apply the matched-filter search to the problem of removing times
+of excess noise from the search.}
 }
 \beforepreface
 \prefacesection{Preface}
-The work presented in this thesis stems from my participation in the LIGO
-Scientific Collaboration. 
-
-\vspace*{0.5cm}
-\noindent The upper limit on the rate of binary neutron 
-star inspirals quoted in chapter \ref{ch:introduction} is based on
-
-\vspace*{0.25cm}
-
-\noindent B.~Abbott~{\it et~al.} (The LIGO Scientific Collaboration),
-``Analysis of LIGO data for gravitational waves from binary neutron stars,''
-\prd~{\bf 69} (2004) 122001.
+The work presented in this thesis stems from my participation in the
+LIGO Scientific Collaboration (LSC) and the NINJA-2 Collaboration.  This
+work does not reflect the scientific opinion of the LSC and it was not
+reviewed by the collaboration.
 
 \vspace*{0.5cm}
 
-\noindent Chapter \ref{ch:pipeline} is based on material from
+\noindent Chapter \ref{ch:EOBF2_Effectualness} is based on material from
 
 \vspace*{0.25cm}
 
-\noindent Duncan A. Brown~{\it et~al.}, ``Searching for Gravitational Waves
-from Binary Inspirals with LIGO,'' \cqg~{\bf 21}, S1625 (2004).
-
-\vspace*{0.25cm}
-
-\noindent and
-
-\vspace*{0.25cm}
-
-\noindent B. Abbott~{\it et~al.} (The LIGO Scientific Collaboration), ``Search
-for binary neutron star coalescence in the Local Group,'' to be submitted to
-\cqg
+\noindent D. A. Brown, P. Kumar and A. H. Nitz, ``Template banks to search
+for low-mass binary black holes in advanced gravitational-wave detectors,''
+{\it Phys. Rev. D} {\bf 87}, 082004 (2013)
 
 \vspace*{0.5cm}
-
-\noindent Chapter \ref{ch:hardware} is based on 
-
-\vspace*{0.25cm}
-
-\noindent Duncan A. Brown (for the LIGO Scientific Collaboration), ``Testing
-the LIGO inspiral analysis with hardware injections,'' \cqg~{\bf 21}, S797
-(2004).
-
-\vspace*{0.5cm}
-
-\noindent Chapter \ref{ch:result} is based on
-
-\vspace*{0.25cm}
-
-\noindent B. Abbott~{\it et~al.} (The LIGO Scientific Collaboration), ``Search
-for binary black hole MACHO coalescence in the Galactic Halo,'' to be
-submitted to \prd
 
 
 \prefacesection{Acknowledgments}
-\input{acknowledge}
+
+I have been fortunate to work with many wonderful people through my
+membership in the LIGO and NINJA collaborations.  Sadly space makes it
+impossible to thank them all individually, and I hope the vast
+majority I must omit will forgive me.
+
+I would first and foremost like to thank my advisor, Duncan Brown..
+
 
 \prefacesection{Conventions}
-There are two possible sign conventions for the Fourier transform of a time
-domain quantity $v(t)$. In this thesis, we define the Fourier transform
-$\tilde{v}(f)$ of a $v(t)$ to be
+
+We adopt the Einstein summation convention where repeated indices are
+summed over.  Parenthesis are shorthand for the fully symmetric sum
+%
 \begin{equation*}
-\tilde{v}(f)=\int_{-\infty}^\infty dt\,v(t)\, e^{- 2 \pi i f t}
+A_{(\alpha\beta)}
+= \frac{1}{2} \left(A_{\alpha\beta} 
++ A_{\beta\alpha} \right)
 \end{equation*}
-and the inverse Fourier transform to be 
+%
+and square brackets are fully antisymmetric
+%
 \begin{equation*}
-v(t)=\int_{-\infty}^\infty df\,\tilde{v}(f)\, e^{2 \pi i f t}.
+A_{[\alpha\beta]}
+= \frac{1}{2} \left(A_{\alpha\beta} 
+- A_{\beta\alpha} \right)
 \end{equation*}
-This convention differs from that used in some gravitational wave literature,
-but is the adopted convention in the LIGO Scientific Collaboration.
+%
+We take the signature of spacetime to be $(-1,+1,+1,+1)$.
+
+\noindent Except where otherwise noted we work in geometric units where
+$G=c=1$.  We will often measure masses in multiples of the mass of the
+sun $1 \msun \approx 1.99 \times 10^{30}$ kg 
 
 \vspace{0.5cm}
 
-\noindent The time-stamps of interferometer data are measured in Global
-Positioning System (GPS) seconds: seconds since 00:00.00 UTC January 6, 1980
-as measured by an atomic clock.
+\noindent We define the Fourier transform of a function of time $g(t)$ to be
+$\tilde{g}(f)$, where
+%
+\begin{equation*}
+\tilde{g}(f)=\int_{-\infty}^\infty g(t)\, e^{- 2 \pi i f t}\, dt
+\end{equation*}
+%
+and the inverse Fourier transform is
+%
+\begin{equation*}
+g(t)=\int_{-\infty}^\infty \tilde{g}(f)\, e^{2 \pi i f t}\, dt
+\end{equation*}
+%
+This convention differs from that used in some gravitational-wave
+literature, but is the adopted convention in the LIGO Scientific
+Collaboration.
 
 \vspace{0.5cm}
 
-\noindent Astronomical distances are quoted in parsecs
-\begin{equation*}
-1\,\mathrm{pc} = 3.0856775807 \times 10^{16}\,\mathrm{m}
-\end{equation*}
-and masses in units of solar mass
-\begin{equation*}
-1\,\mathrm{M}_\odot = 1.98892 \times 10^{30}\,\mathrm{kg}.
-\end{equation*}
+\noindent The time-stamps of interferometer data are measured in
+Global Positioning System (GPS) seconds: seconds since 00:00.00 UTC
+January 6, 1980 as measured by an atomic clock.
+
 
 \afterpreface
 
 \Chapter{Introduction}
 \label{ch:introduction}
 \input{introduction}
-\Chapter{Gravitational Radiation from Binary Inspiral}
-\label{ch:inspiral}
-\input{inspiral}
-\Chapter{Binary Black Hole MACHOs}
-\label{ch:macho}
-\input{macho}
-\Chapter{Binary Inspiral Search Algorithms}
-\label{ch:findchirp}
-\input{findchirp}
-\Chapter{Detection Pipelines For Coalescing Binaries}
-\label{ch:pipeline}
-\input{pipeline}
-\Chapter{Hardware Signal Injections}
-\label{ch:hardware}
-\input{hardware}
-%\chapter{Searches for Binary Neutron Star Coalescence}
-%\label{ch:bns}
-%\input{bns}
-\Chapter{The Rate of Binary Black Hole MACHO Inspirals in the Halo}
-\label{ch:result}
-\input{result}
-\Chapter{Conclusion}
-\label{ch:conclusion}
-\input{conclusion}
+
+% \Chapter{Gravitational wave Theory and Source Modeling}
+% \label{ch:theory}
+% \input{theory}
+
+\Chapter{Template banks to search for low-mass binary black holes with 
+Advanced Gravitational-wave detectors}
+\label{ch:EOBF2_Effectualness}
+\input{eobpn_1-5pnmetric_effectualness}
+
+\Chapter{Template Banks for Binary black hole searches with Numerical 
+Relativity waveforms}
+\label{ch:NRHyb_bank}
+\input{nrhyb_tmpltbank}
+
+\Chapter{NINJA-2: Tested search pipelines against Numerical Relativity
+Hybrids}
+\label{ch:ninja2}
+\input{ninja2}
+
+\Chapter{Accurate modeling of intermediate-mass-ratio inspirals: 
+Exploring the form of the self-force in the intermediate-mass-ratio regime}
+\label{ch:insSFIMRI}
+\input{inspiral_IMRI}
+
+
+\Chapter{Conclusions}
+\label{ch:conclusions}
+\input{conclusions}
+
+% \appendix
+%  \Chapter{Post-Newtonian Waveforms}
+% \label{ch:pn_waveforms}
+% \input{PNEqns}
 
 \clearpage
 \bibliographystyle{unsrt}
 \bibliography{references}
 \addcontentsline{toc}{chapter}{\numberline {Bibliography}}
 
-\clearpage
-\birthplacedate{Lucknow, India \>\>September 2, 1987}
-\collegewherewhen{%
-\>Birla Institute of Technology \& Science, Pilani, India \>\>2005--2009, \>B.E.~(Hons)\\
-\>\syr	\>\>2009--2014, \>Ph.D.}
-
-\newpage
-\null\vskip1in%
-\begin{center}
-{\Large\bf Curriculum Vitae}
-\end{center}
-\vskip 2em
-\begin{tabbing}
-\tabset
-Title of Dissertation\\
-\>Topics in Gravitational-Wave Astronomy \\
-\end{tabbing}
-\vskip 1em
-
-\begin{startvita}
-\end{startvita}
-
-\renewenvironment{thebibliography}[1]%
-  {\begin{list}{\labelenumi\hss}%
-     {\usecounter{enumi}\setlength{\labelwidth}{3em}%
-      \setlength{\leftmargin}{5em}}}%
-  {\end{list}}
-\renewcommand{\bibitem}[1]{\item\label{#1}\relax}%
-\renewcommand{\theenumi}{\arabic{enumi}}%
-\begin{publications}
-\putbib[papers]
-\end{publications}
-
-\begin{honorarysocieties}
-2003 \> UWM Chancellor's Graduate Student Fellowship\\
-2003 \> UWM Dissertator Fellowship\\
-2002 \> Physics Graduate Student Trust Fund Award\\
-2002 \> UWM Chancellor's Graduate Student Fellowship\\
-2002 \> UWM Graduate School Fellowship\\
-2001 \> Papastamatiou Scholarship\\
-1999 \> Institute of Mathematics and Its Applications Prize\\
-1997 \> Stroud Book Prize for Theoretical Physics
-\end{honorarysocieties}
-
-\finishvita
 \end{document}
+
