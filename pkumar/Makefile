@@ -1,12 +1,13 @@
-TEXFILES= comparison.tex \
-detchar.tex \
+TEXFILES= conclusions.tex \
+detectors.tex \
+eobpn_1-5pnmetric_effectualness.tex \
+imr_IMRI.tex \
+inspiral_IMRI.tex \
 introduction.tex \
-ninja1.tex \
 ninja2.tex \
-search.tex \
+nrhyb_tmpltbank.tex \
 theory.tex \
-thesis.tex \
-PNEqns.tex 
+thesis.tex 
 
 
 PNGFILES=figures/detchar/966222827_940673828_H0_PEM-ISCT1_ACCX_1_00_spectrogram_whitened.png \
