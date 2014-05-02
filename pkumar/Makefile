@@ -46,7 +46,7 @@ BSTFILES=
 
 BBLFILES=
 
-default: thesis.pdf
+default: clean thesis.pdf
 
 thesis.pdf: $(TEXFILES) $(BIBFILES) $(STYFILES) $(BSTFILES)
 	pdflatex thesis && bibtex thesis && bibtex thesis && pdflatex thesis && pdflatex thesis
