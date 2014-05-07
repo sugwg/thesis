@@ -1,122 +1,161 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% This is given in each chapter separately. Do we need this chapter here?
+%%% Describe how the wave solution comes about for Einstein's eqns in vacuum, 
+%%% and discuss the two-body problem at leading order.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% In this chapter we briefly survey the theoretical issues behind
-% gravitational-wave astronomy.  We start in
-% Sec.~\ref{sec:general_relativity} with a review of general
-% relativity, beginning with the relevant mathematics.  In
-% Sec.~\ref{sec:gravitational_radiation} we show how general
-% relativity predicts the existence of gravitational radiation and
-% discuss some of the properties of this radiation.  Then in
-% Sec.~\ref{sec:effects_of_waves} we show how gravitational radiation
-% affects freely-falling particles.  This will motivate the design of
-% the LIGO experiment to search for gravitational waves, an overview of
-% which is presented in the next chapter.  We then move to the
-% generation of gravitational waves and discuss two approaches to
-% modeling the waves produced by the inspiral and eventual merger of
-% pairs of compact objects.  These are analytic models, discussed in
-% Sec.~\ref{sec:PNWaveforms} and numerical models, discussed in
-% Sec.~\ref{sec:NRWaveforms}.
+
+\newcommand{\cd}{\nabla}
+\newcommand{\pd}{\partial}
+\newcommand{\Reals}{\mathcal{R}}
+\newcommand{\defeq}{\mathrel{\mathop:}=}
+
+In this chapter we briefly review the treatment of compact object
+binaries in General Relativity (henceforth GR), with a view at providing a 
+description of the gravitational waves emitted during their coalescence. In 
+Sec.~\ref{sec:general_relativity}, we revise the basic concepts of 
+differential geometry and their application in general relativity. 
+Then we go on to describe the generation of gravitational radiation in 
+linearized GR in Sec.~\ref{sec:gravitational_radiation}. 
+In Sec.~\ref{sec:effects_of_waves}, we describe the effect of incident
+gravitational waves on freely-falling particles. This discussion will 
+be carried over in the next chapter where we discuss the concept
+and design of interferometric gravitational wave detectors. 
+In Sec.~\ref{sec:PNWaveforms} we discuss the generation of gravitational waves
+by a compact object binary system in quasi-circular orbits, as it evolves 
+through the inspiral phase to its coalescence. Searches performed over 
+detector data use theoretically modeled waveforms for compact binaries as 
+filters. We briefly summarize two of the primary waveform models applicable
+to LIGO-Virgo sources in Sec.~\ref{sec:PNWaveforms}.
+
+
+\section{General Relativity}
+\label{sec:general_relativity}
+
+We begin with summarizing basic concepts of differential geometry used 
+and work up to writing down Einstein's equations. Readers are referred
+to the books by Misner, Thorne and Wheeler~\cite{mtw}, 
+Schutz~\cite{BSchutzBook}, and Wald~\cite{WaldBook} for broader treatments
+of these topics.
+
+\subsection{Manifolds: Vectors, Forms and Tensors}
+
+An manifold is a set that has the local differential 
+structure of $\Reals^n$, but not necessarily its global properties. 
+An n-dimensional, infinitely continuously differentiably (i.e. $C^\infty$
+real manifold $M$ is a set along with sub-sets $S_\alpha$, which together
+obey the following
+properties:
+\begin{enumerate}
+ \item Every element $p\in M$, is a member of at least one $S_\alpha$.
+ This ensures that $\{S_\alpha\}$ covers M.
+ \item There exists a one-to-one, onto, map $\Psi_\alpha :S_\alpha \rightarrow U_\alpha$
+ for each subset $S_\alpha$ to an open subset of $\Reals^n$, $U_\alpha$. This ensures
+ that locally, every {\it patch} of the manifold $M$ has the properties of 
+ a Euclidian space.
+ \item If any two subsets $S_\alpha$ and $S_\beta$ overlap, there exists a $C_\infty$
+ map $\zeta\defeq\Psi_\beta \circ \Psi_\alpha^{-1}$ which maps elements of the open 
+ set $U_\alpha \subset \Reals^n$ to $U_\beta \subset \Reals^n$ (with notation as
+ above). 
+\end{enumerate}
+{\it Curves} are maps from $\Reals^n$ to the manifold $M$, 
+and {\it scalar functions} are reverse maps from $M\rightarrow \Reals^n$. 
+A composite of a function $f$ with a curve $\gamma$ gives a map from
+$\Reals^n\rightarrow\Reals^n$. 
+%
+Doing calculus on manifolds invokes the concept of 
+{\it vectors} in a local sense, or {\it tangent} vectors.
+In general, there is no concept of vector operations over vectors at 
+different poins in the manifold, as there is in vector spaces. 
+A tangent vector $u$ at a point $p\in M$ is defined as a
+linear differentiation operator which maps functions defined at $p$,
+to $\Reals$. By definition, $u$ obeys the Leibnitz rule:
+\begin{equation}\nonumber
+ u(f(p) g(p)) = u(f(p)) g(p) + f(p) u(g(p)) 
+\end{equation}
+where both $f$ and $g$ are functions in the sense mentioned above.
+The tangent vectors exist in a {\it distinct} n-dimensional vector space $T_pM$
+at each point $p$ in the manifold. 
+They can be identified with local directional derivatives
+and be decomposed in the local coordinate basis $\pd/\pd x^\mu$,
+where $\{x^\mu\}$ forms the coordinate system on $\Reals^n$.
+We will denote this special basis as $\pd_\mu$ or $\vec{e}_\mu$ henceforth.
+A tangent vector field can be defined over the manifold, associating each point 
+$p\in M$ to a vector defined locally at $p$.
+ 
+\iffalse
+\begin{equation*}
+\frac{d}{d \lambda} fi \big|_p = 
+  \frac{d}{d\lambda} (f \circ \gamma) \big|_p
+\end{equation*}
+
+
+Expanding this in terms of a chart whose domain includes $p$ and then
+applying the chain rule
+ 
+\begin{align*}
+\frac{d}{d \lambda} fi \big|_p &= 
+ \frac{d}{d\lambda} ( (f \circ \phi^{-1}) \circ (\phi \circ
+\lambda) ) \\
+&= \frac{d(\phi^{-1} \circ \gamma)^\mu}{d\lambda} 
+\frac{\partial (f \circ \phi^{-1}) }{\partial x^\mu} \big|_p \\
+&= \frac{dx^\mu}{d\lambda} \partial_\mu f \big|_p
+\end{align*}
+
+where $x^\mu$ are the coordinates on $\mathcal{R}^n$.  Finally, since
+the function $f$ is arbitrary we can define
+
+\begin{equation}
+\label{eq:tangent_vector}
+\frac{d}{d\lambda} = \frac{dx^\mu}{d\lambda} \partial_\mu
+\end{equation}
+\fi
+
+A \emph{one-form} (or a {\it dual} vector) is a linear map from vectors to
+$\Reals$, e.g. for a point $p\in M$, $\omega :T_pM\rightarrow\Reals$. 
+The set of one-forms at the point $p$ form a vector space. A natural basis
+for the same, $\{\tilde{\omega}^\mu\}$, can be obtained by solving
+%
+\begin{equation*}
+\tilde{\omega}^\nu \vec{e}_\mu = \delta_\mu^\nu
+\end{equation*}
+%
+The components of an arbitrary form $\omega$ in this basis may be
+found by the application of the form to basis vectors, i.e.
+$\omega_\mu\defeq \omega(\vec{e}_\mu)$.
+%
+\iffalse
+\begin{align*}
+\omega(\vec{e}_\nu)
+&= \tilde{\omega}^\mu \omega_\mu (\vec{e}_\nu) \\
+&= \omega_\mu \tilde{\omega}^\mu (\vec{e}_\nu) \\
+&= \omega_\mu \delta^\nu_\mu \\
+&= \omega_\nu\\
+\end{align*}
+\fi
+%
+From vectors and one-forms, we can build up an arbitrary ${m \choose n}$
+{\it tensor} as a linear map from outer products of $m$ vectors and $n$ 
+one-forms to $\mathcal{R}$.  The components of a tensor $T$ in a choice of
+coordinates can be found by applying it to combinations of the basis
+vectors and basis one-forms.  Finally, a ${m \choose n}$ tensor field is
+a map that associates to each point $p$ in $\mathcal{M}$ an element in
+the space of  ${m \choose n}$ tensors at $p$.
+
+\subsection{The Metric Tensor}
+
+Over the 4-dimensional manifold of spacetime, we can define a metric $g$
+which is a ${2\choose 0}$ tensor with the following properties:
+\begin{itemize}
+ \item It defines the notion of a distance between infinitesimally separated 
+ points $ds$, 
+ \begin{equation}
+  ds^2\defeq g_{\mu\nu} dx^\mu dx^\nu.
+ \end{equation}
+ \item It is symmetric in its indices, i.e. $g_{\mu\nu}=g_{\nu\mu}$.
+ \item The determinant $|g_{\mu\nu}|$ is non-zero, making $g$ invertible: 
+ $\exists\, g^{\rho\nu}: g_{\mu\rho}g^{\rho\nu} = \delta^\nu_\mu$.
+%  \item 
+\end{itemize}
 % 
-% 
-% \section{General Relativity}
-% \label{sec:general_relativity}
-% 
-% We start with an overview of differential geometry and build to
-% Einstein's equations.  This is of necessity very brief, readers are
-% referred to the textbooks by Misner, Thorne and Wheeler~\cite{MTW} and
-% Carroll~\cite{carrollTextbook} for more complete treatments.
-% 
-% \subsection{Elements of Differential Geometry}
-% 
-% An $n$-dimensional ($C^\infty$) manifold $\mathcal{M}$ is a set of
-% points plus an \emph{atlas}, a set of \emph{charts} $\{\phi_i\}$ which
-% are invertible maps from open subsets of $\mathcal{M}$ to open subsets
-% of $\mathcal{R}^n$ such that
-% 
-% 
-% \begin{itemize}
-% \item For all points $p \in \mathcal{M}$ there exists a $\phi_i$ 
-% such that $p$ is in the domain of $\phi_i$.
-% \item The composition $\phi_i \circ \phi_j^{-1}$ on the 
-% intersections of the domains of $\phi_i$ and $\phi_j$ is a
-% ($C^\infty$) function from $\mathcal{R}^n \to \mathcal{R}^n$.
-% \end{itemize}
-% %
-% Two natural structures on a manifold are curves, maps from
-% $\mathcal{R}\to\mathcal{M}$, and scalar functions,  maps from
-% $\mathcal{M}\to\mathcal{R}$.  Compositing a function $f$ with a curve
-% $\gamma(\lambda)$ gives a map from $\mathcal{R} \rightarrow
-% \mathcal{R}$ which may be differentiated in the usual way at a point
-% $p$.
-% 
-% \iffalse
-% \begin{equation*}
-% \frac{d}{d \lambda} fi \big|_p = 
-%   \frac{d}{d\lambda} (f \circ \gamma) \big|_p
-% \end{equation*}
-% 
-% 
-% Expanding this in terms of a chart whose domain includes $p$ and then
-% applying the chain rule
-%  
-% \begin{align*}
-% \frac{d}{d \lambda} fi \big|_p &= 
-%  \frac{d}{d\lambda} ( (f \circ \phi^{-1}) \circ (\phi \circ
-% \lambda) ) \\
-% &= \frac{d(\phi^{-1} \circ \gamma)^\mu}{d\lambda} 
-% \frac{\partial (f \circ \phi^{-1}) }{\partial x^\mu} \big|_p \\
-% &= \frac{dx^\mu}{d\lambda} \partial_\mu f \big|_p
-% \end{align*}
-% 
-% where $x^\mu$ are the coordinates on $\mathcal{R}^n$.  Finally, since
-% the function $f$ is arbitrary we can define
-% 
-% \begin{equation}
-% \label{eq:tangent_vector}
-% \frac{d}{d\lambda} = \frac{dx^\mu}{d\lambda} \partial_\mu
-% \end{equation}
-% \fi
-% 
-% Geometrically, taking the derivative gives the tangent vector to the
-% curve at a point $p$.  It is possible to associate the set of such
-% vectors with the set of directional derivatives, taking the partial
-% derivatives along the coordinates as the basis.  Henceforth this basis
-% will be denoted both $\partial_\mu$ and $\vec{e}_\mu$.  Note that the
-% tangent to a curve is defined at the point $p$.  Each point in the
-% manifold possesses its own space of tangent vectors.  These spaces are
-% distinct, which will be important in what follows.
-% 
-% We next define \emph{one-forms} as linear maps from vectors to
-% $\mathcal{R}$.  The set of one-forms at a point can be shown to form a
-% vector space, a natural basis for which can be obtained by requiring
-% %
-% \begin{equation*}
-% \vec{e}_\mu \tilde{\omega}^\nu = \delta_\mu^\nu
-% \end{equation*}
-% %
-% The components of an arbitrary form $\omega$ in this basis may be
-% found by applying the form to the basis vectors.
-% 
-% \iffalse
-% \begin{align*}
-% \omega(\vec{e}_\nu)
-% &= \tilde{\omega}^\mu \omega_\mu (\vec{e}_\nu) \\
-% &= \omega_\mu \tilde{\omega}^\mu (\vec{e}_\nu) \\
-% &= \omega_\mu \delta^\nu_\mu \\
-% &= \omega_\nu\\
-% \end{align*}
-% \fi
-% 
-% We can then build up arbitrary ${m \choose n}$ tensors as linear maps
-% from tensor products of $m$ vectors and $n$ one-forms to
-% $\mathcal{R}$.  The components of a tensor $T$ in a choice of
-% coordinates may found by applying it to combinations of the basis
-% vectors and basis 1-forms.  Finally, a ${m \choose n}$ tensor field is
-% a map that associates to each point $p$ in $\mathcal{M}$ an element in
-% the space of  ${m \choose n}$ tensors at $p$.
-% 
-% \subsection{The Metric Tensor}
 % 
 % A particularly important tensor in general relativity is the
 % \emph{metric}, a ${2 \choose 0}$ tensor that is symmetric ($g_{\mu\nu}
@@ -127,302 +166,292 @@
 % \begin{equation*} g^{\mu_\rho} g_{\rho_\nu} = \delta^\mu_\nu
 % \end{equation*}
 % %
-% Given a vector $x^\mu$ the object $g_{\mu\nu} x^\mu$ maps another
-% vector to a real number, and is therefore a one-form.  The metric
-% therefore maps between the space of one-forms and the space of vectors
-% at each point.  Most importantly, the metric defines a notion of
+Given a vector $x^\mu$ the object $g_{\mu\nu} x^\mu$ maps another
+vector to a real number, and is therefore a one-form.  The metric
+therefore maps between the space of vectors and the space of 
+one-forms.  
+% Most importantly, the metric defines a notion of
 % distance on the manifold.  Infinitesimally
 % %
 % \begin{equation} ds^2 = g_{\mu\nu} dx^\mu dx^\nu \end{equation}
 % %
-% In special relativity, in Cartesian coordinates, the metric has
-% components $(-1,1,1,1)$ along the diagonal, all other components are
-% zero.   The metric will be denoted $\eta_{\mu\nu}$ and called the
-% \emph{flat space metric}.
+In special relativity, in Cartesian coordinates, the metric has
+components $(-1,1,1,1)$ along the diagonal, and all other components are
+zero. This {\it flat} spacetime metric will be denoted $\eta_{\mu\nu}$
+henceforth.
+
+\subsection{Covariant Derivative and Parallel Transport}
+\label{ssec:covariant_derivative}\label{ssec:parallel}
+
+A {\it (covariant) derivative operator} $\cd$ on a manifold $M$ is a map
+which takes each differentiable ${m\choose n}$ tensor field to a smooth
+tensor field of type ${m\choose n+1}$, and satisfies the following properties:
+\begin{itemize}
+ \item Linearity: $\cd_\alpha (kA^{a_1\dots a_m}_{b_1\dots b_n} + lB^{a_1\dots a_m}_{b_1\dots b_n}) = k\cd_\alpha A^{a_1\dots a_m}_{b_1\dots b_n} + l\cd_\alpha B^{a_1\dots a_m}_{b_1\dots b_n}$,
+ \item Leibnitz rule: $\cd_\alpha (A^{a_1\dots a_m}_{b_1\dots b_n} B^{a_1\dots a_m}_{b_1\dots b_n}) = \cd_\alpha (A^{a_1\dots a_m}_{b_1\dots b_n}) B^{a_1\dots a_m}_{b_1\dots b_n} + A^{a_1\dots a_m}_{b_1\dots b_n} \cd_\alpha (B^{a_1\dots a_m}_{b_1\dots b_n})$,
+ \item Commutativity with contraction of indices:  $\cd_\alpha (A^{a_1\dots c\dots a_m}_{b_1\dots c\dots b_n}) = \cd_\alpha A^{a_1\dots c\dots a_m}_{b_1\dots c\dots b_n}$, and, 
+ \item Agrees with the notion of tangent vectors as directional derivatives on scalar fields.%: $v(f) = v^\alpha\cd_\alpha f$. 
+\end{itemize}
+In GR, it is additionally required that the commutator of the derivative 
+operator $[\cd_\alpha, \cd_\beta]f\defeq [\cd_\alpha\cd_\beta - \cd_\beta\cd_\alpha]f$ 
+be zero when acting on a scalar field $f:M\rightarrow\Reals$, 
+a condition that has so far been borne by experiments.
+This commutator is called the {\it torsion} tensor, and $\cd$ is called
+{\it torsion} free if the above condition is satisfied.
+
+The application of $\cd$ on a vector field gives
+%
+\begin{equation}
+ \cd_\mu x^{\nu} \vec{e}_\nu = \cd_\mu (x^\nu) \vec{e}_\nu + x^\nu \cd_\mu \vec{e}_\nu,
+\end{equation}
+%
+where the second term on the right may not vanish in coordinate systems 
+other than Cartesian in flat spacetime, or in curved spacetime. However, 
+we must be able to write the new vector in the original basis. The components
+are called {\it connection coefficients}, and are denoted as $\Gamma^\rho_{\mu\nu}$:
+%
+\begin{align}\label{eq:covariant_derivative}
+ \cd_\mu x^{\nu} \vec{e}_\nu &= \cd_\mu (x^\nu) \vec{e}_\nu + x^\nu \Gamma^\rho_{\nu\mu} \vec{e}_\rho \\
+ &= (\pd_\mu x^\nu + x^\rho \Gamma^\nu_{\rho\mu}) \vec{e}_\nu
+\end{align}
+In similar notation, the action of $\cd$ on a one-form $\omega$ can be obtained, 
+noting that $\cd_\mu (v^\nu \omega_\nu) = \pd_\mu (v^\nu \omega_\nu)$, such that
+%
+\begin{equation}
+ \cd_\mu \omega_\nu = \pd_\mu\omega_\nu + \Gamma^\rho_{\mu\nu}\omega_\rho.
+\end{equation}
+Extending this to general ${m\choose n}$ tensors, we get that 
+\begin{equation}
+ \cd_\mu T^{a_1\dots a_m}_{b_1\dots b_n} = \pd_\mu T^{a_1\dots a_m}_{b_1\dots b_n} + \Sum_{i} \Gamma^{a_i}_{\mu d} T^{a_1\dots a_{i-1} d\dots a_m}_{b_1\dots b_n} - \Sum_{i} \Gamma^{d}_{\mu b_i} T^{a_1\dots a_m}_{b_1\dots b_{i-1} d\dots b_n}.
+\end{equation}
+
+The covariant derivative gives differential structure to the manifold $M$, 
+allowing for moving a vector {\it without changing it}, or in other words
+the ``parallel transport'' of a vector. Given the operator $\cd_\alpha$, a vector 
+$v$ is said to be parallel transported along a curve $C$, with a tangent 
+vector $t^\alpha$, if 
+\begin{equation}\label{eq:parallel_transport}
+ t^\alpha \cd_\alpha v^\beta = 0
+\end{equation}
+all along $C$. An intuitive visualization of parallel transport is of 
+moving a vector that is perpendicular to the Equator of the Earth (at longitude
+$L_0$) parallel to itself along the Equator, followed by transporting it along
+a different longitude $L_1$ till it reaches the North pole, and further
+parallel transporting it back along $L_0$ to its original location.
+The returned vector would not be parallel to the original vector, even 
+though it was never rotated with respect to itself. This therefore 
+indicates that the surface on which it was moved is itself curved.
+Eq.~\ref{eq:parallel_transport} shows that the parallel transport 
+of $v^\alpha$ depends solely on itself along the curve $C$. Also, 
+it can be shown that given an initial value of $v^\alpha$,
+Eq.~\ref{eq:parallel_transport} always has a unique solution~\cite{WaldBook}. 
+A remarkable result follows, which is that a vector at a point $p$ on the curve
+$C$ uniquely defines a ``parallel transported vector'' everywhere else on $C$.
+This idea will also help us define curvature in a later section of this 
+chapter.
+
+Of particular interest is the case where a vector is
+parallel-transported along itself
+%
+\begin{equation*}
+v^\mu \nabla_\mu v^\nu = v^\mu (\partial_\mu v^\nu + \Gamma^\nu_{\mu\rho} v^\rho) = 0.
+\end{equation*}
+%
+Now consider a curve $x(\lambda)$ such that $v$ is the tangent to this
+curve, $v^\mu = d x^\mu/d\lambda$, then
+%
+\begin{align}
+\label{eq:geodesic}
+\frac{d x^\mu}{d\lambda}
+  \frac{\partial }{\partial x^\mu}
+  \frac{d x^\nu}{d\lambda}  
++ \Gamma^\nu_{\mu\rho} 
+\frac{d x^\mu}{d\lambda}
+\frac{d x^\rho}{d\lambda} &= 0 \nonumber \\
+\frac{d^2 x^\nu}{d\lambda^2}
++ \Gamma^\nu_{\mu\rho} 
+\frac{d x^\mu}{d\lambda}
+\frac{d x^\rho}{d\lambda} &= 0 
+\end{align}
+%
+Eq.~\ref{eq:geodesic} is called the the \emph{geodesic equation}. 
+The solution to this equation defines the path along which test masses 
+that are acting solely under the influence of gravity move, in other 
+words it defines the trajectory of freely falling particles. 
+
+\subsection{The Christoffel Symbols}
+
+Given just the manifold structure, many distinct derivatives can be 
+defined on it. However, with the availability of a metric $g_{\mu\nu}$, 
+we can require another condition that scalars do not change 
+under parallel transport along an arbitrary vector $t^\alpha$. 
+For arbitrary vector fields $u^\alpha$ and $v^\beta$, we take the 
+scalar $g_{\mu\nu}u^\mu v^\nu$ and require that
+%
+\begin{align}\label{eq:parallel_transport_scalar}
+t^\mu \nabla_\mu (g_{\alpha\beta} u^\alpha v^\beta) = 0 =
+x^\mu (\nabla_\mu g_{\alpha\beta}) u^\alpha v^\beta
++ g^{\alpha\beta} (x^\mu \nabla_\mu u^\alpha) v^\beta
++ g^{\alpha\beta} u^\alpha (x^\mu \nabla_\mu v^\beta).
+\end{align}
+%
+As this must hold for arbitrary $u$ and $v$, it must also hold when
+both are constant. This sets the last two terms on the right hand side
+of Eq.~\ref{eq:parallel_transport_scalar} to zero. We have left
+%
+\begin{equation}
+\label{eq:metric_compatibility}
+\nabla_\mu g_{\alpha\beta} = 0,
+\end{equation}
+which is also known as the {\it metric compatibility} condition. 
+
+Equation~\ref{eq:metric_compatibility} and the requirement that $\cd$ be
+torsion-free together fix the connection coefficients $\Gamma$, which can be
+written in terms of the metric as:
+%
+\begin{equation}
+\Gamma^{\rho}_{\mu\nu}
+= \frac{1}{2} g^{\rho\sigma}\left[
+\partial_\nu g_{\mu\sigma}
++ \partial_\mu g_{\nu\sigma}
+- \partial_\sigma g_{\mu\nu}
+\right]
+\end{equation}
 % 
-% \subsection{Covariant Derivatives}
+Combining this with Eq.~\ref{eq:geodesic} in the previous section,
+we see that the motion of particles are completely specified once we know
+the metric of the spacetime and their initial positions and velocities.
+
+\subsection{Field Equations of Gravity}
+
+When a vector is parallel transported from a point $p$ to $q$ along $C$ in the
+manifold $M$, the final vector at $q$ will, in general, depend on the choice of
+$C$. We can generalize the example given in Sec.~\ref{ssec:covariant_derivative}
+and use the path dependence of parallel transport to define an instrinsic notion
+of curvature of the underlying manifold. We transport a vector $u^\alpha$ along
+an infinitesimal parallelogram with sides defined by $v^\beta$ and $w^\gamma$.
+The failure of a vector to return to its original value when parallel 
+transported about a closed loop can be used to define the Riemann tensor
+$R^\rho_{\sigma\mu\nu}$:
 % 
-% Since vectors are only defined at a point we need additional structure
-% to define derivatives of vector fields, as there is no natural way to
-% compare vectors that live in different spaces.  We seek an operator
-% $\nabla$ with the following properties
-% %
-% \begin{itemize}
-% \item Maps ${m \choose n}$ tensors to ${m \choose {n+1}}$ tensors.
-% This is so we may consider the directional derivative of a tensor $T$
-% along a vector $x$ as $x^\mu \nabla_\mu T$.
-% \item Reduces to partial differentiation when applies to a scalar
-% field.
-% \item Linear.
-% \item Satisfies the Leibniz rule, $\nabla(a b) = a\nabla b + b \nabla a$.
-% \end{itemize}
-% %
-% Such an operator applied to a vector field gives
-% %
-% \begin{equation*}
-% \nabla_\mu (x^\nu \vec{e}_\nu)
-% = (\partial_\mu x^\nu) \vec{e}_\nu + x^\nu (\nabla_\mu
-% \vec{e}_\nu)
-% \end{equation*}
-% %
-% In flat space in Cartesian coordinates the basis vectors do not
-% change and so the last term is zero.  But in a curved space, or even
-% flat space in non-Cartesian coordinates, they may.  However, the new
-% vector must be expressible as a linear combination of the original
-% basis vectors.  The components are called \emph{connection
-% coefficients} and are denoted as $\Gamma^\rho_{\nu\mu}$ so
-% %
-% \begin{align}
-% \label{eq:covariant_derivative}
-% \nabla_\mu (x^\nu \vec{e}_\nu) &= 
-% (\partial_\mu x^\nu) \vec{e}_\nu + 
-% x^\nu \Gamma^\rho_{\mu\nu} \vec{e}_\rho \\
-% &= (\partial_\mu x^\nu + x^\rho \Gamma^\nu_{\mu\rho}) \vec{e}_\nu \\
-% \nabla_\mu x^\nu &= \partial_\mu x^\nu + x^\rho \Gamma^\nu_{\mu\rho}
-% \end{align}
-% %
-% In general relativity the connection is usually assumed to be
-% \emph{torsion-free}, that is
-% %
-% \begin{equation}
-% \label{eq:torsion}
-%  \Gamma^\nu_{\mu\rho} =  \Gamma^\nu_{\rho\mu}
-% \end{equation}
-% %
-% which thus far has been borne out by experiment.  However, it is
-% possible to construct theories where this condition does not hold.
 % 
-% We will henceforth occasionally use commas and semicolons to denote
-% partial and covariant differentiation, respectively:
-% %
-% \begin{align*}
-% {x^\mu}_{,\nu} &\equiv \partial_\nu x^{\mu} \\
-% {x^\mu}_{;\nu} &\equiv \nabla_\nu x^{\mu} \\
-% \end{align*}
-% 
-% By considering the covariant derivative of a scalar constructed from a
-% one-form acting on a vector, $\nabla (x^\nu \omega_\nu)$, it can be shown
-% that
-% %
-% \begin{equation*}
-% \nabla_\mu \omega_\nu = \partial_\mu \omega_\nu - 
-% \Gamma^\rho_{\mu\nu} \omega_\rho
-% \end{equation*}
-% %
-% The covariant derivative of a ${m \choose n}$ tensor generalizes this
-% and has a partial derivative term, $m$ positive therms in $\Gamma$ and
-% $n$ negative terms in $\Gamma$.
-% 
-% \subsection{Parallel Transport}
-% \label{ssec:parallel}
-% 
-% Covariant differentiation provides a way to ``move a vector without
-% changing it.''  We can \emph{parallel transport} a vector $v^\mu$
-% infinitesimally along a curve whose tangent vector is $u^\nu$ by
-% requiring
-% %
-% \begin{equation*}
-% u^\nu \nabla_\nu v^\mu = 0
-% \end{equation*}
-% %
-% As an example of such transport, consider an arrow on the equator of
-% the Earth pointing towards the north pole.  This arrow can be carried
-% halfway around the equator without rotating it, so it ends up on the
-% other side of the globe, still pointing north.  If the vector is then
-% parallel transported northward to the pole and then continued until it
-% returns to its starting point it will return pointing south.  Although
-% the vector was never rotated locally it has returned rotated.  This is
-% an indication that the underlying space is curved.
-% 
-% Of particular interest is the case where a vector is
-% parallel-transported along itself
-% %
-% \begin{equation*}
-% 0 = v^\mu \nabla_\mu v^\nu 
-% = v^\mu (\partial_\mu v^\nu + \Gamma^\nu_{\mu\rho} v^\rho)
-% \end{equation*}
-% %
-% Now consider a curve $x(\lambda)$ such that $v$ is the tangent to this
-% curve, $v^\mu = d x^\mu/d\lambda$, then
-% %
-% \begin{align}
-% \label{eq:geodesic}
-% \frac{d x^\mu}{d\lambda}
-%   \frac{\partial }{\partial x^\mu}
-%   \frac{d x^\nu}{d\lambda}  
-% + \Gamma^\nu_{\mu\rho} 
-% \frac{d x^\mu}{d\lambda}
-% \frac{d x^\rho}{d\lambda} &= 0 \nonumber \\
-% \frac{d^2 x^\nu}{d\lambda^2}
-% + \Gamma^\nu_{\mu\rho} 
-% \frac{d x^\mu}{d\lambda}
-% \frac{d x^\rho}{d\lambda} &= 0 \nonumber \\
-% \end{align}
-% %
-% This is the \emph{geodesic equation}, solutions to which are
-% \emph{geodesics}.  The same equation can be derived by extremizing the
-% path length, $\sqrt{g_{\mu\nu} dx^\mu dx^\nu}$.  In general relativity
-% test masses acting under the influence of gravity and no other forces
-% follow geodesics.  
-% 
-% \subsection{The Christoffel Symbols}
-% 
-% If we now require that scalars do not change under parallel transport
-% we have, for arbitrary vectors fields $u^\alpha, v^\beta$ and $x^\mu$
-% %
-% \begin{align*}
-% 0 &= x^\mu \nabla_\mu (g_{\alpha\beta} u^\alpha v^\beta) \\
-% &= x^\mu (\nabla_\mu g_{\alpha\beta}) u^\alpha v^\beta
-% + g^{\alpha\beta} (x^\mu \nabla_\mu u^\alpha) v^\beta
-% + g^{\alpha\beta} u^\alpha (x^\mu \nabla_\mu v^\beta)
-% \end{align*}
-% %
-% We can now specialize such that $u^\alpha, v^\beta$ are constant
-% and so the last two terms vanish, which implies the  \emph{metric
-% compatibility} condition:
-% %
-% \begin{equation}
-% \label{eq:metric_compatibility}
-% \nabla_\mu g_{\alpha\beta} = 0
-% \end{equation}
-% 
-% Equations~\ref{eq:metric_compatibility} and~\ref{eq:torsion} together
-% fix the connection coefficients in terms of the metric:
-% %
-% \begin{equation}
-% \Gamma^{\rho}_{\mu\nu}
-% = \frac{1}{2} g^{\rho\sigma}\left[
-% \partial_\nu g_{\mu\sigma}
-% + \partial_\mu g_{\nu\sigma}
-% - \partial_\sigma g_{\mu\nu}
-% \right]
-% \end{equation}
-% % 
-% Combining this with the previous section we see that the motion of
-% particles are completely specified once we know the metric and their
-% initial positions and velocities.
-% 
-% \subsection{The Riemann Tensor}
-% 
-% We now generalize the example given in Sec.~\ref{ssec:parallel}, and
-% ask how a vector $A^\mu$ changes as it is parallel-transported around
+% We now generalize the example given in Sec.~\ref{ssec:covariant_derivative},
+% and ask how a vector $A^\mu$ changes as it is parallel-transported around
 % an infinitesimal parallelogram with sides defined by the vectors
 % $B^\mu$ and $C^\nu$.  Recalling that vectors and directional
 % derivatives are the same thing, it can be shown that this is
 % equivalent to asking how covariant derivatives fail to commute.  The
 % result must be linear in $A^\mu$ and so we may write
-% %
-% \begin{equation}
-% \label{eq:riemann_def}
-% \left[\nabla_\mu \nabla_\nu - \nabla_\nu \nabla_\mu\right] A^\rho
-% = R^\rho_{\sigma\mu\nu} A^\sigma
-% \end{equation}
-% %
-% which defines the \emph{Riemann tensor} $R^\rho_{\sigma\mu\nu}$.  A
-% number of properties follow from this definition (which are either
-% obvious or may be proven by substituting the definition of the
-% covariant derivative, eqn.~\ref{eq:covariant_derivative}).  First,
-% the symmetry properties
-% %
-% \begin{equation}
-% \label{eq:symmetries}
-% R_{\rho\sigma\mu\nu}
-% = -R_{\sigma\rho\mu\nu}
-% = -R_{\rho\sigma\nu\mu}
-% = R_{\mu\nu\rho\sigma}
-% \end{equation}
-% %
-% which in turn imply
-% %
-% \begin{align}
-% R^\rho_{[\sigma\mu\nu]} = 0
-% \end{align}
-% %
-% Second, the Bianchi identity,
-% %
-% \begin{equation}
-% \label{eq:bianchi}
-% R_{\rho\sigma\mu\nu;\alpha}
-% +R_{\rho\sigma\nu\alpha;\mu}
-% +R_{\rho\sigma\alpha\mu;\nu} = 0
-% \end{equation}
-% 
-% We may now generalize Eqn.~\ref{eq:riemann_def} and ask how an
-% arbitrary tensor changes after being parallel-transported 
-% around a loop.  It can be shown that
-% %
-% \begin{equation}
-% \label{eq:higher_order_riemann}
-% \left[\nabla_\mu \nabla_\nu - \nabla_\nu \nabla_\mu\right] 
-% B^{\rho_1 \rho_2 \ldots \rho_n}
-% = - R^{\rho_1}_{\sigma \mu\nu} B^{\sigma \rho_2 \ldots \rho_n}
-% - R^{\rho_2}_{\sigma \mu\nu} B^{\rho_1 \sigma \ldots \rho_n}
-% - \ldots -
-% - R^{\rho_n}_{\sigma \mu\nu} B^{\rho_1 \rho_2 \ldots \sigma }
-% \end{equation}
-% %
-% which may be proved by expanding
-% %
-% \begin{equation*}
-% \left[\nabla_\mu \nabla_\nu - \nabla_\nu \nabla_\mu\right] 
-% (\vec{e}_\rho \otimes \vec{e}_\sigma)
-% \end{equation*}
-% %
-% and then proceeding by induction.  
-% 
-% The symmetries of the Riemann tensor imply that there is, up to sign,
-% only one non-trivial contraction
-% %
-% \begin{equation}
-% R_{\mu\nu} = R^\sigma_{\mu\sigma\nu}
-% \end{equation}
-% %
-% which defines the \emph{Ricci tensor}.  This may be contracted again
-% %
-% \begin{equation}
-% R = R^\mu_\mu
-% \end{equation}
-% %
-% to obtain the \emph{Ricci scalar}.
-% 
-% Now, contracting the Bianchi identity twice gives
-% %
-% \begin{equation*}
-% g^{\sigma\nu}
-% \left(\nabla_\alpha R_{\sigma\nu}
-% + \nabla^\rho R_{\rho\sigma\nu\alpha}
-% + \nabla_\nu R^\mu_{\sigma\alpha\mu}\right) = 0
-% \end{equation*}
-% %
-% Using the symmetries of the Riemann tensor (eqn.~\ref{eq:symmetries})
-% this can be written
-% %
-% \begin{equation*}
-% \nabla_\alpha R
-% - \nabla^\rho R_{\rho\alpha}
-% - \nabla^\sigma R_{\sigma\alpha} = 0
-% \end{equation*}
-% %
-% Relabeling the dummy indices and using metric compatibility gives
-% %
-% \begin{equation*}
-% \nabla^\rho \left(g_{\rho\alpha} R - 2 R_{\rho\alpha} \right) = 0
-% \end{equation*}
-% %
-% This motivates the definition of the \emph{Einstein Tensor} as
-% %
-% \begin{equation}
-% \label{eq:einstein_tensor}
-% G_{\mu\nu} = R_{\mu\nu} - \frac{1}{2} g_{\mu\nu} R
-% \end{equation}
-% %
-% The previous result implies this is divergentless
-% %
-% \begin{equation*}
-% \nabla^\nu G_{\mu\nu} = 0
-% \end{equation*}
-% %
-% Note also that $G$ is symmetric, $G_{\mu\nu} = G_{\nu\mu}$.
+%
+\begin{equation}
+\label{eq:riemann_def}
+\left[\nabla_\mu \nabla_\nu - \nabla_\nu \nabla_\mu\right] v^\rho
+= R^\rho_{\sigma\mu\nu} v^\sigma
+\end{equation}
+%
+A number of properties follow from this definition (which are either
+follow trivially or may be proven by substituting the definition of the
+covariant derivative, Eq.~\ref{eq:covariant_derivative}.  First, we note that
+$R^\rho_{\sigma\mu\nu}$ is (anti-)symmetric in the first and last pair of 
+its indices:
+%
+\begin{equation}
+\label{eq:symmetries}
+R_{\rho\sigma\mu\nu}
+= -R_{\sigma\rho\mu\nu}
+= -R_{\rho\sigma\nu\mu}
+= R_{\mu\nu\rho\sigma}
+\end{equation}
+%
+which also imply
+%
+\begin{align}
+R^\rho_{[\sigma\mu\nu]} = 0,
+\end{align}
+where $[\dots]$ denotes the anti-symmetrization over the enclosed indices.
+Second, we have the Bianchi identities,
+%
+\begin{equation}
+\label{eq:bianchi}
+\cd_\alpha R_{\rho\sigma\mu\nu}
++\cd_\mu R_{\rho\sigma\nu\alpha}
++\cd_\nu R_{\rho\sigma\alpha\mu} = 0
+\end{equation}
+
+Eq.~\ref{eq:riemann_def} can be straightforwardly generalized to obtain 
+the change in an arbitrary tensor upon being parallel-transported around an
+infinitesimal loop.  It can be shown that~\cite{WaldBook}
+%
+\begin{equation}
+\label{eq:higher_order_riemann}
+\left[\nabla_\mu \nabla_\nu - \nabla_\nu \nabla_\mu\right] 
+B^{\rho_1 \rho_2 \ldots \rho_n}
+= - R^{\rho_1}_{\sigma \mu\nu} B^{\sigma \rho_2 \ldots \rho_n}
+- R^{\rho_2}_{\sigma \mu\nu} B^{\rho_1 \sigma \ldots \rho_n}
+- \ldots -
+- R^{\rho_n}_{\sigma \mu\nu} B^{\rho_1 \rho_2 \ldots \sigma }
+\end{equation}
+%
+which can be proved by expanding
+%
+\begin{equation*}
+\left[\nabla_\mu \nabla_\nu - \nabla_\nu \nabla_\mu\right] 
+(\vec{e}_\rho \otimes \vec{e}_\sigma)
+\end{equation*}
+%
+and subsequently using the second principle of mathematical induction.  
+
+Due to the symmetries of the Riemann tensor, it can be shown that there is 
+exactly one non-trivial contraction, up to a sign, which is between its
+first and third or second and fourth indices:
+%
+\begin{equation}
+R_{\mu\nu} = R^\sigma_{\mu\sigma\nu}.
+\end{equation}
+%
+$R_{\mu\nu}$ is also known as the {\it Ricci} tensor. Contracting again, we get
+%
+\begin{equation}
+R = R^\mu_\mu
+\end{equation}
+%
+which is the unique non-trivial \emph{Ricci} scalar that can be formed from
+the Riemann tensor.
+
+Contracting the Bianchi identity twice gives
+%
+\begin{equation*}
+\cd_\alpha R_{\sigma\mu\nu}^\alpha + \cd_\sigma R_{\mu\nu} - \cd_\mu R_{\sigma\nu} = 0.
+\end{equation*}
+%
+Raising the index $\nu$ and contracting over $\mu$ and $\nu$, we obtain
+%
+\begin{equation*}
+\cd_\alpha R^\alpha_\mu + \cd_\sigma R_\mu^\sigma - \cd_\mu R = 0
+\end{equation*}
+%
+Relabeling the dummy indices and using metric compatibility gives
+%
+\begin{equation*}
+2\cd^\mu \left(R_{\mu\nu} - \frac{1}{2} g_{\mu\nu} R \right) = 0,
+\end{equation*}
+%
+which defines the divergenceless tensor $G_{\mu\nu}$:
+%
+\begin{equation}
+\label{eq:einstein_tensor}
+G_{\mu\nu} = R_{\mu\nu} - \frac{1}{2} g_{\mu\nu} R
+\end{equation}
+%
+It follows trivially that $G$ is symmetric: $G_{\mu\nu} = G_{\nu\mu}$.
+
+Continuous matter distributions in special relativity are described by a 
+symmetric tensor $T_{\mu\nu}$ called the {\it stress-energy-momentum} tensor.
+For an observer with 4-velocity $u^\mu$, the component $T_{\mu\nu}u^\mu u^\nu$
+is the energy density as measured by the observer. For non-relativistic matter,
+the energy density $\simeq T^{00}$ and is the same as the mass density $\rho$;
+while $T^{0i}$ is the momentum in the $i-$th direction. Conservation of 
+momentum, i.e. $\pd_t \rho = \pd_i p^i$ can therefore be written as
 % 
 % We now relate this to physics by noting that the matter and energy
 % content of a region is described by the stress-energy tensor
@@ -438,608 +467,609 @@
 % \begin{equation*}
 % \partial_t \rho = \partial_i p^i
 % \end{equation*}
-% %
+%
 % In terms of the stress-energy tensor this becomes
-% %
-% \begin{equation*}
-% 0 = - \nabla^0 T_{00} + \nabla^i T_{0i} 
-% = \nabla^\nu T_{0 \nu}
-% \end{equation*}
-% %
-% However the time direction is not uniquely specified as a change of
-% coordinates will mix space and time components, so this must
-% generalize to 
-% %
-% \begin{equation*}
-% \nabla^\nu T_{\mu\nu} = 0
-% \end{equation*}
-% %
-% That is, $T$ is also divergentless, like $G$, and like $G$ it is also
-% symmetric.  It is therefore reasonable to suggest the ansatz
-% %
-% \begin{equation*}
-% G_{\mu\nu} \propto T_{\mu\nu}
-% \end{equation*}
-% %
-% Requiring agreement with Newton's law of gravity in the appropriate
-% low-energy limit ($T_{00} \gg$ all other components) fixes the
-% constant of proportionality and gives us \emph{Einstein's field
-% equation}
-% %
-% \begin{equation}
-% \label{eq:einsteins_equation}
-% G_{\mu\nu} = 8\pi T_{\mu\nu}
-% \end{equation}
-% %
-% Note that $G_{\mu\nu}$ is entirely determined by the metric.
-% Equation~\ref{eq:einsteins_equation} may therefore be thought of as a
-% set of coupled, non-linear differential equations for $g_{\mu\nu}$.
-% 
-% \section{Gravitational Radiation}
-% \label{sec:gravitational_radiation}
-% 
-% We now move to the prediction of gravitational waves.  We begin with
-% Einstein's equation in empty space,
-% %
-% \begin{equation*}
-% G_{\mu\nu} = R_{\mu\nu} - \frac{1}{2} g_{\mu\nu} R = 0
-% \end{equation*}
-% %
-% By taking the trace and substituting into Eqn.~\ref{eq:einsteins_equation}
-% it can be shown that this implies that in empty space $R_{\mu\nu} =
-% 0$.  Similary, using the Bianchi identity and symmetries of the Riemann tensor gives,
-% in empty space,
-% %
-% \begin{equation}
-% \label{eq:divergence_in_empty_space}
-% R_{\beta\delta;\gamma}  -R_{\beta\gamma;\delta} = 0
-% \end{equation}
-% 
-% We next consider the application of the wave operator to the Riemann
-% tensor.  From the Bianchi identity (eqn.~\ref{eq:bianchi}) this becomes
-% %
-% \begin{equation*}
-% \label{eq:wave_expanded}
-% g^{\mu\nu} R_{\alpha\beta\gamma\delta;\mu\nu}
-% = - g^{\mu\nu}
-% \left[R_{\alpha\beta\delta\mu;\gamma\nu}
-% + R_{\alpha\beta\mu\gamma;\delta\nu} \right]
-% \end{equation*}
-% %
-% Consider the first term on the right-hand side:
-% %
-% \begin{align*}
-% g^{\mu\nu} R_{\alpha\beta\delta\mu;\gamma\nu}
-% &= g^{\mu\nu} R_{\alpha\beta\delta\mu;\nu\gamma}
-% + g^{\mu\nu} R_{\alpha\beta\delta\mu;\gamma\nu}
-% - g^{\mu\nu} R_{\alpha\beta\delta\mu;\nu\gamma} \\
-% &= g^{\mu\nu} R_{\alpha\beta\delta\mu;\nu\gamma}
-% + g^{\mu\nu} 
-% \left[\nabla_\nu,\nabla_\gamma\right] R_{\alpha\beta\delta\mu}
-% \end{align*}
-% %
-% The first term vanishes by
-% Eqn.~\ref{eq:divergence_in_empty_space}.  The second term involves
-% products of the Riemman tensor by~\ref{eq:higher_order_riemann}.  The
-% second term on the right in Eqn.~\ref{eq:wave_expanded} has the
-% same form.
-% 
-% We now specialize to the case where the Riemann tensor is small, so
-% that terms involving multiple factors can be neglected.  This is
-% equivalent to considering the Riemann tensor as a field on a flat
-% background.  This gives
-% %
-% \begin{equation}
-% \label{eq:riemann_wave}
-% g^{\mu\nu}
-% R_{\alpha\beta\gamma\delta;\mu\nu}
-% =
-% \Box R_{\alpha\beta\gamma\delta}
-% = 0
-% \end{equation}
-% %
-% That is, each component of the Riemann tensor independently 
-% satisfies the vacuum wave equation.  We can immediately write the
-% solution:
-% %
-% \begin{equation}
-% R^\alpha_{\beta\gamma\delta} = 
-% \textrm{Re}\, A^\alpha_{\beta\gamma\delta} \exp(i k_\mu x^\mu)
-% \end{equation}
-% %
-% where $A^\alpha_{\beta\gamma\delta}$ is a set of amplitudes and
-% $k^\mu$ is the wave vector.  In a chosen coordinate system it has
-% components $(\omega, k_x, k_y, k_z)$ where $\omega$ is the angular
-% frequency and the spacial $k$ components are wavelengths in each
-% direction.  It can be shown that 
-% %
-% \begin{align*}
-% \nabla_{\vec k} \vec{k} &= 0 \\
-% k_\mu k^\mu &= 0 \\
-% \end{align*}
-% %
-% which together imply that gravitational waves travel along geodesics 
-% at the speed of light.
-% 
-% 
-% \section{Effect of Gravitational Waves}
-% \label{sec:effects_of_waves}
-% 
-% We now derive the effect of gravitational waves on matter.  Consider
-% two particles moving along world-lines $A^\mu$ and $B^\mu$.  Choose
-% coordinates so that $A$ remains fixed at the origin, $A^\mu =
-% (1,0,0,0)$.  We may further specialize our coordinates such that at
-% the origin $g_{\mu\nu} = \eta_{\mu\nu}$.  It can be shown that we may
-% also require that the first derivatives of the metric vanish at this
-% point.  We may not, however, make the second derivatives vanish in
-% general.  This corresponds to the fact that the Riemann tensor is
-% defined in terms of second derivatives.  We call the coordinate system
-% thus constructed a \emph{Local Lorentz Frame}.
-% 
-% We now define the separation between the two particles as 
-% %
-% \begin{equation*}
-% \xi^\mu = B^\mu - A^\mu
-% \end{equation*}
-% %
-% We fix $\xi$ to be perpendicular to $A$, so that $\xi^0 = 0$.  If space
-% is curved it can readily be seen that $\xi$ will not remain constant.
-% For example, if the particles are initially at rest some distance from
-% the surface of the Earth they will both move towards the center of the
-% Earth and $\xi$ will decrease.  It can be shown that $\xi$ obeys the
-% equation of \emph{geodesic deviation},
-% %
-% \begin{equation}
-% \label{eq:geodesic_deviation}
-% \frac{d^2}{dt^2} \xi^\rho = -R^\rho_{\mu\nu\sigma} A^\mu \xi^\nu A^\sigma
-% =-R^\rho_{0 \nu 0} \xi^\nu 
-% \end{equation}
-% %
-% Using the condition that $\xi$ has no time component reduces this to 
-% %
-% \begin{equation}
-% \frac{d^2}{dt^2} \xi^i = -R^\rho_{\mu\nu\sigma} A^\mu \xi^\nu A^\sigma
-% =-R^i_{0 j 0} \xi^j
-% \end{equation}
-% %
-% That is, the change in separation between two
-% infinitesimally-separated test masses at rest with respect to each
-% other in an arbitrary gravitational field is entirely specified by
-% $R^i_{0 j 0}$.  From the symmetries of the Reimann tensor this is
-% symmetric in $i$ and $j$, and hence appears to have 6 independent
-% components.  However, it can be shown that these can entirely be
-% specified by two values, which without loss of generality we take to
-% be $R^x_{0 x 0}$.  $R^x_{0 y 0}$.  We now recall that in empty space
-% $R_{\mu\nu} = 0$, which implies that $R^y_{0 y 0} = - R^x_{0 x 0}$.
-% We summarize this by saying that R is \emph{traceless}.  
-% 
-% We now specialize to the case of gravitational waves, so that the
-% Riemann tensor satisfies Eqn.~\ref{eq:riemann_wave} and we choose
-% coordinates such that the wave is traveling in the $z$ direction.
-% Using the fact that the speed of light is 1 in dimensionless units the
-% solution can then be written
-% %
-% \begin{equation*}
-% R_{i 0 j 0} = A_{ij}(t - z)
-% \end{equation*}
-% %
-% where we have lowered the first index to simplify notation.
-% 
-% Now, using the fact that $\partial_x R_{i0j0} = \partial_y R_{i0j0}
-% = 0$ and integrating the Bianchi identity we can show that
-% $R_{x 0 y 0} = R_{y 0 x 0}$ and that all other components vanish.
-% It can also be shown that in addition to being traceless $R$ is
-% \emph{transverse}, $k^j R_{i0j0} = 0$.  We denote these two facts by
-% adding the superscript $TT$, and define the gravitational-wave field as
-% %
-% \begin{equation}
-% \label{eq:wave_field}
-% -\frac{1}{2} \frac{\partial^2 h_{ij}^{TT}}{\partial t^2}
-% \equiv R^{TT}_{i0j0}
-% \end{equation}
-% 
-% We now decompose the separation vector $\xi$ into the initial
-% separation and a time-dependant perturbation, $\xi = \xi_0 + \delta
-% \xi$.  In terms of this Eqn.~\ref{eq:geodesic_deviation} becomes
-% %
-% \begin{equation}
-% \label{eq:geodesic_deviation_delta}
-% \frac{d^2}{dt^2} \delta \xi^i = -R^{0 i 0 j} \xi_0^j
-% \end{equation}
-% %
-% where we drop the initial portion from the left-hand side because it
-% is constant, and we drop the perturbation from the right hand side
-% because it is much smaller than the initial portion.  Comparing
-% eqn.~\ref{eq:wave_field} and eqn.~\ref{eq:geodesic_deviation_delta}
-% we obtain the equation for the effect of a gravitational wave on
-% free-falling test masses:
-% %
-% \begin{equation}
-% \label{eq:wave_effect}
-% \delta \xi^i = \frac{1}{2} h^{TT}_{ij} \xi^j
-% \end{equation}
-% %
-% We note in passing that this is the same result obtained in other
-% treatments by expanding the metric in terms of the flat-space metric
-% plus a perturbation, $g_{\mu\nu} = \eta_{\mu\nu} + h_{\mu\nu}$,
-% substituting into the Einstein equation and expanding to first order
-% in $h$, and then choosing a gauge in which $h$ is transverse and
-% traceless.
-% 
-% Now, define
-% %
-% \begin{align*}
-% h_+ &\equiv h_{xx} = - h_{yy} \\
-% h_\times &\equiv h_{xy} = h_{yx}
-% \end{align*}
-% %
-% which we refer to as the \emph{plus} ($+$) and \emph{cross} ($\times$)
-% polarizations, respectively.  Consider the case where $h_\times = 0$.
-% If particle $B$ is initially on the $x$ axis then 
-% %
-% \begin{align*}
-% \delta \xi^x &= \frac{1}{2} h^{TT}_{xx} \xi^x \\
-% \delta \xi^y &= \frac{1}{2} h^{TT}_{xy} \xi^y \\
-% &= 0
-% \end{align*}
-% %
-% The particle remains on the $x$ axis.  For an oscillatory wave the
-% distance between the two particles likewise oscillates.  We can
-% describe this as an induced \emph{strain}, $\Delta L/L$ where $L$ is
-% the initial separation.  If $B$ is initially on the $y$ axis
-% %
-% \begin{align*}
-% \delta \xi^x &= \frac{1}{2} h^{TT}_{xx} \xi^x \\
-% &= 0 \\
-% \delta \xi^y &= \frac{1}{2} h^{TT}_{yy} \xi^y \\
-% &= - \frac{1}{2} h^{TT}_{xx} \xi^y
-% \end{align*}
-% %
-% The particle remains on the $y$ axis and oscillates out of phase with
-% a corresponding particle on the $x$ axis.  The net effect is that,
-% after a quarter cycle, a set of masses initially in a circle are moved
-% into an ellipse flattened along one axis and stretched along the other
-% such that the area remains constant.  After another quarter cycle they
-% return to a circle, in the next quarter cycle they are in an ellipse
-% with the axes flipped, and so on. It is similarly straightforward to
-% show that for a wave cross-polarized wave the eigendirections are on
-% the lines $x=\pm y$.  The effects are the same as for the $+$
-% polarization, rotated 45 degrees.
-% 
-% Now consider a thought experiment, originally due to Feynman, where we
-% place a bead on a stick in the path of a gravitational wave.  The wave
-% will cause the bead to slide back and forth, heating the stick trough
-% friction and imparting energy to the system.  This implies that
-% gravitational waves carry energy.  This argument can be made
-% precise~\cite{RevModPhys.29.509}.
-% 
-% \section{Modeling Gravitational Waves}
-% 
-% Having demonstrated the predicted existence of gravitational waves and
-% their effects on matter we now turn to the question of their
-% generation.  From Eqn.~\ref{eq:wave_field} we can see that, since
-% the components of the Riemann tensor obey the wave equation, the
-% components of $h^{TT}$ do as well.  We now consider the solution of
-% the wave equation when the source, the stress-energy tensor, is not
-% zero.  By analogy with electromagnetism we can immediately write down
-% the solution in terms of retarded fields
-% %
-% \begin{equation}
-% \label{eq:h_from_t}
-% h^{TT}_{ij} = 4 \left[ \int \frac{T_{ij}(x', t-r)}{r}\, d^3 x'
-% \right]^{TT}
-% \end{equation}
-% %
-% where we integrate over the source distribution $x'$.  When the energy
-% and momentum densities are small, so that the curvature of spacetime
-% is likewise small, the coordinates may be taken to have their
-% conventional flat-space meaning.  We may also replace the covariant
-% derivative by regular partial differentiation.
-% 
-% Starting from the conservation of energy and momentum written in terms
-% of the stress-energy tensor
-% %
-% \begin{align*}
-% {T^{00}}_{,0} &= - {T^{0j}}_{,j} \\
-% {T^{i0}}_{,0} &= - {T^{ij}}_{,j} \\
-% \end{align*}
-% %
-% Differentiating with respect to time and going through some algebra
-% yields expressions for the first and second moments of the stress
-% energy tensor, ${T^{lm}}_{,ml} x^j x^k$ and ${T^{jm}}_{,m} x^k$.  These,
-% plus Stoke's theorem, can be used to simplify
-% Eqn.~\ref{eq:h_from_t} to give
-% %
-% \begin{equation*}
-% h^{TT}_{ij} = \frac{2}{r} \left[
-% \int {T^{00}}_{,00}\, x^i x^j d^3 x' \right]^{TT}
-% \end{equation*}
-% %
-% We recognize $T^{00}$ as the mass/energy density, and therefore this
-% can be written as the \emph{quadrapole formula}
-% %
-% \begin{equation}
-% \label{eq:quadrupole_formula}
-% h^{TT}_{jk} = \frac{2}{r} \ddot{\mathcal{I}}(t-r)
-% \end{equation}
-% %
-% where $\mathcal{I}$ is the quadrupole moment of the source
-% %
-% \begin{equation*}
-% \mathcal{I}_{ij} = \int \rho(\mathbf{x})x_i x_j\,d^3 x
-% \end{equation*}
-% 
-% Any system of mass with a time-dependant quadrupole moment will give
-% rise to gravitational radiation.  However, restoring physical units to
-% Eqn.~\ref{eq:quadrupole_formula} scales the right-hand side by
-% $G/c^4$.  We therefore need very large masses and/or rapid changes in
-% order to generate waves we have any chance of detecting.  There are
-% many such sources of astrophysical and cosmological interest:
-% %
-% \begin{itemize}
-% \item supernovae
-% \item rotating neutron stars with axial asymmetry
-% \item processes in the early universe, which would have produced
-% \emph{relic} gravitational waves in principle still detectable today
-% \item topological defects
-% \item compact bodies, such as neutron stars and black holes, in 
-% orbit around each other.
-% \end{itemize}
-% %
-% We will focus on the last of these for the remainder of the thesis.
-% 
-% It is straightforward to start from the mass distribution of two point
-% masses in orbit around their center:
-% %
-% \begin{align*}
-% \rho(\mathbf{x}) &= m_1\delta(x - r_1\cos(\Omega t)) \delta(y-r_1
-% \sin(\Omega t)) \delta(z) \\
-% &\quad + m_2\delta(x + r_2\cos(\Omega t)) \delta(y + r_2 \sin(\Omega t))
-% \delta(z)
-% \end{align*}
-% %
-% and calculate $h^{TT}$. By choosing coordinates centered on a
-% terrestrial gravitational-wave detector and a basis we can write
-% the gravitational-wave strains as~\cite{DBrownThesis}
-% %
-% \begin{align}
-% \label{eq:h_plus_cross}
-% h_+(t)   &= - \frac{2G}{c^4 r} \mu (\pi G M f)^{\frac{2}{3}}
-% (1+\cos^2(\iota)) \cos(2\pi f t - 2\phi_0) \\ \nonumber
-% h_\times(t)  &= - \frac{4G}{c^4 r} \mu (\pi G M f)^{\frac{2}{3}}
-% \cos(\iota) \sin(2\pi f t - 2\phi_0) \nonumber
-% \end{align}
-% %
-% where $M = m_1+m2$, $\mu = m_1 m_2 / M$, $f$ is the
-% \emph{gravitational-wave frequency} which is twice the orbital
-% frequency $f = 2\Omega/2\pi$, $\phi_0$ is the orbital phase at a
-% specified time, and $\iota$ is the \emph{inclination} of the binary
-% with respect to the detector, the angle between the normal to the
-% plane of the binary and the line joining the detector to the binary.
-% 
-% We noted above that gravitational waves carry energy.  This energy
-% must be balanced by a loss of energy by the system.  This energy can
-% not be localized to any one point of the wave, since any point can be
-% placed in a Local Lorentz Frame where there is no wave.  However, by
-% averaging over a cycle it can be shown~\cite{carrollTextbook} that
-% %
-% \begin{equation}
-% t_{\mu\nu} = \frac{1}{32 \pi} \left\langle h^{TT}_{\rho \sigma,\mu}
-% (h^{TT})^{\rho\sigma}_{,\nu} \right\rangle
-% \end{equation}
-% %
-% where $t_{\mu\nu}$ is the \emph{stress-energy pseudo-tensor}.  The
-% stress energy tensor itself is zero in a region of spacetime
-% containing only gravitational radiation.  However, $t$ may be used to
-% describe the energy content of such radiation, and we find the flux of
-% energy in the radial direction out of a sphere enclosing a gravitating
-% system is
-% %
-% \begin{equation}
-% \label{eq:energy_loss}
-% \frac{dE}{dt} = T_{0r} = \frac{1}{8 \pi r^2} \left\langle \ddot{\mathcal{I}}^{ij}
-% \ddot{\mathcal{I}}_{ij} \right\rangle
-% \end{equation}
-% 
-% When the separation between the masses, $a$ is large and the masses are
-% moving slowly the gravitational energy of the system is approximately
-% given by the Newtonian expression
-% %
-% \begin{equation*}
-% E = - \frac{1}{2} \frac{G \mu M}{a}
-% \end{equation*}
-% %
-% Therefore, orbiting bodies will emit gravitational radiation and
-% \emph{inspiral} until they inevitably collide.
-% 
-% \section{Post-{N}ewtonian Approximations}
-% \label{sec:PNWaveforms}
-% 
-% Substituting Eqn.~\ref{eq:h_plus_cross} into
-% Eqn.~\ref{eq:energy_loss} shows that the power emitted goes as
-% $a^{-5}$.  Most of the power from an inspiral, and therefore our best
-% chance of detecting such systems, occurs when the masses have become
-% close and are about to merge.  The approximations we made in the
-% previous section are no longer valid in this regime.  In order to
-% obtain analytic models of gravitational waves from inspirals to a
-% precision that will be useful in searches we must therefore consider
-% higher-order corrections beyond Newtonian mechanics of the binary.
-% This leads to \emph{post-Newtonian} (pN) waveforms.
-% 
-% The key to doing this is the requirement that the energy flux carried
-% away by gravitational radiation must be balanced by loss of energy of the
-% system
-% %
-% \begin{equation}
-% \label{eq:equivilent_exchange}
-% \frac{dE}{dt} = - \mathcal{F}
-% \end{equation}
-% %
-% It can be shown~\cite{MTW} that the energy of a body of mass $\mu$ moving
-% on a geodesic in the Schwarzschild metric with mass $M$ is
-% %
-% \begin{equation}
-% \label{eq:hamiltonian}
-% E = \mu \frac{1-2M}{\sqrt{1-3M/r}} 
-% \end{equation}
-% %
-% We now introduce the parameter $v = (\pi M f)$, which is the velocity
-% in Newtonian mechanics.  We now consider the \emph{adiabatic
-% approximation}, where we treat the system as moving through a series
-% of circular orbits.  On a circular geodesic $v= \sqrt{M/r}$ and the
-% energy becomes
-% %
-% \begin{equation}
-% E = \mu \frac{1-2v^2}{\sqrt{1-3v^2}} 
-% \end{equation}
-% 
-% We have written down the flux to first pN order above in
-% Eqn.~\ref{eq:energy_loss}, in terms of the parameter $v$ it is
-% %
-% \begin{equation}
-% \mathcal{F} = \frac{32}{5} \left( \frac{\mu}{M} \right) v^{10}
-% \end{equation}
-% %
-% Going to higher order requires techniques that are beyond the scope of
-% this thesis.
-% 
-% Both the energy and flux may now be expanded in powers of $v$.  We
-% could then obtain $t$ as a function of $v$ by rewriting
-% Eqn.~\ref{eq:equivilent_exchange} and integrating.  However, we
-% will instead obtain an expression relating time and the orbital phase
-% $\phi = \int 2\pi f\, dt$ by writing
-% %
-% \begin{equation*}
-% \mathcal{F} = - \frac{dE}{dv} \frac{dv}{d\phi} \frac{d\phi}{dt}
-% \end{equation*}
-% %
-% which leads to the expression
-% %
-% \begin{equation}
-% \label{eq:expansion_for_phi}
-% \phi = \phi_0 + \frac{2}{M} \int_v^{v_\mathrm{ref}} \frac{v^3
-% dE/dv}{\mathcal{F}}\, dv
-% \end{equation}
-% %
-% where $v_\mathrm{ref}$ is the velocity at a given reference velocity,
-% or equivalently reference frequency.  If $\mathcal{F}$ is given as a
-% Taylor series in $v$ then $\mathcal{F}^{-1}$ may be expanded to the
-% same order.  $dE/dv$ may be similarly expanded, and the integrand
-% becomes the product of polynomials with rational coefficients.
-% 
-% Motivated by Eqn.~\ref{eq:h_plus_cross} we model the waveform as a
-% time-dependant amplitude and evolving phase:
-% %
-% \begin{equation}
-% \label{eq:general_waveform}
-% h(t) = A(t) \cos(\phi(t)) = \frac{1}{2} A(t) \left(e^{i\phi(t)} +
-% e^{-i\phi(t)} \right)
-% \end{equation}
-% %
-% For reasons that will become clear in the next chapter it is often more
-% convenient to work in the frequency domain, so we take the Fourier
-% transform of Eqn.~\ref{eq:general_waveform}
-% %
-% \begin{align}
-% \tilde{h}(f) &= \frac{1}{2} \int A(t) \exp(2\pi i f t + i
-% \phi(t))\, dt \\ \nonumber
-% &\qquad + \frac{1}{2} \int A(t) \exp(2\pi i f t - i
-% \phi(t))\, dt \\ \nonumber
-% \end{align}
-% 
-% We next apply the \emph{stationary-phase approximation}.  Oscillatory
-% integrands cancel except where the phase is stationary, at extrema of
-% the exponent.  We therefore expand the exponent around the time $t_0$
-% of the extremum and discard the linear term
-% %
-% \begin{equation}
-% 2 \pi i f t + i \phi(t) \approx (2 \pi i f t_0 + i \phi(t_0))
-% + \frac{1}{2} i \ddot{\phi}(t_0) (t-t_0)^2
-% \end{equation}
-% 
-% Substituting back, the first term leads to a constant factor and the
-% second leads to a Gaussian integral.  Going through the calculation
-% yields the approximate waveform
-% %
-% \begin{equation}
-% \label{eq:spa_waveform}
-% \tilde{f}(f) = \frac{2 G \msun}{c^2 r}
-% \left(\frac{5 \mu}{96 \msun} \right)^{\frac{1}{2}}
-% \left( \frac{M}{\pi^2 \msun} \right)^{\frac{1}{3}}
-% \left( \frac{G \msun}{c^3}\right)^{-\frac{1}{6}}
-% f^{-\frac{7}{6}} \Theta(f - f_c) e^{i \Psi(f;M,mu)}
-% \end{equation}
-% %
-% where $\msun$ is the mass of the sun and is introduced to so that $M$
-% is measured in solar masses, a useful unit in astrophysical work.
-% $\Psi$ is the result of the expansion~\ref{eq:expansion_for_phi}
-% written as a function of $f$.  The coefficients coming from the
-% expansion of the flux will depend on the mass $M$ and ration $\mu$ or
-% equivalently mass and \emph{symmetric mass ratio} $\eta = \mu/M$.  In
-% general waveforms may also depend on other parameters such as the
-% spins of the objects.  We introduce the step function to terminate the
-% waveform at a \emph{cutoff frequency} $f_c$.  This reflects the fact
-% that we do not trust this approximation all the way through the
-% evolution of the binary to merger.  The appropriate value for the
-% cutoff frequency is one of the questions we will address in
-% chapter~\ref{ch:comparison}.
-% 
-% There are many different ways to perform post-Newtonian expansions, in
-% both the time and frequency domains.  These lead to different
-% waveforms which have been assigned standard names, a summary of the
-% variations we will encounter throughout this thesis is given in
-% Appendix A.  We note here in particular that the stationary-phase
-% approach discussed above leads to waveforms denoted \emph{TaylorF2}.
-% The degree to which these different waveforms agree has been studied in
-% Ref.~\cite{BuonannoIyerOchsnerYiSathya2009}. 
-% 
-% 
-% \subsection{Effective One-Body}
-% \label{ssec:EOB}
-% 
-% A relatively recent development in post-Newtonian theory is the
-% \emph{effective one-body} (EOB)
-% formulation~\cite{BuonannoDamour:1999}.  The basic idea is familiar
-% from non-relativistic classical mechanics, where it is common to write
-% the Hamiltonian for the Kepler problem in terms of a particle with
-% reduced mass $\mu = m_1m_2 /(m_1 + m_2)$ moving in a central potential
-% due to a fixed body of mass $M = m_1 + m_2$.  
-% 
-% In general relativity we have noted that the energy, or equivalently
-% the Hamiltonian, takes the form of Eqn.~\ref{eq:hamiltonian} for
-% circular geodesics in a spherically symmetric spacetime.  The EOB
-% approach proceeds by seeking a map from the general two-body problem
-% to an equivalent spherically symmetric metric
-% %
-% \begin{equation}
-% ds^2 = -A(R) c^2 dT^2 + \frac{D(R)}{A(R)} dR^2 + R^2(d\theta^2 + sin^2 \theta
-% d\varphi^2)
-% \end{equation}
-% %
-% where the functions are written as expansions in $(GM/c^2R)$.  The
-% Hamiltonian of geodesic motion in this metric captures the
-% conservative portion of the motion (as can be seen by the fact that
-% the metric has no $T$ dependence).  Radiation-reaction terms can then
-% be added to this Hamiltonian to capture energy carried away by
-% gravitational waves.  This process results in coupled differential
-% equations which can be evolved numerically and from which the
-% gravitational waveforms can be obtained.
-% 
-% A key feature of the EOB approach is the use of \emph{Pad\'{e}
-% resummation}.  Given a function $f(x)$ with Taylor series $\sum a_i
-% x^i$ one ``resums'' the series into the ratio of polynomials $\sum b_i
-% x^i/\sum c^i x_i$ by expanding this ratio in a Taylor series and
-% matching the coefficients to the original series, then solving for the
-% $b_i$ and $c_i$.  The resulting function can converge to $f$ faster
-% than the Taylor series.
-% 
-% The expansion of the unknown functions in the metric to useful order
-% leads to unknown coefficients that can not be determined from the
-% problem alone.  These must be found by fitting the results to a
-% waveform obtained through other means.  This is one application of
-% waveforms from Numerical Relativity, discussed in the next section.
-% The resulting waveforms are called
-% \emph{EOBNR}~\cite{Buonanno:2009qa}.
+%
+\begin{equation*}
+- \nabla^0 T_{00} + \nabla^i T_{0i} = \nabla^\nu T_{0 \nu} = 0
+\end{equation*}
+%
+However, as the time direction is not uniquely specified, a change of
+coordinates will mix space and time components. Therefore, the above
+equation must generalize to 
+%
+\begin{equation*}
+\nabla^\nu T_{\mu\nu} = 0,
+\end{equation*}
+%
+which says that the stress-energy-momentum tensor $T$ is divergenceless like
+$G$, and like $G$ it is also symmetric. Einstein proposed the ansatz
+%
+\begin{equation*}
+G_{\mu\nu} \propto T_{\mu\nu},
+\end{equation*}
+%
+where the proportionality constant is fixed by requiring agreement with 
+Newton's law of gravity in the low energy limit, when $T^{00}\gg$ all other
+components of $T$, to $8\pi$. Now, we can finally write down the field 
+equations of gravity which Einstein proposed in $1915$:
+%
+\begin{equation}
+\label{eq:einsteins_equation}
+G_{\mu\nu} = 8\pi T_{\mu\nu}
+\end{equation}
+%
+As $G_{\mu\nu}$ is entirely determined by the spacetime metric, and 
+the tensor $T$ is determined by the stresses, energy and momentum 
+distribution and flows of matter in the universe, these equations connect 
+the curvature of spacetime with properties of matter that resides in it.
+
+
+\section{Gravitational Radiation}
+\label{sec:gravitational_radiation}
+
+We now move to the prediction of gravitational waves.  We begin with
+Einstein's equation in empty space,
+%
+\begin{equation*}
+G_{\mu\nu} = R_{\mu\nu} - \frac{1}{2} g_{\mu\nu} R = 0
+\end{equation*}
+%
+By taking the trace and substituting into Eqn.~\ref{eq:einsteins_equation}
+it can be shown that this implies that in empty space $R_{\mu\nu} =
+0$.  Similary, using the Bianchi identity and symmetries of the Riemann tensor gives,
+in empty space,
+%
+\begin{equation}
+\label{eq:divergence_in_empty_space}
+R_{\beta\delta;\gamma}  -R_{\beta\gamma;\delta} = 0
+\end{equation}
+
+We next consider the application of the wave operator to the Riemann
+tensor.  From the Bianchi identity (eqn.~\ref{eq:bianchi}) this becomes
+%
+\begin{equation*}
+\label{eq:wave_expanded}
+g^{\mu\nu} R_{\alpha\beta\gamma\delta;\mu\nu}
+= - g^{\mu\nu}
+\left[R_{\alpha\beta\delta\mu;\gamma\nu}
++ R_{\alpha\beta\mu\gamma;\delta\nu} \right]
+\end{equation*}
+%
+Consider the first term on the right-hand side:
+%
+\begin{align*}
+g^{\mu\nu} R_{\alpha\beta\delta\mu;\gamma\nu}
+&= g^{\mu\nu} R_{\alpha\beta\delta\mu;\nu\gamma}
++ g^{\mu\nu} R_{\alpha\beta\delta\mu;\gamma\nu}
+- g^{\mu\nu} R_{\alpha\beta\delta\mu;\nu\gamma} \\
+&= g^{\mu\nu} R_{\alpha\beta\delta\mu;\nu\gamma}
++ g^{\mu\nu} 
+\left[\nabla_\nu,\nabla_\gamma\right] R_{\alpha\beta\delta\mu}
+\end{align*}
+%
+The first term vanishes by
+Eqn.~\ref{eq:divergence_in_empty_space}.  The second term involves
+products of the Riemman tensor by~\ref{eq:higher_order_riemann}.  The
+second term on the right in Eqn.~\ref{eq:wave_expanded} has the
+same form.
+
+We now specialize to the case where the Riemann tensor is small, so
+that terms involving multiple factors can be neglected.  This is
+equivalent to considering the Riemann tensor as a field on a flat
+background.  This gives
+%
+\begin{equation}
+\label{eq:riemann_wave}
+g^{\mu\nu}
+R_{\alpha\beta\gamma\delta;\mu\nu}
+=
+\Box R_{\alpha\beta\gamma\delta}
+= 0
+\end{equation}
+%
+That is, each component of the Riemann tensor independently 
+satisfies the vacuum wave equation.  We can immediately write the
+solution:
+%
+\begin{equation}
+R^\alpha_{\beta\gamma\delta} = 
+\textrm{Re}\, A^\alpha_{\beta\gamma\delta} \exp(i k_\mu x^\mu)
+\end{equation}
+%
+where $A^\alpha_{\beta\gamma\delta}$ is a set of amplitudes and
+$k^\mu$ is the wave vector.  In a chosen coordinate system it has
+components $(\omega, k_x, k_y, k_z)$ where $\omega$ is the angular
+frequency and the spacial $k$ components are wavelengths in each
+direction.  It can be shown that 
+%
+\begin{align*}
+\nabla_{\vec k} \vec{k} &= 0 \\
+k_\mu k^\mu &= 0 \\
+\end{align*}
+%
+which together imply that gravitational waves travel along geodesics 
+at the speed of light.
+
+
+\section{Effect of Gravitational Waves}
+\label{sec:effects_of_waves}
+
+We now derive the effect of gravitational waves on matter.  Consider
+two particles moving along world-lines $A^\mu$ and $B^\mu$.  Choose
+coordinates so that $A$ remains fixed at the origin, $A^\mu =
+(1,0,0,0)$.  We may further specialize our coordinates such that at
+the origin $g_{\mu\nu} = \eta_{\mu\nu}$.  It can be shown that we may
+also require that the first derivatives of the metric vanish at this
+point.  We may not, however, make the second derivatives vanish in
+general.  This corresponds to the fact that the Riemann tensor is
+defined in terms of second derivatives.  We call the coordinate system
+thus constructed a \emph{Local Lorentz Frame}.
+
+We now define the separation between the two particles as 
+%
+\begin{equation*}
+\xi^\mu = B^\mu - A^\mu
+\end{equation*}
+%
+We fix $\xi$ to be perpendicular to $A$, so that $\xi^0 = 0$.  If space
+is curved it can readily be seen that $\xi$ will not remain constant.
+For example, if the particles are initially at rest some distance from
+the surface of the Earth they will both move towards the center of the
+Earth and $\xi$ will decrease.  It can be shown that $\xi$ obeys the
+equation of \emph{geodesic deviation},
+%
+\begin{equation}
+\label{eq:geodesic_deviation}
+\frac{d^2}{dt^2} \xi^\rho = -R^\rho_{\mu\nu\sigma} A^\mu \xi^\nu A^\sigma
+=-R^\rho_{0 \nu 0} \xi^\nu 
+\end{equation}
+%
+Using the condition that $\xi$ has no time component reduces this to 
+%
+\begin{equation}
+\frac{d^2}{dt^2} \xi^i = -R^\rho_{\mu\nu\sigma} A^\mu \xi^\nu A^\sigma
+=-R^i_{0 j 0} \xi^j
+\end{equation}
+%
+That is, the change in separation between two
+infinitesimally-separated test masses at rest with respect to each
+other in an arbitrary gravitational field is entirely specified by
+$R^i_{0 j 0}$.  From the symmetries of the Reimann tensor this is
+symmetric in $i$ and $j$, and hence appears to have 6 independent
+components.  However, it can be shown that these can entirely be
+specified by two values, which without loss of generality we take to
+be $R^x_{0 x 0}$.  $R^x_{0 y 0}$.  We now recall that in empty space
+$R_{\mu\nu} = 0$, which implies that $R^y_{0 y 0} = - R^x_{0 x 0}$.
+We summarize this by saying that R is \emph{traceless}.  
+
+We now specialize to the case of gravitational waves, so that the
+Riemann tensor satisfies Eqn.~\ref{eq:riemann_wave} and we choose
+coordinates such that the wave is traveling in the $z$ direction.
+Using the fact that the speed of light is 1 in dimensionless units the
+solution can then be written
+%
+\begin{equation*}
+R_{i 0 j 0} = A_{ij}(t - z)
+\end{equation*}
+%
+where we have lowered the first index to simplify notation.
+
+Now, using the fact that $\partial_x R_{i0j0} = \partial_y R_{i0j0}
+= 0$ and integrating the Bianchi identity we can show that
+$R_{x 0 y 0} = R_{y 0 x 0}$ and that all other components vanish.
+It can also be shown that in addition to being traceless $R$ is
+\emph{transverse}, $k^j R_{i0j0} = 0$.  We denote these two facts by
+adding the superscript $TT$, and define the gravitational-wave field as
+%
+\begin{equation}
+\label{eq:wave_field}
+-\frac{1}{2} \frac{\partial^2 h_{ij}^{TT}}{\partial t^2}
+\equiv R^{TT}_{i0j0}
+\end{equation}
+
+We now decompose the separation vector $\xi$ into the initial
+separation and a time-dependant perturbation, $\xi = \xi_0 + \delta
+\xi$.  In terms of this Eqn.~\ref{eq:geodesic_deviation} becomes
+%
+\begin{equation}
+\label{eq:geodesic_deviation_delta}
+\frac{d^2}{dt^2} \delta \xi^i = -R^{0 i 0 j} \xi_0^j
+\end{equation}
+%
+where we drop the initial portion from the left-hand side because it
+is constant, and we drop the perturbation from the right hand side
+because it is much smaller than the initial portion.  Comparing
+eqn.~\ref{eq:wave_field} and eqn.~\ref{eq:geodesic_deviation_delta}
+we obtain the equation for the effect of a gravitational wave on
+free-falling test masses:
+%
+\begin{equation}
+\label{eq:wave_effect}
+\delta \xi^i = \frac{1}{2} h^{TT}_{ij} \xi^j
+\end{equation}
+%
+We note in passing that this is the same result obtained in other
+treatments by expanding the metric in terms of the flat-space metric
+plus a perturbation, $g_{\mu\nu} = \eta_{\mu\nu} + h_{\mu\nu}$,
+substituting into the Einstein equation and expanding to first order
+in $h$, and then choosing a gauge in which $h$ is transverse and
+traceless.
+
+Now, define
+%
+\begin{align*}
+h_+ &\equiv h_{xx} = - h_{yy} \\
+h_\times &\equiv h_{xy} = h_{yx}
+\end{align*}
+%
+which we refer to as the \emph{plus} ($+$) and \emph{cross} ($\times$)
+polarizations, respectively.  Consider the case where $h_\times = 0$.
+If particle $B$ is initially on the $x$ axis then 
+%
+\begin{align*}
+\delta \xi^x &= \frac{1}{2} h^{TT}_{xx} \xi^x \\
+\delta \xi^y &= \frac{1}{2} h^{TT}_{xy} \xi^y \\
+&= 0
+\end{align*}
+%
+The particle remains on the $x$ axis.  For an oscillatory wave the
+distance between the two particles likewise oscillates.  We can
+describe this as an induced \emph{strain}, $\Delta L/L$ where $L$ is
+the initial separation.  If $B$ is initially on the $y$ axis
+%
+\begin{align*}
+\delta \xi^x &= \frac{1}{2} h^{TT}_{xx} \xi^x \\
+&= 0 \\
+\delta \xi^y &= \frac{1}{2} h^{TT}_{yy} \xi^y \\
+&= - \frac{1}{2} h^{TT}_{xx} \xi^y
+\end{align*}
+%
+The particle remains on the $y$ axis and oscillates out of phase with
+a corresponding particle on the $x$ axis.  The net effect is that,
+after a quarter cycle, a set of masses initially in a circle are moved
+into an ellipse flattened along one axis and stretched along the other
+such that the area remains constant.  After another quarter cycle they
+return to a circle, in the next quarter cycle they are in an ellipse
+with the axes flipped, and so on. It is similarly straightforward to
+show that for a wave cross-polarized wave the eigendirections are on
+the lines $x=\pm y$.  The effects are the same as for the $+$
+polarization, rotated 45 degrees.
+
+Now consider a thought experiment, originally due to Feynman, where we
+place a bead on a stick in the path of a gravitational wave.  The wave
+will cause the bead to slide back and forth, heating the stick trough
+friction and imparting energy to the system.  This implies that
+gravitational waves carry energy.  This argument can be made
+precise~\cite{RevModPhys.29.509}.
+
+\section{Modeling Gravitational Waves}
+
+Having demonstrated the predicted existence of gravitational waves and
+their effects on matter we now turn to the question of their
+generation.  From Eqn.~\ref{eq:wave_field} we can see that, since
+the components of the Riemann tensor obey the wave equation, the
+components of $h^{TT}$ do as well.  We now consider the solution of
+the wave equation when the source, the stress-energy tensor, is not
+zero.  By analogy with electromagnetism we can immediately write down
+the solution in terms of retarded fields
+%
+\begin{equation}
+\label{eq:h_from_t}
+h^{TT}_{ij} = 4 \left[ \int \frac{T_{ij}(x', t-r)}{r}\, d^3 x'
+\right]^{TT}
+\end{equation}
+%
+where we integrate over the source distribution $x'$.  When the energy
+and momentum densities are small, so that the curvature of spacetime
+is likewise small, the coordinates may be taken to have their
+conventional flat-space meaning.  We may also replace the covariant
+derivative by regular partial differentiation.
+
+Starting from the conservation of energy and momentum written in terms
+of the stress-energy tensor
+%
+\begin{align*}
+{T^{00}}_{,0} &= - {T^{0j}}_{,j} \\
+{T^{i0}}_{,0} &= - {T^{ij}}_{,j} \\
+\end{align*}
+%
+Differentiating with respect to time and going through some algebra
+yields expressions for the first and second moments of the stress
+energy tensor, ${T^{lm}}_{,ml} x^j x^k$ and ${T^{jm}}_{,m} x^k$.  These,
+plus Stoke's theorem, can be used to simplify
+Eqn.~\ref{eq:h_from_t} to give
+%
+\begin{equation*}
+h^{TT}_{ij} = \frac{2}{r} \left[
+\int {T^{00}}_{,00}\, x^i x^j d^3 x' \right]^{TT}
+\end{equation*}
+%
+We recognize $T^{00}$ as the mass/energy density, and therefore this
+can be written as the \emph{quadrapole formula}
+%
+\begin{equation}
+\label{eq:quadrupole_formula}
+h^{TT}_{jk} = \frac{2}{r} \ddot{\mathcal{I}}(t-r)
+\end{equation}
+%
+where $\mathcal{I}$ is the quadrupole moment of the source
+%
+\begin{equation*}
+\mathcal{I}_{ij} = \int \rho(\mathbf{x})x_i x_j\,d^3 x
+\end{equation*}
+
+Any system of mass with a time-dependant quadrupole moment will give
+rise to gravitational radiation.  However, restoring physical units to
+Eqn.~\ref{eq:quadrupole_formula} scales the right-hand side by
+$G/c^4$.  We therefore need very large masses and/or rapid changes in
+order to generate waves we have any chance of detecting.  There are
+many such sources of astrophysical and cosmological interest:
+%
+\begin{itemize}
+\item supernovae
+\item rotating neutron stars with axial asymmetry
+\item processes in the early universe, which would have produced
+\emph{relic} gravitational waves in principle still detectable today
+\item topological defects
+\item compact bodies, such as neutron stars and black holes, in 
+orbit around each other.
+\end{itemize}
+%
+We will focus on the last of these for the remainder of the thesis.
+
+It is straightforward to start from the mass distribution of two point
+masses in orbit around their center:
+%
+\begin{align*}
+\rho(\mathbf{x}) &= m_1\delta(x - r_1\cos(\Omega t)) \delta(y-r_1
+\sin(\Omega t)) \delta(z) \\
+&\quad + m_2\delta(x + r_2\cos(\Omega t)) \delta(y + r_2 \sin(\Omega t))
+\delta(z)
+\end{align*}
+%
+and calculate $h^{TT}$. By choosing coordinates centered on a
+terrestrial gravitational-wave detector and a basis we can write
+the gravitational-wave strains as~\cite{DBrownThesis}
+%
+\begin{align}
+\label{eq:h_plus_cross}
+h_+(t)   &= - \frac{2G}{c^4 r} \mu (\pi G M f)^{\frac{2}{3}}
+(1+\cos^2(\iota)) \cos(2\pi f t - 2\phi_0) \\ \nonumber
+h_\times(t)  &= - \frac{4G}{c^4 r} \mu (\pi G M f)^{\frac{2}{3}}
+\cos(\iota) \sin(2\pi f t - 2\phi_0) \nonumber
+\end{align}
+%
+where $M = m_1+m2$, $\mu = m_1 m_2 / M$, $f$ is the
+\emph{gravitational-wave frequency} which is twice the orbital
+frequency $f = 2\Omega/2\pi$, $\phi_0$ is the orbital phase at a
+specified time, and $\iota$ is the \emph{inclination} of the binary
+with respect to the detector, the angle between the normal to the
+plane of the binary and the line joining the detector to the binary.
+
+We noted above that gravitational waves carry energy.  This energy
+must be balanced by a loss of energy by the system.  This energy can
+not be localized to any one point of the wave, since any point can be
+placed in a Local Lorentz Frame where there is no wave.  However, by
+averaging over a cycle it can be shown~\cite{carrollTextbook} that
+%
+\begin{equation}
+t_{\mu\nu} = \frac{1}{32 \pi} \left\langle h^{TT}_{\rho \sigma,\mu}
+(h^{TT})^{\rho\sigma}_{,\nu} \right\rangle
+\end{equation}
+%
+where $t_{\mu\nu}$ is the \emph{stress-energy pseudo-tensor}.  The
+stress energy tensor itself is zero in a region of spacetime
+containing only gravitational radiation.  However, $t$ may be used to
+describe the energy content of such radiation, and we find the flux of
+energy in the radial direction out of a sphere enclosing a gravitating
+system is
+%
+\begin{equation}
+\label{eq:energy_loss}
+\frac{dE}{dt} = T_{0r} = \frac{1}{8 \pi r^2} \left\langle \ddot{\mathcal{I}}^{ij}
+\ddot{\mathcal{I}}_{ij} \right\rangle
+\end{equation}
+
+When the separation between the masses, $a$ is large and the masses are
+moving slowly the gravitational energy of the system is approximately
+given by the Newtonian expression
+%
+\begin{equation*}
+E = - \frac{1}{2} \frac{G \mu M}{a}
+\end{equation*}
+%
+Therefore, orbiting bodies will emit gravitational radiation and
+\emph{inspiral} until they inevitably collide.
+
+\section{Post-{N}ewtonian Approximations}
+\label{sec:PNWaveforms}
+
+Substituting Eqn.~\ref{eq:h_plus_cross} into
+Eqn.~\ref{eq:energy_loss} shows that the power emitted goes as
+$a^{-5}$.  Most of the power from an inspiral, and therefore our best
+chance of detecting such systems, occurs when the masses have become
+close and are about to merge.  The approximations we made in the
+previous section are no longer valid in this regime.  In order to
+obtain analytic models of gravitational waves from inspirals to a
+precision that will be useful in searches we must therefore consider
+higher-order corrections beyond Newtonian mechanics of the binary.
+This leads to \emph{post-Newtonian} (pN) waveforms.
+
+The key to doing this is the requirement that the energy flux carried
+away by gravitational radiation must be balanced by loss of energy of the
+system
+%
+\begin{equation}
+\label{eq:equivilent_exchange}
+\frac{dE}{dt} = - \mathcal{F}
+\end{equation}
+%
+It can be shown~\cite{mtw} that the energy of a body of mass $\mu$ moving
+on a geodesic in the Schwarzschild metric with mass $M$ is
+%
+\begin{equation}
+\label{eq:hamiltonian}
+E = \mu \frac{1-2M}{\sqrt{1-3M/r}} 
+\end{equation}
+%
+We now introduce the parameter $v = (\pi M f)$, which is the velocity
+in Newtonian mechanics.  We now consider the \emph{adiabatic
+approximation}, where we treat the system as moving through a series
+of circular orbits.  On a circular geodesic $v= \sqrt{M/r}$ and the
+energy becomes
+%
+\begin{equation}
+E = \mu \frac{1-2v^2}{\sqrt{1-3v^2}} 
+\end{equation}
+
+We have written down the flux to first pN order above in
+Eqn.~\ref{eq:energy_loss}, in terms of the parameter $v$ it is
+%
+\begin{equation}
+\mathcal{F} = \frac{32}{5} \left( \frac{\mu}{M} \right) v^{10}
+\end{equation}
+%
+Going to higher order requires techniques that are beyond the scope of
+this thesis.
+
+Both the energy and flux may now be expanded in powers of $v$.  We
+could then obtain $t$ as a function of $v$ by rewriting
+Eqn.~\ref{eq:equivilent_exchange} and integrating.  However, we
+will instead obtain an expression relating time and the orbital phase
+$\phi = \int 2\pi f\, dt$ by writing
+%
+\begin{equation*}
+\mathcal{F} = - \frac{dE}{dv} \frac{dv}{d\phi} \frac{d\phi}{dt}
+\end{equation*}
+%
+which leads to the expression
+%
+\begin{equation}
+\label{eq:expansion_for_phi}
+\phi = \phi_0 + \frac{2}{M} \int_v^{v_\mathrm{ref}} \frac{v^3
+dE/dv}{\mathcal{F}}\, dv
+\end{equation}
+%
+where $v_\mathrm{ref}$ is the velocity at a given reference velocity,
+or equivalently reference frequency.  If $\mathcal{F}$ is given as a
+Taylor series in $v$ then $\mathcal{F}^{-1}$ may be expanded to the
+same order.  $dE/dv$ may be similarly expanded, and the integrand
+becomes the product of polynomials with rational coefficients.
+
+Motivated by Eqn.~\ref{eq:h_plus_cross} we model the waveform as a
+time-dependant amplitude and evolving phase:
+%
+\begin{equation}
+\label{eq:general_waveform}
+h(t) = A(t) \cos(\phi(t)) = \frac{1}{2} A(t) \left(e^{i\phi(t)} +
+e^{-i\phi(t)} \right)
+\end{equation}
+%
+For reasons that will become clear in the next chapter it is often more
+convenient to work in the frequency domain, so we take the Fourier
+transform of Eqn.~\ref{eq:general_waveform}
+%
+\begin{align}
+\tilde{h}(f) &= \frac{1}{2} \int A(t) \exp(2\pi i f t + i
+\phi(t))\, dt \\ \nonumber
+&\qquad + \frac{1}{2} \int A(t) \exp(2\pi i f t - i
+\phi(t))\, dt \\ \nonumber
+\end{align}
+
+We next apply the \emph{stationary-phase approximation}.  Oscillatory
+integrands cancel except where the phase is stationary, at extrema of
+the exponent.  We therefore expand the exponent around the time $t_0$
+of the extremum and discard the linear term
+%
+\begin{equation}
+2 \pi i f t + i \phi(t) \approx (2 \pi i f t_0 + i \phi(t_0))
++ \frac{1}{2} i \ddot{\phi}(t_0) (t-t_0)^2
+\end{equation}
+
+Substituting back, the first term leads to a constant factor and the
+second leads to a Gaussian integral.  Going through the calculation
+yields the approximate waveform
+%
+\begin{equation}
+\label{eq:spa_waveform}
+\tilde{f}(f) = \frac{2 G \msun}{c^2 r}
+\left(\frac{5 \mu}{96 \msun} \right)^{\frac{1}{2}}
+\left( \frac{M}{\pi^2 \msun} \right)^{\frac{1}{3}}
+\left( \frac{G \msun}{c^3}\right)^{-\frac{1}{6}}
+f^{-\frac{7}{6}} \Theta(f - f_c) e^{i \Psi(f;M,mu)}
+\end{equation}
+%
+where $\msun$ is the mass of the sun and is introduced to so that $M$
+is measured in solar masses, a useful unit in astrophysical work.
+$\Psi$ is the result of the expansion~\ref{eq:expansion_for_phi}
+written as a function of $f$.  The coefficients coming from the
+expansion of the flux will depend on the mass $M$ and ration $\mu$ or
+equivalently mass and \emph{symmetric mass ratio} $\eta = \mu/M$.  In
+general waveforms may also depend on other parameters such as the
+spins of the objects.  We introduce the step function to terminate the
+waveform at a \emph{cutoff frequency} $f_c$.  This reflects the fact
+that we do not trust this approximation all the way through the
+evolution of the binary to merger.  The appropriate value for the
+cutoff frequency is one of the questions we will address in
+chapter~\ref{ch:comparison}.
+
+There are many different ways to perform post-Newtonian expansions, in
+both the time and frequency domains.  These lead to different
+waveforms which have been assigned standard names, a summary of the
+variations we will encounter throughout this thesis is given in
+Appendix A.  We note here in particular that the stationary-phase
+approach discussed above leads to waveforms denoted \emph{TaylorF2}.
+The degree to which these different waveforms agree has been studied in
+Ref.~\cite{BuonannoIyerOchsnerYiSathya2009}. 
+
+
+\subsection{Effective One-Body}
+\label{ssec:EOB}
+
+A relatively recent development in post-Newtonian theory is the
+\emph{effective one-body} (EOB)
+formulation~\cite{BuonannoDamour:1999}.  The basic idea is familiar
+from non-relativistic classical mechanics, where it is common to write
+the Hamiltonian for the Kepler problem in terms of a particle with
+reduced mass $\mu = m_1m_2 /(m_1 + m_2)$ moving in a central potential
+due to a fixed body of mass $M = m_1 + m_2$.  
+
+In general relativity we have noted that the energy, or equivalently
+the Hamiltonian, takes the form of Eqn.~\ref{eq:hamiltonian} for
+circular geodesics in a spherically symmetric spacetime.  The EOB
+approach proceeds by seeking a map from the general two-body problem
+to an equivalent spherically symmetric metric
+%
+\begin{equation}
+ds^2 = -A(R) c^2 dT^2 + \frac{D(R)}{A(R)} dR^2 + R^2(d\theta^2 + sin^2 \theta
+d\varphi^2)
+\end{equation}
+%
+where the functions are written as expansions in $(GM/c^2R)$.  The
+Hamiltonian of geodesic motion in this metric captures the
+conservative portion of the motion (as can be seen by the fact that
+the metric has no $T$ dependence).  Radiation-reaction terms can then
+be added to this Hamiltonian to capture energy carried away by
+gravitational waves.  This process results in coupled differential
+equations which can be evolved numerically and from which the
+gravitational waveforms can be obtained.
+
+A key feature of the EOB approach is the use of \emph{Pad\'{e}
+resummation}.  Given a function $f(x)$ with Taylor series $\sum a_i
+x^i$ one ``resums'' the series into the ratio of polynomials $\sum b_i
+x^i/\sum c^i x_i$ by expanding this ratio in a Taylor series and
+matching the coefficients to the original series, then solving for the
+$b_i$ and $c_i$.  The resulting function can converge to $f$ faster
+than the Taylor series.
+
+The expansion of the unknown functions in the metric to useful order
+leads to unknown coefficients that can not be determined from the
+problem alone.  These must be found by fitting the results to a
+waveform obtained through other means.  This is one application of
+waveforms from Numerical Relativity, discussed in the next section.
+The resulting waveforms are called
+\emph{EOBNR}~\cite{Buonanno:2009qa}.
 % 
 % 
 % \section{Numerical Relativity}

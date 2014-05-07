@@ -1392,46 +1392,46 @@ The results of running these searches on the data containing the NINJA-2 blind
 injections are presented in section \ref{sec:searches} and parameter estimation 
 results given in section \ref{sec:param_estimation}.
 
-\subsection{Coherent WaveBurst}
-\label{ssec:cwb_pipelines}
-
-Coherent WaveBurst is a multi-resolution algorithm for coherent
-detection and reconstruction of gravitational wave
-bursts~\cite{Klimenko:2008fu}. The cWB algorithm has been used in
-various LIGO-Virgo burst searches
-\cite{Abbott:2007wu,Abadie:2010mt,Abadie:2012rq} and more recently in
-the search for intermediate mass black hole binaries
-\cite{Virgo:2012aa}.  Within the framework of the constrained maximum
-likelihood analysis \cite{Klimenko:2008fu}, cWB identifies GW signals
-in data from multiple detectors and provides estimates of the signal
-parameters, e.g. sky location and waveforms.  Along with the
-reconstruction of un-modeled burst signals, which imply random
-polarization, cWB can perform loosely modeled likelihood analyses
-assuming different polarization states, i.e.\ elliptical, linear or
-circular.
-
-The NINJA2 cWB analysis uses the elliptical polarization constraint 
-\cite{Pankow:2009nx,Virgo:2012aa} and searches for signals in the frequency 
-band from 32 Hz to 1024 Hz. The analysis is performed in several steps: first, 
-the data streams from all GW detectors are processed with the Meyer's wavelet 
-transformations with 6 different  time-frequency resolutions of 
-$ 4\times1/8$, $8\times1/16$, $16\times1/32$, $32\times1/64$, 
-$64\times1/128$, $128\times1/256$ [Hz $\times$ s]. Then the data are 
-conditioned 
-with a linear predictor error filter to remove power lines, violin modes 
-and other predictable data components. Triggers are reconstructed as the 
-coherent
-sets of samples (pixels) identified in the time-frequency data. For each 
-trigger the coherent 
-statistics are then computed. These include the network correlation 
-coefficient, ${cc}$ and the network energy disbalance, ${\Lambda}$, which are 
-used to enable the signal consistency selection cuts. The cWB detection 
-statistic is the coherent network amplitude, $\eta$, which is used to rank the 
-events and thereby establish the significance against a sample of 
-background events obtained with the time-shift analysis 
-\cite{Klimenko:2008fu,Virgo:2012aa,Pankow:2009nx}. 
-This shifting procedure is typically performed 
-thousands of times in order to accumulate sufficient statistics.
+% \subsection{Coherent WaveBurst}
+% \label{ssec:cwb_pipelines}
+% 
+% Coherent WaveBurst is a multi-resolution algorithm for coherent
+% detection and reconstruction of gravitational wave
+% bursts~\cite{Klimenko:2008fu}. The cWB algorithm has been used in
+% various LIGO-Virgo burst searches
+% \cite{Abbott:2007wu,Abadie:2010mt,Abadie:2012rq} and more recently in
+% the search for intermediate mass black hole binaries
+% \cite{Virgo:2012aa}.  Within the framework of the constrained maximum
+% likelihood analysis \cite{Klimenko:2008fu}, cWB identifies GW signals
+% in data from multiple detectors and provides estimates of the signal
+% parameters, e.g. sky location and waveforms.  Along with the
+% reconstruction of un-modeled burst signals, which imply random
+% polarization, cWB can perform loosely modeled likelihood analyses
+% assuming different polarization states, i.e.\ elliptical, linear or
+% circular.
+% 
+% The NINJA2 cWB analysis uses the elliptical polarization constraint 
+% \cite{Pankow:2009nx,Virgo:2012aa} and searches for signals in the frequency 
+% band from 32 Hz to 1024 Hz. The analysis is performed in several steps: first, 
+% the data streams from all GW detectors are processed with the Meyer's wavelet 
+% transformations with 6 different  time-frequency resolutions of 
+% $ 4\times1/8$, $8\times1/16$, $16\times1/32$, $32\times1/64$, 
+% $64\times1/128$, $128\times1/256$ [Hz $\times$ s]. Then the data are 
+% conditioned 
+% with a linear predictor error filter to remove power lines, violin modes 
+% and other predictable data components. Triggers are reconstructed as the 
+% coherent
+% sets of samples (pixels) identified in the time-frequency data. For each 
+% trigger the coherent 
+% statistics are then computed. These include the network correlation 
+% coefficient, ${cc}$ and the network energy disbalance, ${\Lambda}$, which are 
+% used to enable the signal consistency selection cuts. The cWB detection 
+% statistic is the coherent network amplitude, $\eta$, which is used to rank the 
+% events and thereby establish the significance against a sample of 
+% background events obtained with the time-shift analysis 
+% \cite{Klimenko:2008fu,Virgo:2012aa,Pankow:2009nx}. 
+% This shifting procedure is typically performed 
+% thousands of times in order to accumulate sufficient statistics.
 
 \subsection{\ihope{}}
 \label{ssec:ihope_pipelines}
@@ -1561,120 +1561,120 @@ Taking the trials factor into account, the final combined FAR (cFAR) is
 reported in Table~\ref{tab:ihopeEvents}, and the results are described
 in detail in section~\ref{ssec:ihope_results}.
 
-\subsection{Parameter estimation}
-\label{ssec:PE_pipelines}
-
-The detection methods described above produce times of interest where a
-gravitational wave may be present in the data (i.e.\ triggers), along with point
-estimates of the compact object masses from the signal, independently in each 
-detector. These triggers are followed up with the goal of
-estimating the posterior probability density function of the parameters
-that describe the signal and to evaluate the evidence of different
-waveform models. In order to do so, we use Bayesian methods, in which
-the data from all detectors are analysed coherently.
-
-The Bayesian parameter estimation
-algorithms used in this work provide estimates of the posterior probability 
-distribution function.
-The probability of a set of parameters $\vec{\theta}$ under a model $M$ given
-the observed data $d$ can be written as
-\begin{equation}
-    \label{posterior}
-    p(\vec{\theta}|d,M) = \frac{p(\vec{\theta}|M)p(d|\vec{\theta},M)}{p(d|M)}.
-\end{equation}
-Here $p(d|\vec{\theta},M)$ is the likelihood of observing the measured data
-given the set of parameters $\vec{\theta}$, and $p(d|M)$ is the marginal
-distribution of the data under model $M$, commonly referred to as the evidence.
-When only concerned with parameter estimation the evidence is a normalization
-constant that can be ignored.  It becomes relevant however, when comparing how
-well two models do in describing the observed data.  By marginalizing over all
-model parameters the evidence is obtained
-\begin{equation}
-    \label{evidence}
-    p(d|M) = \int p(\vec{\theta}|M)p(d|\vec{\theta},M) d\vec{\theta}.
-\end{equation}
-Given the evidence of two competing models, $M_1$ and $M_2$, the support for
-$M_1$ over $M_2$ can be quantified via the Bayes factor
-\begin{equation}
-    \label{bayesFactor}
-    \mathcal{B}_{12} = \frac{p(d|M_1)}{p(d|M_2)}.
-\end{equation}
-
-These techniques require the generation of $\sim 10^6 - 10^7$ model waveforms
-to probe the 9 (for non-spinning black holes) to 15 (for fully spinning black
-holes) dimensional parameter space of compact binary systems in circular orbit,
-making it infeasible at present to use numerical relativity simulations.
-Instead approximate models (\textit{e.g.} post-Newtonian, effective one-body)
-that are computationally cheaper to produce are used to estimate the parameters
-of a measured signal. Numerous studies have assessed the statistical
-uncertainty in compact binary parameter
-estimates~\cite{vanderSluys:2009bf,Raymond:2008im,Veitch:2009hd,   
-Raymond:2009cv}, which use the same approximate model for injection and
-analysis. Few studies have been done to quantify the systematic uncertainty in
-parameter estimates due to the use of these approximate models
-\cite{Canitrot:2001hc,Cutler:2007mi}. Numerical relativity simulations
-provide us with the most accurate waveforms currently available, making them
-ideal for quantifying the systematic uncertainties inherent with using
-approximate models.  This mock data challenge is the first time such a study
-has been conducted using models that account for the component angular momenta
-of the compact objects.
-
-The Markov Chain Monte Carlo sampler
-\texttt{lalinference\_mcmc}~\cite{vanderSluys:2007st,vanderSluys:2008qx}, and
-two nested sampling implementations
-\texttt{lalinference\_nest}~\cite{Veitch:2009hd} and
-\texttt{MultiNest}~\cite{Feroz:2008xx} from the \textit{LALInference} package
-of the LSC Algorithm Library~\cite{LAL} were used to follow up GW candidates
-from the detection search pipelines. Due to the computational burden, we carried
-out the analysis with \texttt{lalinference\_mcmc}, and as a consistency check
-for selected candidates and waveforms posterior estimates were also obtained
-with \texttt{lalinference\_nest} and \texttt{MultiNest}. For model comparisons
-we have calculated the evidence by marginalizing each posterior estimate using
-thermodynamic integration.
-
-Each candidate was analyzed using two distinct waveform models: \imr and
-\eob.  Both models describe the IMR phases of the GW from a compact binary 
-merger.  \eob models
-non-spinning binaries using the effective-one-body (EOB) 
-that re-sums the PN dynamics and energy flux, and describes 
-the merger-ringdown signal as a superposition of 
-quasi-normal modes~\cite{Pan:2011gk}. \imr is a
-phenomenological model with a PN description of the inspiral phase
-building up on test-mass terms to 2PN order, fit to a set of spinning and 
-non-spinning PN-NR hybrid waveforms~\cite{Ajith:2009bn}.  Waveforms are 
-generated in the frequency
-domain and model binaries with component spins aligned with the orbital
-angular momentum through a single spin parameter $\chi \equiv
-(1+\delta)\chi_1/2 + (1-\delta)\chi_2/2$. Here $\delta \equiv (m_1-m_2)/M$ and
-$\chi_i\equiv S_i/m_i^2$, where $S_i$ denotes the angular momentum of the $i$th
-component of the binary, and $M$ the total mass of the system. 
-
-The mass-ratio dependent and higher order terms used in \imr are calibrated to 
-PN-NR hybrids
-that cover the late-inspiral, merger and ringdown. Therefore the accuracy of the
-model is expected to decline with decreasing total mass, as the inspiral phase
-of the waveform becomes a larger fraction of the total SNR of the signal,
-especially for comparable mass binaries. At the time of the analysis however, 
-it was the only IMR waveform, including spin effcts, that was computationally
-feasible for use, making it the most physically relevant waveform for the 
-analysis. \eob is more computationally expensive, but has been
-shown to be accurate enough for uncertainties in parameter estimates to be
-dominated by statistical error, rather than
-systematic~\cite{Littenberg:2012uj}.  It only models binaries with non-spinning
-components however, so the model is only relevant for non-spinning injections.
-\texttt{SEOBNRv1} is the successor to \eob that accounts for
-(aligned) spin~\cite{Taracchini:2012ig}, however it is currently too 
-computationally expensive to be used for parameter estimation.
-
-Due to the lack of astrophysical constraints on compact binary systems, it is
-difficult to physically motivate any particular choice for the prior 
-distribution of the intrinsic parameters (i.e.\ masses and spins).  For this 
-study we have
-chosen to use distributions that are uniform in component masses and component 
-spin magnitudes over the range of parameter values being injected.  The prior
-distribution was also flat in coalesence time across a 200 ms window centered
-on the trigger time, isotropic in orientation angles (e.g. inclination), and
-volumetric, giving equal prior probability to all spatial locations.
+% \subsection{Parameter estimation}
+% \label{ssec:PE_pipelines}
+% 
+% The detection methods described above produce times of interest where a
+% gravitational wave may be present in the data (i.e.\ triggers), along with point
+% estimates of the compact object masses from the signal, independently in each 
+% detector. These triggers are followed up with the goal of
+% estimating the posterior probability density function of the parameters
+% that describe the signal and to evaluate the evidence of different
+% waveform models. In order to do so, we use Bayesian methods, in which
+% the data from all detectors are analysed coherently.
+% 
+% The Bayesian parameter estimation
+% algorithms used in this work provide estimates of the posterior probability 
+% distribution function.
+% The probability of a set of parameters $\vec{\theta}$ under a model $M$ given
+% the observed data $d$ can be written as
+% \begin{equation}
+%     \label{posterior}
+%     p(\vec{\theta}|d,M) = \frac{p(\vec{\theta}|M)p(d|\vec{\theta},M)}{p(d|M)}.
+% \end{equation}
+% Here $p(d|\vec{\theta},M)$ is the likelihood of observing the measured data
+% given the set of parameters $\vec{\theta}$, and $p(d|M)$ is the marginal
+% distribution of the data under model $M$, commonly referred to as the evidence.
+% When only concerned with parameter estimation the evidence is a normalization
+% constant that can be ignored.  It becomes relevant however, when comparing how
+% well two models do in describing the observed data.  By marginalizing over all
+% model parameters the evidence is obtained
+% \begin{equation}
+%     \label{evidence}
+%     p(d|M) = \int p(\vec{\theta}|M)p(d|\vec{\theta},M) d\vec{\theta}.
+% \end{equation}
+% Given the evidence of two competing models, $M_1$ and $M_2$, the support for
+% $M_1$ over $M_2$ can be quantified via the Bayes factor
+% \begin{equation}
+%     \label{bayesFactor}
+%     \mathcal{B}_{12} = \frac{p(d|M_1)}{p(d|M_2)}.
+% \end{equation}
+% 
+% These techniques require the generation of $\sim 10^6 - 10^7$ model waveforms
+% to probe the 9 (for non-spinning black holes) to 15 (for fully spinning black
+% holes) dimensional parameter space of compact binary systems in circular orbit,
+% making it infeasible at present to use numerical relativity simulations.
+% Instead approximate models (\textit{e.g.} post-Newtonian, effective one-body)
+% that are computationally cheaper to produce are used to estimate the parameters
+% of a measured signal. Numerous studies have assessed the statistical
+% uncertainty in compact binary parameter
+% estimates~\cite{vanderSluys:2009bf,Raymond:2008im,Veitch:2009hd,   
+% Raymond:2009cv}, which use the same approximate model for injection and
+% analysis. Few studies have been done to quantify the systematic uncertainty in
+% parameter estimates due to the use of these approximate models
+% \cite{Canitrot:2001hc,Cutler:2007mi}. Numerical relativity simulations
+% provide us with the most accurate waveforms currently available, making them
+% ideal for quantifying the systematic uncertainties inherent with using
+% approximate models.  This mock data challenge is the first time such a study
+% has been conducted using models that account for the component angular momenta
+% of the compact objects.
+% 
+% The Markov Chain Monte Carlo sampler
+% \texttt{lalinference\_mcmc}~\cite{vanderSluys:2007st,vanderSluys:2008qx}, and
+% two nested sampling implementations
+% \texttt{lalinference\_nest}~\cite{Veitch:2009hd} and
+% \texttt{MultiNest}~\cite{Feroz:2008xx} from the \textit{LALInference} package
+% of the LSC Algorithm Library~\cite{LAL} were used to follow up GW candidates
+% from the detection search pipelines. Due to the computational burden, we carried
+% out the analysis with \texttt{lalinference\_mcmc}, and as a consistency check
+% for selected candidates and waveforms posterior estimates were also obtained
+% with \texttt{lalinference\_nest} and \texttt{MultiNest}. For model comparisons
+% we have calculated the evidence by marginalizing each posterior estimate using
+% thermodynamic integration.
+% 
+% Each candidate was analyzed using two distinct waveform models: \imr and
+% \eob.  Both models describe the IMR phases of the GW from a compact binary 
+% merger.  \eob models
+% non-spinning binaries using the effective-one-body (EOB) 
+% that re-sums the PN dynamics and energy flux, and describes 
+% the merger-ringdown signal as a superposition of 
+% quasi-normal modes~\cite{Pan:2011gk}. \imr is a
+% phenomenological model with a PN description of the inspiral phase
+% building up on test-mass terms to 2PN order, fit to a set of spinning and 
+% non-spinning PN-NR hybrid waveforms~\cite{Ajith:2009bn}.  Waveforms are 
+% generated in the frequency
+% domain and model binaries with component spins aligned with the orbital
+% angular momentum through a single spin parameter $\chi \equiv
+% (1+\delta)\chi_1/2 + (1-\delta)\chi_2/2$. Here $\delta \equiv (m_1-m_2)/M$ and
+% $\chi_i\equiv S_i/m_i^2$, where $S_i$ denotes the angular momentum of the $i$th
+% component of the binary, and $M$ the total mass of the system. 
+% 
+% The mass-ratio dependent and higher order terms used in \imr are calibrated to 
+% PN-NR hybrids
+% that cover the late-inspiral, merger and ringdown. Therefore the accuracy of the
+% model is expected to decline with decreasing total mass, as the inspiral phase
+% of the waveform becomes a larger fraction of the total SNR of the signal,
+% especially for comparable mass binaries. At the time of the analysis however, 
+% it was the only IMR waveform, including spin effcts, that was computationally
+% feasible for use, making it the most physically relevant waveform for the 
+% analysis. \eob is more computationally expensive, but has been
+% shown to be accurate enough for uncertainties in parameter estimates to be
+% dominated by statistical error, rather than
+% systematic~\cite{Littenberg:2012uj}.  It only models binaries with non-spinning
+% components however, so the model is only relevant for non-spinning injections.
+% \texttt{SEOBNRv1} is the successor to \eob that accounts for
+% (aligned) spin~\cite{Taracchini:2012ig}, however it is currently too 
+% computationally expensive to be used for parameter estimation.
+% 
+% Due to the lack of astrophysical constraints on compact binary systems, it is
+% difficult to physically motivate any particular choice for the prior 
+% distribution of the intrinsic parameters (i.e.\ masses and spins).  For this 
+% study we have
+% chosen to use distributions that are uniform in component masses and component 
+% spin magnitudes over the range of parameter values being injected.  The prior
+% distribution was also flat in coalesence time across a 200 ms window centered
+% on the trigger time, isotropic in orientation angles (e.g. inclination), and
+% volumetric, giving equal prior probability to all spatial locations.
 
 \section{Blind Injection Challenge Results}
 \label{sec:searches}
@@ -1684,81 +1684,81 @@ described in section \ref{sec:pipelines} to search for the blind injections
 listed 
 in Table \ref{tab:blindsigs}.
 
-\subsection{Coherent WaveBurst}
-
-For the NINJA2 cWB analysis 
-it was decided \textit{a priori}
-to search for GW bursts in the entire available 
-times during which all three detectors were operating
-(17.9 days) and to discard the remaining times.
-First the search was performed on a total of 
-12,000 time-lagged observation times, accumulating 563.7 years of effective 
-background live time. The background events that survived the data quality and 
-analysis selection cuts (i.e.\ ${cc}>0.7$ and ${\Lambda}<0.4$) 
-were used for calculation of the significance of candidate events. This 
-background sample contains all reconstructed events, most of which do 
-not resemble expected compact coalescence waveforms, as we do not 
-enforce any waveform model. As a result, our background distribution is 
-populated by relatively high signal-to-noise ratio events.   
-
-After completing the background analysis, the zero lag live 
-time was analysed. The search detected an on-source event showing a chirping 
-waveform compatible with a compact binary coalescence at a SNR 
-$\sim 22.1$ and $\eta = 7.1$ . The FAR of the candidate was 
-estimated at $\sim 1/47~yr^{-1}$ from
-comparison with the burst reference background, yielding a false alarm 
-probability (FAP) of $\sim$ 0.001. After the parameters of the blind injections
-were disclosed, this event was revealed to be the first blind injection of 
-Table 
-\ref{tab:blindsigs}.
-As a follow-up analysis, we investigated \textit{a posteriori} all the times of 
-the blind injections, as well as those on 2-fold exclusive live time. We found 
-that the rest of the injected signals are either reconstructed with extremely 
-low $\eta$ or missed, see Table \ref{tab:cWBEvents}. For massive systems, such 
-as events 1 and 6, the cWB algorithm recovers a large fraction of the 
-injected signal-to-noise ratio. For lighter binaries, as expected, the 
-algorithm is largely sub-optimal
-\footnote{Lately, a lot of work has been 
-devoted to extend the sensitivity of the algorithm to lower total masses, which 
-is part of the on-going upgrades of cWB.}.     
-
-\begin{table}
-\caption{\label{tab:cWBEvents} The cWB search and follow-up results.
-The Event Labels correspond to those of each blind injection given in
-Table \ref{tab:blindsigs}. This association is based on the time of
-the candidates relative to the time of the injections. $M$ denotes the
-total mass. The false alarm probability, FAR, and false alarm probability, FAP, 
-of each event are
-estimated by comparison with the empirically-calculated background
-distribution of the corresponding network of detectors. All but the first event 
-are well within the bulk of the
-corresponding FAR distributions. $\eta$ is the network correlated amplitude, 
-which is
-the main cWB detection statistic.  The injected network SNR
-($\rho_{inj}^{net}$) is the square root of the quadratic sum of the
-optimal SNR in each detector. The recovered network SNR
-($\rho_{rec}^{net}$) is the cWB estimate of the injected network SNR.
-Events 5 and 7 were completely missed due to a low reconstructed SNR
-and/or because of nearby noise glitches.}
-% \begin{indented}
-% \item[]
-\begin{tabular}{@{}ccccccccc}
-% \ms\bhline\ms
- \subrows{Event\\ID} &    \subrows{Event\\Label} &  $M$ & \subrows{1/FAR\\(yr)} 
-& FAP & Network & 
-$\eta$ & $\rho_{rec}^{net}$ & $\rho_{inj}^{net}$ \\
-%  \mr
- 1 &  J4+00+00\_T4 & 124 & 47 & 0.001 & HLV & 7.1 & 22.1 & 22.8 \\ 
- 2 &  Ll1-20-20\_T4 & 35.5 & -  & -   & HLV & 2.8 & 9.1  & 13.9 \\  	
- 3 &  Ll1+40+40\_T4 &  14.4 & -  & -   & HLV & 2.7 & 9.2  & 15.7 \\
- 4 &  G2+20+20\_T4 & 26.8 & -  & -   & LV  & 1.6 & 7.4  & 14.1 \\
- 5 &  L4+00+00\_T1 & 19.1 & -  & -   & HV  & - & - & 18.5 \\
- 6 &  J1+25+25\_T4 & 76.7 & -  & -   & HV  & 2.0 & 13.8 & 15.9 \\
- 7 &  J1-75-75\_T1 & 19.3 & -  & -   & HLV  & - & - & 9.5 \\
-% \ms\bhline\ms
-\end{tabular}
-% \end{indented}
-\end{table}
+% \subsection{Coherent WaveBurst}
+% 
+% For the NINJA2 cWB analysis 
+% it was decided \textit{a priori}
+% to search for GW bursts in the entire available 
+% times during which all three detectors were operating
+% (17.9 days) and to discard the remaining times.
+% First the search was performed on a total of 
+% 12,000 time-lagged observation times, accumulating 563.7 years of effective 
+% background live time. The background events that survived the data quality and 
+% analysis selection cuts (i.e.\ ${cc}>0.7$ and ${\Lambda}<0.4$) 
+% were used for calculation of the significance of candidate events. This 
+% background sample contains all reconstructed events, most of which do 
+% not resemble expected compact coalescence waveforms, as we do not 
+% enforce any waveform model. As a result, our background distribution is 
+% populated by relatively high signal-to-noise ratio events.   
+% 
+% After completing the background analysis, the zero lag live 
+% time was analysed. The search detected an on-source event showing a chirping 
+% waveform compatible with a compact binary coalescence at a SNR 
+% $\sim 22.1$ and $\eta = 7.1$ . The FAR of the candidate was 
+% estimated at $\sim 1/47~yr^{-1}$ from
+% comparison with the burst reference background, yielding a false alarm 
+% probability (FAP) of $\sim$ 0.001. After the parameters of the blind injections
+% were disclosed, this event was revealed to be the first blind injection of 
+% Table 
+% \ref{tab:blindsigs}.
+% As a follow-up analysis, we investigated \textit{a posteriori} all the times of 
+% the blind injections, as well as those on 2-fold exclusive live time. We found 
+% that the rest of the injected signals are either reconstructed with extremely 
+% low $\eta$ or missed, see Table \ref{tab:cWBEvents}. For massive systems, such 
+% as events 1 and 6, the cWB algorithm recovers a large fraction of the 
+% injected signal-to-noise ratio. For lighter binaries, as expected, the 
+% algorithm is largely sub-optimal
+% \footnote{Lately, a lot of work has been 
+% devoted to extend the sensitivity of the algorithm to lower total masses, which 
+% is part of the on-going upgrades of cWB.}.     
+% 
+% \begin{table}
+% \caption{\label{tab:cWBEvents} The cWB search and follow-up results.
+% The Event Labels correspond to those of each blind injection given in
+% Table \ref{tab:blindsigs}. This association is based on the time of
+% the candidates relative to the time of the injections. $M$ denotes the
+% total mass. The false alarm probability, FAR, and false alarm probability, FAP, 
+% of each event are
+% estimated by comparison with the empirically-calculated background
+% distribution of the corresponding network of detectors. All but the first event 
+% are well within the bulk of the
+% corresponding FAR distributions. $\eta$ is the network correlated amplitude, 
+% which is
+% the main cWB detection statistic.  The injected network SNR
+% ($\rho_{inj}^{net}$) is the square root of the quadratic sum of the
+% optimal SNR in each detector. The recovered network SNR
+% ($\rho_{rec}^{net}$) is the cWB estimate of the injected network SNR.
+% Events 5 and 7 were completely missed due to a low reconstructed SNR
+% and/or because of nearby noise glitches.}
+% % \begin{indented}
+% % \item[]
+% \begin{tabular}{@{}ccccccccc}
+% % \ms\bhline\ms
+%  \subrows{Event\\ID} &    \subrows{Event\\Label} &  $M$ & \subrows{1/FAR\\(yr)} 
+% & FAP & Network & 
+% $\eta$ & $\rho_{rec}^{net}$ & $\rho_{inj}^{net}$ \\
+% %  \mr
+%  1 &  J4+00+00\_T4 & 124 & 47 & 0.001 & HLV & 7.1 & 22.1 & 22.8 \\ 
+%  2 &  Ll1-20-20\_T4 & 35.5 & -  & -   & HLV & 2.8 & 9.1  & 13.9 \\  	
+%  3 &  Ll1+40+40\_T4 &  14.4 & -  & -   & HLV & 2.7 & 9.2  & 15.7 \\
+%  4 &  G2+20+20\_T4 & 26.8 & -  & -   & LV  & 1.6 & 7.4  & 14.1 \\
+%  5 &  L4+00+00\_T1 & 19.1 & -  & -   & HV  & - & - & 18.5 \\
+%  6 &  J1+25+25\_T4 & 76.7 & -  & -   & HV  & 2.0 & 13.8 & 15.9 \\
+%  7 &  J1-75-75\_T1 & 19.3 & -  & -   & HLV  & - & - & 9.5 \\
+% % \ms\bhline\ms
+% \end{tabular}
+% % \end{indented}
+% \end{table}
 
 \subsection{\ihope{}}
 \label{ssec:ihope_results}
@@ -1948,505 +1948,505 @@ calibrated to the numerical waveforms used for the injections (high mass).
   }
 \end{figure}
 
-\section{Parameter Estimation Results}
-\label{sec:param_estimation}
+% \section{Parameter Estimation Results}
+% \label{sec:param_estimation}
+% 
+% For each of the blind injections described in section~\ref{sec:parameters} and 
+% \ref{sec:searches}, parameter distributions were estimated using both 
+% non-spinning and spin-aligned models, as functions of eleven and nine 
+% parameters, respectively.  \imr was used both
+% as an aligned-spin model, as well as a non-spinning model by fixing the
+% effective spin $\chi$ to 0, which we will refer to as \imrns.  In addition, the
+% \eob model was used as an additional non-spinning waveform (see
+% section \ref{ssec:PE_pipelines} for model descriptions).  From these posterior
+% estimates, one can determine the marginalized distributions in
+% parameters of interest, as well as the evidence for the given model
+% (see eq.~(\ref{evidence})).
+% 
+% \begin{figure}[t] 
+%   \includegraphics[width=0.9\textwidth]{papers/mdc2013_submission/figure6}
+%   \caption{\label{fig:PE_comp_mass} The 95\% credible regions for the \eob
+%       (blue), \imrns (red), and \imr (green) models.  Injected values are
+%       indicated by the ``x'' and the neutron star and mass gap regions are
+%       indicated where relevant.  A strong degeneracy between spin and mass
+%       ratio results in systematic biases and artificially strong constraints on
+%       mass estimates when spin is ignored (i.e.\ \eob, \imrns).  By accounting
+%       for spin the \imr model produces estimates consistent with the injected
+%       sources.}
+% \end{figure}
+% 
+% Figure~\ref{fig:PE_comp_mass} shows the 95\% credible region of the
+% marginalized posterior in component mass space for the non-spinning and
+% spinning models.  The credible region is systematically larger for the spinning
+% model due to the strong degeneracy between the mass ratio and spin magnitude
+% for aligned-spin models~\cite{Baird:2012cu,Hannam:2013uu}, illustrated in
+% figure~\ref{fig:PE_q_chi}.
+% 
+% \begin{figure}[t]
+%   \includegraphics[width=0.9\textwidth]{papers/mdc2013_submission/figure7} 
+%   \caption{\label{fig:PE_q_chi} The 90\% (dashed), 95\% (solid), and 99\%
+%       (dotted) credible regions of the two-dimensional marginalized posterior
+%       for the mass ratio and effective spin $\chi$ using the \imr model.  The
+%       strong correlation between mass ratio and spin is responsible for the
+%       systematically weaker constraints placed on component masses when
+%       analyzing signals with an aligned-spin model.}
+% \end{figure} 
+% 
+% In a real detection scenario, we can never be certain that a source contains
+% only non-spinning components.  Therefore to evaluate the ability to distinguish
+% between `typical' stellar-mass black holes and those occupying the mass gap
+% ($\sim 3 - 5 \msun$), we must restrict our attention to the spinning \imr
+% model.  Event 3 is a spinning system where both components have a mass of 
+% $7.18 \msun$.
+% Despite being well above the mass gap, the degeneracy of the spinning model
+% results in constraining the lower-mass component to be outside of the mass gap
+% with only 46\% confidence.  Event 5, on the other hand, contains a lower-mass
+% component well inside the mass gap, with a mass of $3.83 \msun$.  Knowing a
+% priori that this is a non-spinning system, we would be able to constrain the
+% mass to be within the gap with 100\% certainty.  However, when including spin,
+% the \imr model only constrains it to be within the gap with 21\% certainty. The
+% estimates of the masses and spin are summarized in
+% Table~\ref{intrinsicPEsummary}.  These results highlight the need to take spin
+% into account when making any statements about compact object mass from GW data.
+% We note that spin-aligned systems are the most extreme case of this degeneracy;
+% if spins are mis-aligned with respect to the binary angular momentum the binary
+% precesses, which causes phase and amplitude modulations in the observed
+% waveform. This effect provides additional information to break the degeneracy
+% between masses and spins that may result in tighter constraints on the
+% component masses. However, we expect the exact details to depend on the actual
+% parameters of the observed systems (masses, spins and orientation of the
+% angular momenta), and studies are ongoing to address this issue.
+% 
+% 
+% If the waveform and noise models exactly describe the data, then these Bayesian
+% credible intervals would be equivalent to frequentist confidence intervals,
+% meaning that the true parameters would fall within the 95\% credible interval,
+% for example, for 95\% of injections.  Any errors in the models however,
+% will introduce systematic biases that break this equivalence.  In these
+% analyses such biases could be introduced both by the use of model waveforms
+% that only approximate those that were injected, and by our assumption that the
+% noise is purely Gaussian.  Since the noise used for this study is real
+% (recolored) noise recorded by the initial LIGO and Virgo detectors, the
+% non-Gaussianities inherent with real noise can introduce bias to the parameter
+% estimates~\cite{Aasi:2013jjl}.  Such biases are most apparent in the first
+% event.  This non-spinning injection was loud enough that systematic
+% uncertainties between the numerical relativity and \eob waveforms should be
+% less than the statistical uncertainty~\cite{Littenberg:2012uj}.  Omega
+% scan~\cite{Isogai:2010zz} spectrograms show there to be a significant glitch in
+% the Hanford detector at the time of the injection (see
+% Fig.~\ref{subfig:omega}).  An additional MCMC analysis was performed on the same
+% injection made into noiseless data, using the same PSD as estimated for the
+% event 1 analysis.  Figure~\ref{subfig:event1_0noise} shows the 95\% credible
+% region of this analysis to indeed constrain the injected values, leading to the
+% conclusion that the non-Gaussian features of the detector noise led to
+% significant systematic biases.  Such biases, to varying degrees, are likely for
+% any signal in noise that is not properly modeled.  It will be crucial for
+% better noise models to be implemented before the first detections in order to
+% avoid these biases in parameter estimates.
+% 
+% \begin{figure}[t]
+%   \subfigure[]{
+%     \includegraphics[width=0.5\linewidth]{papers/mdc2013_submission/figure8A}
+%     \label{subfig:omega}
+%   }
+%   \subfigure[]{
+%     \includegraphics[width=0.48\linewidth]{papers/mdc2013_submission/figure8B}
+%     \label{subfig:event1_0noise}
+%   }
+%   \caption{\label{fig:event1bias} 
+%       \subref{subfig:omega} shows a spectrogram of the noise in Hanford
+%       centered on the end time of the injection (before the blind injection 
+%       is added).  A non-Gaussian feature is present with peak energy slightly 
+%       after the end time of
+%       the injection. \subref{subfig:event1_0noise} shows the 95\% credible
+%       regions for the \eob analysis of the event 1 injection in real noise
+%       (solid) and noiseless data (dashed).  Injected values are indicated by
+%       the ``x''.  The fact that the injected values are well outside of the
+%       95\% credible region when real noise is present, and not in noiseless
+%       data, leads to the conclusion the non-Gaussian feature in the noise led
+%       to significant systematic biases in parameter estimates.}
+% \end{figure}
+% 
+% 
+% \begin{figure}[t]
+%   \includegraphics[scale=.6]{papers/mdc2013_submission/figure9}
+%   \caption{\label{fig:PE_modelComp} (Top) Evidences for the non-spinning (\eob
+%      and \imrns) and spin-aligned (\imr) models. (Bottom) Bayes factors showing
+%      the support for the spin-aligned model over the non-spinning \imrns model.
+%      Events 3 and 4 are found to be spinning with high certainty.  Event 7, with
+%      the largest spin magnitude, has little support for spin, though this 
+%      is likely due to its low SNR.}
+% \end{figure}
+% 
+% The top of figure~\ref{fig:PE_modelComp} shows the evidence for each model for
+% the events analyzed.  From the non-spinning (\imrns) and spinning (\imr)
+% evidences, the support for the presence of spin in each signal can be
+% quantified using the Bayes factor, defined in equation~(\ref{bayesFactor}).  
+% The bottom of figure~\ref{fig:PE_modelComp} shows the Bayes factor and 
+% associated error estimates.
+% 
+% These model comparisons show strong support for the presence of spin for events
+% 3 ($\chi_\text{inj}=0.4$) and 4 ($\chi_\text{inj}=0.20$).  Event 7 had the
+% greatest spin magnitude at $\chi_\text{inj}=-0.75$, however analyses showed
+% little evidence of it.  This can likely be attributed to the low network SNR of
+% event 7 (see table \ref{tab:blindsigs}), which was partly due to the faster
+% phase evolution of systems with spins counter-aligned to the orbital angular
+% momentum~\cite{Campanelli:2006uy}.
+% 
+% There has been much work done to quantify the ability of ground-based detectors
+% to localize GW sources on the
+% sky~\cite{Veitch:2012df,Aasi:2013wya,Nissanke:2011ax,Fairhurst:2010is}.  The
+% accuracy of such localizations will be important for triggering electromagnetic
+% (EM) followup of GW detections.  Though most of this sky-localization work has 
+% focused on binary
+% neutron star mergers due to their likely association with short gamma ray
+% bursts~\cite{Eichler:1989ve,Narayan:1992iy,Fong:2013iia} and numerous other
+% proposed emission mechanisms (e.g.  r-process~\cite{Rosswog:2000qm}, etc.),
+% there is still much to be learned from accurate binary black hole merger
+% localization.  Since such mergers have never been observed, the possibility of
+% an unexpected EM emission mechanism warrants the EM followup of the first
+% detections.
+% 
+% \begin{figure}[t]
+%   \includegraphics[width=0.9\textwidth]{papers/mdc2013_submission/figure10}
+%   \caption{\label{fig:PE_skyLoc} 95\% credible regions for the sky position
+%       of all seven events, using the \eob (blue), \imrns (red), and \imr (green)
+%       models.  Despite the substantial differences between these models,
+%       their sky localization ability is very consistent.}
+% \end{figure}
+% 
+% Figure~\ref{fig:PE_skyLoc} shows the two dimensional marginalized distribution
+% for the sky position of each event.  Estimates of each sky position and the
+% areas of the 95\% credible regions are given in Table \ref{extrinsicPEsummary}.
+% The constraints on sky position are remarkably consistent across the models
+% used.  This is of great importance for low latency sky localization efforts,
+% where time is of the essence.  These results suggest that the more physically
+% accurate, and computationally expensive, waveform models do not provide
+% significantly more precise or accurate estimates of source sky positions.
+% 
+% \begin{table}
+%   \caption{\label{intrinsicPEsummary}
+%       Summary of the mass and spin estimates for events 1-7 for each of the 
+% models used.  Median values are
+%       quoted along with the upper and lower bounds of the 95\% credible 
+% intervals.  The injected values for each
+%       event are included for reference.}
+%   \begin{tabular}{|l|l||c|c||c|c||c|c||}
+%     \hline Event & \multirow{2}{*}{Model} 
+% &\multicolumn{2}{c||}{$m_1\,(\mathrm{M}_\odot)$} & 
+% \multicolumn{2}{c||}{$m_2\,(\mathrm{M}_\odot)$} & \multicolumn{2}{c||}{$\chi$} 
+% \\
+%     \cline{3-8} 
+%  ID & & Median & True & Median & True & Median & True \\
+%     \hline \hline
+%   \multirow{3}{*}{1} & \imr & $79.5^{68.6}_{93.6}$ & \multirow{3}{*}{$99.2$} & 
+% $58.2^{36.7}_{71.6}$ & \multirow{3}{*}{$24.8$} & $-0.184^{-0.417}_{0.128}$ & 
+% \multirow{3}{*}{$0$} \\
+%     \cline{2-2}\cline{3-3} \cline{5-5} \cline{7-7}
+% & \imrns & $81.3^{72.6}_{96.1}$ & & $63.1^{40.2}_{72.7}$ & & - & \\
+%     \cline{2-2}\cline{3-3} \cline{5-5} \cline{7-7}
+% & \eob & $83.2^{74.1}_{96}$ & & $64.3^{37.7}_{74.8}$ & & - & \\
+%     \hline \hline
+%   \multirow{3}{*}{2} & \imr & $22.1^{17.4}_{37.8}$ & \multirow{3}{*}{$17.8$} & 
+% $13.6^{8.43}_{17.3}$ & \multirow{3}{*}{$17.8$} & $-0.18^{-0.37}_{0.0999}$ & 
+% \multirow{3}{*}{$-0.2$} \\
+%     \cline{2-2}\cline{3-3} \cline{5-5} \cline{7-7}
+% & \imrns & $32.2^{20.1}_{36.8}$ & & $9.82^{8.15}_{16.8}$ & & - & \\
+%     \cline{2-2}\cline{3-3} \cline{5-5} \cline{7-7}
+% & \eob & $27.9^{19.9}_{33.2}$ & & $11.8^{9.32}_{17.5}$ & & - & \\
+%     \hline \hline
+%   \multirow{3}{*}{3} & \imr & $11^{7.32}_{26.2}$ & \multirow{3}{*}{$7.18$} & 
+% $4.82^{2.55}_{7.04}$ & \multirow{3}{*}{$7.18$} & $0.497^{0.415}_{0.923}$ & 
+% \multirow{3}{*}{$0.4$} \\
+%     \cline{2-2}\cline{3-3} \cline{5-5} \cline{7-7}
+% & \imrns & $7.64^{6.83}_{9.16}$ & & $6.04^{5.04}_{6.75}$ & & - & \\
+%     \cline{2-2}\cline{3-3} \cline{5-5} \cline{7-7}
+% & \eob & $11.9^{11.5}_{12.6}$ & & $3.91^{3.7}_{4.03}$ & & - & \\
+%     \hline \hline
+%   \multirow{3}{*}{4} & \imr & $19.8^{12.9}_{82.6}$ & \multirow{3}{*}{$17.9$} & 
+% $8.26^{2.78}_{12.4}$ & \multirow{3}{*}{$8.95$} & $0.294^{0.161}_{0.862}$ & 
+% \multirow{3}{*}{$0.2$} \\
+%     \cline{2-2}\cline{3-3} \cline{5-5} \cline{7-7}
+% & \imrns & $13.4^{12.3}_{15.8}$ & & $11.2^{9.46}_{12.2}$ & & - & \\
+%     \cline{2-2}\cline{3-3} \cline{5-5} \cline{7-7}
+% & \eob & $13.3^{12.4}_{15.4}$ & & $11.5^{9.89}_{12.3}$ & & - & \\
+%     \hline \hline
+%   \multirow{3}{*}{5} & \imr & $9.12^{7.38}_{16.9}$ & \multirow{3}{*}{$15.3$} & 
+% $5.9^{3.57}_{7.22}$ & \multirow{3}{*}{$3.83$} & $-0.36^{-0.434}_{0.1}$ & 
+% \multirow{3}{*}{$0$} \\
+%     \cline{2-2}\cline{3-3} \cline{5-5} \cline{7-7}
+% & \imrns & $15.1^{14.3}_{15.6}$ & & $3.89^{3.75}_{4.09}$ & & - & \\
+%     \cline{2-2}\cline{3-3} \cline{5-5} \cline{7-7}
+% & \eob & $15^{14.5}_{15.4}$ & & $3.92^{3.81}_{4.05}$ & & - & \\
+%     \hline \hline
+%   \multirow{3}{*}{6} & \imr & $42.4^{35.9}_{54.4}$ & \multirow{3}{*}{$37.9$} & 
+% $32.5^{24.4}_{38.9}$ & \multirow{3}{*}{$37.9$} & $0.277^{0.0582}_{0.468}$ & 
+% \multirow{3}{*}{$0.25$} \\
+%     \cline{2-2}\cline{3-3} \cline{5-5} \cline{7-7}
+% & \imrns & $39.2^{33.1}_{49.7}$ & & $27.5^{21}_{32.7}$ & & - & \\
+%     \cline{2-2}\cline{3-3} \cline{5-5} \cline{7-7}
+% & \eob & $40.1^{33.9}_{51}$ & & $27.7^{19.5}_{33.7}$ & & - & \\
+%     \hline \hline
+%   \multirow{3}{*}{7} & \imr & $16.3^{10.1}_{39.8}$ & \multirow{3}{*}{$9.67$} & 
+% $6.27^{3.18}_{9.61}$ & \multirow{3}{*}{$9.67$} & $-0.332^{-0.673}_{0.286}$ & 
+% \multirow{3}{*}{$-0.75$} \\
+%     \cline{2-2}\cline{3-3} \cline{5-5} \cline{7-7}
+% & \imrns & $24.8^{18.1}_{29.7}$ & & $4.45^{3.61}_{7.17}$ & & - & \\
+%     \cline{2-2}\cline{3-3} \cline{5-5} \cline{7-7}
+% & \eob & $23.1^{13.3}_{25.7}$ & & $4.8^{4.22}_{9.62}$ & & - & \\
+%     \hline 
+%   \end{tabular}
+% \end{table}
+% 
+% \begin{table}
+%   \caption{\label{extrinsicPEsummary}
+%       Summary of the sky location estimates for events 1-7 for each of the 
+% models used.  Median values are
+%       quoted along with the upper and lower bounds of the 95\% credible 
+% intervals, as well as the area of the
+%       95\% credible regions in the sky.  The injected values for each event are 
+% included for reference.}
+%   \begin{tabular}{|l|l||c|c||c|c||c|}
+%     \hline Event & \multirow{2}{*}{Model} &\multicolumn{2}{c||}{$\alpha$} & 
+% \multicolumn{2}{c||}{$\delta$} & Sky Area \\
+%     \cline{3-6} 
+%  ID & & Median & True & Median & True & (sq. deg.) \\
+%     \hline \hline
+%   \multirow{3}{*}{1} & \imr & $1.28^{1.23}_{1.33}$ & \multirow{3}{*}{$1.26$} & 
+% $-0.767^{-0.807}_{-0.684}$ & \multirow{3}{*}{$-0.757$} & 32.4 \\
+%     \cline{2-2}\cline{3-3} \cline{5-5}\cline{7-7}
+% & \imrns & $1.27^{1.22}_{1.32}$ & & $-0.764^{-0.803}_{-0.712}$ & & 26.6 \\
+%     \cline{2-2}\cline{3-3} \cline{5-5}\cline{7-7}
+% & \eob & $1.26^{1.21}_{1.32}$ & & $-0.763^{-0.801}_{-0.722}$ & & 22.5 \\
+%     \hline \hline
+%   \multirow{3}{*}{2} & \imr & $1.67^{1.6}_{1.74}$ & \multirow{3}{*}{$1.7$} & 
+% $0.0402^{-0.0877}_{0.163}$ & \multirow{3}{*}{$-0.0276$} & 103 \\
+%     \cline{2-2}\cline{3-3} \cline{5-5}\cline{7-7}
+% & \imrns & $1.67^{1.6}_{1.74}$ & & $0.0453^{-0.0827}_{0.163}$ & & 100 \\
+%     \cline{2-2}\cline{3-3} \cline{5-5}\cline{7-7}
+% & \eob & $1.67^{1.6}_{1.74}$ & & $0.0406^{-0.0921}_{0.164}$ & & 100 \\
+%     \hline \hline
+%   \multirow{3}{*}{3} & \imr & $4.21^{4.17}_{4.26}$ & \multirow{3}{*}{$4.18$} & 
+% $0.00761^{-0.0587}_{0.086}$ & \multirow{3}{*}{$0.0684$} & 41.7 \\
+%     \cline{2-2}\cline{3-3} \cline{5-5}\cline{7-7}
+% & \imrns & $4.24^{4.18}_{4.29}$ & & $-0.0377^{-0.11}_{0.0776}$ & & 65.7 \\
+%     \cline{2-2}\cline{3-3} \cline{5-5}\cline{7-7}
+% & \eob & $4.24^{4.17}_{4.3}$ & & $-0.0388^{-0.126}_{0.0761}$ & & 80.0 \\
+%     \hline \hline
+%   \multirow{3}{*}{4} & \imr & $2.19^{2.01}_{2.41}$ & \multirow{3}{*}{$2.19$} & 
+% $-0.333^{-0.441}_{-0.132}$ & \multirow{3}{*}{$-0.36$} & 430 \\
+%     \cline{2-2}\cline{3-3} \cline{5-5}\cline{7-7}
+% & \imrns & $2.3^{2.08}_{2.45}$ & & $-0.36^{-0.459}_{-0.197}$ & & 301 \\
+%     \cline{2-2}\cline{3-3} \cline{5-5}\cline{7-7}
+% & \eob & $2.3^{2.06}_{2.45}$ & & $-0.344^{-0.451}_{-0.14}$ & & 470 \\
+%     \hline \hline
+%   \multirow{3}{*}{5} & \imr & $1.84^{1.72}_{2.6}$ & \multirow{3}{*}{$1.68$} & 
+% $0.376^{0.193}_{0.44}$ & \multirow{3}{*}{$0.144$} & 215 \\
+%     \cline{2-2}\cline{3-3} \cline{5-5}\cline{7-7}
+% & \imrns & $1.85^{1.74}_{2.62}$ & & $0.377^{0.209}_{0.45}$ & & 199 \\
+%     \cline{2-2}\cline{3-3} \cline{5-5}\cline{7-7}
+% & \eob & $1.86^{1.74}_{2.63}$ & & $0.389^{0.223}_{0.455}$ & & 150 \\
+%     \hline \hline
+%   \multirow{3}{*}{6} & \imr & $4.5^{4.44}_{5.78}$ & \multirow{3}{*}{$4.68$} & 
+% $0.141^{-0.247}_{0.521}$ & \multirow{3}{*}{$0.49$} & 207 \\
+%     \cline{2-2}\cline{3-3} \cline{5-5}\cline{7-7}
+% & \imrns & $4.52^{4.44}_{5.84}$ & & $0.233^{-0.241}_{0.542}$ & & 294 \\
+%     \cline{2-2}\cline{3-3} \cline{5-5}\cline{7-7}
+% & \eob & $4.56^{4.44}_{5.85}$ & & $0.309^{-0.192}_{0.551}$ & & 342 \\
+%     \hline \hline
+%   \multirow{3}{*}{7} & \imr & $0.83^{0.684}_{1.67}$ & \multirow{3}{*}{$0.806$} & 
+% $-0.121^{-0.532}_{0.159}$ & \multirow{3}{*}{$-0.0736$} & 551 \\
+%     \cline{2-2}\cline{3-3} \cline{5-5}\cline{7-7}
+% & \imrns & $0.836^{0.662}_{1.84}$ & & $-0.117^{-0.595}_{0.17}$ & & 716 \\
+%     \cline{2-2}\cline{3-3} \cline{5-5}\cline{7-7}
+% & \eob & $0.836^{0.653}_{1.02}$ & & $-0.135^{-0.495}_{0.0922}$ & & 627 \\
+%     \hline 
+%   \end{tabular}
+% \end{table}
 
-For each of the blind injections described in section~\ref{sec:parameters} and 
-\ref{sec:searches}, parameter distributions were estimated using both 
-non-spinning and spin-aligned models, as functions of eleven and nine 
-parameters, respectively.  \imr was used both
-as an aligned-spin model, as well as a non-spinning model by fixing the
-effective spin $\chi$ to 0, which we will refer to as \imrns.  In addition, the
-\eob model was used as an additional non-spinning waveform (see
-section \ref{ssec:PE_pipelines} for model descriptions).  From these posterior
-estimates, one can determine the marginalized distributions in
-parameters of interest, as well as the evidence for the given model
-(see eq.~(\ref{evidence})).
-
-\begin{figure}[t] 
-  \includegraphics[width=0.9\textwidth]{papers/mdc2013_submission/figure6}
-  \caption{\label{fig:PE_comp_mass} The 95\% credible regions for the \eob
-      (blue), \imrns (red), and \imr (green) models.  Injected values are
-      indicated by the ``x'' and the neutron star and mass gap regions are
-      indicated where relevant.  A strong degeneracy between spin and mass
-      ratio results in systematic biases and artificially strong constraints on
-      mass estimates when spin is ignored (i.e.\ \eob, \imrns).  By accounting
-      for spin the \imr model produces estimates consistent with the injected
-      sources.}
-\end{figure}
-
-Figure~\ref{fig:PE_comp_mass} shows the 95\% credible region of the
-marginalized posterior in component mass space for the non-spinning and
-spinning models.  The credible region is systematically larger for the spinning
-model due to the strong degeneracy between the mass ratio and spin magnitude
-for aligned-spin models~\cite{Baird:2012cu,Hannam:2013uu}, illustrated in
-figure~\ref{fig:PE_q_chi}.
-
-\begin{figure}[t]
-  \includegraphics[width=0.9\textwidth]{papers/mdc2013_submission/figure7} 
-  \caption{\label{fig:PE_q_chi} The 90\% (dashed), 95\% (solid), and 99\%
-      (dotted) credible regions of the two-dimensional marginalized posterior
-      for the mass ratio and effective spin $\chi$ using the \imr model.  The
-      strong correlation between mass ratio and spin is responsible for the
-      systematically weaker constraints placed on component masses when
-      analyzing signals with an aligned-spin model.}
-\end{figure} 
-
-In a real detection scenario, we can never be certain that a source contains
-only non-spinning components.  Therefore to evaluate the ability to distinguish
-between `typical' stellar-mass black holes and those occupying the mass gap
-($\sim 3 - 5 \msun$), we must restrict our attention to the spinning \imr
-model.  Event 3 is a spinning system where both components have a mass of 
-$7.18 \msun$.
-Despite being well above the mass gap, the degeneracy of the spinning model
-results in constraining the lower-mass component to be outside of the mass gap
-with only 46\% confidence.  Event 5, on the other hand, contains a lower-mass
-component well inside the mass gap, with a mass of $3.83 \msun$.  Knowing a
-priori that this is a non-spinning system, we would be able to constrain the
-mass to be within the gap with 100\% certainty.  However, when including spin,
-the \imr model only constrains it to be within the gap with 21\% certainty. The
-estimates of the masses and spin are summarized in
-Table~\ref{intrinsicPEsummary}.  These results highlight the need to take spin
-into account when making any statements about compact object mass from GW data.
-We note that spin-aligned systems are the most extreme case of this degeneracy;
-if spins are mis-aligned with respect to the binary angular momentum the binary
-precesses, which causes phase and amplitude modulations in the observed
-waveform. This effect provides additional information to break the degeneracy
-between masses and spins that may result in tighter constraints on the
-component masses. However, we expect the exact details to depend on the actual
-parameters of the observed systems (masses, spins and orientation of the
-angular momenta), and studies are ongoing to address this issue.
-
-
-If the waveform and noise models exactly describe the data, then these Bayesian
-credible intervals would be equivalent to frequentist confidence intervals,
-meaning that the true parameters would fall within the 95\% credible interval,
-for example, for 95\% of injections.  Any errors in the models however,
-will introduce systematic biases that break this equivalence.  In these
-analyses such biases could be introduced both by the use of model waveforms
-that only approximate those that were injected, and by our assumption that the
-noise is purely Gaussian.  Since the noise used for this study is real
-(recolored) noise recorded by the initial LIGO and Virgo detectors, the
-non-Gaussianities inherent with real noise can introduce bias to the parameter
-estimates~\cite{Aasi:2013jjl}.  Such biases are most apparent in the first
-event.  This non-spinning injection was loud enough that systematic
-uncertainties between the numerical relativity and \eob waveforms should be
-less than the statistical uncertainty~\cite{Littenberg:2012uj}.  Omega
-scan~\cite{Isogai:2010zz} spectrograms show there to be a significant glitch in
-the Hanford detector at the time of the injection (see
-Fig.~\ref{subfig:omega}).  An additional MCMC analysis was performed on the same
-injection made into noiseless data, using the same PSD as estimated for the
-event 1 analysis.  Figure~\ref{subfig:event1_0noise} shows the 95\% credible
-region of this analysis to indeed constrain the injected values, leading to the
-conclusion that the non-Gaussian features of the detector noise led to
-significant systematic biases.  Such biases, to varying degrees, are likely for
-any signal in noise that is not properly modeled.  It will be crucial for
-better noise models to be implemented before the first detections in order to
-avoid these biases in parameter estimates.
-
-\begin{figure}[t]
-  \subfigure[]{
-    \includegraphics[width=0.5\linewidth]{papers/mdc2013_submission/figure8A}
-    \label{subfig:omega}
-  }
-  \subfigure[]{
-    \includegraphics[width=0.48\linewidth]{papers/mdc2013_submission/figure8B}
-    \label{subfig:event1_0noise}
-  }
-  \caption{\label{fig:event1bias} 
-      \subref{subfig:omega} shows a spectrogram of the noise in Hanford
-      centered on the end time of the injection (before the blind injection 
-      is added).  A non-Gaussian feature is present with peak energy slightly 
-      after the end time of
-      the injection. \subref{subfig:event1_0noise} shows the 95\% credible
-      regions for the \eob analysis of the event 1 injection in real noise
-      (solid) and noiseless data (dashed).  Injected values are indicated by
-      the ``x''.  The fact that the injected values are well outside of the
-      95\% credible region when real noise is present, and not in noiseless
-      data, leads to the conclusion the non-Gaussian feature in the noise led
-      to significant systematic biases in parameter estimates.}
-\end{figure}
-
-
-\begin{figure}[t]
-  \includegraphics[scale=.6]{papers/mdc2013_submission/figure9}
-  \caption{\label{fig:PE_modelComp} (Top) Evidences for the non-spinning (\eob
-     and \imrns) and spin-aligned (\imr) models. (Bottom) Bayes factors showing
-     the support for the spin-aligned model over the non-spinning \imrns model.
-     Events 3 and 4 are found to be spinning with high certainty.  Event 7, with
-     the largest spin magnitude, has little support for spin, though this 
-     is likely due to its low SNR.}
-\end{figure}
-
-The top of figure~\ref{fig:PE_modelComp} shows the evidence for each model for
-the events analyzed.  From the non-spinning (\imrns) and spinning (\imr)
-evidences, the support for the presence of spin in each signal can be
-quantified using the Bayes factor, defined in equation~(\ref{bayesFactor}).  
-The bottom of figure~\ref{fig:PE_modelComp} shows the Bayes factor and 
-associated error estimates.
-
-These model comparisons show strong support for the presence of spin for events
-3 ($\chi_\text{inj}=0.4$) and 4 ($\chi_\text{inj}=0.20$).  Event 7 had the
-greatest spin magnitude at $\chi_\text{inj}=-0.75$, however analyses showed
-little evidence of it.  This can likely be attributed to the low network SNR of
-event 7 (see table \ref{tab:blindsigs}), which was partly due to the faster
-phase evolution of systems with spins counter-aligned to the orbital angular
-momentum~\cite{Campanelli:2006uy}.
-
-There has been much work done to quantify the ability of ground-based detectors
-to localize GW sources on the
-sky~\cite{Veitch:2012df,Aasi:2013wya,Nissanke:2011ax,Fairhurst:2010is}.  The
-accuracy of such localizations will be important for triggering electromagnetic
-(EM) followup of GW detections.  Though most of this sky-localization work has 
-focused on binary
-neutron star mergers due to their likely association with short gamma ray
-bursts~\cite{Eichler:1989ve,Narayan:1992iy,Fong:2013iia} and numerous other
-proposed emission mechanisms (e.g.  r-process~\cite{Rosswog:2000qm}, etc.),
-there is still much to be learned from accurate binary black hole merger
-localization.  Since such mergers have never been observed, the possibility of
-an unexpected EM emission mechanism warrants the EM followup of the first
-detections.
-
-\begin{figure}[t]
-  \includegraphics[width=0.9\textwidth]{papers/mdc2013_submission/figure10}
-  \caption{\label{fig:PE_skyLoc} 95\% credible regions for the sky position
-      of all seven events, using the \eob (blue), \imrns (red), and \imr (green)
-      models.  Despite the substantial differences between these models,
-      their sky localization ability is very consistent.}
-\end{figure}
-
-Figure~\ref{fig:PE_skyLoc} shows the two dimensional marginalized distribution
-for the sky position of each event.  Estimates of each sky position and the
-areas of the 95\% credible regions are given in Table \ref{extrinsicPEsummary}.
-The constraints on sky position are remarkably consistent across the models
-used.  This is of great importance for low latency sky localization efforts,
-where time is of the essence.  These results suggest that the more physically
-accurate, and computationally expensive, waveform models do not provide
-significantly more precise or accurate estimates of source sky positions.
-
-\begin{table}
-  \caption{\label{intrinsicPEsummary}
-      Summary of the mass and spin estimates for events 1-7 for each of the 
-models used.  Median values are
-      quoted along with the upper and lower bounds of the 95\% credible 
-intervals.  The injected values for each
-      event are included for reference.}
-  \begin{tabular}{|l|l||c|c||c|c||c|c||}
-    \hline Event & \multirow{2}{*}{Model} 
-&\multicolumn{2}{c||}{$m_1\,(\mathrm{M}_\odot)$} & 
-\multicolumn{2}{c||}{$m_2\,(\mathrm{M}_\odot)$} & \multicolumn{2}{c||}{$\chi$} 
-\\
-    \cline{3-8} 
- ID & & Median & True & Median & True & Median & True \\
-    \hline \hline
-  \multirow{3}{*}{1} & \imr & $79.5^{68.6}_{93.6}$ & \multirow{3}{*}{$99.2$} & 
-$58.2^{36.7}_{71.6}$ & \multirow{3}{*}{$24.8$} & $-0.184^{-0.417}_{0.128}$ & 
-\multirow{3}{*}{$0$} \\
-    \cline{2-2}\cline{3-3} \cline{5-5} \cline{7-7}
-& \imrns & $81.3^{72.6}_{96.1}$ & & $63.1^{40.2}_{72.7}$ & & - & \\
-    \cline{2-2}\cline{3-3} \cline{5-5} \cline{7-7}
-& \eob & $83.2^{74.1}_{96}$ & & $64.3^{37.7}_{74.8}$ & & - & \\
-    \hline \hline
-  \multirow{3}{*}{2} & \imr & $22.1^{17.4}_{37.8}$ & \multirow{3}{*}{$17.8$} & 
-$13.6^{8.43}_{17.3}$ & \multirow{3}{*}{$17.8$} & $-0.18^{-0.37}_{0.0999}$ & 
-\multirow{3}{*}{$-0.2$} \\
-    \cline{2-2}\cline{3-3} \cline{5-5} \cline{7-7}
-& \imrns & $32.2^{20.1}_{36.8}$ & & $9.82^{8.15}_{16.8}$ & & - & \\
-    \cline{2-2}\cline{3-3} \cline{5-5} \cline{7-7}
-& \eob & $27.9^{19.9}_{33.2}$ & & $11.8^{9.32}_{17.5}$ & & - & \\
-    \hline \hline
-  \multirow{3}{*}{3} & \imr & $11^{7.32}_{26.2}$ & \multirow{3}{*}{$7.18$} & 
-$4.82^{2.55}_{7.04}$ & \multirow{3}{*}{$7.18$} & $0.497^{0.415}_{0.923}$ & 
-\multirow{3}{*}{$0.4$} \\
-    \cline{2-2}\cline{3-3} \cline{5-5} \cline{7-7}
-& \imrns & $7.64^{6.83}_{9.16}$ & & $6.04^{5.04}_{6.75}$ & & - & \\
-    \cline{2-2}\cline{3-3} \cline{5-5} \cline{7-7}
-& \eob & $11.9^{11.5}_{12.6}$ & & $3.91^{3.7}_{4.03}$ & & - & \\
-    \hline \hline
-  \multirow{3}{*}{4} & \imr & $19.8^{12.9}_{82.6}$ & \multirow{3}{*}{$17.9$} & 
-$8.26^{2.78}_{12.4}$ & \multirow{3}{*}{$8.95$} & $0.294^{0.161}_{0.862}$ & 
-\multirow{3}{*}{$0.2$} \\
-    \cline{2-2}\cline{3-3} \cline{5-5} \cline{7-7}
-& \imrns & $13.4^{12.3}_{15.8}$ & & $11.2^{9.46}_{12.2}$ & & - & \\
-    \cline{2-2}\cline{3-3} \cline{5-5} \cline{7-7}
-& \eob & $13.3^{12.4}_{15.4}$ & & $11.5^{9.89}_{12.3}$ & & - & \\
-    \hline \hline
-  \multirow{3}{*}{5} & \imr & $9.12^{7.38}_{16.9}$ & \multirow{3}{*}{$15.3$} & 
-$5.9^{3.57}_{7.22}$ & \multirow{3}{*}{$3.83$} & $-0.36^{-0.434}_{0.1}$ & 
-\multirow{3}{*}{$0$} \\
-    \cline{2-2}\cline{3-3} \cline{5-5} \cline{7-7}
-& \imrns & $15.1^{14.3}_{15.6}$ & & $3.89^{3.75}_{4.09}$ & & - & \\
-    \cline{2-2}\cline{3-3} \cline{5-5} \cline{7-7}
-& \eob & $15^{14.5}_{15.4}$ & & $3.92^{3.81}_{4.05}$ & & - & \\
-    \hline \hline
-  \multirow{3}{*}{6} & \imr & $42.4^{35.9}_{54.4}$ & \multirow{3}{*}{$37.9$} & 
-$32.5^{24.4}_{38.9}$ & \multirow{3}{*}{$37.9$} & $0.277^{0.0582}_{0.468}$ & 
-\multirow{3}{*}{$0.25$} \\
-    \cline{2-2}\cline{3-3} \cline{5-5} \cline{7-7}
-& \imrns & $39.2^{33.1}_{49.7}$ & & $27.5^{21}_{32.7}$ & & - & \\
-    \cline{2-2}\cline{3-3} \cline{5-5} \cline{7-7}
-& \eob & $40.1^{33.9}_{51}$ & & $27.7^{19.5}_{33.7}$ & & - & \\
-    \hline \hline
-  \multirow{3}{*}{7} & \imr & $16.3^{10.1}_{39.8}$ & \multirow{3}{*}{$9.67$} & 
-$6.27^{3.18}_{9.61}$ & \multirow{3}{*}{$9.67$} & $-0.332^{-0.673}_{0.286}$ & 
-\multirow{3}{*}{$-0.75$} \\
-    \cline{2-2}\cline{3-3} \cline{5-5} \cline{7-7}
-& \imrns & $24.8^{18.1}_{29.7}$ & & $4.45^{3.61}_{7.17}$ & & - & \\
-    \cline{2-2}\cline{3-3} \cline{5-5} \cline{7-7}
-& \eob & $23.1^{13.3}_{25.7}$ & & $4.8^{4.22}_{9.62}$ & & - & \\
-    \hline 
-  \end{tabular}
-\end{table}
-
-\begin{table}
-  \caption{\label{extrinsicPEsummary}
-      Summary of the sky location estimates for events 1-7 for each of the 
-models used.  Median values are
-      quoted along with the upper and lower bounds of the 95\% credible 
-intervals, as well as the area of the
-      95\% credible regions in the sky.  The injected values for each event are 
-included for reference.}
-  \begin{tabular}{|l|l||c|c||c|c||c|}
-    \hline Event & \multirow{2}{*}{Model} &\multicolumn{2}{c||}{$\alpha$} & 
-\multicolumn{2}{c||}{$\delta$} & Sky Area \\
-    \cline{3-6} 
- ID & & Median & True & Median & True & (sq. deg.) \\
-    \hline \hline
-  \multirow{3}{*}{1} & \imr & $1.28^{1.23}_{1.33}$ & \multirow{3}{*}{$1.26$} & 
-$-0.767^{-0.807}_{-0.684}$ & \multirow{3}{*}{$-0.757$} & 32.4 \\
-    \cline{2-2}\cline{3-3} \cline{5-5}\cline{7-7}
-& \imrns & $1.27^{1.22}_{1.32}$ & & $-0.764^{-0.803}_{-0.712}$ & & 26.6 \\
-    \cline{2-2}\cline{3-3} \cline{5-5}\cline{7-7}
-& \eob & $1.26^{1.21}_{1.32}$ & & $-0.763^{-0.801}_{-0.722}$ & & 22.5 \\
-    \hline \hline
-  \multirow{3}{*}{2} & \imr & $1.67^{1.6}_{1.74}$ & \multirow{3}{*}{$1.7$} & 
-$0.0402^{-0.0877}_{0.163}$ & \multirow{3}{*}{$-0.0276$} & 103 \\
-    \cline{2-2}\cline{3-3} \cline{5-5}\cline{7-7}
-& \imrns & $1.67^{1.6}_{1.74}$ & & $0.0453^{-0.0827}_{0.163}$ & & 100 \\
-    \cline{2-2}\cline{3-3} \cline{5-5}\cline{7-7}
-& \eob & $1.67^{1.6}_{1.74}$ & & $0.0406^{-0.0921}_{0.164}$ & & 100 \\
-    \hline \hline
-  \multirow{3}{*}{3} & \imr & $4.21^{4.17}_{4.26}$ & \multirow{3}{*}{$4.18$} & 
-$0.00761^{-0.0587}_{0.086}$ & \multirow{3}{*}{$0.0684$} & 41.7 \\
-    \cline{2-2}\cline{3-3} \cline{5-5}\cline{7-7}
-& \imrns & $4.24^{4.18}_{4.29}$ & & $-0.0377^{-0.11}_{0.0776}$ & & 65.7 \\
-    \cline{2-2}\cline{3-3} \cline{5-5}\cline{7-7}
-& \eob & $4.24^{4.17}_{4.3}$ & & $-0.0388^{-0.126}_{0.0761}$ & & 80.0 \\
-    \hline \hline
-  \multirow{3}{*}{4} & \imr & $2.19^{2.01}_{2.41}$ & \multirow{3}{*}{$2.19$} & 
-$-0.333^{-0.441}_{-0.132}$ & \multirow{3}{*}{$-0.36$} & 430 \\
-    \cline{2-2}\cline{3-3} \cline{5-5}\cline{7-7}
-& \imrns & $2.3^{2.08}_{2.45}$ & & $-0.36^{-0.459}_{-0.197}$ & & 301 \\
-    \cline{2-2}\cline{3-3} \cline{5-5}\cline{7-7}
-& \eob & $2.3^{2.06}_{2.45}$ & & $-0.344^{-0.451}_{-0.14}$ & & 470 \\
-    \hline \hline
-  \multirow{3}{*}{5} & \imr & $1.84^{1.72}_{2.6}$ & \multirow{3}{*}{$1.68$} & 
-$0.376^{0.193}_{0.44}$ & \multirow{3}{*}{$0.144$} & 215 \\
-    \cline{2-2}\cline{3-3} \cline{5-5}\cline{7-7}
-& \imrns & $1.85^{1.74}_{2.62}$ & & $0.377^{0.209}_{0.45}$ & & 199 \\
-    \cline{2-2}\cline{3-3} \cline{5-5}\cline{7-7}
-& \eob & $1.86^{1.74}_{2.63}$ & & $0.389^{0.223}_{0.455}$ & & 150 \\
-    \hline \hline
-  \multirow{3}{*}{6} & \imr & $4.5^{4.44}_{5.78}$ & \multirow{3}{*}{$4.68$} & 
-$0.141^{-0.247}_{0.521}$ & \multirow{3}{*}{$0.49$} & 207 \\
-    \cline{2-2}\cline{3-3} \cline{5-5}\cline{7-7}
-& \imrns & $4.52^{4.44}_{5.84}$ & & $0.233^{-0.241}_{0.542}$ & & 294 \\
-    \cline{2-2}\cline{3-3} \cline{5-5}\cline{7-7}
-& \eob & $4.56^{4.44}_{5.85}$ & & $0.309^{-0.192}_{0.551}$ & & 342 \\
-    \hline \hline
-  \multirow{3}{*}{7} & \imr & $0.83^{0.684}_{1.67}$ & \multirow{3}{*}{$0.806$} & 
-$-0.121^{-0.532}_{0.159}$ & \multirow{3}{*}{$-0.0736$} & 551 \\
-    \cline{2-2}\cline{3-3} \cline{5-5}\cline{7-7}
-& \imrns & $0.836^{0.662}_{1.84}$ & & $-0.117^{-0.595}_{0.17}$ & & 716 \\
-    \cline{2-2}\cline{3-3} \cline{5-5}\cline{7-7}
-& \eob & $0.836^{0.653}_{1.02}$ & & $-0.135^{-0.495}_{0.0922}$ & & 627 \\
-    \hline 
-  \end{tabular}
-\end{table}
-
-\section{Sensitivity evaluation}
-\label{sec:sensitivity}
-
-A large set of simulated signals, distributed as described in section 
-\ref{sec:parameters}, was used to assess the sensitivity of the 
-pipelines to observe numerical relativity signals buried in data taken from 
-Initial LIGO and Initial Virgo and recoloured to predicted early advanced 
-detector observing runs, as described in section~\ref{sec:noise}. Here, we use 
-the CBC search 
-pipelines (low-mass and high-mass \ihope{}) to assess search 
-efficiency in the chosen mass region: total mass between 10 and 
-100 solar masses.
-
-Each signal in these large simulation sets was added at a random time
-to the 2-month period of recolored data. Coalescence times were limited to 
-times where at least two observatories were operating and no data-quality flags 
-were active. We then search for each
-signal using the \ihope{} pipeline, as described in section
-\ref{sec:pipelines}. In the plots that follow we treat a simulated
-signal as ``detected'' if there was no louder background event in the
-100 time-slide trials that were performed to estimate the search
-background. As two \ihope{} searches are performed, ``low-mass'' and
-``high-mass'', we treat simulated signals as detected if \emph{either}
-search recovers the signal with more significance than its
-corresponding 100 background trials.
-
-\begin{figure}
-\centering
-\includegraphics[width=0.495\textwidth]
-{papers/mdc2013_submission/figure11A}
-\includegraphics[width=0.495\textwidth]
-{papers/mdc2013_submission/figure11B}
-\includegraphics[width=0.495\textwidth]
-{papers/mdc2013_submission/figure11C}
-\includegraphics[width=0.495\textwidth]
-{papers/mdc2013_submission/figure11D}
-\caption{\label{fig:sens_dists_1}
-Volume-weighted average sensitive distance as a function of total mass, for a 
-variety of NR waveforms. The sensitive distance is defined as the 
-volume-weighted average distance 
-up to which a CBC signal with a given waveform and total mass can be detected, 
-where we average over the source extrinsic parameters and over the varying 
-detector noise levels in the data set via Monte Carlo integration.
-\emph{Top left}---Waveforms with equal component masses and various spins. Here 
-the dotted lines represent predicted performances if an aligned-spin search had 
-been performed. Details of this prediction are given in section 
-\ref{sec:sensitivity}.
-\emph{Top right}---Waveforms with zero component spins and various mass ratios.
-\emph{Bottom left}---Waveforms with equal-mass, non-spinning components. The 
-dashed black line represents the predicted sensitivity curve of non-spinning 
-waveforms with the aLIGO sensitivity curve, as described in 
-\ref{sec:sensitivity}. The dotted black line represents the predicted 
-sensitivity with tha AdV sensitivity curve.
-\emph{Bottom right}---Waveforms with unequal spins, or unequal component masses 
-and non-zero spins.
-The waveform designations are given in Table 
-\ref{tab:ninja2_submissions1}. These plots were generated using the data 
-described in section~\ref{sec:noise} and the distribution of signals described 
-in section~\ref{sec:parameters}.}
-\end{figure}
-
-The results of the injection campaign are summarized in 
-figure~\ref{fig:sens_dists_1}, which shows the dependence of the search
-sensitive distance on the chosen NR waveform and the total mass value. 
-The sensitive distance is defined as the volume-weighted average distance 
-up to which a CBC signal with a given waveform and total mass can be detected, 
-where we average over the source extrinsic parameters and over the varying 
-detector noise levels in the data set via Monte Carlo integration. 
-In order to obtain a clear comparison between different NR waveforms, we used
-\emph{the same set of random parameters} (including total masses, coalescence
-times and orientation angles) for each set of $\sim$24000 injected signals, thus
-statistical errors will tend to be correlated between different waveforms.
- 
-In figure~\ref{fig:sens_dists_1}, top left, we plot the sensitive 
-distance as a function of total mass for a number of equal mass NR waveforms 
-with varying component spin magnitudes. The two waveforms with anti-aligned 
-spins have smaller
-sensitive distances than the other waveforms (see also 
-\cite{Aasi:2012rja}). This is expected; systems with 
-anti-aligned spin emit less power in gravitational waves than non-spinning 
-systems \cite{Buonanno:2005xu,Ajith:2009bn} and also may not match well with 
-the template bank 
-of non-spinning waveforms that was used \cite{Ajith:2012mn}. At the largest 
-masses in this study we can detect the two 
-aligned-spin waveforms at distance $\sim10-15\%$ larger than the non-spinning 
-waveform. 
-However, at the smallest masses used, the non-spinning waveform can be seen to 
-comparable distances. Again this is a combination of two factors. Aligned-spin 
-waveforms emit more power in gravitational waves than non-spinning systems, but 
-the bank of non-spinning waveforms will not capture all of that power.
-This emphasizes that investigating the use of template waveforms incorporating 
-spin effects is a necessity for the advanced detector era. 
-To illustrate this further the dotted lines in this figure represent a 
-prediction of the sensitivity that would have been obtained if a bank of 
-aligned-spin template waveforms had been used. This prediction was obtained by 
-taking the sensitive distances found for non-spinning NR waveforms recovered in 
-the current CBC searches, which use non-spinning inspiral-only or IMR templates, 
-and multiplying them by the ratio of optimal [matched filter] SNRs of 
-(anti)aligned-spin NR waveforms to non-spinning NR waveforms, as a function of 
-total mass. This is described by
-%
-\begin{equation}
- D_{\mathrm{sens}}^i (M) = \frac{\sigma^i(M)}{\sigma^{\mathrm{NS}}(M)}
-D_{\mathrm{sens}}^{\mathrm{NS}} (M).
-\end{equation}
-%
-Here $i$ is used to denote the aligned-spin waveform for which the sensitive 
-distance, $D_{\mathrm{sens}}^i$, is to be predicted. $\mathrm{NS}$ is used to 
-denote the non-spinning waveform. The optimal matched filter SNR
-% at fixed distance 
-is proportional to the signal power $\sigma$, given by the inner 
-product %
-\begin{equation}
-   \sigma^i = \InnerProduct{h^i|h^i}^{1/2},
-\end{equation}
-%
-where $h^i$ is the spinning waveform labelled by $i$ (or $h^{NS}$ for the 
-non-spinning waveform) for an optimally oriented and located binary at fixed 
-distance.
-
-We can see from the plot 
-that the distance sensitivity to spinning waveforms using a non-spinning bank 
-is not as large as the predicted values from using (anti)aligned-spin template 
-banks. 
-This is especially true for the highly aligned-spin waveform where the 
-predicted 
-sensitive distance is $\sim 15\%$ larger than the obtained distance for systems 
-with total mass $> 40M_{\odot}$. We note that the actual sensitivity 
-improvement of a search using (anti)aligned-spin templates may not be as much 
-as predicted here because such a search would require a larger number of 
-templates and therefore provide more chances to obtain large SNR when 
-matched-filtered against the underlying noise. Therefore the detection 
-threshold 
-when performing an aligned-spin search will increase with respect to a 
-search using a non-spinning template bank. However, even a factor of 10 
-increase in the number of \emph{independent} templates will only increase the 
-expected SNR of the loudest background event by less than $5\%$, if 
-Gaussian noise is assumed~\cite{Harry:2013tca}. Work is ongoing to assess how 
-much larger template banks of aligned-spin BBH waveforms are when compared to 
-banks restricted to only non-spinning waveforms and to accurately compare the 
-performance of such searches.
-
-In the top right panel of figure~\ref{fig:sens_dists_1} we plot the horizon 
-distance as a function of total mass for a number of non-spinning NR waveforms 
-with varying mass ratio. The sensitivity to these systems, for the same total 
-mass, increases as the mass ratio (which we take to be greater than or equal to
-$1$) decreases. This is because, to leading order, 
-the gravitational-wave power emitted during the inspiral phase is dependent on 
-the chirp mass \cite{Peters:1963ux}; for the same total mass, a system with 
-higher mass ratio will have a smaller chirp mass.
-
-The bottom left panel of figure~\ref{fig:sens_dists_1} shows the
-horizon distance as a function of total mass for the 5 non-spinning,
-equal-mass waveforms that were submitted. As expected, there is no
-significant discrepancy between these waveforms. We remind the reader that the 
-same set of source parameters was used for each of these 5 sets of injections. 
-Therefore statistical errors are strongly correlated between the results for
-different waveforms. The dashed and dotted black lines on this plot represent 
-a prediction of the sensitive distance to non-spinning signals for the 
-early aLIGO and early AdV noise curves respectively. This prediction was 
-obtained by calculating the horizon distance, defined in section 
-\ref{sec:noise}, for the $G1+00+00\_T4$ waveform for both the early aLIGO and 
-early AdV sensitivity curves as a function of mass. This measurement is then 
-rescaled by a factor of 2.26 to account for the fact that the observatories do 
-not have equal power to all orientations and sky locations~\cite{Finn:1992xs}. 
-We note that the obtained results agree well with this prediction, and fall 
-between the early aLIGO and early AdV predictions when the two diverge. This 
-is expected, as detection in \ihope{} is dominated by the sensitivity of the 
-second most sensitive detector operating at the time~\cite{Babak:2012zx}. For 
-times when at least two observatories were operating, the NINJA-2 dataset 
-approximately consists of 50\% of time when only one of the LIGO detectors and 
-Virgo were operating and 50\% of time when both 
-LIGO detectors were operating, including time when Virgo is operating and when 
-it is not. As the early aLIGO sensitivity does not drop below the early AdV 
-sensitivity for the mass range considered, we expect the obtained sensitivity 
-curve to lie roughly in the middle of the two predictions, and this is what we 
-observe. It is worth pointing out that the \ihope{} search is able to acheive 
-this Gaussian-noise-predicted sensitivity, even though this analysis is run on 
-real data, which includes non-stationarity and non-Gaussian transients.
-
-Finally, in the bottom right panel of figure~\ref{fig:sens_dists_1} we show 
-sensitive distances for a number of waveforms with unequal spins, or unequal 
-masses and non-zero spins.
+% \section{Sensitivity evaluation}
+% \label{sec:sensitivity}
+% 
+% A large set of simulated signals, distributed as described in section 
+% \ref{sec:parameters}, was used to assess the sensitivity of the 
+% pipelines to observe numerical relativity signals buried in data taken from 
+% Initial LIGO and Initial Virgo and recoloured to predicted early advanced 
+% detector observing runs, as described in section~\ref{sec:noise}. Here, we use 
+% the CBC search 
+% pipelines (low-mass and high-mass \ihope{}) to assess search 
+% efficiency in the chosen mass region: total mass between 10 and 
+% 100 solar masses.
+% 
+% Each signal in these large simulation sets was added at a random time
+% to the 2-month period of recolored data. Coalescence times were limited to 
+% times where at least two observatories were operating and no data-quality flags 
+% were active. We then search for each
+% signal using the \ihope{} pipeline, as described in section
+% \ref{sec:pipelines}. In the plots that follow we treat a simulated
+% signal as ``detected'' if there was no louder background event in the
+% 100 time-slide trials that were performed to estimate the search
+% background. As two \ihope{} searches are performed, ``low-mass'' and
+% ``high-mass'', we treat simulated signals as detected if \emph{either}
+% search recovers the signal with more significance than its
+% corresponding 100 background trials.
+% 
+% \begin{figure}
+% \centering
+% \includegraphics[width=0.495\textwidth]
+% {papers/mdc2013_submission/figure11A}
+% \includegraphics[width=0.495\textwidth]
+% {papers/mdc2013_submission/figure11B}
+% \includegraphics[width=0.495\textwidth]
+% {papers/mdc2013_submission/figure11C}
+% \includegraphics[width=0.495\textwidth]
+% {papers/mdc2013_submission/figure11D}
+% \caption{\label{fig:sens_dists_1}
+% Volume-weighted average sensitive distance as a function of total mass, for a 
+% variety of NR waveforms. The sensitive distance is defined as the 
+% volume-weighted average distance 
+% up to which a CBC signal with a given waveform and total mass can be detected, 
+% where we average over the source extrinsic parameters and over the varying 
+% detector noise levels in the data set via Monte Carlo integration.
+% \emph{Top left}---Waveforms with equal component masses and various spins. Here 
+% the dotted lines represent predicted performances if an aligned-spin search had 
+% been performed. Details of this prediction are given in section 
+% \ref{sec:sensitivity}.
+% \emph{Top right}---Waveforms with zero component spins and various mass ratios.
+% \emph{Bottom left}---Waveforms with equal-mass, non-spinning components. The 
+% dashed black line represents the predicted sensitivity curve of non-spinning 
+% waveforms with the aLIGO sensitivity curve, as described in 
+% \ref{sec:sensitivity}. The dotted black line represents the predicted 
+% sensitivity with tha AdV sensitivity curve.
+% \emph{Bottom right}---Waveforms with unequal spins, or unequal component masses 
+% and non-zero spins.
+% The waveform designations are given in Table 
+% \ref{tab:ninja2_submissions1}. These plots were generated using the data 
+% described in section~\ref{sec:noise} and the distribution of signals described 
+% in section~\ref{sec:parameters}.}
+% \end{figure}
+% 
+% The results of the injection campaign are summarized in 
+% figure~\ref{fig:sens_dists_1}, which shows the dependence of the search
+% sensitive distance on the chosen NR waveform and the total mass value. 
+% The sensitive distance is defined as the volume-weighted average distance 
+% up to which a CBC signal with a given waveform and total mass can be detected, 
+% where we average over the source extrinsic parameters and over the varying 
+% detector noise levels in the data set via Monte Carlo integration. 
+% In order to obtain a clear comparison between different NR waveforms, we used
+% \emph{the same set of random parameters} (including total masses, coalescence
+% times and orientation angles) for each set of $\sim$24000 injected signals, thus
+% statistical errors will tend to be correlated between different waveforms.
+%  
+% In figure~\ref{fig:sens_dists_1}, top left, we plot the sensitive 
+% distance as a function of total mass for a number of equal mass NR waveforms 
+% with varying component spin magnitudes. The two waveforms with anti-aligned 
+% spins have smaller
+% sensitive distances than the other waveforms (see also 
+% \cite{Aasi:2012rja}). This is expected; systems with 
+% anti-aligned spin emit less power in gravitational waves than non-spinning 
+% systems \cite{Buonanno:2005xu,Ajith:2009bn} and also may not match well with 
+% the template bank 
+% of non-spinning waveforms that was used \cite{Ajith:2012mn}. At the largest 
+% masses in this study we can detect the two 
+% aligned-spin waveforms at distance $\sim10-15\%$ larger than the non-spinning 
+% waveform. 
+% However, at the smallest masses used, the non-spinning waveform can be seen to 
+% comparable distances. Again this is a combination of two factors. Aligned-spin 
+% waveforms emit more power in gravitational waves than non-spinning systems, but 
+% the bank of non-spinning waveforms will not capture all of that power.
+% This emphasizes that investigating the use of template waveforms incorporating 
+% spin effects is a necessity for the advanced detector era. 
+% To illustrate this further the dotted lines in this figure represent a 
+% prediction of the sensitivity that would have been obtained if a bank of 
+% aligned-spin template waveforms had been used. This prediction was obtained by 
+% taking the sensitive distances found for non-spinning NR waveforms recovered in 
+% the current CBC searches, which use non-spinning inspiral-only or IMR templates, 
+% and multiplying them by the ratio of optimal [matched filter] SNRs of 
+% (anti)aligned-spin NR waveforms to non-spinning NR waveforms, as a function of 
+% total mass. This is described by
+% %
+% \begin{equation}
+%  D_{\mathrm{sens}}^i (M) = \frac{\sigma^i(M)}{\sigma^{\mathrm{NS}}(M)}
+% D_{\mathrm{sens}}^{\mathrm{NS}} (M).
+% \end{equation}
+% %
+% Here $i$ is used to denote the aligned-spin waveform for which the sensitive 
+% distance, $D_{\mathrm{sens}}^i$, is to be predicted. $\mathrm{NS}$ is used to 
+% denote the non-spinning waveform. The optimal matched filter SNR
+% % at fixed distance 
+% is proportional to the signal power $\sigma$, given by the inner 
+% product %
+% \begin{equation}
+%    \sigma^i = \InnerProduct{h^i|h^i}^{1/2},
+% \end{equation}
+% %
+% where $h^i$ is the spinning waveform labelled by $i$ (or $h^{NS}$ for the 
+% non-spinning waveform) for an optimally oriented and located binary at fixed 
+% distance.
+% 
+% We can see from the plot 
+% that the distance sensitivity to spinning waveforms using a non-spinning bank 
+% is not as large as the predicted values from using (anti)aligned-spin template 
+% banks. 
+% This is especially true for the highly aligned-spin waveform where the 
+% predicted 
+% sensitive distance is $\sim 15\%$ larger than the obtained distance for systems 
+% with total mass $> 40M_{\odot}$. We note that the actual sensitivity 
+% improvement of a search using (anti)aligned-spin templates may not be as much 
+% as predicted here because such a search would require a larger number of 
+% templates and therefore provide more chances to obtain large SNR when 
+% matched-filtered against the underlying noise. Therefore the detection 
+% threshold 
+% when performing an aligned-spin search will increase with respect to a 
+% search using a non-spinning template bank. However, even a factor of 10 
+% increase in the number of \emph{independent} templates will only increase the 
+% expected SNR of the loudest background event by less than $5\%$, if 
+% Gaussian noise is assumed~\cite{Harry:2013tca}. Work is ongoing to assess how 
+% much larger template banks of aligned-spin BBH waveforms are when compared to 
+% banks restricted to only non-spinning waveforms and to accurately compare the 
+% performance of such searches.
+% 
+% In the top right panel of figure~\ref{fig:sens_dists_1} we plot the horizon 
+% distance as a function of total mass for a number of non-spinning NR waveforms 
+% with varying mass ratio. The sensitivity to these systems, for the same total 
+% mass, increases as the mass ratio (which we take to be greater than or equal to
+% $1$) decreases. This is because, to leading order, 
+% the gravitational-wave power emitted during the inspiral phase is dependent on 
+% the chirp mass \cite{Peters:1963ux}; for the same total mass, a system with 
+% higher mass ratio will have a smaller chirp mass.
+% 
+% The bottom left panel of figure~\ref{fig:sens_dists_1} shows the
+% horizon distance as a function of total mass for the 5 non-spinning,
+% equal-mass waveforms that were submitted. As expected, there is no
+% significant discrepancy between these waveforms. We remind the reader that the 
+% same set of source parameters was used for each of these 5 sets of injections. 
+% Therefore statistical errors are strongly correlated between the results for
+% different waveforms. The dashed and dotted black lines on this plot represent 
+% a prediction of the sensitive distance to non-spinning signals for the 
+% early aLIGO and early AdV noise curves respectively. This prediction was 
+% obtained by calculating the horizon distance, defined in section 
+% \ref{sec:noise}, for the $G1+00+00\_T4$ waveform for both the early aLIGO and 
+% early AdV sensitivity curves as a function of mass. This measurement is then 
+% rescaled by a factor of 2.26 to account for the fact that the observatories do 
+% not have equal power to all orientations and sky locations~\cite{Finn:1992xs}. 
+% We note that the obtained results agree well with this prediction, and fall 
+% between the early aLIGO and early AdV predictions when the two diverge. This 
+% is expected, as detection in \ihope{} is dominated by the sensitivity of the 
+% second most sensitive detector operating at the time~\cite{Babak:2012zx}. For 
+% times when at least two observatories were operating, the NINJA-2 dataset 
+% approximately consists of 50\% of time when only one of the LIGO detectors and 
+% Virgo were operating and 50\% of time when both 
+% LIGO detectors were operating, including time when Virgo is operating and when 
+% it is not. As the early aLIGO sensitivity does not drop below the early AdV 
+% sensitivity for the mass range considered, we expect the obtained sensitivity 
+% curve to lie roughly in the middle of the two predictions, and this is what we 
+% observe. It is worth pointing out that the \ihope{} search is able to acheive 
+% this Gaussian-noise-predicted sensitivity, even though this analysis is run on 
+% real data, which includes non-stationarity and non-Gaussian transients.
+% 
+% Finally, in the bottom right panel of figure~\ref{fig:sens_dists_1} we show 
+% sensitive distances for a number of waveforms with unequal spins, or unequal 
+% masses and non-zero spins.
 
 \section{Conclusion}
 \label{sec:conclusions}
