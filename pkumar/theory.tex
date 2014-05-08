@@ -7,6 +7,8 @@
 \newcommand{\pd}{\partial}
 \newcommand{\Reals}{\mathcal{R}}
 \newcommand{\defeq}{\mathrel{\mathop:}=}
+\newcommand{\hbarr}{\bar{h}}
+\newcommand{\Tbar}{\bar{T}}
 
 In this chapter we briefly review the treatment of compact object
 binaries in General Relativity (henceforth GR), with a view at providing a 
@@ -508,88 +510,127 @@ the curvature of spacetime with properties of matter that resides in it.
 \section{Gravitational Radiation}
 \label{sec:gravitational_radiation}
 
-We now move to the prediction of gravitational waves.  We begin with
-Einstein's equation in empty space,
-%
-\begin{equation*}
-G_{\mu\nu} = R_{\mu\nu} - \frac{1}{2} g_{\mu\nu} R = 0
-\end{equation*}
-%
-By taking the trace and substituting into Eqn.~\ref{eq:einsteins_equation}
-it can be shown that this implies that in empty space $R_{\mu\nu} =
-0$.  Similary, using the Bianchi identity and symmetries of the Riemann tensor gives,
-in empty space,
-%
+Due to the nonlinear nature of the gravitational field equations, 
+Eq.~\ref{eq:einsteins_equation}, it is difficult to find its solutions, 
+and only a handful of exact solutions are known. However, solving them
+in the weak field approximation is often useful, mainly because the 
+gravitational fields encountered in many physical systems are indeed weak.
+A weak gravitational field is characterized by a metric of the form
+\begin{equation}\label{eq:metric_weak_field}
+ g_{\mu\nu} = \eta_{\mu\nu} + h_{\mu\nu}
+\end{equation}
+with $|h_{\mu\nu}|\ll 1$. In this approximation, we can think of the 
+spacetime as flat with $h_{\mu\nu}$ representing a ${2\choose 0}$ tensor
+field propagating on it. To linear order in $h_{\mu\nu}$ the Riemann 
+tensor can be found to be:
+\begin{equation}\label{eq:riemann_h_linear}
+ R^\alpha_{\beta\gamma\delta} = \frac{1}{2}\left(\pd_\gamma\pd_\beta h^\alpha_\delta + 
+ \pd_\delta\pd^\alpha h_{\beta\gamma} -
+ \pd_\gamma\pd^\alpha h_{\beta\delta} - 
+ \pd_\delta\pd_\beta h^\alpha_\gamma\right).
+\end{equation}
+Contracting on two of the indices, we can write the Ricci tensor to be:
 \begin{equation}
-\label{eq:divergence_in_empty_space}
-R_{\beta\delta;\gamma}  -R_{\beta\gamma;\delta} = 0
+ R_{\alpha\beta} = -\frac{1}{2}\left(\pd_\alpha\pd_\beta h + \Box h_{\alpha\beta} - 
+ \pd_\beta\pd_\gamma h^\gamma_\alpha - \pd_\gamma\pd_\alpha h^\gamma_\beta \right).
+\end{equation}
+With some algebric manipulation, and substituting 
+$h_{\mu\nu}\rightarrow \hbarr_{\mu\nu} = h_{\mu\nu} - \frac{1}{2}\eta_{\mu\nu}h$,
+the field equations reduce to
+\begin{equation}
+ \Box \hbarr_{\mu\nu} + \eta_{\mu\nu}\pd_\alpha\pd_\beta \hbarr^{\alpha\beta} - 
+ \pd_\nu\pd_\alpha \hbarr^\alpha_\mu - \pd_\mu\pd_\alpha\hbarr^\alpha_\nu = -16\pi T_{\mu\nu}.
+\end{equation}
+It can be shown that this equation is invariant under the gauge transformations
+produced by a vector $\zeta_\alpha$: 
+\begin{equation}\label{eq:h_gauge_transform1}
+ \hbarr^{\mu\nu} \rightarrow \hbarr^{'\mu\nu} = \hbarr^{\mu\nu} - 
+ \pd^\mu\zeta^\nu - \pd^\nu\zeta^\mu + \eta^{\mu\nu}\pd_\alpha \zeta^\alpha .
+\end{equation}
+Imposing the following gauge conditions
+\begin{equation}\label{eq:h_gauge_fixing1}
+ \pd_\nu \hbarr^{'\mu\nu} = 0,
+\end{equation}
+the field equations reduce to their familiar form which is manifestly similar
+to a wave equation:
+\begin{equation}\label{eq:h_wave_source}
+ \Box \hbarr^{\mu\nu} = -16\pi T^{\mu\nu}.
 \end{equation}
 
-We next consider the application of the wave operator to the Riemann
-tensor.  From the Bianchi identity (eqn.~\ref{eq:bianchi}) this becomes
-%
-\begin{equation*}
-\label{eq:wave_expanded}
-g^{\mu\nu} R_{\alpha\beta\gamma\delta;\mu\nu}
-= - g^{\mu\nu}
-\left[R_{\alpha\beta\delta\mu;\gamma\nu}
-+ R_{\alpha\beta\mu\gamma;\delta\nu} \right]
-\end{equation*}
-%
-Consider the first term on the right-hand side:
-%
+Before discussing the final solutions, we describe an alternate perturbative 
+analysis which has the advantage of being completely gauge invariant. The
+action of the wave operator $\Box$ on the Riemann tensor is
 \begin{align*}
-g^{\mu\nu} R_{\alpha\beta\delta\mu;\gamma\nu}
-&= g^{\mu\nu} R_{\alpha\beta\delta\mu;\nu\gamma}
-+ g^{\mu\nu} R_{\alpha\beta\delta\mu;\gamma\nu}
-- g^{\mu\nu} R_{\alpha\beta\delta\mu;\nu\gamma} \\
-&= g^{\mu\nu} R_{\alpha\beta\delta\mu;\nu\gamma}
-+ g^{\mu\nu} 
-\left[\nabla_\nu,\nabla_\gamma\right] R_{\alpha\beta\delta\mu}
+ \Box R_{\alpha\beta\gamma\delta} &= 8\pi\left( \cd_\alpha(\cd_\beta\Tbar_{\gamma\delta} - \cd_\gamma\Tbar_{\beta\delta})  - \cd_\beta(\cd_\alpha\Tbar_{\gamma\delta} - \cd_\gamma\Tbar_{\alpha\delta}) \right) \\ &\hspace{5mm}+
+ \mathcal{O}(R_{\alpha\beta\gamma\delta}Tbar_{\mu\nu}) + \mathcal{O}(R_{\alpha\beta\gamma\delta}^2),
 \end{align*}
-%
-The first term vanishes by
-Eqn.~\ref{eq:divergence_in_empty_space}.  The second term involves
-products of the Riemman tensor by~\ref{eq:higher_order_riemann}.  The
-second term on the right in Eqn.~\ref{eq:wave_expanded} has the
-same form.
+where the higher order terms involving the product of the curvature tensor with 
+itself or with the stress-energy tensor are ignored in the linear 
+approximation. In the absence of matter or momentum sources, the above equation
+simplifies further to the free wave equation. The solutions of that can be 
+written down as:
+\begin{equation}
+ R_{\alpha\beta\gamma\delta} = C_{\alpha\beta\gamma\delta} e^{\ii k_\mu x^\mu}.
+\end{equation}
+Using the Bianchi identities, Eq.~\ref{eq:bianchi}, it can be shown that the 
+only relevant components of the Riemann tensor are those of the form 
+$R_{\alpha 0\beta 0}$. Imposing Einstein's equations further restricts the 
+possible non-zero components of $R_{\alpha 0\beta 0}$ to be of the form 
+$R_{x0x0}$ or $R_{y0y0}$ or $R_{x0y0}$, and it can be also shown that 
+$R_{x0x0} = -R_{y0y0}$ from $R_{00}=0$. This leaves only two independent 
+degrees of freedom for the gravitational wave solution in empty space. 
 
-We now specialize to the case where the Riemann tensor is small, so
-that terms involving multiple factors can be neglected.  This is
-equivalent to considering the Riemann tensor as a field on a flat
-background.  This gives
+Going back to the description in terms of the metric perturbations 
+$\hbar_{\mu\nu}$, we can write the solution to Eq.~\ref{eq:h_wave_source}
+in empty space as
+\begin{equation}\label{eq:h_wave_solution}
+ \hbarr_{\mu\nu}(\vec{x},t) = \int \D^3 k\, A_{\mu\nu}(\vec{k}) e^{\ii (\vec{k}\dotfill \vec{x} - \omega t)}.
+\end{equation}
+Having imposed the gauge condition of Eq.~\ref{eq:h_gauge_fixing1}, the total 
+degrees of freedom become $10 - 4 = 6$. Eq.~\ref{eq:h_wave_source} are invariant
+under transformations of the kind similar to Eq.~\ref{eq:h_gauge_transform1}
+if $\Box\zeta^\alpha = 0$ and Eq.~\ref{eq:h_gauge_fixing1} are still satisfied.
+The four of the remaining spurious degrees of freedom can be removed by fixing
+the gauge to the {\it transverse-traceless} gauge, in which
+\begin{equation}
+ h_{00} = h_{0\mu} = 0;\hspace{10mm} h = h^\mu_\mu = 0;\hspace{10mm} \pd_\mu h^{\mu\nu} = 0.
+\end{equation}
+It can be shown that while the gauge conditions in Eq.~\ref{eq:h_gauge_fixing1}
+can be imposed in the context of linear perturbation theory {\it irrespective of
+the presence of sources}, the transition to TT gauge is possible {\it only} in 
+vacuum. 
+%
+The second gauge fixing reveal the $6 - 4 = 2$ physical degrees of freedom, which
+is what was shown for the Riemann tensor in the discussion above 
+Eq.~\ref{eq:h_wave_solution}. 
+In fact, a one-to-one correspondance between the two can be found by simplifying 
+Eq.~\ref{eq:riemann_h_linear}:
 %
 \begin{equation}
-\label{eq:riemann_wave}
-g^{\mu\nu}
-R_{\alpha\beta\gamma\delta;\mu\nu}
-=
-\Box R_{\alpha\beta\gamma\delta}
-= 0
+ R_{\mu 0\nu 0} = \frac{1}{2}\pd_0^2 h^{TT}_{\mu\nu}
 \end{equation}
 %
-That is, each component of the Riemann tensor independently 
-satisfies the vacuum wave equation.  We can immediately write the
-solution:
-%
+Therefore, in the TT gauge, for a wave propagating in the z-direction, we have:
 \begin{equation}
-R^\alpha_{\beta\gamma\delta} = 
-\textrm{Re}\, A^\alpha_{\beta\gamma\delta} \exp(i k_\mu x^\mu)
+ h_{xx}^{TT} = -h_{yy}^{TT} \equiv h_+(t-z);\hspace{10mm} h_{xy}^{TT} = -h_{yx}^{TT} \equiv h_\times(t-z),
 \end{equation}
-%
-where $A^\alpha_{\beta\gamma\delta}$ is a set of amplitudes and
-$k^\mu$ is the wave vector.  In a chosen coordinate system it has
-components $(\omega, k_x, k_y, k_z)$ where $\omega$ is the angular
-frequency and the spacial $k$ components are wavelengths in each
-direction.  It can be shown that 
-%
-\begin{align*}
-\nabla_{\vec k} \vec{k} &= 0 \\
-k_\mu k^\mu &= 0 \\
-\end{align*}
-%
-which together imply that gravitational waves travel along geodesics 
-at the speed of light.
+and consequently
+\begin{equation}
+ R_{x0x0} = -\frac{1}{2}\pd_0^2 h_{xx}^{TT};\hspace{10mm} R_{x0y0} = -\frac{1}{2}\pd_0^2 h_{xy}^{TT}.
+\end{equation}
+Therefore, there are two independent degrees of freedom in a propagating 
+gravitational wave that can be described in terms of the two functions 
+usually denoted by $h_+$ and $h_\times$. In the TT gauge they are simply
+related to the $xx$, $yy$ and $xy$ components of the metric perturbation.
+Defining two polarization tensors $e_+$ and $e_\times$ that can be obtained
+from $h_{\mu\nu}$ by alternately setting $h_+=1,\,h_\times=0$ and 
+$h_+=0,\,h_\times=1$, we write down that 
+\begin{equation}
+ h_{\mu\nu}^{TT} = h_+ e_+ + h_\times e_\times.
+\end{equation}
+The incident gravitational waves on Earth, from an astrophysical source 
+is likely to be a superposition of these two polarizations. 
+
 
 
 \section{Effect of Gravitational Waves}
