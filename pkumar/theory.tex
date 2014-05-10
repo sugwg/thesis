@@ -9,6 +9,9 @@
 \newcommand{\defeq}{\mathrel{\mathop:}=}
 \newcommand{\hbarr}{\bar{h}}
 \newcommand{\Tbar}{\bar{T}}
+\newcommand{\Quad}{\mathcal{Q}}
+\newcommand{\vecx}{\mathbf{x}}
+\newcommand{\vecr}{\mathbf{r}}
 
 In this chapter we briefly review the treatment of compact object
 binaries in General Relativity (henceforth GR), with a view at providing a 
@@ -581,7 +584,7 @@ $R_{x0x0} = -R_{y0y0}$ from $R_{00}=0$. This leaves only two independent
 degrees of freedom for the gravitational wave solution in empty space. 
 
 Going back to the description in terms of the metric perturbations 
-$\hbar_{\mu\nu}$, we can write the solution to Eq.~\ref{eq:h_wave_source}
+$\hbarr_{\mu\nu}$, we can write the solution to Eq.~\ref{eq:h_wave_source}
 in empty space as
 \begin{equation}\label{eq:h_wave_solution}
  \hbarr_{\mu\nu}(\vec{x},t) = \int \D^3 k\, A_{\mu\nu}(\vec{k}) e^{\ii (\vec{k}\dotfill \vec{x} - \omega t)}.
@@ -701,109 +704,122 @@ polarization, with the axes rotated by $\pi /4$ radians.
 
 Lastly, in the linearized approximation where we treat $h_{\mu\nu}$ as 
 a tensor field propagating on a flat background, it is possible to 
-define a energy-momentum tensor $t_{\mu\nu}$, which can be written 
-in the Lorenz gauge where $\cd_\mu \hbarr^\mu_\nu = 0$ as
-\begin{equation}
- t_{\mu\nu} = \langle \cd_\mu \hbarr_{\alpha\beta} \cd_\nu \hbarr^{\alpha\beta} \rangle.
+define its energy-momentum pseudo-tensor $t_{\mu\nu}$. This can be written 
+in the Lorenz gauge, where $\cd_\mu \hbarr^\mu_\nu = 0$, as
+\begin{equation}\label{eq:h_energy_pseudotensor}
+ t_{\mu\nu} = \frac{1}{32\pi}\langle \cd_\mu \hbarr_{\alpha\beta} \cd_\nu \hbarr^{\alpha\beta} \rangle.
 \end{equation}
 The $\langle\dots\rangle$ denote an averaging over a finite region
 of space around a spacetime event, which is several wavelengths in size,
-but small enough that the background metric does not vary. 
+but small enough that the background metric does not vary. This is necessary
+becase the energy can not be localized to any one point of the wave,
+as any point can be placed in a Local Lorentz Frame where there is no wave.
 The field equations can then be 
 interpreted as having two sources, one being the conventional matter
 source given by $T_{\mu\nu}$ and the oher being the energy-momentum
 tensor of the gravitational wave perturbations $t_{\mu\nu}$. We refer 
-to~\cite{mtw,RevModPhys.29.509} for a detailed treatment of the issue.
+to~\cite{mtw,RevModPhys.29.509} for a detailed treatment.
 
 
 \section{Modeling Gravitational Waves}
 
-Having demonstrated the predicted existence of gravitational waves and
-their effects on matter we now turn to the question of their
-generation.  From Eqn.~\ref{eq:wave_field} we can see that, since
-the components of the Riemann tensor obey the wave equation, the
-components of $h^{TT}$ do as well.  We now consider the solution of
-the wave equation when the source, the stress-energy tensor, is not
-zero.  By analogy with electromagnetism we can immediately write down
-the solution in terms of retarded fields
-%
+In the previous sections, we demonstrated the existence of gravitational waves
+and their effect on matter. In this section, we consider their generation from
+isolated matter systems. In Lorenz gauge, with $\pd_\mu \hbarr^{\mu\nu} = 0$, 
+the metric perturbation is generated according to Eq.~\ref{eq:h_wave_source},
+and we now focus on the case when $T_{\mu\nu}\neq 0$ everywhere. From analogy
+with Maxwell equations in the presence of source, we can immediately write
+down the ansatz
 \begin{equation}
 \label{eq:h_from_t}
-h^{TT}_{ij} = 4 \left[ \int \frac{T_{ij}(x', t-r)}{r}\, d^3 x'
-\right]^{TT}
+h^{TT}_{ij}(t,\vecr) = 4 \left[ \int\D^3 x \frac{T_{ij}(x, t-r)}{r} \right]^{TT}
+\end{equation}
+The tacit assumption here being that the source has a characteristic length 
+$L\ll r$, where $r\equiv |\vecr|$ is the distance to the source. The origin
+of our coordinates lies at the source. Expanding the stress-energy tensor
+about the retarded time $(t-r)$, we can write the right hand side of this 
+equation as a summation over the moments of the stress-energy tensor 
+$S^{ij,kl\dots}$,
+%
+\begin{equation}
+ S^{ij,kl\dots}(t) = \int \D^3 x T^{ij}(x,t) x^k x^l \dots ,
+\end{equation}
+as
+\begin{equation}\label{eq:h_tlm_multipoles}
+ h^{TT}_{ij}(t,\vecr) = \frac{2}{r} \left.\left[ S^{kl}(t') + n_m\pd_0 S^{kl,m}(t') + \frac{1}{2} n_m n_p \pd_0^2 S^{kl,mp}(t') +\dots\right]^{TT}\right\vert_{t'=t-r}.
+\end{equation}
+\iffalse
+The superscript $TT$ above corresponds to the action of the $TT$ projection
+operator on a tensor as 
+\begin{equation}
+ A^{TT}_{\alpha\beta}\defeq \left(P^\mu_\alpha P^\nu_\beta - \frac{1}{2}P_{\alpha\beta}P^{\mu\nu} \right) A_{\mu\nu}
+\end{equation}
+where $P_{\mu\nu} = \delta_{\mu\nu} - n_\mu n_\nu$ and 
+$n_\mu\defeq k_\mu/\sqrt{k_\mu k^\mu}$ is the unit vector corresponding to the
+wave propagation vector $\mathbf{k}$.
+\fi
+%
+The conservation of energy and momentum, written in terms of the stress-energy
+tensor can be written as
+%
+\begin{equation}
+\pd_0 T^{00} = - \pd_j T^{0j};\hspace{10mm} \pd_0 T^{i0} = - \pd_j T^{ij}.
 \end{equation}
 %
-where we integrate over the source distribution $x'$.  When the energy
-and momentum densities are small, so that the curvature of spacetime
-is likewise small, the coordinates may be taken to have their
-conventional flat-space meaning.  We may also replace the covariant
-derivative by regular partial differentiation.
-
-Starting from the conservation of energy and momentum written in terms
-of the stress-energy tensor
+These relations help relate the moments of $T_{\mu\nu}$ in terms of the moments
+of the source mass distribution and momentum distribution, $M^{ij\dots}$, 
+$P^{i,jk\dots}$ respectively, where
+\begin{equation}
+ M^{ij\dots} \defeq \int \D^3 x T^{00}(x,t) x^i x^j \dots;\hspace{10mm} 
+ P^{i,jk\dots} \defeq \int \D^3 xT^{0i}(t,x) x^j x^k\dots,
+\end{equation}
 %
-\begin{align*}
-{T^{00}}_{,0} &= - {T^{0j}}_{,j} \\
-{T^{i0}}_{,0} &= - {T^{ij}}_{,j} \\
-\end{align*}
+yielding
 %
-Differentiating with respect to time and going through some algebra
-yields expressions for the first and second moments of the stress
-energy tensor, ${T^{lm}}_{,ml} x^j x^k$ and ${T^{jm}}_{,m} x^k$.  These,
-plus Stoke's theorem, can be used to simplify
-Eqn.~\ref{eq:h_from_t} to give
+\begin{equation}
+ S^{ij} = \frac{1}{2}\pd_0^2M^{ij}.
+\end{equation}
 %
-\begin{equation*}
-h^{TT}_{ij} = \frac{2}{r} \left[
-\int {T^{00}}_{,00}\, x^i x^j d^3 x' \right]^{TT}
-\end{equation*}
-%
-We recognize $T^{00}$ as the mass/energy density, and therefore this
-can be written as the \emph{quadrapole formula}
+Substituting in Eq.~\ref{eq:h_tlm_multipoles} at leading order, we arrive at 
+the {\it quadrupolar radiation formula} which gives the metric perturbation in
+terms of the quadrupole moment of the source mass distribution, 
 %
 \begin{equation}
 \label{eq:quadrupole_formula}
-h^{TT}_{jk} = \frac{2}{r} \ddot{\mathcal{I}}(t-r)
+h^{TT}_{jk} = \frac{2}{r}\left[ \pd_0^2\Quad_{jk} (t-r)\right]^{TT}
 \end{equation}
 %
-where $\mathcal{I}$ is the quadrupole moment of the source
+where $\Quad_{ij}$ is the traceless part of the quadrupole moment, i.e.
 %
-\begin{equation*}
-\mathcal{I}_{ij} = \int \rho(\mathbf{x})x_i x_j\,d^3 x
-\end{equation*}
+\begin{equation}
+\Quad_{ij}(t) = \int \D^3 x \rho(\mathbf{x},t)(x_i x_j - \frac{1}{3}r^2 \delta^{ij}).
+\end{equation}
 
-Any system of mass with a time-dependant quadrupole moment will give
-rise to gravitational radiation.  However, restoring physical units to
-Eqn.~\ref{eq:quadrupole_formula} scales the right-hand side by
-$G/c^4$.  We therefore need very large masses and/or rapid changes in
-order to generate waves we have any chance of detecting.  There are
-many such sources of astrophysical and cosmological interest:
-%
-\begin{itemize}
-\item supernovae
-\item rotating neutron stars with axial asymmetry
-\item processes in the early universe, which would have produced
-\emph{relic} gravitational waves in principle still detectable today
-\item topological defects
-\item compact bodies, such as neutron stars and black holes, in 
-orbit around each other.
-\end{itemize}
-%
-We will focus on the last of these for the remainder of the thesis.
+Any massive system with a time-dependant quadrupole moment will emit 
+gravitational radiation.  However, restoring physical units to 
+Eqn.~\ref{eq:quadrupole_formula} scales the right-hand side by 
+$G/c^4\sim 10^{-46}$. Therefore, for the gravitational waves to be detectable,
+we need very large masses and/or rapid changes in its distribution. There are
+many such sources of astrophysical and cosmological interest like (i) quantum
+fluctuations in the early universe that would produce what are called 
+{\it relic} gravitational waves~\cite{Ade:2014xna}, (ii) supernovae explosions,
+(iii) non-axisymmetric Neutron stars and (iv) compact object binaries, 
+comprising of Neutron stars and/or Black holes. 
+We will focus on the last of these for the remainder of the dissertation.
 
 It is straightforward to start from the mass distribution of two point
 masses in orbit around their center:
 %
 \begin{align*}
-\rho(\mathbf{x}) &= m_1\delta(x - r_1\cos(\Omega t)) \delta(y-r_1
+\rho(\mathbf{x},t) &= m_1\delta(x - r_1\cos(\Omega t)) \delta(y-r_1
 \sin(\Omega t)) \delta(z) \\
 &\quad + m_2\delta(x + r_2\cos(\Omega t)) \delta(y + r_2 \sin(\Omega t))
 \delta(z)
 \end{align*}
 %
-and calculate $h^{TT}$. By choosing coordinates centered on a
-terrestrial gravitational-wave detector and a basis we can write
-the gravitational-wave strains as~\cite{DBrownThesis}
+and calculate $h^{TT}$. By changing coordinates to those centered on a
+terrestrial gravitational-wave detector, and choosing a basis we can write the 
+gravitational-wave polarizatoins as~\cite{Brown:2004vh}
 %
 \begin{align}
 \label{eq:h_plus_cross}
@@ -813,47 +829,42 @@ h_\times(t)  &= - \frac{4G}{c^4 r} \mu (\pi G M f)^{\frac{2}{3}}
 \cos(\iota) \sin(2\pi f t - 2\phi_0) \nonumber
 \end{align}
 %
-where $M = m_1+m2$, $\mu = m_1 m_2 / M$, $f$ is the
-\emph{gravitational-wave frequency} which is twice the orbital
-frequency $f = 2\Omega/2\pi$, $\phi_0$ is the orbital phase at a
-specified time, and $\iota$ is the \emph{inclination} of the binary
-with respect to the detector, the angle between the normal to the
-plane of the binary and the line joining the detector to the binary.
+where $M = m_1+m_2$, $\mu = m_1 m_2 / M$, $f$ is the 
+\emph{gravitational-wave frequency} which is twice the orbital frequency 
+$f = 2\Omega/2\pi$, $\phi_0$ is the orbital phase at a specified time, and 
+$\iota$ is the \emph{inclination} between the normal to the plane of the binary
+with respect to the line joining it to the detector.
 
-We noted above that gravitational waves carry energy.  This energy
-must be balanced by a loss of energy by the system.  This energy can
-not be localized to any one point of the wave, since any point can be
-placed in a Local Lorentz Frame where there is no wave.  However, by
-averaging over a cycle it can be shown~\cite{carrollTextbook} that
+We noted in the previous section that gravitational waves carry energy. This
+energy must be balanced by a loss of energy by the system. From 
+Eq.~\ref{eq:h_energy_pseudotensor}, we can find the flux of energy carried by 
+propagating gravitational waves by computing $t_{00}$. Given the assumption 
+that $h_{\mu\nu}$ is a tensor field on a flat background spacetime, the 
+Christoffel symbols vanish, giving
 %
 \begin{equation}
-t_{\mu\nu} = \frac{1}{32 \pi} \left\langle h^{TT}_{\rho \sigma,\mu}
-(h^{TT})^{\rho\sigma}_{,\nu} \right\rangle
+ t_{00} = \frac{1}{32\pi} \langle\pd_0 h_{\mu\nu}^{TT}\,\pd_0 h^{\mu\nu}_{TT} \rangle.
 \end{equation}
 %
-where $t_{\mu\nu}$ is the \emph{stress-energy pseudo-tensor}.  The
-stress energy tensor itself is zero in a region of spacetime
-containing only gravitational radiation.  However, $t$ may be used to
-describe the energy content of such radiation, and we find the flux of
-energy in the radial direction out of a sphere enclosing a gravitating
-system is
+Substituting Eq.~\ref{eq:quadrupole_formula} here, we get the net rate of 
+energy loss from the system per unit time as given by the {\it quadrupole 
+formula}
 %
 \begin{equation}
 \label{eq:energy_loss}
-\frac{dE}{dt} = T_{0r} = \frac{1}{8 \pi r^2} \left\langle \ddot{\mathcal{I}}^{ij}
-\ddot{\mathcal{I}}_{ij} \right\rangle
+\frac{\D E}{\D t}(t) = \frac{1}{5}\langle \pd_0^3\Quad_{ij}(t-r)\,\pd_0^3\Quad^{ij}(t-r)\rangle
 \end{equation}
-
-When the separation between the masses, $a$ is large and the masses are
-moving slowly the gravitational energy of the system is approximately
-given by the Newtonian expression
+%
+In a binary system, when the separation between the masses, $y$, is large 
+and the bodies are moving at non-relativistic speeds, the gravitational 
+energy of the binary is approximately given by the Newtonian formula
 %
 \begin{equation*}
-E = - \frac{1}{2} \frac{G \mu M}{a}
+E = - \frac{1}{2} \frac{G m_1 m_2}{y}
 \end{equation*}
 %
-Therefore, orbiting bodies will emit gravitational radiation and
-\emph{inspiral} until they inevitably collide.
+Therefore, orbiting bodies will emit gravitational radiation and 
+{\bf in}-spiral until they collide and merge.
 
 \section{Post-{N}ewtonian Approximations}
 \label{sec:PNWaveforms}
@@ -1043,11 +1054,11 @@ waveform obtained through other means.  This is one application of
 waveforms from Numerical Relativity, discussed in the next section.
 The resulting waveforms are called
 \emph{EOBNR}~\cite{Buonanno:2009qa}.
-% 
-% 
-% \section{Numerical Relativity}
-% \label{sec:NRWaveforms}
-% 
+
+
+\section{Numerical Relativity}
+\label{sec:NRWaveforms}
+
 % Analytic methods themselves can not provide complete gravitational
 % waveforms valid through the merger of the two objects and the
 % evolution of the resulting single object to a steady state.  Even
