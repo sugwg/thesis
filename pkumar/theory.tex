@@ -997,24 +997,102 @@ the subject of recent studies~\cite{Buonanno:2009zt,NRPNComparisonBoyleetal}.
 \subsection{Numerical Relativity}
 \label{sec:NRWaveforms}
 
+General Relativity plays a major role in describing some of the most exotic 
+astrophysical processes and systems, like the physics of neutron stars, 
+black holes and accretion disks, supernova explosions, etc. Yet the theory 
+remains largely untested, except in the weak field slow motion regime. 
+The observation of gravitational radiation from merging neutron stars and/or
+black holes has the potential of probing the dynamics of strong gravitational
+fields.
+Due to their multidimensional and nonlinear nature, 
+very few exact analytic solutions have been found for the field equations, 
+and all of them correspond to systems with a high degree of symmetry.
+% As the field equations of General Relativity are a set of multi-dimensional, 
+% nonlinear, coupled partial differential equations. 
+Analytic approximation schemes like the post-Newtonian theory are valid in
+the weak field regime, and become especially increasingly inadequate in 
+modeling the last phases of compact binary coalescence. 
+This statement has been qualified in recent papers, e.g.~\cite{Nitz:2013mxa}.
+
+Many fields of Science and Engineering make use of (super-)computers for 
+high-accuracy numerical solutions of partial differential equations. 
+While Einstein's field equations are in a particularly difficult class of such
+equations, it is possible to obtain fully numerical solutions for dynamical
+scenarios governed by them. This proved to be a remarkably difficult task
+when the first attempts were made, both due to technical and conceptual 
+difficulties as well as limited computing power. After the breakthrough
+simulations fo merging black holes by Pretorius in 
+2005~\cite{Pretorius2005}, and foundational work by researchers at 
+Goddard~\cite{Campanelli:2005dd}, University of Texas at Brownville and Florida
+Atlantic University~\cite{Campanelli:2005dd} in the same year, there has been
+rapid progress in the field. 
+We refer the reader to review articles by Hindler~\cite{Hinder:2010vn} and
+Pfeiffer~\cite{Pfeiffer:2012pc} for more details that can be provided within 
+the scope of this dissertation. 
+
+Most approaches in Numerical Relativity (NR) proceed by the ``3+1'' 
+decomposition, or the foliation of spacetime into non-intersection spacelike
+3-surfaces that can be thought of as level surfaces for a globally defined 
+time function. The situation is qualitatively similar to classical 
+electromagnetism. Maxwell equations can be written in the manifestly covariant
+form as
 %
 \begin{align*}
-F^{\mu\nu}_{,\nu} &= j^\mu \\
-\mathcal{F}^{\mu\nu}_{,\nu} &= 0
+\cd_\nu F^{\mu\nu} &= j^\mu \\
+\cd_\nu {F*}^{\mu\nu} &= 0
 \end{align*}
-
+%
+where $F$ is the electromagnetic field strength tensor and $F*$ is its dual. 
+While conceptually simpler, this is not the form that is the most convenient 
+for performing numerical evolutions. Instead, these are re-written in a 
+form that makes explicit the role of time, disentangling it from other degrees
+of freedom:
 %
 \begin{align}
 \label{eq:constraints1}
-\nabla \cdot \mathbf{E} &= 4\pi \rho \\
+\bm{\nabla} \cdot \mathbf{E} &= 4\pi \rho \\
 \label{eq:constraints2}
-\nabla \cdot \mathbf{B} &= 0 \\
+\bm{\nabla} \cdot \mathbf{B} &= 0 \\
 \label{eq:evolution1}
-\partial_t \mathbf{E}   &= \nabla \times \mathbf{B} - 4\pi j^\mu \\
+\partial_t \mathbf{E}   &= \bm{\nabla} \times \mathbf{B} - 4\pi j^\mu \\
 \label{eq:evolution2}
-\partial_t \mathbf{B}   &= - \nabla \times \mathbf{E} \\ \nonumber
+\partial_t \mathbf{B}   &= - \bm{\nabla} \times \mathbf{E} \\ \nonumber
 \end{align}
 %
+Note that out of the set of four equations above, the first two put 
+{\it constraints} on electromagnetic fields that could exist in a dynamical
+situation, while the last two govern the time {\it evolution} of the same.
+% 
+% 
+% Wile much work in numerical relativity includes matter, for the
+% purpose of this thesis  we restrict our attention to \emph{vacuum
+% spacetimes}, that is, situations where $T_{\mu\nu} = 0$ everywhere.
+% It is a remarkable fact that, although black holes are characterized
+% by a mass parameter, a spacetime containing only black holes and
+% gravitational waves is a vacuum.  We need therefore only be concerned
+% with general relativity, without considering the equations governing
+% any other fields.
+% 
+% In general relativity the split into space+time  is accomplished by
+% writing the metric as 
+% %
+% \begin{equation*}
+% ds^2 = -(\alpha^{2}-\gamma_{ij}\beta^{i}\beta^{j})dt^{2}
+%    + 2 \gamma_{ij}\beta^{j}dt\,dx^{i}
+%    + \gamma_{ij}dx^{i}\,dx^{j}, 
+% \end{equation*}
+% %
+% where $\gamma_{ij}$ is a metric on the slices of constant time $t$,
+% and the scalar function $\alpha$ and  vector field $\beta^i$ are
+% commonly used to encode the freedom of coordinate choice.  This
+% results in a division of the Einstein equation.~\ref{eq:einsteins_equation}
+% into constraint and evolution equations.  However, this split is not
+% uniquely determined and care must be taken to ensure that the
+% resulting systems are well-behaved.  In particular, there may be
+% issues ensuring that the constraints remain satisfied as the system
+% evolves.  While this is guaranteed mathematically in the continuum
+% limit it may not be true once the system is discretized.
+
 %
 \begin{equation*}
 ds^2 = -(\alpha^{2}-\gamma_{ij}\beta^{i}\beta^{j})dt^{2}
@@ -1042,60 +1120,7 @@ m &= \frac{1}{\sqrt{2}} \left(\hat{\theta} +i  \hat{\phi}\right)
 \end{equation*}
 
 
-% Analytic methods themselves can not provide complete gravitational
-% waveforms valid through the merger of the two objects and the
-% evolution of the resulting single object to a steady state.  Even
-% where there is hope of being able to capture the full physics, as in
-% EOB or phenomenological models that have been developed, the
-% results must be tuned against complete waveforms which must be
-% calculated using other means.
-% 
-% There is a long history of solving partial differential equations
-% numerically on computers, and while Einstein's equations are in a
-% particularly difficult class of such equations, we can hope to obtain
-% complete solutions numerically.  This proved to be a remarkably
-% difficult problem, and progress through the 1990s was slow due to both
-% conceptual difficulties and limited computational power.  However,
-% following Pretorius' successful simulation of two merging black
-% holes~\cite{Pretorius:2005gq} and breakthroughs by researchers at
-% Goddard~\cite{Campanelli:2005dd} and the University of Texas at
-% Brownville and Florida Atlantic University~\cite{Campanelli:2005dd} in
-% 2005 the field has expanded rapidly.  Readers are referred to the
-% textbook by Alcubierre~\cite{alcubierreTextbook} and review articles
-% by Husa~\cite{Husa:2007zz} and Hindler~\cite{Hinder:2010vn} for more
-% details than can be provided here.
-% 
-% The basis of most approaches in numeric relativity (hence ``NR'') is the
-% ``3+1'' decomposition of Einstein's equation.  There is a similar
-% situation in electromagnetism.  Maxwell's equations may be expressed
-% in a geometric, four-dimensional form
-% %
-% \begin{align*}
-% F^{\mu\nu}_{,\nu} &= j^\mu \\
-% \mathcal{F}^{\mu\nu}_{,\nu} &= 0
-% \end{align*}
-% %
-% where $F$ is the electromagnetic field tensor and $\mathcal{F}$ is its dual.
-% However, this is not the most usual form in which to do calculations.
-% Instead we choose a time direction and rewrite in terms of separate
-% spatial and temporal differential operators,
-% %
-% \begin{align}
-% \label{eq:constraints1}
-% \nabla \cdot \mathbf{E} &= 4\pi \rho \\
-% \label{eq:constraints2}
-% \nabla \cdot \mathbf{B} &= 0 \\
-% \label{eq:evolution1}
-% \partial_t \mathbf{E}   &= \nabla \times \mathbf{B} - 4\pi j^\mu \\
-% \label{eq:evolution2}
-% \partial_t \mathbf{B}   &= - \nabla \times \mathbf{E} \\ \nonumber
-% \end{align}
-% %
-% Note that equations~\ref{eq:constraints1} and \ref{eq:constraints2}
-% are \emph{constraint equations} that impose conditions on valid
-% solutions at any given time, and in particular for initial conditions.
-% Equations~\ref{eq:evolution1} and \ref{eq:evolution2} are
-% \emph{evolution equations} which determine how to evolve the system.
+ 
 % 
 % Wile much work in numerical relativity includes matter, for the
 % purpose of this thesis  we restrict our attention to \emph{vacuum
