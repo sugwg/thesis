@@ -1,0 +1,232 @@
+%-----------------------------------------------------------------------
+%
+% File Name: thesis.tex
+%
+% Author: Lough, J. D.
+%
+%
+%-----------------------------------------------------------------------
+
+% document class and packages
+\documentclass[12pt,notitlepage]{report}
+\usepackage{bibunits}
+\usepackage{syrthesis}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{color}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{tensor}
+\usepackage{acronym}
+\usepackage{listings}
+\lstset{breaklines=true, basicstyle=\ttfamily}
+\usepackage{lscape}
+\usepackage{hyperref}
+\usepackage{dsfont}
+
+
+% journal definitions
+\newcommand{\apj}{{\it Astrophysical J.}}
+\newcommand{\apjl}{{\it Astrophysical J.}}
+\newcommand{\aap}{{\it Astron. and Astrophys.}}
+\newcommand{\cmp}{{\it Commun. Math. Phys.}}
+\newcommand{\grg}{{\it Gen. Rel. Grav.}}
+\newcommand{\cqg}{{\it Class. Quant. Grav.}}
+\newcommand{\lr}{{\it Living Reviews in Relativity}}
+\newcommand{\mnras}{{\it Mon. Not. Roy. Astr. Soc.}}
+\newcommand{\pr}{{\it Phys. Rev.}}
+\newcommand{\prl}{{\it Phys. Rev. Lett.}}
+\newcommand{\pra}{{\it Phys. Rev. A}}
+\newcommand{\prd}{{\it Phys. Rev. D}}
+\newcommand{\nat}{{\it Nature}}
+\newcommand{\prsl}{{\it Proc. R. Soc. Lond. A}}
+\newcommand{\ptrsl}{{\it Phil. Trans. Roy. Soc. London}}
+\newcommand{\rmp}{{\it Rev. Mod. Phys.}}
+
+% acronymn definitions
+\acrodef{LIGO}{Laser Interferometer Gravitational-wave Observatory}
+\acrodef{BNS}{binary neutron star}
+\acrodef{BBH}{binary black hole}
+\acrodef{NSBH}{neutron-star black-hole binary}
+\acrodef{FAR}{\emph{false alarm rate}}
+\acrodef{IFAR}{inverse false alarm rate}
+\acrodef{SNR}{signal-to-noise ratio}
+\acrodef{MM}{minimal match}
+\acrodef{IFO}{interferometer}
+\acrodef{CBC}{compact binary coalesence}
+\acrodef{GW}{gravitational wave}
+\acrodef{PDF}{probability distribution function}
+\acrodef{PSD}{power spectral density}
+\acrodef{S5}{LIGO's fifth science run}
+\acrodef{S6}{LIGO's sixth science run}
+\acrodef{VSR1}{Virgo's first science run}
+\acrodef{VSR2}{Virgo's second science run}
+\acrodef{VSR3}{Virgo's third science run}
+\acrodef{pN}{post-Newtonian}
+\acrodef{LVC}{LIGO Scienctific Collaboration and the Virgo Collaboration}
+\acrodef{DAG}{directed acyclic graph}
+\acrodef{HIPE}{Hierarchical Inspiral Pipeline Executable}
+\acrodef{HIPE}{Hierarchical Inspiral Pipeline Executable}
+\acrodef{SPA}{stationary-phase approximation}
+\acrodef{ISCO}{the inner-most stable circular orbit}
+\acrodef{FFT}{Fast-Fourier Transform}
+\acrodef{LLO}{LIGO Livingston Observatory}
+\acrodef{LHO}{LIGO Hanford Observatory}
+\acrodef{LSC}{LIGO Scientific Collaboration}
+\acrodef{DQ}{data quality}
+\acrodef{LLF}{local Lorentz frame}
+\acrodef{GR}{General Relativity}
+\acrodef{EM}{electromagnetic}
+\acrodef{PDH}{Pound Drever Hall}
+\acrodef{PSL}{Pre-Stabilized Laser}
+\acrodef{ISS}{Intensity Stabilization Servo}
+\acrodef{FSS}{Frequency Stabilization Servo}
+\acrodef{PMC}{Pre-Mode Cleaner}
+\acrodef{SCS}{Sub-Carrier Servo}
+
+% common macros
+\def\Msun{\ensuremath{\mathrm{M_\odot}}}
+\def\Mpc{\ensuremath{\,\mathrm{Mpc}}}
+\def\yr{\ensuremath{\,\mathrm{yr}}}
+\def\mchirp{\ensuremath{\mathcal{M}}}
+\def\mtotal{\ensuremath{\mathrm{M_{total}}}}
+\def\d{\ensuremath{\,\mathrm{d}}}
+\def\pls{\ensuremath{+}}
+\def\crs{\ensuremath{\times}}
+\def\effD{\ensuremath{\mathcal{D}}}
+\def\th{\ensuremath{^{\mathrm{th}}}}
+\def\rhonew{\ensuremath{\rho_{\mathrm{n}}}}
+\def\rhonewc{\ensuremath{\rho_{\mathrm{nc}}}}
+\def\ihope{\texttt{ihope}}
+\def\hipe{\texttt{HIPE}}
+
+\begin{document}
+
+\Abstract{
+
+
+This thesis describes various bits of graduate work from the last 14 years. It is really cool and should be read by everyone.
+
+}
+
+\title{
+Optical Trapping
+}
+\author{James D. Lough}
+\pastdegrees{B.S. Virginia Tech, 2001}
+\majorprof{Advisor}
+\submitdate{July 2014}
+\degree{Doctor of Philosophy}
+\program{Physics}
+\copyrightyear{2014}
+
+\majordept{Physics}
+\havededicationtrue
+\dedication{to\\my little scientists,\\Elizabeth and Henry}
+\haveminorfalse
+\copyrighttrue
+\doctoratetrue
+\figurespagetrue
+\tablespagetrue
+\signedtitlepfalse
+
+\beforepreface \prefacesection{Preface}
+
+The work presented in this thesis stems from my participation in the LIGO
+Scientific Collaboration and the Virgo Collaboration.
+
+\prefacesection{Conventions}
+
+We use the Einstein summation convention in which repeated upper and lower
+indices are summed over. Greek indices indicate all four spacetime dimensions,
+Latin indicate spatial dimensions only. An over-arrow indicates a vector with
+spatial components only, e.g., $\vec{x} = (x^1,x^2,x^3)$.
+
+\vspace{0.5cm}
+
+\noindent Expectation values of a variable are indicated by $\mathbb{E}()$.
+Averages, unless otherwise noted, are indicated by an overbar.
+
+\vspace{0.5cm}
+
+\noindent The time-stamps of interferometer data are measured in
+Global Positioning System (GPS) seconds: seconds since 00:00.00 UTC
+January 6, 1980 as measured by an atomic clock.
+
+\prefacesection{Acknowledgments}
+\input{acknowledge}
+
+\afterpreface
+
+\Chapter{Introduction}
+\label{ch:introduction}
+\input{introduction.tex}
+
+\Chapter{Optical Spring Stabilization}
+\label{ch:opspringstab}
+\input{optical_spring.tex}
+
+\Chapter{Angular Trapping}
+\label{ch:angletrap}
+\input{OT_paper.tex}
+
+\Chapter{Pre-Stabilized Laser}
+\label{ch:psl}
+\input{psl.tex}
+
+\Chapter{Linear Trap Experiment}
+\label{ch:lintrapex}
+\input{lintrap.tex}
+
+\Chapter{Digital System}
+\label{ch:digital}
+\input{digsys.tex}
+
+
+\Chapter{Noise Sources}
+\label{ch:noises}
+\input{noises.tex}
+
+%\Chapter{Feedback Control}
+%\label{ch:feedback}
+%\input(feedback.tex}
+
+
+\clearpage
+\bibliographystyle{unsrt}
+\bibliography{OT_paper,references}
+\addcontentsline{toc}{chapter}{\numberline {Bibliography}}
+
+\clearpage
+\birthplacedate{Blacksburg, Virginia \>\>August 30, 1973}
+\collegewherewhen{
+\>Virginia Tech \>\>B.S. Physics, 2001}
+
+\newpage
+\null%\vskip1in%
+\begin{center}
+{\Large\bf Vita}
+\end{center}
+
+\begin{startvita}
+\end{startvita}
+
+\renewenvironment{thebibliography}[1]%
+  {\begin{list}{\labelenumi\hss}%
+     {\usecounter{enumi}\setlength{\labelwidth}{3em}%
+      \setlength{\leftmargin}{5em}}}%
+  {\end{list}}
+\renewcommand{\bibitem}[1]{\item\label{#1}\relax}%
+\renewcommand{\theenumi}{\arabic{enumi}}%
+\begin{publications}
+\putbib[papers]
+\end{publications}
+
+\begin{honorarysocieties}
+\end{honorarysocieties}
+
+
+\end{document}
