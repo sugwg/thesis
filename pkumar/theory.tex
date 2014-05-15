@@ -998,7 +998,7 @@ the subject of recent studies~\cite{Buonanno:2009zt,NRPNComparisonBoyleetal}.
 \label{sec:NRWaveforms}
 
 General Relativity plays a major role in describing some of the most exotic 
-astrophysical processes and systems, like the physics of neutron stars, 
+astrophysical systems and processes, such as the physics of neutron stars, 
 black holes and accretion disks, supernova explosions, etc. Yet the theory 
 remains largely untested, except in the weak field slow motion regime. 
 The observation of gravitational radiation from merging neutron stars and/or
@@ -1010,89 +1010,59 @@ and all of them correspond to systems with a high degree of symmetry.
 % As the field equations of General Relativity are a set of multi-dimensional, 
 % nonlinear, coupled partial differential equations. 
 Analytic approximation schemes like the post-Newtonian theory are valid in
-the weak field regime, and become especially increasingly inadequate in 
+the weak field regime, and become increasingly inadequate in 
 modeling the last phases of compact binary coalescence. 
 This statement has been qualified in recent papers, e.g.~\cite{Nitz:2013mxa}.
 
 Many fields of Science and Engineering make use of (super-)computers for 
 high-accuracy numerical solutions of partial differential equations. 
-While Einstein's field equations are in a particularly difficult class of such
-equations, it is possible to obtain fully numerical solutions for dynamical
+Einstein's field equations are in a particularly difficult class of such
+equations, but it is possible to obtain fully numerical solutions for dynamical
 scenarios governed by them. This proved to be a remarkably difficult task
 when the first attempts were made, both due to technical and conceptual 
 difficulties as well as limited computing power. After the breakthrough
-simulations fo merging black holes by Pretorius in 
+simulations of merging black holes by Pretorius in 
 2005~\cite{Pretorius2005}, and foundational work by researchers at 
 Goddard~\cite{Campanelli:2005dd}, University of Texas at Brownville and Florida
 Atlantic University~\cite{Campanelli:2005dd} in the same year, there has been
 rapid progress in the field. 
 We refer the reader to review articles by Hindler~\cite{Hinder:2010vn} and
-Pfeiffer~\cite{Pfeiffer:2012pc} for more details that can be provided within 
-the scope of this dissertation. 
+Pfeiffer~\cite{Pfeiffer:2012pc} for more details that could not be provided
+within the scope of this dissertation. 
 
 Most approaches in Numerical Relativity (NR) proceed by the ``3+1'' 
-decomposition, or the foliation of spacetime into non-intersection spacelike
-3-surfaces that can be thought of as level surfaces for a globally defined 
-time function. The situation is qualitatively similar to classical 
-electromagnetism. Maxwell equations can be written in the manifestly covariant
-form as
+decomposition, where they split spacetime into three-dimensional space on the
+one hand, and time on the other. This is achieved through foliation of 
+spacetime into non-intersecting spacelike 3-surfaces which can be thought of as
+level surfaces of a globally defined time function. The situation is 
+qualitatively similar to classical electromagnetism. Maxwell equations can be 
+written in the manifestly covariant form as
 %
 \begin{align*}
 \cd_\nu F^{\mu\nu} &= j^\mu \\
-\cd_\nu {F*}^{\mu\nu} &= 0
+\cd_\nu {F_*}^{\mu\nu} &= 0
 \end{align*}
 %
-where $F$ is the electromagnetic field strength tensor and $F*$ is its dual. 
+where $F$ is the electromagnetic field strength tensor and $F_*$ is its dual. 
 While conceptually simpler, this is not the form that is the most convenient 
 for performing numerical evolutions. Instead, these are re-written in a 
 form that makes explicit the role of time, disentangling it from other degrees
 of freedom:
 %
-\begin{align}
-\label{eq:constraints1}
+\begin{equation}\begin{split}\label{eq:constraints1}
 \bm{\nabla} \cdot \mathbf{E} &= 4\pi \rho \\
-\label{eq:constraints2}
 \bm{\nabla} \cdot \mathbf{B} &= 0 \\
-\label{eq:evolution1}
 \partial_t \mathbf{E}   &= \bm{\nabla} \times \mathbf{B} - 4\pi j^\mu \\
-\label{eq:evolution2}
-\partial_t \mathbf{B}   &= - \bm{\nabla} \times \mathbf{E} \\ \nonumber
-\end{align}
+\partial_t \mathbf{B}   &= - \bm{\nabla} \times \mathbf{E} 
+\end{split}\end{equation}
+           
 %
+where $\bm{\cd}$ is the 3-dimensional spatial vector gradient operator.
 Note that out of the set of four equations above, the first two put 
 {\it constraints} on electromagnetic fields that could exist in a dynamical
 situation, while the last two govern the time {\it evolution} of the same.
-% 
-% 
-% Wile much work in numerical relativity includes matter, for the
-% purpose of this thesis  we restrict our attention to \emph{vacuum
-% spacetimes}, that is, situations where $T_{\mu\nu} = 0$ everywhere.
-% It is a remarkable fact that, although black holes are characterized
-% by a mass parameter, a spacetime containing only black holes and
-% gravitational waves is a vacuum.  We need therefore only be concerned
-% with general relativity, without considering the equations governing
-% any other fields.
-% 
-% In general relativity the split into space+time  is accomplished by
-% writing the metric as 
-% %
-% \begin{equation*}
-% ds^2 = -(\alpha^{2}-\gamma_{ij}\beta^{i}\beta^{j})dt^{2}
-%    + 2 \gamma_{ij}\beta^{j}dt\,dx^{i}
-%    + \gamma_{ij}dx^{i}\,dx^{j}, 
-% \end{equation*}
-% %
-% where $\gamma_{ij}$ is a metric on the slices of constant time $t$,
-% and the scalar function $\alpha$ and  vector field $\beta^i$ are
-% commonly used to encode the freedom of coordinate choice.  This
-% results in a division of the Einstein equation.~\ref{eq:einsteins_equation}
-% into constraint and evolution equations.  However, this split is not
-% uniquely determined and care must be taken to ensure that the
-% resulting systems are well-behaved.  In particular, there may be
-% issues ensuring that the constraints remain satisfied as the system
-% evolves.  While this is guaranteed mathematically in the continuum
-% limit it may not be true once the system is discretized.
 
+In general relativity the spacetime metric can be (implicitly) written as
 %
 \begin{equation*}
 ds^2 = -(\alpha^{2}-\gamma_{ij}\beta^{i}\beta^{j})dt^{2}
@@ -1100,118 +1070,94 @@ ds^2 = -(\alpha^{2}-\gamma_{ij}\beta^{i}\beta^{j})dt^{2}
    + \gamma_{ij}dx^{i}\,dx^{j}, 
 \end{equation*}
 %
+to make manifest the split into space+time. Here $\gamma_{ij}$ is the induced 
+metric on the space hypersurfaces defined by a constant time coordinate. 
+% The scalar $\alpha$ is the {\it lapse} function which measures how much {\it proper}
+% time elapses between neighbouring constant-time hypersurfaces along the normal
+% to the hypersurface.The vector $\beta_i$ is the 
+The scalar $\alpha$ and the vector $\beta_i$ relate the coordinate systems on
+neighbouring hypersurfaces, as well as encode the foliation structure.
+This decomposition manifestly separates the time coordinate from the spacial
+ones. When written in this formalism, Einstein field equations decompose into
+separate constraint and evolution equations, similar to Maxwell equations
+written as Eq.~\ref{eq:constraints1}.
+However, this split is not unique and needs to be carefully engineered to 
+ensure that the constraints remain satisfied as the system is numerically 
+evolved. This is because, when the system is discretized, it is possible for
+numerical instabilities to grow and possibly lead to constraint violating 
+solutions.
+
+In this dissertation, we would concern ourselves with vacuum systems, where 
+we only need to use the field equations of general relativity. More 
+specifically, we will concern ourselves with black hole binaries, for which 
+$T_{\mu\nu}=0$ everywhere. 
+
+% 
+Once the decomposition is chosen, it is necessary to find the initial 
+field configuration that satisfies the Einstein constraint equations as well as
+describe the system of interest. Most approaches construct the initial 
+data by treating the metric on the initial hypersurface as being 
+{\it conformally} flat. This means that each spacetime point and a finite 
+neighborhood is treated as having a flat spacetime metric.
+While we can put ourselves in a frame where the metric and its first
+derivatives vanish at a point, it is not true for a finite neighborhood in 
+general.
+This deviation from true physics manifests as a burst of {\it junk}
+radiation at the beginning of the simulation. 
+%
+The spacetime singularity of black holes pose another problem for the 
+numerical construction of he initial data. A careful treatment of the 
+singularity is necessary to ensure that none of the physical fields on the
+numerical grid blow up to infinity. One conceptually simpler approach is to 
+excise the singularity from the computational grid. In this case, it is
+made sure that the excised region is causally disconnected with the exterior. 
+Another more commonly used approach involves treating the black holes as 
+``wormholes'', and the interior of the hole is taken as asymptotically
+flat and compactified. 
+
+With the initial data specified on a spacelike hypersurface, the Einstein 
+evolution equations can be used to evolve the dynamical system in time. 
+Most codes use the finite-difference technique, where the derivatives of 
+tensor fields are computed discretely and used to evolve the metric at
+each point on the hypersurface. An alternative is to use {\it spectral}
+methods, in which the solution is expanded in terms of a set of basis functions
+and the coefficients are evolved. In this scheme, differentiation can be
+performed analytically. For the same computational cost, the latter exhibits
+exponential convergence while the former has polynomial
+convergence~\cite{Hinder:2010vn}. There is always a tradeoff between 
+computational cost and accuracy in numerical evolutions of binary black holes. 
+A finer grid gives more accurate results, but increases the cost of the 
+evolution. Most contemporary codes use {\it adaptive mesh refinement},
+a technique which involves laying down a finer grid only in regions close to the
+holes where the various tensor fields are changing rapidly.
+
+
+Finally, the extraction of gravitational radiation is done by computing 
+the \emph{Newman-Penrose scalar}, which in vacuum may be written
+%
 %
 \begin{equation*}
 \Psi_4 = R_{\alpha \beta \gamma \delta} n^\alpha \bar{m}^\beta n^\gamma
 \bar{m}^\delta
 \end{equation*}
 %
-where $m$ and $n$ are vectors constructed from the basis vectors,
-which in spherical coordinates are
+where $m$ and $n$ are vectors constructed from the basis vectors.
+In spherical coordinates these are
 %
 \begin{align*}
-n &= \frac{1}{\sqrt{2}} \left(\hat{t} - \hat{r}\right) \\
-m &= \frac{1}{\sqrt{2}} \left(\hat{\theta} +i  \hat{\phi}\right)
+n &= \frac{1}{\sqrt{2}} \left(\hat{t} - \hat{r}\right), \\
+m &= \frac{1}{\sqrt{2}} \left(\hat{\theta} +\ii  \hat{\phi}\right),
 \end{align*}
 %
+and $\bar{m}$ is the complex conjugate of $m$. The gravitational waveform
+can be obtained from $\Psi_4$ by solving the differential equation
 %
 \begin{equation*}
-\Psi_4 = \ddot{h}_+ - i \ddot{h}_\times
+\Psi_4 = \ddot{h}_+ - i \ddot{h}_\times,
 \end{equation*}
-
-
- 
-% 
-% Wile much work in numerical relativity includes matter, for the
-% purpose of this thesis  we restrict our attention to \emph{vacuum
-% spacetimes}, that is, situations where $T_{\mu\nu} = 0$ everywhere.
-% It is a remarkable fact that, although black holes are characterized
-% by a mass parameter, a spacetime containing only black holes and
-% gravitational waves is a vacuum.  We need therefore only be concerned
-% with general relativity, without considering the equations governing
-% any other fields.
-% 
-% In general relativity the split into space+time  is accomplished by
-% writing the metric as 
-% %
-% \begin{equation*}
-% ds^2 = -(\alpha^{2}-\gamma_{ij}\beta^{i}\beta^{j})dt^{2}
-%    + 2 \gamma_{ij}\beta^{j}dt\,dx^{i}
-%    + \gamma_{ij}dx^{i}\,dx^{j}, 
-% \end{equation*}
-% %
-% where $\gamma_{ij}$ is a metric on the slices of constant time $t$,
-% and the scalar function $\alpha$ and  vector field $\beta^i$ are
-% commonly used to encode the freedom of coordinate choice.  This
-% results in a division of the Einstein equation.~\ref{eq:einsteins_equation}
-% into constraint and evolution equations.  However, this split is not
-% uniquely determined and care must be taken to ensure that the
-% resulting systems are well-behaved.  In particular, there may be
-% issues ensuring that the constraints remain satisfied as the system
-% evolves.  While this is guaranteed mathematically in the continuum
-% limit it may not be true once the system is discretized.
-% 
-% Once a scheme for performing the 3+1 split has been decided upon it is
-% then necessary to find initial data that captures the situation of
-% interest and satisfies the constraint equations.  There are many ways
-% to do this.  Most approaches assume the spatial metric on the initial
-% slice is \emph{conformally flat}, meaning each point has a
-% neighborhood which can be mapped to flat space.  We have seen that at
-% any one point the metric can be made to be the flat-space metric with
-% vanishing first derivatives, but this does not extend into a
-% neighborhood in general.  In particular, NR systems do not include the
-% history of gravitational waves that would have been produced by the
-% system prior to the start of the simulation.  This deviation from the
-% true physics manifests as a burst of spurious ``junk radiation'' at
-% the start of the system.
-% 
-% The creation of initial conditions is complicated for black holes by
-% the presence of singularities, which can not be captured in a
-% simulation.  Most codes adopt the ``moving puncture'' approach.  The
-% idea is to consider black holes as ``wormholes'' with an internal
-% asymptotically flat region, and then compactify this region.  A
-% conceptually simpler approach is to excise the points near the
-% singularity from the computational grid, but care must be taken to
-% ensure that the excised region is causally disconnected from the
-% computational domain in order to avoid unphysical results.
-% 
-% There are a number of techniques for performing the evolution.  A
-% common approach is to evaluate the metric on a grid and replace
-% derivatives with differences.  An alternative is to use \emph{spectral
-% methods}, which involve expanding the solution in terms of a set of
-% basis functions, and then evolving the coefficients.  In this scheme
-% differentiation can be performed analytically.  In either scheme there
-% is a tradeoff between accuracy and performance.  A finer grid will
-% give more accurate results, but at the cost of higher computational
-% cost.  As simulations typically take weeks to months even on large
-% computer clusters, improving the performance is desirable.  Most codes
-% therefore use some form of \emph{adaptive mesh refinement}, employing
-% a finer grid only in regions close to the holes where the metric is
-% changing rapidly.
-% 
-% In order to extract gravitational-wave information most approaches use
-% the \emph{Newman-Penrose scalar}, which in vacuum may be written
-% %
-% \begin{equation*}
-% \Psi_4 = R_{\alpha \beta \gamma \delta} n^\alpha \bar{m}^\beta n^\gamma
-% \bar{m}^\delta
-% \end{equation*}
-% %
-% where $m$ and $n$ are vectors constructed from the basis vectors,
-% which in spherical coordinates are
-% %
-% \begin{align*}
-% n &= \frac{1}{\sqrt{2}} \left(\hat{t} - \hat{r}\right) \\
-% m &= \frac{1}{\sqrt{2}} \left(\hat{\theta} +i  \hat{\phi}\right)
-% \end{align*}
-% %
-% and $\bar{m}$ is the complex conjugate of $m$. The gravitational-wave
-% strain is related to $\Psi_4$ by two time derivatives,
-% %
-% \begin{equation*}
-% \Psi_4 = \ddot{h}_+ - i \ddot{h}_\times
-% \end{equation*}
-% 
+%
+usually decomposing both sides into a basis of spin weighted spherical 
+harmonics.
 
 \subsection{Effective One-Body}
 \label{ssec:EOB}
