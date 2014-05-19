@@ -26,7 +26,7 @@ In order to get the GPS antenna signal we needed about 250' of low-loss 1/2" dia
 \begin{figure}[htbp]
 	\centering
 		\includegraphics[width=15cm]{./figures/IMG_1308.jpg}
-	\caption{{GPS Antenna Location}}
+	\caption[GPS Antenna Location]{The GPS antenna is located }
 	\label{fig:gps_antenna}
 \end{figure}
 
@@ -34,7 +34,7 @@ The 1PPS signal from the Trimble Thunderbolt GPS receiver is a fixed pulse width
 
 I have fixed this by extending the pulse to about 15 microseconds using a 555 timer chip in monostable mode. The input has to be an inverse pulse so I inverted the pulse in GPS control software. This option is available in the Timing Receiver Configuration window.
 
-See attached NE555P spec sheet (p.9) for the schematic that I used. Only difference is R\_L is between output and ground instead of V\_CC.
+See attached NE555P spec sheet (p.9) for the schematic that I used. Only difference is $R_L$ is between output and ground instead of $V_{CC}$.
 
 I scavenged a 5V power supply from an old 10baseT ethernet hub. I took the ferrites and electrolytic capacitor that were on the supply input in the hub itself and added them to this board for noise suppression.
 
@@ -43,7 +43,7 @@ R\_A is a small potentiometer. If you need to adjust the pulse width, just open 
 \begin{figure}[htbp]
 	\centering
 		\includegraphics[width=15cm]{./figures/timer555.png}
-	\caption{{555 Timer Diagram}}
+	\caption[555 Timer Diagram]{This block diagram depicts the function of the 555 timer. The }
 	\label{fig:timer_diag}
 \end{figure}
 
@@ -68,9 +68,6 @@ We have acquired a clone of the front end disk used at Livingston. The disk was 
 
 
 \section{Using LLO clone disk}
-
-
-
 \subsection{LLO tar deploy}
 
 Using the tar file from LLO...
@@ -79,7 +76,7 @@ Using the tar file from LLO...
 
 \subsubsection{Diskless Node Install}
 
-\begin{itemize}
+\begin{enumerate}
     \item Acquire machine with same architecture as front-end (presumably x86\_64).
     \item Login using gentoo minimal-CD or Live-DVD.
     \item Repartition first disk (/dev/sda) to one partition and create ext3 filesystem.
@@ -111,7 +108,7 @@ tar -xvf fe/fe.tar.gz
 \end{lstlisting}
 
     \item chroot into new filesystem and setup for use on network...
-\end{itemize}
+\end{enumerate}
 
 
 \subsection{Minimal tar deploy}
@@ -122,14 +119,15 @@ Create a tar file without the portage, front-end target, and cvs/svn directories
 
 This is the procedure used to create an archive of a front-end system modified for use at Syracuse. Here, I am using 10.20.1.44 (s1boot0) as the machine to boot from (the tftp server) and 10.20.1.45 (s1labfe1) is the diskless front-end machine. This can easily be modified for installation directly onto the hard drive.
 
+
 \begin{enumerate}
-    \item Copy the fe tar file to \$\{FE\_LOCATION\} and untar.
+    \item Copy the fe tar file to \lstin?${FE_LOCATION}? and untar.
 \begin{lstlisting}
 cd ${FE_LOCATION}
 cp /lab/frontend/sata-disk-backups/mnt2/fe.tar.gz .
 tar -xvpf fe.tar.gz
 \end{lstlisting}
-    \item \$\{FE\_LOCATION\}/fe is now the root directory for the front-end system
+    \item \lstin?${FE_LOCATION}/fe? is now the root directory for the front-end system
 \begin{lstlisting}
 export FE_ROOT=${FE_LOCATION}/fe
 \end{lstlisting}
@@ -137,32 +135,32 @@ export FE_ROOT=${FE_LOCATION}/fe
 \begin{lstlisting}
 find ${FE_LOCATION} -xdev -user 1001 -print0 | xargs -0 chown 512:512
 \end{lstlisting}
-    \item Change the lines for controls in the files \$\{FE\_ROOT\}/etc/passwd and \$\{FE\_LOCATION\}/fe/etc/group
-    \item Edit \$\{FE\_ROOT\}/etc/ntp.conf: Change "server" and "restrict" lines and comment out "broadcast" line
+    \item Change the lines for controls in the files \lstin?${FE_ROOT}/etc/passwd? and \lstin?${FE_LOCATION}/fe/etc/group?
+    \item Edit \lstin?${FE_ROOT}/etc/ntp.conf?: Change "server" and "restrict" lines and comment out "broadcast" line
 \begin{lstlisting}
 server 10.20.1.25
 restrict 10.20.1.0 mask 255.255.255.0 nomodify nopeer notrap
 \end{lstlisting}
-    \item Comment out entries in \$\{FE\_ROOT\}/etc/conf.d/net and add this line:
+    \item Comment out entries in \lstin?${FE_ROOT}/etc/conf.d/net? and add this line:
 \begin{lstlisting}
 config_eth4=( "10.20.1.45 netmask 255.255.0.0 broadcast 10.20.255.255" )
 \end{lstlisting}
-    \item Change ip address found in 3 files in \$\{FE\_ROOT\}/etc/xinetd.d/ from 10.144.0.0/24 to 10.20.1.0/24
-    \item Comment out 3 lines in \$\{FE\_ROOT\}/etc/resolve.conf
-    \item remove \$\{FE\_ROOT\}/opt/rtcds
+    \item Change ip address found in 3 files in \lstin?${FE_ROOT}/etc/xinetd.d/? from \lstin?10.144.0.0/24? to \lstin?10.20.1.0/24?
+    \item Comment out 3 lines in \lstin?{FE_ROOT}/etc/resolve.conf?
+    \item remove \lstin?${FE_ROOT}/opt/rtcds?
 \begin{lstlisting}
 rm -rf ${FE_ROOT}/opt/rtcds
 \end{lstlisting}
     \item Comment out all lines in fstab except for "shm" and add lines for root and lab.
-\begin{lstlisting}
-echo -e "10.20.1.44:/tftpboot/s1labfe1      /               nfs     sync,hard,intr,rw,nolock,rsize=8192,wsize=8192    0 0" >> ${FE_ROOT}/etc/fstab
-echo -e "10.20.1.15:/sugwg/projects/lab     /lab            nfs     sync,hard,intr,rw,nolock,rsize=8192,wsize=8192    0 0\n" >> ${FE_ROOT}/etc/fstab
+\begin{lstlisting}[basicstyle=\tiny]
+10.20.1.44:/tftpboot/s1labfe1   /     nfs  sync,hard,intr,rw,nolock,rsize=8192,wsize=8192 0 0
+10.20.1.15:/sugwg/projects/lab  /lab  nfs  sync,hard,intr,rw,nolock,rsize=8192,wsize=8192 0 0
 \end{lstlisting}
-    \item Change EPICS\_CA\_ADDR\_LIST in \$\{FE\_ROOT\}/opt/cdscfg directory
+    \item Change \lstin?EPICS_CA_ADDR_LIST in ${FE_ROOT}/opt/cdscfg? directory
 \begin{lstlisting}
 find /ligo/feback/fe/opt/cdscfg/ -type f -print0 | xargs -0 sed --in-place=.old s/10.144.0/10.20.255/g
 \end{lstlisting}
-    \item Comment out "source /opt/cdscfg/rtsetup.sh" from \$\{FE\_ROOT\}/home/controls/.bashrc and add the following lines in it's place:
+    \item Comment out \lstin?source /opt/cdscfg/rtsetup.sh? from \lstin?${FE_ROOT}/home/controls/.bashrc? and add the following lines in it's place:
 \begin{lstlisting}
 export IFO=X2
 export ifo=x2
@@ -190,7 +188,7 @@ This is how to build a disk that can be installed directly into a front-end mach
 
 \begin{enumerate}
     \item Locate a spare disk and install in a machine connected to the internal network that you have root access to.
-    \item Mount /lab on this machine.
+    \item Mount \lstin?/lab? on this machine.
     \item Use fdisk or parted to partition the spare disk.
 \begin{lstlisting}
 Number  Start   End     Size    Type     File system     Flags
@@ -198,5 +196,6 @@ Number  Start   End     Size    Type     File system     Flags
  2      32.5MB  542MB   510MB   primary  linux-swap(v1)
  3      542MB   1000GB  1000GB  primary  ext4
 \end{lstlisting}
-    \item Mount /dev/sd* (blank spare disk) at /mnt/fe
+    \item Mount \lstin?/dev/sd*? (blank spare disk) at \lstin?/mnt/fe?
 \end{enumerate}
+

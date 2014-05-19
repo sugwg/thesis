@@ -27,7 +27,8 @@ BBLFILES=
 default: thesis.pdf
 
 thesis.pdf: $(TEXFILES) $(BIBFILES) $(STYFILES) $(BSTFILES)
-	pdflatex thesis && bibtex thesis && bibtex thesis && pdflatex thesis && pdflatex thesis
+	pdflatex thesis && bibtex thesis && bibtex thesis && pdflatex thesis && \
+        pdflatex thesis && cp thesis.pdf ~/Dropbox/Documents/Thesis/
 
 gr-qc: thesis.tgz
 
