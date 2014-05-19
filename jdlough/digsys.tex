@@ -1,6 +1,25 @@
 
 \section{System Overview}
 
+In order to provide control of our small optic suspensions, we had the option of building either a digital or analog feedback system.
+Although either option would work for the experiment the digital system provides additional benifits:
+
+\begin{enumerate}
+\item Easy modification of feedback loops
+\item Builds Familiarity to LIGO digital systems
+\item Can be used as a platform for testing new LIGO tools
+\item Once built, it is a platform for rapid implementation of future control loops
+\end{enumerate}
+
+The digital system employed at Syracuse closely resembles the LIGO digital system. It is composed of the following major components:
+\begin{enumerate}
+\item Real-time Front-end for digital feedback and control
+\item ADC and DAC for interfacing digital system with the experiment
+\item Data Acquisition
+\item Workstation for controlling the experiment, running tests, and analyzing data
+\item Boot server for serving the diskless front-end machine
+\end{enumerate}
+
 \begin{figure}[htbp]
 	\centering
 		\includegraphics[width=15cm]{./figures/FrontEndSystem.pdf}
@@ -60,19 +79,21 @@ The first thing to check in the GPS software is the status. It should say "over-
 
 \section{Hardware Integration}
 
-\section{Code Installation}
+\section{Front-End Code Installation}
 
 We have acquired a clone of the front end disk used at Livingston. The disk was backed up locally (sugar-dev3:/lab/frontend/sata-disk-backups/mnt2 as of 2013/02/18). The disk was adapted for use at Syracuse. The disk failed on 6 Feb 2013. This page documents the second build of the front end at syracuse...
 
 
 
 
-\section{Using LLO clone disk}
-\subsection{LLO tar deploy}
+\subsection{Using LLO Cloned Disk}
 
-Using the tar file from LLO...
+The cloned disk is saved in \lstin?/lab/frontend/sata-disk-backups/mnt2? and a tar file
+of the contents was made on
+\todo{insert date}. We use the tar file from LLO to build a new machine. The new machine
+can either be used to serve a diskless front-end machine or used as a standalone front-end
+machine.
 
-\subsubsection{Local Disk Install}
 
 \subsubsection{Diskless Node Install}
 
@@ -108,8 +129,19 @@ tar -xvf fe/fe.tar.gz
 \end{lstlisting}
 
     \item chroot into new filesystem and setup for use on network...
+
+\begin{lstlisting}
+mount -t proc proc /mnt/fe/proc
+mount --rbind /sys /mnt/fe/sys
+mount --rbind /dev /mnt/fe/dev
+chroot /mtn/fe /bin/bash
+source /etc/profile
+\end{lstlisting}
+\todo[inline, color=red]{Add networking configuration details}
 \end{enumerate}
 
+
+\subsubsection{Local Disk Install}
 
 \subsection{Minimal tar deploy}
 
@@ -153,8 +185,8 @@ rm -rf ${FE_ROOT}/opt/rtcds
 \end{lstlisting}
     \item Comment out all lines in fstab except for "shm" and add lines for root and lab.
 \begin{lstlisting}[basicstyle=\tiny]
-10.20.1.44:/tftpboot/s1labfe1   /     nfs  sync,hard,intr,rw,nolock,rsize=8192,wsize=8192 0 0
-10.20.1.15:/sugwg/projects/lab  /lab  nfs  sync,hard,intr,rw,nolock,rsize=8192,wsize=8192 0 0
+10.20.1.44:/tftpboot/s1labfe1  /    nfs sync,hard,intr,rw,nolock,rsize=8192,wsize=8192 0 0
+10.20.1.15:/sugwg/projects/lab /lab nfs sync,hard,intr,rw,nolock,rsize=8192,wsize=8192 0 0
 \end{lstlisting}
     \item Change \lstin?EPICS_CA_ADDR_LIST in ${FE_ROOT}/opt/cdscfg? directory
 \begin{lstlisting}
