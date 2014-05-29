@@ -29,14 +29,65 @@ perfectly gaussian beam of the wrong size and location. We start with
 the equations for the Hermite-Gaussian beam expansion as discussed in
 \cite{Siegman86}.
 
+\newcommand{\intinfxy}[1]{\int^{\infty}_{- \infty} \int^{\infty}_{- \infty} #1 \,dx \,dy}
+\newcommand{\intinfrt}[1]{\int^{2 \pi}_{0} \int^{\infty}_{0} #1 r \,dr \,d\theta}
+
+
 \begin{align}
-    c_{nm} &= \int^{\infty}_{- \infty} \int^{\infty}_{- \infty}
-    E(x,y,z) u_n^*(x,z)u_m^*(y,z) \,dx \,dy
-\\  c_{00} &= \int^{\infty}_{- \infty} \int^{\infty}_{- \infty}
-    E(x,y,z) u_0^*(x,z)u_0^*(y,z) \,dx \,dy
-\\  c_{00} &= \int^{\infty}_{- \infty} \int^{\infty}_{- \infty}
-    u_0(x,z-z_0)u_0(y,z-z_0) u_0^*(x,z)u_0^*(y,z) \,dx \,dy
-\\  c_{00} &= \big( \frac{2}{\pi} \big)
+    c_{nm} &= \intinfxy{
+    E(x,y,z) u_n^*(x,z)u_m^*(y,z)}
+\\  &= \intinfxy{
+    E(x,y,z) u_0^*(x,z)u_0^*(y,z)}
+\\  &= \intinfxy{
+    u_0(x,z-z_0)u_0(y,z-z_0) u_0^*(x,z)u_0^*(y,z)}
+\\  &= \intinfxy{ \left( \frac{2}{\pi w^2_0} \right) \left( \frac{q_0}{q(z)} \right)
+    \left( \frac{q^*_0}{q^*(z)} \right) \exp \left[-ik \left( x^2 + y^2  \right)
+    \left( \frac{1}{2q(z)} + \frac{1}{2q^*(z)} \right) \right]}
+\end{align}
+
+Since $q(z) = q_0 + z - z_0$, and $q_0$ is purely imaginary,
+
+
+\begin{multline}
+    c_{00} = \intinfxy{ \left( \frac{2}{\pi w^2_0} \right)
+    \left( \frac{-q^2_0}{(q_0+z-z_0)(-q_0+z)} \right) \\
+    \exp \left[
+    \frac{-ik \left( x^2 + y^2  \right)}{2} \left( \frac{(q_0+z-z_0)+(-q_0+z)}{(q_0+z-z_0)(-q_0+z)} \right)
+    \right]}
+\end{multline}
+
+A careful analysis of the exponent will reveal that the real part must be greater than $0$.
+We can therefore solve the Gaussian integral, setting $s = \frac{-ik \left( x^2 + y^2
+\right)}{2} \left( \frac{(q_0+z-z_0)+(-q_0+z)}{(q_0+z-z_0)(-q_0+z)} \right)$
+
+\begin{multline}
+    c_{00} = \intinfrt{ \left( \frac{2}{\pi w^2_0} \right)
+    \left( \frac{-q^2_0}{(q_0+z-z_0)(-q_0+z)} \right) \\
+    \exp \left[
+    \frac{-ik \left( r^2  \right)}{2} \left( \frac{(q_0+z-z_0)+(-q_0+z)}{(q_0+z-z_0)(-q_0+z)} \right)
+    \right]}
+\end{multline}
+
+\begin{align}
+    c_{00} &= \intinfrt{ \left( \frac{2}{\pi w^2_0} \right)
+    \left( \frac{-q^2_0}{(q_0+z-z_0)(-q_0+z)} \right)
+    \exp \left[
+    s
+    \right]}
+\\  &= \int^{\infty}_{0} \left( \frac{4}{w^2_0} \right)
+    \left( \frac{-q^2_0}{(q_0+z-z_0)(-q_0+z)} \right)
+    \exp \left[
+    s
+    \right] r \,dr
+\\  &= \int^{0}_{-\infty} \left( \frac{4}{w^2_0} \right)
+    \left( \frac{-q^2_0}{(q_0+z-z_0)+(-q_0+z)} \right)
+    \exp \left[ s
+    \right] \frac{1}{-ik} \,ds
+\\  &= \left( \frac{4i}{kw^2_0} \right)
+    \left( \frac{-q^2_0}{(q_0+z-z_0)+(-q_0+z)} \right)
+    \int^0_{-\infty} e^s \,ds
+\\  &= \left( \frac{4i}{kw^2_0} \right)
+    \left( \frac{-q^2_0}{(q_0+z-z_0)+(-q_0+z)} \right)
 \end{align}
 
 
