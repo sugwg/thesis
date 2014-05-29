@@ -40,67 +40,80 @@ the equations for the Hermite-Gaussian beam expansion as discussed in
     E(x,y,z) u_0^*(x,z)u_0^*(y,z)}
 \\  &= \intinfxy{
     u_0(x,z-z_0)u_0(y,z-z_0) u_0^*(x,z)u_0^*(y,z)}
-\\  &= \intinfxy{ \left( \frac{2}{\pi w^2_0} \right) \left( \frac{q_0}{q(z)} \right)
-    \left( \frac{q^*_0}{q^*(z)} \right) \exp \left[-ik \left( x^2 + y^2  \right)
-    \left( \frac{1}{2q(z)} + \frac{1}{2q^*(z)} \right) \right]}
+\end{align}
+
+We now assign the labels $b$ for the beam and $c$ for the cavity,
+
+\begin{align}
+    c_{00} &= \intinfxy{
+    u_{b0}(x,z-z_0)u_{b0}(y,z-z_0) u_{c0}^*(x,z)u_{c0}^*(y,z)}
+\\  &= \intinfxy{ \left( \frac{2}{\pi w^2_0} \right) \left( \frac{q_{b0}}{q_{b}(z)} \right)
+    \left( \frac{q^*_{c0}}{q^*_{c}(z)} \right) \exp \left[-ik \left( x^2 + y^2  \right)
+    \left( \frac{1}{2q_b(z)} + \frac{1}{2q^*_c(z)} \right) \right]}
 \end{align}
 
 Since $q(z) = q_0 + z - z_0$, and $q_0$ is purely imaginary,
 
 
 \begin{multline}
-    c_{00} = \intinfxy{ \left( \frac{2}{\pi w^2_0} \right)
-    \left( \frac{-q^2_0}{(q_0+z-z_0)(-q_0+z)} \right) \\
+    c_{00} = \intinfxy{ \left( \frac{2}{\pi w_{b0} w_{c0}} \right)
+    \left( \frac{- q_{b0} q_{c0}}{(q_{b0}+z-z_0)(-q_{c0}+z)} \right) \\
     \exp \left[
-    \frac{-ik \left( x^2 + y^2  \right)}{2} \left( \frac{(q_0+z-z_0)-(-q_0+z)}{(q_0+z-z_0)(-q_0+z)} \right)
+    \frac{-ik \left( x^2 + y^2  \right)}{2} \left( \frac{(q_{b0}+z-z_0)-(-q_{c0}+z)}{(q_{b0}+z-z_0)(-q_{c0}+z)} \right)
     \right]}
 \end{multline}
 
-A careful analysis of the exponent will reveal that the real part must be greater than $0$.
-We can therefore solve the Gaussian integral, setting $s = \frac{-ik \left( x^2 + y^2
-\right)}{2} \left( \frac{(q_0+z-z_0)-(-q_0+z)}{(q_0+z-z_0)(-q_0+z)} \right)$
+We start by changing to cylindrical coordinates,
 
 \begin{multline}
-    c_{00} = \intinfrt{ \left( \frac{2}{\pi w^2_0} \right)
-    \left( \frac{-q^2_0}{(q_0+z-z_0)(-q_0+z)} \right) \\
+    c_{00} = \intinfrt{ \left( \frac{2}{\pi w_{b0} w_{c0}} \right)
+    \left( \frac{- q_{b0} q_{c0}}{(q_{b0}+z-z_0)(-q_{c0}+z)} \right) \\
     \exp \left[
-    \frac{-ik \left( r^2  \right)}{2} \left( \frac{(q_0+z-z_0)-(-q_0+z)}{(q_0+z-z_0)(-q_0+z)} \right)
+    \frac{-ik \left( r^2  \right)}{2} \left( \frac{(q_{b0}+z-z_0)-(-q_{c0}+z)}{(q_{b0}+z-z_0)(-q_{c0}+z)} \right)
     \right]}
 \end{multline}
 
+A careful analysis of the exponent will reveal that the real part must be less than $0$.
+We can therefore solve the Gaussian integral, setting $s =
+\frac{-ik \left( r^2  \right)}{2} \left( \frac{(q_{b0}+z-z_0)-(-q_{c0}+z)}{(q_{b0}+z-z_0)(-q_{c0}+z)} \right)
+$,
+
 \begin{align}
-    c_{00} &= \intinfrt{ \left( \frac{2}{\pi w^2_0} \right)
-    \left( \frac{-q^2_0}{(q_0+z-z_0)(-q_0+z)} \right)
-    \exp \left[
-    s
-    \right]}
-\\  &= \int^{\infty}_{0} \left( \frac{4}{w^2_0} \right)
-    \left( \frac{-q^2_0}{(q_0+z-z_0)(-q_0+z)} \right)
-    \exp \left[
-    s
-    \right] r \,dr
-\\  &= \int^{0}_{-\infty} \left( \frac{4}{w^2_0} \right)
-    \left( \frac{-q^2_0}{(q_0+z-z_0)-(-q_0+z)} \right)
+    c_{00} &= \intinfrt{ \left( \frac{2}{\pi w_{b0} w_{c0}} \right)
+    \left( \frac{- q_{b0} q_{c0}}{(q_{b0}+z-z_0)(-q_{c0}+z)} \right)
     \exp \left[ s
-    \right] \frac{1}{-ik} \,ds
-\\  &= \left( \frac{4i}{kw^2_0} \right)
-    \left( \frac{-q^2_0}{(q_0+z-z_0)-(-q_0+z)} \right)
-    \int^0_{-\infty} e^s \,ds
-\\  &= \left( \frac{4i}{kw^2_0} \right)
-    \left( \frac{-q^2_0}{2q_0-z_0} \right)
-\\  &= \left( \frac{4i \lambda}{2 \pi w^2_0} \right)
-    \left( \frac{-q^2_0}{2q_0-z_0} \right)
-\\  &= \left( \frac{4i \lambda}{2 \pi w^2_0} \right)
-    \left( \frac{-q_0 q_b}{2i \pi \omega^2_0 / \lambda - z_0} \right)
-\\  &= \left( \frac{4i}{2 \lambda} \right)
-    \left( \frac{\pi w_b^2}{2i \pi \omega^2_0 / \lambda - z_0} \right)
-\\  &= 
-    \frac{w_b^2}{\omega^2_0 + i z_0 \lambda /2 \pi}
+    \right]}
+\\  &= \int^{\infty}_{0} \left( \frac{4}{w_{b0} w_{c0}} \right)
+    \left( \frac{- q_{b0} q_{c0}}{(q_{b0}+z-z_0)(-q_{c0}+z)} \right)
+    \exp \left[ s
+    \right] r \,dr
+\end{align}
+
+Now transform the Jacobian, $ds =
+-ik \left( \frac{(q_{b0}+z-z_0)-(-q_{c0}+z)}{(q_{b0}+z-z_0)(-q_{c0}+z)} \right) r \,dr
+$,
+
+\begin{align}
+    c_{00} &= \left( \frac{4i}{k w_{b0} w_{c0}} \right)
+    \left( \frac{- q_{b0} q_{c0}}{(q_{b0}+z-z_0)-(-q_{c0}+z)} \right)
+    \int^{0}_{-\infty} e^s \,ds
+\\  c_{00} &= \left( \frac{4i}{k w_{b0} w_{c0}} \right)
+    \left( \frac{- q_{b0} q_{c0}}{(q_{b0}+z-z_0)-(-q_{c0}+z)} \right)
+\end{align}
+
+Now, we write in terms of waist sizes and distance between waists, using:
+\begin{align*}
+    q_0 &= \frac{i \pi w_0^2}{\lambda}
+\\  k &= 2 \pi / \lambda
+\end{align*}
+
+\begin{align}
+    &= \frac{w_b^2}{\omega^2_0 + i z_0 \lambda /2 \pi}
 \\  &= \frac{(w_b/w_0)^2}{1 + i z_0 /2 z_R}
 \end{align}
 
-Power coupling into cavity is then,
+Power coupling into cavity is then (assuming no loss and $r_1 = r_2$),
 \begin{align}
-P_{\mathrm{in cavity}} &= P_{\mathrm{incident}} \frac{(w_b/w_0)^4}{1+(z_0/2z_R)^2}
+P_{\mathrm{trans}} &= P_{\mathrm{incident}} \frac{(w_b/w_0)^4}{1+(z_0/2z_R)^2}
 \end{align}
 
