@@ -35,9 +35,9 @@ the equations for the Hermite-Gaussian beam expansion as discussed in
 
 \begin{align}
     c_{nm} &= \intinfxy{
-    E(x,y,z) u_n^*(x,z)u_m^*(y,z)}
+    E(x,y,z) u_n^*(x,z)u_m^*(y,z)} \nonumber
 \\  &= \intinfxy{
-    E(x,y,z) u_0^*(x,z)u_0^*(y,z)}
+    E(x,y,z) u_0^*(x,z)u_0^*(y,z)} \nonumber
 \\  &= \intinfxy{
     u_0(x,z-z_0)u_0(y,z-z_0) u_0^*(x,z)u_0^*(y,z)}
 \end{align}
@@ -46,7 +46,7 @@ We now assign the labels $b$ for the beam and $c$ for the cavity,
 
 \begin{align}
     c_{00} &= \intinfxy{
-    u_{b0}(x,z-z_0)u_{b0}(y,z-z_0) u_{c0}^*(x,z)u_{c0}^*(y,z)}
+    u_{b0}(x,z-z_0)u_{b0}(y,z-z_0) u_{c0}^*(x,z)u_{c0}^*(y,z)} \nonumber
 \\  &= \intinfxy{ \left( \frac{2}{\pi w^2_0} \right) \left( \frac{q_{b0}}{q_{b}(z)} \right)
     \left( \frac{q^*_{c0}}{q^*_{c}(z)} \right) \exp \left[-ik \left( x^2 + y^2  \right)
     \left( \frac{1}{2q_b(z)} + \frac{1}{2q^*_c(z)} \right) \right]}
@@ -82,38 +82,55 @@ $,
     c_{00} &= \intinfrt{ \left( \frac{2}{\pi w_{b0} w_{c0}} \right)
     \left( \frac{- q_{b0} q_{c0}}{(q_{b0}+z-z_0)(-q_{c0}+z)} \right)
     \exp \left[ s
-    \right]}
+    \right]} \nonumber
 \\  &= \int^{\infty}_{0} \left( \frac{4}{w_{b0} w_{c0}} \right)
     \left( \frac{- q_{b0} q_{c0}}{(q_{b0}+z-z_0)(-q_{c0}+z)} \right)
     \exp \left[ s
     \right] r \,dr
 \end{align}
 
-Now transform the Jacobian, $ds =
+Now we transform the differential and the limits of integration, remembering
+that the real part of $s$ is less than $0$, $ds =
 -ik \left( \frac{(q_{b0}+z-z_0)-(-q_{c0}+z)}{(q_{b0}+z-z_0)(-q_{c0}+z)} \right) r \,dr
 $,
 
 \begin{align}
     c_{00} &= \left( \frac{4i}{k w_{b0} w_{c0}} \right)
     \left( \frac{- q_{b0} q_{c0}}{(q_{b0}+z-z_0)-(-q_{c0}+z)} \right)
-    \int^{0}_{-\infty} e^s \,ds
-\\  c_{00} &= \left( \frac{4i}{k w_{b0} w_{c0}} \right)
-    \left( \frac{- q_{b0} q_{c0}}{(q_{b0}+z-z_0)-(-q_{c0}+z)} \right)
+    \int^{0}_{-\infty} e^s \,ds \nonumber
+\\  &= \left( \frac{4i}{k w_{b0} w_{c0}} \right)
+    \left( \frac{- q_{b0} q_{c0}}{(q_{b0}+z-z_0)-(-q_{c0}+z)} \right) \nonumber
+\\  &= \left( \frac{4i}{k w_{b0} w_{c0}} \right)
+    \left( \frac{- q_{b0} q_{c0}}{(q_{b0}+q_{c0}-z_0)} \right)
 \end{align}
 
-Now, we write in terms of waist sizes and distance between waists, using:
+Now, we rewrite the coefficient in terms of waist sizes and distance between waists, using,
 \begin{align*}
     q_0 &= \frac{i \pi w_0^2}{\lambda}
 \\  k &= 2 \pi / \lambda
 \end{align*}
 
 \begin{align}
-    &= \frac{w_b^2}{\omega^2_0 + i z_0 \lambda /2 \pi}
-\\  &= \frac{(w_b/w_0)^2}{1 + i z_0 /2 z_R}
+    c_{00} &= \frac{2 w_{b0} w_{c0}}{w_{b0}^2 + w_{c0}^2 + i z_0 \lambda / \pi} \nonumber
+\\  &= \frac{2 w_{b0} / w_{c0}}{1 + \left( w_{b0} /w_{c0} \right)^2 + i \lambda z_0 / z_R}
 \end{align}
 
 Power coupling into cavity is then (assuming no loss and $r_1 = r_2$),
+
+%\begin{align}
+%    P_{mathrm{trans}} &= P_{mathrm{incident}} \frac{}{}
+%\end{align}
+
 \begin{align}
-P_{\mathrm{trans}} &= P_{\mathrm{incident}} \frac{(w_b/w_0)^4}{1+(z_0/2z_R)^2}
+    P_{\mathrm{trans}}  &= P_{\mathrm{incident}} \frac{4 w_{b0}^2 / w_{c0}^2}{1 +
+    2 \left( w_{b0} /w_{c0} \right)^2 + \left( w_{b0} /w_{c0} \right)^4 + \left(
+    \lambda z_0 / z_R \right)^2} \nonumber
+\\  P_{\mathrm{trans}}  &= P_{\mathrm{incident}} \frac{4}{ 2 + \left( w_{c0} /
+    w_{b0} \right)^2 + \left( w_{b0} /w_{c0} \right)^2 + \left(
+    \lambda z_0 / z_R \right)^2} \label{symetricmatch}
 \end{align}
+
+In equation \ref{symetricmatch} we can see readily the symmetry between
+$w_{b0}$ and $w_{c0}$, and the symmetry of $z_0$ about $0$, as expected.
+
 
