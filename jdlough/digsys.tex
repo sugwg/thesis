@@ -328,9 +328,63 @@ emerge-webrsync
 \item edit \lstin?/etc/portage/make.conf? to add USE flags,
 \begin{lstlisting}
 USE="bindist mmx sse sse2 ssea qt4 qt3support png"
-(chroot) livecd / # echo "US/Eastern" > /etc/timezone
-(chroot) livecd / # emerge --config sys-libs/timezone-data
+# echo "US/Eastern" > /etc/timezone
+# emerge --config sys-libs/timezone-data
+# nano -w /etc/locale.gen
+# locale-gen
+# eselect locale list
+# eselect locale set <value>
+# env-update && source /etc/profile
+# emerge gentoo-sources
 \end{lstlisting}
+\item Configure kernel and compile
+\begin{itemize}
+\item This is to get a good baseline kernel for building the special
+    front-end kernel.
+\end{itemize}
+\item Install bootloader
+\item Reboot machine
+\item Bypass startup sequence in \lstin?\etc\inittab?.
+\item Checkout SVN repo \lstin?advLigoRTS?
+\begin{itemize}
+\item This can go anywhere. A central location is advised. We will create a
+    link to this location next.
+\end{itemize}
+\item Create link in standard location which points to the rcg code
+\begin{itemize}
+\item Choose one of the following locations.
+\begin{lstlisting}
+/opt/rtcds/rtscore/release
+/opt/rtcds/${site}/${ifo}/core/release
+/opt/rtcds/${site}/${ifo}/core/trunk
+\end{lstlisting}
+\end{itemize}
+\item Checkout SVN repo \lstin?userapps? and link to one of the following
+standard locations.
+\begin{lstlisting}
+/opt/rtcds/userapps/release
+/opt/rtcds/${site}/${ifo}/userapps/release
+/opt/rtcds/${site}/${ifo}/userapps/trunk
+\end{lstlisting}
+\item Checkout SVN repo \lstin?cdscfg? and copy contents of trunk to \lstin?\opt\cdscfg?
+\item Initialize site settings for cdscfg. The options here are hardcoded in
+various places so unless you are at llo, lho, cit, mit, geo, or sta use the site
+location, tst. The corresponding ifo setting must be between x0 and x5. In this
+example I have chosen tst and x2.
+\begin{lstlisting}
+# touch /opt/cdscfg/site/tst
+# touch /opt/cdscfg/ifo/x2
+\end{lstlisting}
+\item Edit cdscfg scripts for location.
+\begin{itemize}
+\item In \lstin?/opt/cdscfg/tst/x2/rtrc.sh? edit the following lines.
+\begin{lstlisting}
+LIGONDSIP=10.20.1.45
+NDSSERVER=10.20.1.45:8088
+EPICS_CA_ADDR_LIST="10.20.1.45"
+\end{lstlisting}
+\end{itemize}
+\item Install applications in \lstin?/opt/rtapps/?.
 \end{enumerate}
 
 
