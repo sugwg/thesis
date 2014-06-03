@@ -66,8 +66,9 @@ completely inside the computer. The limitation being that of a bandwidth below
 the Nyquist frequency for the sampling rate used.
 
 Timing signals are received by the digital system through the ADC/DAC cards.
-Each model has a limited time to process the data before the next time step
-begins.
+Each model is an individual process which has a limited time to process its
+data before the next time step begins. Interprocess communication happens at
+the beginning/end of each time step.
 
 
 %%%%%
@@ -292,11 +293,105 @@ the current version of the kernel and verify it's functionality.
 
 There are numerous library dependencies involved that need to be determined.
 
+\subsubsection{front-end install procedure}
+\begin{enumerate}
+\item Download the Gentoo amd64 minimal install iso image and burn it to a CD.
+\item Boot the machine you wish to use as a front-end using the Gentoo CD.
+\item Connect to the internet.
+  \begin{enumerate}
+  \item Refer to local IT experts on how to connect using your network.
+  \item At Syracuse we have a http proxy server running on the local network.
+  \item If using a proxy type,
+\begin{lstlisting}
+export http_proxy="http://proxy.server.com:port"
+\end{lstlisting}
+  \end{enumerate}
+\item Using \lstin?links? download the stage3 tarball for amd64.
+\begin{lstlisting}
+links http://www.gentoo.org/main/en/mirrors.xml
+\end{lstlisting}
+\item Untar the stage3 and install system:
+\begin{lstlisting}
+tar xvjpf stage3-*.tar.bz2
+vi /mnt/gentoo/etc/portage/make.conf
+echo MAKEOPTS="-j5" >> /mnt/gentoo/etc/portage/make.conf
+mirrorselect -i -o >> /mnt/gentoo/etc/portage/make.conf
+cp -L /etc/resolv.conf /mnt/gentoo/etc/
+mount -t proc proc /mnt/gentoo/proc
+mount --rbind /sys /mnt/gentoo/sys
+mount --rbind /dev /mnt/gentoo/dev
+chroot /mnt/gentoo /bin/bash
+source /etc/profile
+export PS1="(chroot) $PS1"
+emerge-webrsync
+\end{lstlisting}
+\item edit \lstin?/etc/portage/make.conf? to add USE flags,
+\begin{lstlisting}
+USE="bindist mmx sse sse2 ssea qt4 qt3support png"
+(chroot) livecd / # echo "US/Eastern" > /etc/timezone
+(chroot) livecd / # emerge --config sys-libs/timezone-data
+\end{lstlisting}
+\end{enumerate}
+
+
 %%%%%%%%%%
 \section{Front-End Operation}
 
 %%%%%
+\subsection{Using a Model}
+
+Provided the models are already installed and runnning, using the model
+basically consists of 3 things; system control, filter
+modification, and data analysis. Each of these have a set of tools available
+that one should be aware of. Table \ref{table:fetools} shows the tools available
+and highlights their use.
+
+I will now step through the tools in more detail
+
+\subsubsection{medm}
+This is the primary tool for interacting directly with the running model. It
+runs a set of user-defined screens which have readouts and controls for various
+pre-defined points in the model. Some of these screens are generated
+automatically when the models are installed. For more details see
+the front-end users guide.
+
+Many of the screens are generated after installing the model. They contain all
+the switches, knobs, meters, etc. needed for controlling some aspect of an
+experiment. One can redirect feedback using matrices, turn on and off filter
+modules, adjust gains while monitoring things like DC photodiode levels and
+position sensor outputs for suspensions.
+
+Additionally one can create a link inside one screen that pulls up another. We
+use this feature to build up what we call a "sitemap" which basically is the
+highest level screen for the site and generally has links to access the
+highest level screens for each model.
+
+\begin{table}
+\begin{center}
+\begin{tabular}{ | l | l | }
+\hline
+Tool & Use \\
+\hline
+medm & control \\
+diaggui & data analysis \\
+dataviewer & data analysis \\
+foton & digital filter generation \\
+awggui & arbitrary waveform generation and excitation \\
+\hline
+\end{tabular}
+\end{center}
+\caption[Front-End Tools]{This table descibes the tools available and their
+purpose.
+}
+\label{table:fetools}
+\end{table}
+
+%%%%%
 \subsection{Running a Model}
+
+If a model has been installed already that you want to use, it may already be
+running. You can check what is running by logging into the front-end machine
+and running the \lstin?system_check? command.
 
 %%%%%
 \subsection{Changing a Filter}
