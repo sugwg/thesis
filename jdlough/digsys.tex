@@ -281,13 +281,16 @@ Number  Start   End     Size    Type     File system     Flags
 \end{enumerate}
 
 \subsection{From Gentoo Source}
-Installation from source seems to be ideal, however, there are a few issues
-which make it a challenge. At this point this is a theoretical discussion of
-how one would do this installation.
+Installation from source seems to be ideal, however the real-time code is
+working quite stabily with a specific gentoo kernel. This kernel is no longer
+supported in gentoo so the OS has stagnated into the past a bit. One can, however,
+compile and run all but the real-time code itself in a current Gentoo environment
+without too much difficulty. This could be a benefit if one wanted to build an
+environment that resembles
 
 The kernel has a special patch to allow the OS to dedicate CPU cores to
 front-end models. The earliest supported kernal in the Gentoo source is newer
-than the most recent kernel patch for rtcds. The patch involves fewer than 10
+than the most recent kernel patch for rtcds. The patch is about 240
 lines of code, but it would take some time to figure out how to apply it to
 the current version of the kernel and verify it's functionality.
 
@@ -341,6 +344,8 @@ USE="bindist mmx sse sse2 ssea qt4 qt3support png"
 \begin{itemize}
 \item This is to get a good baseline kernel for building the special
     front-end kernel.
+\item Configure the kernel with no modules to keep things simple. The front end
+    models will be compiled as modules to the kernel.
 \end{itemize}
 \item Install bootloader
 \item Reboot machine
@@ -458,6 +463,21 @@ purpose.
 If a model has been installed already that you want to use, it may already be
 running. You can check what is running by logging into the front-end machine
 and running the \lstin?system_check? command.
+
+To interact with the running model from the workstation in the lab, start up
+medm. Open a terminal and type,
+\begin{lstlisting}
+# sitemap &
+\end{lstlisting}
+This will start medm in execute mode and open a screen representing the top
+level for the lab.
+
+A well designed medm screen should be fairly intuitive. However MEDM
+screens are, in general, not representative of the underlying frontend
+code. You will also need to open the model file which is written in MATLAB
+Simulink for reference in order to understand how the system works.
+
+
 
 %%%%%
 \subsection{Changing a Filter}
