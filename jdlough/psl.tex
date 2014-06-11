@@ -75,9 +75,43 @@ Bragg refractions.
 The \ac{fss} is an active feedback system which stabilizes the already quite
 narrow frequency from the laser. The system is composed of a rigid laser cavity
 which is used as a reference which we can lock the laser frequency to. The
+laser frequency follows the length of the reference cavity up to several kHz.
 
 \subsection{Sensing}
+
+Sensing for the \ac{fss} is accomplished using the method of \ac{pdh}. The
+signal is essentially the derivative of the reflected power with respect to
+frequency of the laser (assuming length is fixed). This is accomplished by
+modulating the input beam with a local oscillator and demodulating the
+reflected beam with the same local oscillator. This measures the relative
+amplitude of the reflected light as opposed to the amplitude squared (power).
+The result is a signal on resonance that is zero and has maximum slope.
+Exactly the signal we want for a feedback system which keeps the laser on
+resonance with the cavity.
+
 \subsubsection{Cavity Assembly}
+
+The reference cavity is a Fabry Perot made from an 8 inch monolithic fused silica
+spacer with high reflectivity mirrors glued onto the ends. The reflectivity
+of the mirrors yield a finesse of about 7600. Finesse is defined as the ratio
+of the \ac{fsr} to the cavity linewidth (\ac{fwhm}). One can arrive the
+relationships between FSR, Finesse, mirror reflectivity as follows,
+\begin{align}
+E_{\mathrm{cavity}} =& E_{\mathrm{incident}} \sqrt{1-r_1^2} \left( 1 + r_1 r_2
+    e^{i \omega 2 L /c} + \left(1+r_1 r_2 e^{i \omega 2L/c} \right)^2 + \ldots \right)
+    \\
+=& E_{\mathrm{incident}} \sqrt{1-r_1^2} \left( \frac{1}{1 - r_1 r_2
+    e^{i \omega 2L/c}} \right)
+\end{align}
+Now, we find the reflected field,
+\begin{align}
+E_{\mathrm{reflected}} =& E_{\mathrm{incident}} \left( 1-r_1^2 \right)
+    \left( \frac{r_1 r_2 e^{i \omega 2L/c}}{1 - r_1 r_2 e^{i \omega 2L/c}} \right)
+    - r_1 E_{\mathrm{incident}}\\
+E_{\mathrm{reflected}} =& r_1 E_{\mathrm{incident}} \left[
+    \frac{(1 - r_1^2) r_2 e^{i \omega 2L/c}}{1 - r_1 r_2 e^{i \omega 2L/c}} -1 \right]
+\end{align}
+
 \subsubsection{Cavity Suspension}
 \begin{figure}[htbp]
 	\centering
@@ -89,8 +123,19 @@ which is used as a reference which we can lock the laser frequency to. The
 \subsubsection{PDH Locking}
 
 \subsection{Feedback}
+The feedback electronics used for the \ac{fss} are from initial LIGO. The board
+provides feedback signal for 2 different actuation paths. The low frequency path
+is to the laser cavity length which is split again into two different actuation
+paths (thermal control and a piezo electric transducer in the laser head). The
+other path is to an \ac{eom} to actuate on the phase of the laser beam.
 
 \subsection{Actuation}
+
+There are three actuators. Low frequency actuation is by a thermal controller in
+the laser head which actuates on the the cavity length through thermal expansion.
+The mid frequency actuation is by \ac{pzt} which applies a force to change the
+cavity length. The high frequency actuation is by phase modulation of the light
+after it exits the laser head using an \ac{eom}.
 
 \todopar{Add a description of the Electro-Optic Modulator}
 
@@ -99,6 +144,8 @@ which is used as a reference which we can lock the laser frequency to. The
 \subsubsection{Laser Head Piezo-Electric Transducer}
 \todopar{add description of peizo-electric effect}
 \todopar{describe the effects of the piezo in-loop}
+
+\subsubsection{Electro Optic Modulator}
 
 \section{Mode Cleaner}
 \todopar{add description of PMC, reference Willke,98}
