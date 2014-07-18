@@ -1,7 +1,378 @@
 
 \section{Experimental Layout}
+Using the beam from our laser (see \ref{ch:psl}) we split into two orthogonal
+polarizations. One beam we need to be at a higher power with positive detuning
+(statically stable and dynamically unstable) we call the carrier beam. The
+beam with less power and negative detuning we call the subcarrier.
+
+The subcarrier optical path consists of a pair of \ac{aom}s that we use to
+detune the subcarrier relative to the carrier beam.
+There is also a resonant
+\ac{eom} which is used to impart sidebands on the subcarrier beam for \ac{pdh}
+locking.
+The carrier and subcarrier are then combined using a \ac{pbs} to preserve their
+orthogonal polarizations. There is a beamsplitter in the subcarrier path to pick
+off the reflected light from the cavity which is used to generate the \ac{pdh}
+signal. There are additional $\lambda/2$ and $\lambda/4$ waveplates at various
+points in the path for polarization optimization.
+
+\subsection{Subcarrier Servo}
+Because of our short cavity length we have a large \ac{fsr} in frequency of
+about 2.14GHz.
+This produces a technical problem in attempting to set the
+subcarrier on the next resonance, one \ac{fsr} away.
+\ac{aom}s are limited in the range of frequencies they can operate in.
+The minimum is higher than the linewidth for our cavity.
+The maximum is less than \ac{fsr}.
+
+The solution for us was to set the subcarrier on the same resonance fringe
+using two \ac{aom}s, each one shifting the frequency by about 80MHz in
+opposite directions.
+One is driven by a crystal oscillator.
+The other is driven by a tunable oscillator, a \ac{vco}, which gives us the
+knob to detune the subcarrier.
+
+We produce a beat signal between the two oscillators and we lock the beat
+signal to a function generator operating in the range of frequencies we are
+need to detune the subcarrier with. So, now we can set directly, the carrier
+to subcarrier offset frequency using the knob on the function generator.
+This setup essentially eliminates frequency noise due to the crystal
+oscillator, which is quite low to begin with, since we are subtracting the
+same, coherent, frequency noise with the second \ac{aom}.
+And the frequency noise due to the function generator is lower due to the
+fact that we are using a lower frequency tunable oscillator.
+Tunable oscillators generally have a frequency noise that is relative to the
+set frequency.
+
+\section{Features of Experiment}
+\subsection{High Finesse}
+We need a high finesse cavity to give us the power buildup in the cavity that
+we need for a decent resonant frequency to get beyond some environmental noise.
+Ignoring any damping effects a fairly straight-forward calculation gives the
+resonant frequency we can achieve for a given finesse and input power. For a
+high finesse, it can be shown that the maximum spring constant for a given
+power is approximately,
+\begin{align}
+k &= \frac{18 F^2}{\sqrt{12} \pi \lambda c} P
+\end{align}
+which gives a maximum resonant frequency of,
+\begin{align}
+f_0 &= \frac{F}{2 \pi} \sqrt{\frac{18 P}{\sqrt{12} \pi \lambda m c }} \\
+&\approx 3.8kHz
+\end{align}
+
+\subsection{Short Cavity}
+The short cavity gives us a reduction in the frequency noise contribution
+to the noise budget. This reduction scales as the cavity length. This also
+affects the free spectral range, however, and with our finesse, the cavity
+pole is about 140kHz. 
+
+\subsection{High Spring Frequency}
+
+\begin{figure}[htbp]
+\tikzsetnextfilename{roomlayout}
+\begin{tikzpicture}[scale=1.2]
+    \begin{footnotesize}
+    \renewcommand{\baselinestretch}{1}
+    \filldraw[fill=white!60!gray,draw=black] (8,2) rectangle (2,6)
+        node[black,align=left,anchor=north west] {Table1};
+    \filldraw[fill=white!60!gray,draw=black] (8,8) rectangle (2,12)
+        node[black,align=left,anchor=north west] {Table2};
+    \filldraw[fill=white!60!gray,draw=black] (3,14) rectangle (0,16)
+        node[black,align=left,anchor=north west] { digital \\ electronics };
+    \filldraw[fill=white!60!gray,draw=black] (9,0.25) rectangle (7,1.75)
+        node[black,align=left,anchor=north west] { analog \\ electronics };
+    \fill[white!30!gray] (5,10) circle (1.5)
+        node[black,align=center] (v0) { vacuum \\ chamber };
+    \fill[white!30!gray] (7,10) rectangle (7.8,11.5);
+    \end{footnotesize}
+    \begin{scriptsize}
+    \renewcommand{\baselinestretch}{0.8}
+    \draw (2.5,5) node(laser) [draw] {laser}
+        (3.5,2.5) node(eom) [draw] {EOM}
+        (5.5,2.5) node(pmc) [draw] {PMC}
+        (7,4) node[align=center](scs) [draw] {subcarrier \\ servo}
+        (7,8.8) node[align=center,fill=red,minimum height=0.5cm,minimum width=0.5cm](peris) [draw] {}
+        (3,10) node[align=center,fill=red,minimum height=0.5cm,minimum width=0.5cm](peris2) [draw] {}
+        (7,10) node(io) {};
+    \end{scriptsize}
+    \draw (5.75,10) ++(-30:0.5cm) arc (-30:30:0.5);
+    \draw (5.55,10) arc (180:150:0.5)
+        arc (150:210:0.5);
+    \fill[red] (5.75,10) ++(-10:0.5cm) arc (-10:10:0.5)
+        arc (280:260:1.971825337) arc (170:190:0.5) arc (100:80:1.971825337);
+    \draw[red,very thick] (laser.south) |- (eom.west);
+    \draw[red,very thick] (eom.east) |- (pmc.west);
+    \draw[red,very thick] (pmc.east) -| (scs.south);
+    \draw[red,very thick] (scs.north) |- (peris.south);
+    \draw[red,very thick] (peris.north) |- (v0.east);
+    \draw[red,very thick] (v0.west) -| (peris2.east);
+\end{tikzpicture}
+\caption[Room Layout]{This depicts the basic layout of how the experiment
+    is situated in the lab. The red boxes on table 2 are periscopes necessary
+    for getting the laser to the height of the trap cavity, and on the ouput
+    side for getting back to the table height for the output optics.}
+\label{fig:roomlayout}
+\end{figure}
+
+\begin{figure}
+\tikzsetnextfilename{traploops}
+\begin{tikzpicture}
+  [analog/.style={rectangle,draw=blue!50,fill=blue!20,thick,align=center,
+                  outer sep=0,minimum size=2cm,text width=1.8cm},
+   digital/.style={rectangle,draw=black!50,fill=black!20,thick,align=center,
+                   outer sep=0,minimum size=2cm,text width=1.8cm},
+   physical/.style={rectangle,draw=green!50,fill=green!20,thick,align=center,
+                    outer sep=0,minimum size=2cm,text width=1.8cm},
+   optical/.style={rectangle,draw=red!50,fill=red!20,thick,align=center,
+                   outer sep=0,minimum size=2cm,text width=1.8cm}]
+  \renewcommand{\baselinestretch}{0.9}
+  \begin{scriptsize}
+  \node[circle,draw=black] (sum) at (0,0) {+};
+  \node[circle,draw=black] (sumcoil) at (6,-7.5) {+};
+  \node[circle,draw,fill=black,minimum size=0.1cm,inner sep=0,outer sep=0] (intersection1) at (0,-4.5) {};
+  \node[circle,draw,fill=black,minimum size=0.1cm,inner sep=0,outer sep=0] (intersection2) at (0,-7.5) {};
+  \node[analog] (X) at (0,-3) {photodiode/ mixer};
+  \node[analog] (F) at (0,-6) {main feedback servo};
+  \node[analog] (T) at (3,-7.5) {coil servo};
+  \node[analog] (C) at (6,-5.5) {coil driver $\rightarrow$ OSEMS};
+  \node[physical] (P) at (6,-3) {large mass pendulum transfer function};
+%  \node[analog] (A) [below=of F] {attenutation for digital system input};
+  \node[digital] (D) at (9,-3) {position feedback filters};
+  \node[digital] (E) at (9,-7.5) {coil drive filters};
+  \node[analog] (H) at (-3,-7.5) {high voltage drive network};
+  \node[physical] (L) at (-6,-7.5) {laser};
+  \node[physical] (M) at (-6,-3) {frequency to cavity length};
+  \node[optical] (O) at (0,3) {optical spring};
+  \node[physical] (S) at (3,3) {small mass pendulum transfer function};
+  \node[circle,draw=black] (ep) at (1.5,-4.5) {EP};
+  \node[circle,draw=black] (cp) at (0,-8.5) {CP};
+  \draw[thick,->] (sum) to (X);
+  \draw[thick] (X) to (intersection1);
+  \draw[thick,->] (intersection1) to (F);
+  \draw[thick] (F) to (intersection2);
+  \draw[thick,->] (intersection2) to (T);
+  \draw[thick,->] (T) to (sumcoil);
+  \draw[thick,->] (sumcoil) to (C);
+%  \draw[thick,->] (F) to (A);
+  \draw[thick,->] (intersection2) to (H);
+  \draw[thick,->] (intersection2) to (cp);
+  \draw[thick,->] (H) to (L);
+  \draw[thick,->] (L) to (M);
+%  \draw[thick,->] (A) to [out=0,in=270] (E);
+  \draw[thick,->] (P) to (D);
+  \draw[thick,->] (D) to (E);
+  \draw[thick,->] (C) to (P);
+  \draw[thick,->] (E) to (sumcoil);
+  \draw[thick,->] (P) to [out=180,in=0] (sum);
+  \draw[thick,->] (sum) to (O);
+  \draw[thick,->] (O) to (S);
+  \draw[thick,->] (M) to [out=0,in=180] (sum);
+  \draw[thick,->] (S) to [out=270,in=0] (sum);
+  \draw[thick,->] (intersection1) to (ep);
+  \end{scriptsize}
+\end{tikzpicture}
+\caption[Trapping Loops]{This chart depicts the feedback scheme used for
+         locking the trapping cavity and observing the spring behavior.}
+\end{figure}
+
+\begin{figure}
+\tikzsetnextfilename{scservo}
+\begin{tikzpicture}
+  [scale=0.4,
+  mirror/.style={rectangle,draw=blue!50,fill=blue!20,thick,align=center,
+                  outer sep=0},
+  eom/.style={rectangle,draw=blue!50,fill=blue!20,thick,align=center,
+                  outer sep=0},
+  aom/.style={rectangle,draw=blue!50,fill=blue!20,thick,align=center,
+                  outer sep=0,minimum size=1cm},
+  pbs/.style={rectangle,draw=blue!50,fill=blue!20,thick,align=center,
+                  outer sep=0},
+  rfpd/.style={rectangle,draw=blue!50,fill=blue!20,thick,align=center,
+                  outer sep=0},
+  dcpd/.style={rectangle,draw=blue!50,fill=blue!20,thick,align=center,
+                  outer sep=0},
+  bblock/.style={rectangle,draw=black,fill=black,thick,align=center,
+                  outer sep=0},
+  lambdaplate/.style={rectangle,draw=blue!50,fill=blue!20,thick,align=center,
+                  outer sep=0},
+  beamenter/.style={rectangle,draw=blue!50,fill=blue!20,thick,align=center,
+                  outer sep=0},
+  beamexit/.style={rectangle,draw=blue!50,fill=blue!20,thick,align=center,
+                  outer sep=0},
+  osc/.style={circle,draw=black,fill=red!10,thick,align=center,
+                  outer sep=0}
+                  ]
+  \renewcommand{\baselinestretch}{0.9}
+  \begin{scriptsize}
+  \node[beamenter] (laserin) at (-32,7) {FROM LASER};
+  \node[beamexit] (laserout) at (-14,42) {TO TABLE2};
+  \node[pbs] (pbs1) at (-14,7) {PBS};
+  \node[aom,rotate=-5] (aom1) at (-9,7) {AOM};
+  \node[bblock] (bb1) at (-5.5,7) {};
+  \node[mirror] (m1) at (-2.5,5.5) {};
+  \node[aom,rotate=-5] (aom2) at (-2,9) {AOM};
+  \node[bblock,rotate=-10] (bb2) at (-1.5,12.5) {};
+  \node[eom] (eom1) at (-2,26) {EOM};
+  \node[mirror] (m2) at (-2,30) {};
+  \node[mirror] (m3) at (-7,30) {};
+  \node[mirror] (m4) at (-12,30) {};
+  \node[mirror] (m5) at (-12,33) {};
+  \node[pbs] (pbs2) at (-14,33) {PBS};
+  \node[mirror] (m6) at (-18,33) {};
+  \node[mirror] (m7) at (-18,38) {};
+  \node[mirror] (m8) at (-14,38) {};
+  \node[mirror] (m9) at (-7,36) {};
+  \node[pbs] (pbs3) at (-24,36) {PBS};
+  \node[mirror] (m10) at (-24,40) {};
+  \node[rfpd] (rfpd1) at (-32,40) {RFPD};
+  \node[mirror] (mrefl21) at (-27,38) {};
+  \node[pbs] (pbsrefl2) at (-27,33) {PBS};
+  \node[dcpd] (dcpd1) at (-27,30) {DCPD};
+  \node[lambdaplate,minimum height=0.5cm] (lambda1) at (-16,38) {};
+  \node[anchor=south east] (lambdat1) at (-16,38.5) {$\lambda/4$};
+  \node[lambdaplate,minimum height=0.5cm] (lambda2) at (-20,38) {};
+  \node[anchor=south east] (lambdat2) at (-20,38.5) {$\lambda/2$};
+  \node[lambdaplate,minimum width=0.5cm] (lambda3) at (-12,31.5) {};
+  \node[anchor=south west] (lambdat3) at (-11.5,31.5) {$\lambda/2$};
+  \node[osc] (oscx) at (-3,3) {$\sim$};
+  \node[osc] (oscv) at (0,3) {$\sim$};
+  \draw[thick,red] (pbs1) to (aom1);
+  \draw[thick,red] (aom1) to (m1);
+  \draw[red] (aom1) to (bb1);
+  \draw[thick,red] (m1) to (aom2);
+  \draw[thick,red] (aom2) to (eom1);
+  \draw[red] (aom2) to (bb2);
+  \draw[thick,red] (eom1) to (m2);
+  \draw[thick,red] (m2) to (m3);
+  \draw[thick,red] (m3) to (m4);
+  \draw[thick,red] (m4) to (lambda3);
+  \draw[thick,red] (lambda3) to (m5);
+  \draw[thick,red] (m5) to (pbs2);
+  \draw[thick,green] (pbs2) to (m6);
+  \draw[thick,green] (m6) to (m7);
+  \draw[thick,green] (m7) to (lambda1);
+  \draw[thick,green] (lambda1) to (m8);
+  \draw[red] (m3) to (m9);
+  \draw[red] (m9) to (pbs3);
+  \draw[red] (pbs3) to (m10);
+  \draw[red] (m10) to (rfpd1);
+  \draw[thick,blue] (pbs1) to (pbs2);
+  \draw[thick,red] (laserin) to (pbs1);
+  \draw[thick,green] (m8) to (laserout);
+  \draw[green] (m7) to (lambda2);
+  \draw[green] (lambda2) to (mrefl21);
+  \draw[green] (mrefl21) to (pbsrefl2);
+  \draw[green] (pbsrefl2) to (dcpd1);
+  \draw[black] (aom1) to [in=180,out=265] (oscx);
+  \draw[black] (aom2) to [in=90,out=355] (oscv);
+  \end{scriptsize}
+\end{tikzpicture}
+\caption[Subcarrier Servo]{This is a schematic of the optical path for the
+         subcarrier servo on Table 1.}
+\end{figure}
+
+
+%\tikzsetnextfilename{gaussian3d}
+%\begin{tikzpicture}
+%\begin{axis}[
+%        view={0}{45},
+%        hide axis,
+%        xlabel=$x$,ylabel=$y$,
+%        mesh/interior colormap name=hot,
+%        colormap/blackwhite, 
+% ]
+%  \addplot3[domain=-1.5:1.5,surf]
+%        {exp(-x^2-y^2)};
+%\end{axis}
+%\end{tikzpicture}
 
 \section{High-Q Payload Suspension}
+
+In designing the suspension for the small mirror we went through the thermal
+noise analysis to determine the best approach. We wanted to suspend the small
+mirror using thin glass fibers with a low tension for isolating the mass from
+vibrations in the next mass up in the chain.
+
+The initial thermal noise analysis was for the glue used to mount the glass
+fibers to the small mirror. This analysis is described in detail in the
+noise chapter. We designed the glue joints of the suspension to minimize
+thermal noise based on the analysis. The result of the analysis was to have a
+small mass at the glue end of the fiber with a center of gravity close to the
+glue surface.
+
+\subsection{Monolithic Welding}
+
+We began by gaining experience with welding fibers. In doing so, we decided it
+should not be too difficult to weld the fibers directly to the small mirror.
+This actually proved to be more difficult than anticipated.
+The first attempt at welding a mirror damaged the coating quite visibly even
+though we were careful to shield the coating surface by clamping the mirror
+with quartz tubes.
+
+After making several improvements to the welding stand, we welded a mirror
+with no visible damage to the coating, however once installed, we found the
+finesse to be too low.
+The mirror was welded, suspended, and placed in vacuum system
+for assembly of the cavity.
+After careful alignment we found the finesse to be about 700, much lower than
+desired.
+Since this was the cavity output mirror that was damaged, it dramatically
+affected the performance of the experiment.
+The power buildup in the cavity is dependent on the
+individual cavity mirror reflectivities.
+
+\subsection{Glued Fiber Attachements}
+
+The final suspension design for this experiment used small cone-shaped glass
+nubs at the glue end of the fibers. This could be constructed monolithicaly
+by cold welding\footnote{a process where the substrate is not heated to the
+point where the materials flow together} the tip of a glass rod to a small
+mirror blank\footnote{or a mirror with a previously damaged coating...} to
+create a small nub from which the fiber is pulled. This is all done in one
+continuous motion where the torch is applied to the edge of the mirror to
+gently heat the point of attachement, then the rod with a sharp point is placed
+into the flame to melt the tip and cold weld to the edge of the mirror. The
+flame is then directed at the tip of the rod slightly back from the weld to
+soften the fiber pull spot. When the spot is sufficiently heated, the fiber
+is pulled away sharply while dropping the flame away from the fiber. What
+remains is a rod attached to a small conical shaped nub monolithically through
+a very thin, high Q fiber. Now the cold weld allows us to separate this
+monolithic fiber assembly because the bond strength is much less than the yield
+strength of the fiber. We then glue this monolithic fiber assembly using the
+epoxy to the side of the mirror with undamaged coatings. This technique allows
+us to preserve a very high Q (~$5x10^5$) while avoiding damage to the coating.
+
+\section{Locking Challenges}
+
+\subsection{Optical Lever}
+We found the small mirror resonances to be strong enough to prevent locking the
+trapping cavity. Our solution to this was to employ an optical lever, where a
+laser is reflected off the back of the small mirror and onto a quadrant
+photodiode. The photodiode outputs a signal corresponding to the pitch and yaw
+of the small mirror. If you aren't careful with the position of lenses, there
+will be a coupling of the small mirror position to the photodiode signals.
+We took advantage of our carelessness and used the coupled position signal
+to feedback through resonant gain filters in the digital system and applied to
+the OSEM drives of the SOS.
+
+\section{Actuation Range}
+Due to seismic noise we needed a fairly wide actuation range at low frequencies.
+The maximum range of the laser PZT is plus or minus 160MHz. This corresponds to
+about 42nm. We needed another actuation path to extend the range at low
+frequencies. For this we use the magnetic force from the OSEM coils.
+Additionally, due to the high finesse, we needed a fairly high bandwidth for
+the feedback loop. The high voltage amplifier for the laser PZT itself has a
+bandwidth limit, so we needed a high-frequency bypass which passively adds the
+HV output to the HV input.
+
+\section{Sub-Carrier Servo}
+
+\subsection{Noise Requirements}
+
+\section{Relative Power Tuning}
+
+\section{Differential Power Fluctuations}
 
 \section{Procedures}
 
@@ -127,7 +498,7 @@ Power coupling into cavity is then (assuming no loss and $r_1 = r_2$),
     \lambda z_0 / z_R \right)^2} \nonumber
 \\  P_{\mathrm{trans}}  &= P_{\mathrm{incident}} \frac{4}{ 2 + \left( w_{c0} /
     w_{b0} \right)^2 + \left( w_{b0} /w_{c0} \right)^2 + \left(
-    \lambda z_0 / z_R \right)^2} \label{symetricmatch}
+    \lambda z_0 / z_R \right)^2}
 \\  P_{\mathrm{trans}}  &= P_{\mathrm{incident}} \frac{4}{ \left( w_{c0} /
     w_{b0} + w_{b0} / w_{c0} \right)^2 + \left( \lambda z_0 / z_R \right)^2}
     \label{symetricmatch}
