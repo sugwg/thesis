@@ -37,7 +37,7 @@ all: thesis.pdf
 thesis.pdf: python/ $(TEXFILES) $(BIBFILES) $(STYFILES) $(BSTFILES) $(TIKZFILES)
 	$(MAKE) -C python all && \
 	latexmk -pdf -pdflatex="pdflatex --shell-escape %O %S" thesis.tex && \
-	cp thesis.pdf ~/Dropbox/Documents/Thesis/
+	cp thesis.pdf ~/Dropbox/JimsThesis/
 
 gr-qc: thesis.tgz
 
