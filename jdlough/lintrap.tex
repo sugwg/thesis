@@ -180,8 +180,9 @@ pole is about 140kHz.
 \tikzsetnextfilename{scservo}
 \begin{tikzpicture}
   [scale=0.4,
-  mirror/.style={rectangle,draw=blue!50,fill=blue!20,thick,align=center,
-                  outer sep=0},
+%  mirror/.style={rectangle,draw=blue!50,fill=blue!20,thick,align=center,
+%                  outer sep=0},
+  mirror/.style={rectangle,outer sep=0,minimum size=0cm},
   eom/.style={rectangle,draw=blue!50,fill=blue!20,thick,align=center,
                   outer sep=0},
   aom/.style={rectangle,draw=blue!50,fill=blue!20,thick,align=center,
@@ -203,30 +204,31 @@ pole is about 140kHz.
   osc/.style={circle,draw=black,fill=red!10,thick,align=center,
                   outer sep=0}
                   ]
-  \renewcommand{\baselinestretch}{0.9}
-  \begin{scriptsize}
+%  \renewcommand{\baselinestretch}{0.9}
+
+%  \begin{scriptsize}
   \node[beamenter] (laserin) at (-32,7) {FROM LASER};
   \node[beamexit] (laserout) at (-14,42) {TO TABLE2};
   \node[pbs] (pbs1) at (-14,7) {PBS};
   \node[aom,rotate=-5] (aom1) at (-9,7) {AOM};
   \node[bblock] (bb1) at (-5.5,7) {};
-  \node[mirror] (m1) at (-2.5,5.5) {};
+  \coordinate (m1) at (-2.5,5.5) {};
   \node[aom,rotate=-5] (aom2) at (-2,9) {AOM};
   \node[bblock,rotate=-10] (bb2) at (-1.5,12.5) {};
   \node[eom] (eom1) at (-2,26) {EOM};
-  \node[mirror] (m2) at (-2,30) {};
-  \node[mirror] (m3) at (-7,30) {};
-  \node[mirror] (m4) at (-12,30) {};
-  \node[mirror] (m5) at (-12,33) {};
+  \coordinate (m2) at (-2,30) {};
+  \coordinate (m3) at (-7,30) {};
+  \coordinate (m4) at (-12,30) {};
+  \coordinate (m5) at (-12,33) {};
   \node[pbs] (pbs2) at (-14,33) {PBS};
-  \node[mirror] (m6) at (-18,33) {};
-  \node[mirror] (m7) at (-18,38) {};
-  \node[mirror] (m8) at (-14,38) {};
-  \node[mirror] (m9) at (-7,36) {};
+  \coordinate (m6) at (-18,33) {};
+  \coordinate (m7) at (-18,38) {};
+  \coordinate (m8) at (-14,38) {};
+  \coordinate (m9) at (-7,36) {};
   \node[pbs] (pbs3) at (-24,36) {PBS};
-  \node[mirror] (m10) at (-24,40) {};
+  \coordinate (m10) at (-24,40) {};
   \node[rfpd] (rfpd1) at (-32,40) {RFPD};
-  \node[mirror] (mrefl21) at (-27,38) {};
+  \coordinate (mrefl21) at (-27,38) {};
   \node[pbs] (pbsrefl2) at (-27,33) {PBS};
   \node[dcpd] (dcpd1) at (-27,30) {DCPD};
   \node[lambdaplate,minimum height=0.5cm] (lambda1) at (-16,38) {};
@@ -266,7 +268,7 @@ pole is about 140kHz.
   \draw[green] (pbsrefl2) to (dcpd1);
   \draw[black] (aom1) to [in=180,out=265] (oscx);
   \draw[black] (aom2) to [in=90,out=355] (oscv);
-  \end{scriptsize}
+%  \end{scriptsize}
 \end{tikzpicture}
 \caption[Subcarrier Servo]{This is a schematic of the optical path for the
          subcarrier servo on Table 1.}
@@ -343,6 +345,53 @@ strength of the fiber. We then glue this monolithic fiber assembly using the
 epoxy to the side of the mirror with undamaged coatings. This technique allows
 us to preserve a very high Q (~$5x10^5$) while avoiding damage to the coating.
 
+\subsection{Double Pendulum}
+The output mirror is suspended by glass fibers inside a ring of steel which is
+three inches in diameter. The steel ring is the \ac{sos} controlled mass.
+Since the mass of the ring is considerably greater than the mass of the small
+mirror, the transfer function for force to position on the small mirror can be
+approximated by simply the small mirror mass and resonant frequency.
+For the complete solution, the equations of motion that need to be solved for
+one dimension are,
+
+\begin{figure}
+\tikzsetnextfilename{doublesus}
+\begin{tikzpicture}
+  [mass/.style={rectangle,draw=blue!50,fill=blue!20,thick,align=center,
+                  outer sep=0,minimum size=2cm,text width=1.8cm},
+   digital/.style={rectangle,draw=black!50,fill=black!20,thick,align=center,
+                   outer sep=0,minimum size=2cm,text width=1.8cm},
+   physical/.style={rectangle,draw=green!50,fill=green!20,thick,align=center,
+                    outer sep=0,minimum size=2cm,text width=1.8cm},
+   spring/.style={rectangle,draw=red!50,fill=red!20,thick,align=center,
+                   outer sep=0,minimum size=2cm,text width=1.8cm}]
+%  \renewcommand{\baselinestretch}{0.9}
+%  \begin{small}
+  \node[spring] (spring2) at (0,0) {$-k_2$};
+  \node[mass] (mass2) at (0,-4) {$\frac{-1}{m_2\omega^2}$};
+  \node[spring] (spring1) at (0,-8) {$-k_1$};
+  \node[mass] (mass1) at (0,-12) {$\frac{-1}{m_1\omega^2}$};
+  \node[circle,draw=black] (sum2) at (-4,-4) {};
+  \node (plus2) at (-4,-3.5) {$+$};
+  \node (minus2) at (-4,-4.5) {$-$};
+  \node[circle,draw=black] (sum1) at (4,-8) {};
+  \node (plus1) at (4,-8.5) {$+$};
+  \node (minus1)  at (4,-7.5) {$-$};
+  \draw[thick,->] (spring2) to (sum2);
+  \draw[thick,->] (sum2) to (mass2);
+  \draw[thick,->] (mass2) to (spring2);
+  \draw[thick,->] (mass2) to (sum1);
+  \draw[thick,->] (sum1) to (spring1);
+  \draw[thick,->] (spring1) to (sum2);
+  \draw[thick,->] (spring1) to (mass1);
+  \draw[thick,->] (mass1) to (sum1);
+%\end{small}
+\end{tikzpicture}
+\caption[Double Pendulum Feedback Representation]{This diagram represents the
+         double pendulum feedback loops from which one can calculate the
+         response of the system.}
+\end{figure}
+
 \section{Locking Challenges}
 
 \subsection{Optical Lever}
@@ -367,6 +416,49 @@ bandwidth limit, so we needed a high-frequency bypass which passively adds the
 HV output to the HV input.
 
 \section{Sub-Carrier Servo}
+As mentioned above, we needed a way of shifting the frequency of the subcarrier
+beam in relation to the carrier by $\mathcal{O}\, 100\, kH\!z$.
+We do this using \ac{aom}s by first shifting in one direction by $80\,MH\!z$,
+then shifting the opposite direction by $80\,MH\!z + \mathrm{offset}$.
+The $80\,MH\!z$ frequency source is a crystal oscillator. The variable
+frequency source is a \ac{vco} which uses the output of a feedack servo to
+modulate the frequency. The sensor for this feedback is the demodulated beat
+signal of the output of the two \ac{aom} frequency sources. The demodulation
+is done by mixing the beat signal with the output of a function generator which
+is set to the desired offset frequency.
+
+\begin{figure}
+\tikzsetnextfilename{scsfeedback}
+\begin{tikzpicture}
+  [block/.style={rectangle,draw=blue!50,fill=blue!20,thick,align=center,
+                  outer sep=0,minimum size=2cm,text width=1.8cm},
+   oscillator/.style={circle,draw=blue!50,fill=blue!20,thick,align=center,
+                  outer sep=0,minimum size=2cm,text width=1.8cm},
+   digital/.style={rectangle,draw=black!50,fill=black!20,thick,align=center,
+                   outer sep=0,minimum size=2cm,text width=1.8cm},
+   physical/.style={rectangle,draw=green!50,fill=green!20,thick,align=center,
+                    outer sep=0,minimum size=2cm,text width=1.8cm},
+   spring/.style={rectangle,draw=red!50,fill=red!20,thick,align=center,
+                   outer sep=0,minimum size=2cm,text width=1.8cm}]
+%  \renewcommand{\baselinestretch}{0.9}
+%  \begin{small}
+  \node[block] (servo) at (0,0) {feedback};
+  \node[block] (mixer2) at (-4,0) {mixer};
+  \node[block] (mixer1) at (-4,-4) {mixer};
+  \node[oscillator] (osc1) at (0,-4) {vco};
+  \node[oscillator] (osc2) at (-4,-8) {xtal};
+  \node[oscillator] (osc3) at (-8,0) {osc};
+  \draw[thick,->] (servo) to (osc1);
+  \draw[thick,->] (osc2) to (mixer1);
+  \draw[thick,->] (osc3) to (mixer2);
+  \draw[thick,->] (mixer1) to (mixer2);
+  \draw[thick,->] (osc1) to (mixer1);
+  \draw[thick,->] (mixer2) to (servo);
+%\end{small}
+\end{tikzpicture}
+\caption[Subcarrier Servo Electronics]{This diagram represents the
+         subcarrier servo feedback.}
+\end{figure}
 
 \subsection{Noise Requirements}
 
@@ -397,8 +489,8 @@ We will calibrate the photodiodes while the cavity is not locked, knowing the in
 \section{Mode Matching}
 We want to know how much power couples into the cavity from a
 perfectly gaussian beam of the wrong size and location. We start with
-the equations for the Hermite-Gaussian beam expansion as discussed in
-\cite{Siegman86}.
+the equations for the Hermite-Gaussian beam decomposition as discussed in
+Siegman \cite{Siegman86}. 
 
 \newcommand{\intinfxy}[1]{\int^{\infty}_{- \infty} \int^{\infty}_{- \infty} #1 \,dx \,dy}
 \newcommand{\intinfrt}[1]{\int^{2 \pi}_{0} \int^{\infty}_{0} #1 r \,dr \,d\theta}
@@ -483,7 +575,7 @@ Now, we rewrite the coefficient in terms of waist sizes and distance between wai
 
 \begin{align}
     c_{00} &= \frac{2 w_{b0} w_{c0}}{w_{b0}^2 + w_{c0}^2 + i z_0 \lambda / \pi} \nonumber
-\\  &= \frac{2 w_{b0} / w_{c0}}{1 + \left( w_{b0} /w_{c0} \right)^2 + i \lambda z_0 / z_R}
+\\  &= \frac{2 w_{b0} / w_{c0}}{1 + \left( w_{b0} /w_{c0} \right)^2 + i z_0 / z_R}
 \end{align}
 
 Power coupling into cavity is then (assuming no loss and $r_1 = r_2$),
@@ -495,12 +587,12 @@ Power coupling into cavity is then (assuming no loss and $r_1 = r_2$),
 \begin{align}
     P_{\mathrm{trans}}  &= P_{\mathrm{incident}} \frac{4 w_{b0}^2 / w_{c0}^2}{1 +
     2 \left( w_{b0} /w_{c0} \right)^2 + \left( w_{b0} /w_{c0} \right)^4 + \left(
-    \lambda z_0 / z_R \right)^2} \nonumber
+    z_0 / z_R \right)^2} \nonumber
 \\  P_{\mathrm{trans}}  &= P_{\mathrm{incident}} \frac{4}{ 2 + \left( w_{c0} /
     w_{b0} \right)^2 + \left( w_{b0} /w_{c0} \right)^2 + \left(
-    \lambda z_0 / z_R \right)^2}
+    z_0 / z_R \right)^2}
 \\  P_{\mathrm{trans}}  &= P_{\mathrm{incident}} \frac{4}{ \left( w_{c0} /
-    w_{b0} + w_{b0} / w_{c0} \right)^2 + \left( \lambda z_0 / z_R \right)^2}
+    w_{b0} + w_{b0} / w_{c0} \right)^2 + \left( z_0 / z_R \right)^2}
     \label{symetricmatch}
 \end{align}
 
