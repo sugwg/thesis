@@ -2,7 +2,195 @@
 
 \section{Thermal}
 
+We derive the thermal noise of a system using the fluctuation-dissipation
+theorem which describes a relationship between the fluctuation of a system
+and its dissipation. The starting point for our thermal noise calculations
+is the Callen form of the theorem. \cite{Saulson,Callen}
+
+The \ac{psd} of the thermal noise is defined,
+\begin{align}
+S_{xx}(\omega) =& \frac{4 k_B T}{\omega^2} \Re (Y(\omega)) \\
+    =& \frac{4 k_B T}{\omega^2} \Re (Y(\omega))
+\end{align}
+For a system with velocity damping($b$), $F_{\mathrm{ext}} = m\ddot{x} + b\dot{x} + kx$,
+we can rewrite the \ac{psd} as,
+\begin{align}
+S_{xx}(\omega) =& \frac{4 k_B T}{\omega^2} \Re (Y(\omega)) \\
+    =& \frac{4 k_B T b / \omega^2}{ b^2 + (m \omega - k/\omega)^2}
+\end{align}
+Notice that as the damping coefficient goes to zero, this function becomes a
+delta function at the resonant frequency, $\omega_0 = \sqrt{k/m}$.
+
+That works for something like gas damping. However, we are more interested in
+the thermal noise due to internal damping where the damping is essentially
+absorbed into the spring coefficient making it complex. This changes the
+dependence of the \ac{psd} on $\omega$. Taking this new form of damping,
+$F_{\mathrm{ext}} = m\ddot{x} + k(1+i\phi)x$, where $\phi$ is called the
+loss angle (for small values of $\phi$) we can write the PSD as,
+\begin{align}
+S_{xx}(\omega) = & \frac{4 k_B T k \phi / \omega}{(k \phi)^2 +
+    (m \omega^2 - k)^2}
+\end{align}
+In this case we still have the peak at the resonant frequency, however the form
+of the noise is different above and below the resonant frequency.
+
+Now we will derive the thermal noise for our small mirror assembly. We are
+concerned with thermal noise due to the epoxy used to glue the fibers to the
+mass. We start with the Lagrangian to get the dynamics of the system and
+compute the admittance.
+\begin{align}
+\begin{split} \label{eq:fullT}
+T &= \frac{1}{2} M \dot{x}^2 +
+    \frac{1}{2}I_M \left( \dot{\eta_1}^2 + \dot{\eta_2}^2 \right) \\
+    &\quad + \frac{1}{2} m \left(
+    \dot{x} + r_M \dot{\eta_1}
+    + r_{\mathrm{cm}} \dot{\theta_1} \right)^2 \\
+    &\quad + \frac{1}{4} m \left(
+    2 \dot{x} - r_M \left(
+    \dot{\eta_1}
+    + \sqrt{3} \dot{\eta_2} \right)
+    + 2r_{\mathrm{cm}} \dot{\theta_2} \right)^2 \\
+    &\quad + \frac{1}{4} m \left(
+    2 \dot{x} - r_M \left(
+    \dot{\eta_1}
+    - \sqrt{3} \dot{\eta_2} \right)
+    + 2r_{\mathrm{cm}} \dot{\theta_3} \right)^2 \\
+    &\quad + \frac{1}{2} I_m \left[
+    \left( \dot{\theta_1} + \dot{\eta_1} \right)^2
+    + \frac{1}{2} \left( 2\dot{\theta_2} - \dot{\eta_1} - \sqrt{3} \dot{\eta_2} \right)^2
+    + \frac{1}{2} \left( 2\dot{\theta_3} - \dot{\eta_1} + \sqrt{3} \dot{\eta_2} \right)^2
+    \right]
+\end{split} \\
+\label{eq:fullV}
+V &= \frac{E l_y l_x^3}{8t} \left( \theta_1^2 + \theta_2^2 + \theta_3^2 \right)
+\end{align}
+Where $x$ is the position of the mirror, $\eta_1$ and $\eta_2$ are the pitch and yaw
+of the mirror, and $\theta_i$ are the angles of each fiber attachment nub with
+respect to the mirror.
+
+The equations of motion become quite complex, so we simplify the system by only
+looking at the contribution from the longitudinal mode. The effects of the pitch
+and yaw modes should not contribute at first order for a perfectly aligned
+system, so we can simplify \eqref{eq:fullT} and \eqref{eq:fullV} with,
+\begin{align}
+T &= \frac{1}{2} M\dot{x}^2
+    + \frac{3}{2} m\left(\dot{x}+r_{\mathrm{cm}}\dot{\theta} \right)^2
+    + \frac{3}{2} I\dot{\theta}^2 \\
+V &= \frac{E l_y l_x^3}{8t}\theta^2 
+\end{align}
+making some substitutions,
+\begin{align}
+m_t &= M+3m \, , \\
+I_t &= 3 \left( mr_{\mathrm{cm}}^2+I \right) \, , \\
+K &= \frac{E l_y l_x^3}{4t} \, ,
+\end{align}
+the Lagrangian becomes,
+\begin{align}
+\frac{1}{2} \left( m_t \dot{x}^2 +6mr_{\mathrm{cm}}\dot{x}\dot{\theta}
++ I_t\dot{\theta}^2 -K\theta^2 \right) \, .
+\end{align}
+We can then find the equations of motion with an external force in
+the $x$ direction,
+\begin{align}
+F_{\mathrm{ext}} &= \frac{d}{dt}\frac{\partial L}{\partial \dot{x}}
+  - \frac{\partial L}{\partial x} \,.
+\end{align}
+The two equations of motion become,
+\begin{align}
+F_{\mathrm{ext}} &= m_t \ddot{x} + 3mr_{\mathrm{cm}}\ddot{\theta} \\
+0 &= 3mr_{\mathrm{cm}}\ddot{x} + I_t\ddot{\theta} + K\theta \, .
+\end{align}
+We can then solve for the impedence in the frequency domain,
+\begin{align}
+Z = \frac{F_{\mathrm{ext}}}{i\omega x} &= m_t i\omega
+  + 3mr_{\mathrm{cm}}i\omega \frac{\theta}{x} \,,
+\end{align}
+where, from the second equation,
+\begin{align}
+\frac{\theta}{x} &= \frac{3mr_{\mathrm{cm}}\omega^2}{K-I_t\omega^2} \,.
+\end{align}
+We need the real part of the admittance, $Y=1/Z$.
+\begin{align}
+Y &= \frac{iI_t\omega^2-iK}{\omega m_t(K-I_t\omega^2) + (3mr_{\mathrm{cm}})^2\omega^3}
+\end{align}
+The real part of $Y$ is then,
+\begin{equation}
+\frac{K_0 \phi \omega (3mr_{\mathrm{cm}})^2}{ \left(
+  m_tK_0 + \omega^2 \left( (3mr_{\mathrm{cm}})^2 -m_tI_t \right) \right)^2
+  + (m_tK_0 \phi)^2 }
+\end{equation}
+And the thermal noise in the $x$ direction is (we have taken $\phi$ to be small),
+\begin{equation}
+S_{xx}(\omega) = \frac{4k_BT}{\omega} \left[
+  \frac{K_0\phi (3mr_{\mathrm{cm}})^2}{\left( m_tK_0 + \omega^2 \left( (3mr_{\mathrm{cm}})^2 -m_tI_t \right)
+  \right)^2 }
+  \right] \label{eq:tnoisesusfull}
+\end{equation}
+
+When $\omega$ is below the resonant frequency,
+\begin{align}
+S_{xx}(\omega) &= \frac{4k_BT}{m_t^2 \omega}
+  \frac{\phi(3mr_{\mathrm{cm}})^2}{K_0} \label{eq:generalmassgluenoise} \\
+S_{xx}(\omega) &= \frac{16k_BT\phi t(3mr_{\mathrm{cm}})^2}{m_t^2 \omega El_yl_x^3}
+\end{align}
+It is desirable to make the nubs much smaller than the mirror.
+So, we can simplify the equation to,
+\begin{align}
+S_{xx}(\omega) &= \frac{36k_BT\phi t l_yl_z^4\rho^2}{M^2\omega El_x} \,.
+\end{align}
+Now, it is obvious that we want to make the nubs so that the center of mass is
+close to the mirror, the thickness of the glue is small, and the glue area is
+large in the dimension along the axis of the mirror.
+
+For our situation we have actually arrived at a cone shaped nub which provides
+for a large base and a short $r_{\mathrm{cm}}$. Going back to eq.
+\eqref{eq:generalmassgluenoise} we make the approximations to get
+\begin{align}
+S_{xx}(\omega) &= \frac{4k_BT\phi(3mr_{\mathrm{cm}})^2}{M^2 \omega K_0}
+\end{align}
+The mass of a cone is $\frac{1}{3} \pi R^2 l_z \rho$, $r_{\mathrm{cm}}$ is
+$\frac{1}{4} l_z$, and $K_0 = \frac{3\pi ER^4}{4t}$.
+\begin{align}
+S_{xx}(\omega) &= \frac{k_BT\phi \pi t l_z^4\rho^2}{3M^2 \omega E}
+\end{align}
+The noise is independent of the radius of the base of the cone, but depends
+heavily on the length of the cone. The expressions for $K_0$ assume that
+$t$ is large compared to $\frac{R^2}{2R_m}$. Figure \ref{fig:tnoisec}
+depicts the \ac{asd} of this epoxy thermal noise contribution to the cavity
+length noise.
+
+\begin{figure}[htbp]
+  \tikzsetnextfilename{tnoisecone}
+  \begin{tikzpicture}
+  \begin{loglogaxis}[
+    xlabel={Frequency $\left( Hz \right)$},
+    ylabel={Thermal Noise $\left( m/\sqrt{H\!z} \right)$},
+    grid=minor,
+  ]
+  \addplot[red] table {python/tnoisecone.dat};
+  \end{loglogaxis}
+  \end{tikzpicture}
+  \caption[Epoxy Thermal Noise Contribution to Trap Length]{This is a plot
+    of the thermal noise from the epoxy used to glue the small conical nubs
+    for the fiber suspension. This includes the resonance which comes from
+    the full expression in \eqref{eq:tnoisesusfull}.}
+  \label{fig:tnoisec}
+\end{figure}
+
+%\begin{figure}[htbp]
+%	\centering
+%		\includegraphics{./figures/tnoisecone.eps}
+%	\caption[Thermal Noise From Epoxy in Small Mirror Suspension]{Noise contribution
+%        from epoxy thermal noise.}
+%	\label{fig:tnoisecone}
+%\end{figure}
+
 \section{Laser Frequency}
+
+Laser frequency noise couples into the measurement significantly due to the
+interferometric nature of the experiment.
+The coupling goes as the length of the cavity as discussed in section
+\ref{sec:lin_short}.
 
 \section{Laser Intensity}
 

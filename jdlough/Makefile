@@ -4,6 +4,8 @@ introduction.tex \
 lintrap.tex \
 OT_paper.tex \
 digsys.tex \
+noises.tex \
+psl.tex \
 optical_spring.tex
 
 
@@ -24,16 +26,30 @@ BSTFILES=
 
 BBLFILES=
 
-default: thesis.pdf
+TIKZFILES=tikz/roomlayout.tikz \
+	  tikz/tnoisecone.tikz
 
-thesis.pdf: $(TEXFILES) $(BIBFILES) $(STYFILES) $(BSTFILES)
-	pdflatex thesis && bibtex thesis && bibtex thesis && pdflatex thesis && \
-        pdflatex thesis && cp thesis.pdf ~/Dropbox/Documents/Thesis/
+TIKZPDFS=tikz/roomlayout.pdf \
+	  tikz/tnoisecone.pdf
+
+all: thesis.pdf
+
+thesis.pdf: python/ $(TEXFILES) $(BIBFILES) $(STYFILES) $(BSTFILES) $(TIKZFILES)
+	$(MAKE) -C python all && \
+	latexmk -pdf -pdflatex="pdflatex --shell-escape %O %S" thesis.tex && \
+	cp thesis.pdf ~/Dropbox/JimsThesis/
 
 gr-qc: thesis.tgz
 
 thesis.tgz: thesis.pdf
 	tar -zcvf grqc.tgz $(TEXFILES) $(PNGFILES) $(BBLFILES) $(STYFILES)
 
+tikz/%.pdf: tikz/%.tikz
+	echo tikz/%.pdf 
+
+redo-%:
+	echo "tikz/%.pdf" 
+
 clean:
-	rm -f thesis.pdf *.aux *.bbl *.blg *.log *.lot *.toc *.lof *.bak *.tgz *.out *.tdo
+	rm -f thesis.pdf *.auxlock *.fdb_latexmk *.fls *.aux *.bbl *.blg *.log *.lot *.toc *.lof *.bak *.tgz *.out *.tdo && \
+	$(MAKE) -C tikz clean
