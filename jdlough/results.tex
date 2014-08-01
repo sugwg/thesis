@@ -185,6 +185,160 @@ cause unpredictable electronic offsets in the trap locking feedback servo
 resulting in an error on the subcarrier detuning lock point.
 
 
-
 \section{Second Experiment}
+
+During the second experiment we were able to observe several stable and
+unstable spring as before. This time we varied the frequency offset between
+carrier and subcarrier for each measurement, keeping the other settings
+fixed. The data fitting proved problematic.
+The stability of the optical springs were difficult to match with the theory.
+We finally determined that there had to be some new physics messing with us.
+We believe that the likely explanation for this is the intensity noise coupling
+to optic expansion through a surface absorption on the high reflectivity
+coating.
+It turns out that only 5ppm absorption is required to account for the phase
+discrepancy.
+This is, in part, due to the high circulating power and the small
+beam spot size on the cavity end mirrors.
+The results of this fitting can be seen in figure \ref{fig:juneOLGresults}.
+
+\subsection{Optic Expansion}
+See section 2.8.5 of Stefan Ballmer's thesis  \cite{Ballmer:thesis} for
+a thorough discussion on thermal noise couplings.
+The relevant part that we are interested in is the effect of changing
+the thickness of the optic itself due to thermal expansion.
+We want to first consider the penetration depth $d$ of the thermal
+fluctuations. This is given by,
+\begin{align}
+d &= \sqrt{\frac{\kappa}{2\pi fC\rho}} = 50\mu m \sqrt{\frac{400 H\!z}{f}}
+\end{align}
+This is nearly an order of magnitude smaller than the beam spot diameter, which
+is about $320\mu m$. The change in thickness $\Delta_z$ of the optic can then
+be approximated with,
+\begin{align}
+\Delta_z &= \left(1+\eta\right)\alpha\frac{P \delta (\mathrm{RIN}) }{2\pi ifC\rho A}
+\end{align}
+where $\delta$ is the absorption coefficient, $A$ is the area of the beam,
+and $\eta$ is the Poisson ratio.
+
+The majority of the change in power buildup due to cavity length is due to the
+carrier beam which has a positive detuning.
+Because of this detuning, expansion of the optics will shorten the cavity and
+increase the intracavity power.
+The intracavity power fluctuations will thus have a positive feedback and add
+to the instability of the optical spring.
+
+
+\begin{figure}[htbp]
+  \tikzsetnextfilename{juneOLGresults}
+  \begin{tikzpicture}
+  \begin{loglogaxis}[
+    name=plot1,
+    height=7cm,
+    width=14cm,
+    xmin=100,
+    xmax=2000,
+    xtick={1e2,1e3},
+    ylabel={Magnitude},
+    grid=both,
+  ]
+  \addplot[blue,very thick,dashed] table[x index=0,y index=1]
+    {./matlab_traces/juneResults13fit.dat};
+  \addplot[green,very thick,dashed] table[x index=0,y index=1]
+    {./matlab_traces/juneResults20fit.dat};
+  \addplot[red,very thick,dashed] table[x index=0,y index=1]
+    {./matlab_traces/juneResults10fit.dat};
+  \addplot[teal,very thick,dashed] table[x index=0,y index=1]
+    {./matlab_traces/juneResults15fit.dat};
+  \addplot[magenta,very thick,dashed] table[x index=0,y index=1]
+    {./matlab_traces/juneResults18fit.dat};
+  \addplot[yellow,very thick,dashed] table[x index=0,y index=1]
+    {./matlab_traces/juneResults19fit.dat};
+  \addplot[blue,very thick] table[x index=0,y index=1] {./matlab_traces/juneResults13.dat};
+  \addplot[green,very thick] table[x index=0,y index=1] {./matlab_traces/juneResults20.dat};
+  \addplot[red,very thick] table[x index=0,y index=1] {./matlab_traces/juneResults10.dat};
+  \addplot[teal,very thick] table[x index=0,y index=1] {./matlab_traces/juneResults15.dat};
+  \addplot[magenta,very thick] table[x index=0,y index=1] {./matlab_traces/juneResults18.dat};
+  \addplot[yellow,very thick] table[x index=0,y index=1] {./matlab_traces/juneResults19.dat};
+  \end{loglogaxis}
+  \begin{semilogxaxis}[
+    name=plot2,
+    at=(plot1.below south), anchor=above north,
+    height=7cm,
+    width=14cm,
+    xmin=100,
+    xmax=2000,
+    xtick={1e2,1e3},
+    xlabel={Frequency $(H\!z)$},
+    ylabel={Phase (Deg)},
+    legend style={legend pos=north west,font=\tiny},
+    grid=both,
+  ]
+  \addplot[blue,very thick,dashed,forget plot] table[x index=0,y index=2]
+    {./matlab_traces/juneResults13fit.dat};
+  \addplot[green,very thick,dashed,forget plot] table[x index=0,y index=2]
+    {./matlab_traces/juneResults20fit.dat};
+  \addplot[red,very thick,dashed,forget plot] table[x index=0,y index=2]
+    {./matlab_traces/juneResults10fit.dat};
+  \addplot[teal,very thick,dashed,forget plot] table[x index=0,y index=2]
+    {./matlab_traces/juneResults15fit.dat};
+  \addplot[magenta,very thick,dashed,forget plot] table[x index=0,y index=2]
+    {./matlab_traces/juneResults18fit.dat};
+  \addplot[yellow,very thick,dashed,forget plot] table[x index=0,y index=2]
+    {./matlab_traces/juneResults19fit.dat};
+  \addplot[blue,very thick] table[x index=0,y index=2] {./matlab_traces/juneResults13.dat};
+  \addlegendentry{DetC$=290.8kH\!z$,DetS$=-39.2kH\!z$,Pratio=3.46}
+  \addplot[green,very thick] table[x index=0,y index=2] {./matlab_traces/juneResults20.dat};
+  \addlegendentry{DetC$=285.0kH\!z$,DetS$=-45.0kH\!z$,Pratio=3.96}
+  \addplot[red,very thick] table[x index=0,y index=2] {./matlab_traces/juneResults10.dat};
+  \addlegendentry{DetC$=285.1kH\!z$,DetS$=-34.9kH\!z$,Pratio=3.50}
+  \addplot[teal,very thick] table[x index=0,y index=2] {./matlab_traces/juneResults15.dat};
+  \addlegendentry{DetC$=264.2kH\!z$,DetS$=-35.8kH\!z$,Pratio=3.94}
+  \addplot[magenta,very thick] table[x index=0,y index=2] {./matlab_traces/juneResults18.dat};
+  \addlegendentry{DetC$=238.2kH\!z$,DetS$=-21.8kH\!z$,Pratio=4.27}
+  \addplot[yellow,very thick] table[x index=0,y index=2] {./matlab_traces/juneResults19.dat};
+  \addlegendentry{DetC$=222.5kH\!z$,DetS$=-17.5kH\!z$,Pratio=4.42}
+  \end{semilogxaxis}
+  \end{tikzpicture}
+    \caption[Data Fitting of Open Loop Gain for 1st Results]{This is the open
+      loop gain fit for the second experiment. The solid lines are the measured
+      optical spring transfer functions. The dashed lines are the corresponding
+      theoretical transfer functions. In the legend, "DetC" and "DetS" stand for
+      carrier and subcarrier detuning respectively. Pratio is the power ratio
+      of carrier to subcarrier input power.}
+  \label{fig:juneOLGresults}
+\end{figure}
+
+
+\begin{figure}[htbp]
+  \tikzsetnextfilename{noisepassive}
+  \begin{tikzpicture}
+  \begin{loglogaxis}[
+    height=12cm,
+    width=14cm,
+    xlabel={Frequency $(H\!z)$},
+    ylabel={Trap Length Noise $(m/\sqrt{H\!z})$},
+    xmin=10,
+    xmax=6000,
+    ymin=1e-16,
+    ymax=1e-8,
+    grid=major,
+    legend cell align=left,
+  ]
+  \addplot[blue,very thick] table[x index=0,y index=1]
+    {./matlab_traces/june_noises.dat};
+  \addlegendentry{Measured Trap Length Noise}
+  \addplot[red,very thick] table[x index=0,y index=5]
+    {./matlab_traces/june_noises.dat};
+  \addlegendentry{Trap Length Noise Without Active Feedback}
+  \addplot[red,dashed,very thick] table[x index=0,y index=6]
+    {./matlab_traces/june_noises.dat};
+  \addlegendentry{Trap Length RMS Without Active Feedback}
+  \end{loglogaxis}
+  \end{tikzpicture}
+  \caption[Estimate of Passively Attenuated Noise]{This is the noise budget which includes the measured
+    cavity length noise with a stable optical spring.}
+  \label{fig:noisepassive}
+\end{figure}
+
 
