@@ -29,6 +29,8 @@ beat signal at $355kH\!z$. This beat signal was low enough in frequency that
 it would show strongly in the resonant \ac{rfpd} output, likely causing
 saturation effects in the electronics that would lead to an unpredictable
 subcarrier detuning.
+The effect of carrier and subcarrier beating will be discussed further in
+section \ref{sec:expimps}
 
 Despite these issues we were clearly able to observe
 stable and unstable optical springs and there was a short stretch of
@@ -58,19 +60,19 @@ about the parameter space.
     {./matlab_traces/april_pointspace_unstable.dat};
   \end{axis}
   \end{tikzpicture}
-  \caption[Parameters from 1st Experiment]{The solid lines show the theoretical
-    spring frequencies for all of the measurements that took place in a span
-    of about 30 minutes during the first experiment at the end of one lock
-    stretch.
-    The dots correspond to the actual measurements of the optical spring at
-    different subcarrier detunings. The entire space depicted is in the region
-    of static stability, i.e. the optical spring provides a restoring force.
-    The colors correspond to the dynamic stability of the optical spring.
-    Blue is dynamically stable.
-    Green is dynamically unstable.
-    The carrier frequency remained at a fixed offset from the subcarrier at
-    $355\, kH\!z$.
-    }
+    \caption[Parameters from 1st Experiment]{The solid lines show the theoretical
+      spring frequencies for all of the measurements that took place in a span
+      of about 30 minutes during the first experiment at the end of one lock
+      stretch.
+      The dots correspond to the actual measurements of the optical spring at
+      different subcarrier detunings. The entire space depicted is in the region
+      of static stability, i.e. the optical spring provides a restoring force.
+      The colors correspond to the dynamic stability of the optical spring.
+      Blue is dynamically stable.
+      Green is dynamically unstable.
+      The carrier frequency remained at a fixed offset from the subcarrier at
+      $355\, kH\!z$.
+      }
 \end{figure}
 
 \begin{figure}[htbp]
@@ -171,11 +173,12 @@ about the parameter space.
 
 
 \section{Experimental Layout Revision}
+\label{sec:expimps}
 From our first layout design there was a rather
 large beat signal on the \ac{rfpd} used for generating the \ac{pdh} signal
 for our locking feedback servo.
 This beat signal is a result of our initial layout involving the combining of
-carrier and subcarrier beams before the \ac{fi} which resulted in the two beams
+carrier and subcarrier beams before a \ac{fi} which resulted in the two beams
 having the same polarization.
 This produces a beat signal of the difference in the two frequencies.
 The beat signal shows up in our resonant \ac{rfpd} because we use a small
@@ -184,25 +187,70 @@ We feared there could be saturations in the photodiode electronics that would
 cause unpredictable electronic offsets in the trap locking feedback servo
 resulting in an error on the subcarrier detuning lock point.
 
+Additional improvements included several things to make the experiment easier.
+We added a camera to look at the reflected beam which helped with alignment.
+
+We also added some polarization cubes to take advantage of the orthogonal
+polarizations and monitor the two beams independently.
+
+Aligning the beam to the cavity using the steering mirrors on table 2 was very
+difficult because the cavity mirrors could get excited quite easily from
+touching the table.
+So added steering mirrors on table 1 after the carrier and subcarrier
+beams are combined. This allowed us to compensate for drifts in alignment
+between the two tables without having to touch table 2.
+
+\subsection{Faraday Isolator}
+The Faraday isolator is composed of a Faraday rotator and two \ac{pbs} cubes.
+The Faraday rotator is a medium which in the presence of a magnetic field
+will rotate the polarization of light as it propagates through the medium.
+There are other, much simpler devices that can rotate the polarization.
+However, the advantage of the \ac{fi} is that it will rotate the polarization
+in a fixed direction relative to the lab and not relative to the direction
+of propagation.
+
+In the case of the Faraday isolator, the polarization is rotated by 45 degrees
+so that any reflected light comes back through the \ac{fi} with a 90 degree
+rotation.
+The isolation is then done by adding a \ac{pbs} cube at the input to the
+Faraday rotator. Then we also add one on the output because there will often be
+additional optics that will disturb the polarization of the reflected light
+entering the \ac{fi} from the output side.
+Another way of putting it is that the \ac{pbs} on the input side transmits
+only the linear polarization that will transmit through the output \ac{pbs}.
+The output \ac{pbs} transmits only the linear polarization that will be
+reflected by the input \ac{pbs}.
+
 
 \section{Second Experiment}
 
 During the second experiment we were able to observe several stable and
 unstable spring as before. This time we varied the frequency offset between
 carrier and subcarrier for each measurement, keeping the other settings
-fixed. The data fitting proved problematic.
-The stability of the optical springs were difficult to match with the theory.
-We finally determined that there had to be some new physics messing with us.
-We believe that the likely explanation for this is the intensity noise coupling
-to optic expansion through a surface absorption on the high reflectivity
-coating.
-It turns out that only 5ppm absorption is required to account for the phase
-discrepancy.
+fixed.
+
+We ran into some complications while fitting the data.
+The stability of the optical springs would not match with the theory without
+the addition of some extra physics.
+With the addition of an effect from the thermal expansion of the high
+reflective optical coatings, we were able to fit the stablility
+properly.
+
+Thermal expansion couples in to the transfer function by the fact that driving
+the position of the mirror causes a power fluctuation and thus a temperature
+fluctuation in the surface of the mirror due to absorption.
+This temperature fluctuation causes a fluctuation in the thickness
+of the optic.
+This will be expained in more detail in section
+\ref{sec:opticthermalexpansion}.
+It turns out that only 5ppm absorption is required to account for the
+discrepancy in stablility.
 This is, in part, due to the high circulating power and the small
 beam spot size on the cavity end mirrors.
 The results of this fitting can be seen in figure \ref{fig:juneOLGresults}.
 
-\subsection{Optic Expansion}
+\subsection{Optic Thermal Expansion Contribution}
+\label{sec:opticthermalexpansion}
 See section 2.8.5 of Stefan Ballmer's thesis  \cite{Ballmer:thesis} for
 a thorough discussion on thermal noise couplings.
 The relevant part that we are interested in is the effect of changing
@@ -210,16 +258,24 @@ the thickness of the optic itself due to thermal expansion.
 We want to first consider the penetration depth $d$ of the thermal
 fluctuations. This is given by,
 \begin{align}
-d &= \sqrt{\frac{\kappa}{2\pi fC\rho}} = 50\mu m \sqrt{\frac{400 H\!z}{f}}
+d &= \sqrt{\frac{\kappa}{2\pi fC\rho}} = 50\mu m \sqrt{\frac{400 H\!z}{f}} \,.
 \end{align}
 This is nearly an order of magnitude smaller than the beam spot diameter, which
 is about $320\mu m$. The change in thickness $\Delta_z$ of the optic can then
-be approximated with,
-\begin{align}
-\Delta_z &= \left(1+\eta\right)\alpha\frac{P \delta (\mathrm{RIN}) }{2\pi ifC\rho A}
-\end{align}
+be approximated with
+\begin{equation} \label{eq:deltaz}
+\Delta_z = \left(1+\eta\right)\alpha\frac{ \delta P }{2\pi ifC\rho A} \, ,
+\end{equation}
 where $\delta$ is the absorption coefficient, $A$ is the area of the beam,
 and $\eta$ is the Poisson ratio.
+
+From equation \ref{eq:deltaz} we can get the transfer function from force to
+traplength. With a factor of $c/2$ to remove the optical power to force from
+the optical spring $K_{OS}$, the transfer function depicted in figure
+\ref{fig:traploopCTE} is
+\begin{equation}
+\frac{-c \delta \alpha \left(1+\eta\right)}{4\pi ifC\rho A} \, .
+\end{equation}
 
 The majority of the change in power buildup due to cavity length is due to the
 carrier beam which has a positive detuning.
@@ -227,6 +283,60 @@ Because of this detuning, expansion of the optics will shorten the cavity and
 increase the intracavity power.
 The intracavity power fluctuations will thus have a positive feedback and add
 to the instability of the optical spring.
+
+\begin{figure}[hb]
+\centering
+\tikzsetnextfilename{traploopCTE}
+\begin{tikzpicture}
+  [analog/.style={rectangle,draw=blue!50,fill=blue!20,thick,align=center,
+                  outer sep=0,minimum size=2cm,text width=1.8cm},
+   digital/.style={rectangle,draw=black!50,fill=black!20,thick,align=center,
+                   outer sep=0,minimum size=2cm,text width=1.8cm},
+   physical/.style={rectangle,draw=green!50,fill=green!20,thick,align=center,
+                    outer sep=0,minimum size=2cm,text width=1.8cm},
+   optical/.style={rectangle,draw=red!50,fill=red!20,thick,align=center,
+                   outer sep=0,minimum size=2cm,text width=1.8cm}]
+  \renewcommand{\baselinestretch}{0.9}
+  \begin{scriptsize}
+  \node[circle,draw=black] (sum1) at (-3,-3) {$+$};
+  \node[circle,draw=black] (sum2) at (3,0) {$+$};
+  \node[analog] (F) at (0,-6) {Active Feedback};
+  \node[optical] (O) at (0,-3) {Optical Spring};
+  \node[physical] (S) at (0,3) {Small Mass Suspension};
+  \node[physical] (CTE) at (0,0) {Thermal Optic Expansion};
+  \coordinate (j1) at (-3,-6) {};
+  \coordinate (j2) at (-3,-3) {};
+  \coordinate (j3) at (-3,0) {};
+  \coordinate (j4) at (-3,3) {};
+  \coordinate (j5) at (3,-6) {};
+  \coordinate (j6) at (3,-3) {};
+  \coordinate (j7) at (3,0) {};
+  \coordinate (j8) at (3,3) {};
+  \draw[thick] (F) -- (j1);
+  \draw[thick,->] (O) -- (sum1);
+  \draw[thick,->] (j3) -- (CTE);
+  \draw[thick,->] (j4) -- (S);
+  \draw[thick,->] (j1) -- (sum1);
+  \draw[thick] (sum1) -- (j3);
+  \draw[thick] (j3) -- (j4);
+  \draw[thick,<-] (F) -- (j5);
+  \draw[thick,<-] (O) -- (j6);
+  \draw[thick,<-] (sum2) -- (CTE);
+  \draw[thick] (j8) -- (S);
+  \draw[thick] (j5) -- (j6);
+  \draw[thick] (j6) -- (sum2);
+  \draw[thick,<-] (sum2) -- (j8);
+  \node[rotate=45] (force) at (-6,0) {\LARGE FORCE};
+  \node[rotate=45] (pos) at (6,0) {\LARGE POSITION};
+  \end{scriptsize}
+\end{tikzpicture}
+  \caption[Trap Loop With Optic Thermal Expansion]{
+    This shows how the thermal expansion effect couples into the experiment.
+    Active feedback represents the two feedback paths displayed in figure
+    \ref{fig:traploops}.
+    }
+  \label{fig:traploopCTE}
+\end{figure}
 
 
 \begin{figure}[htbp]
@@ -336,8 +446,10 @@ to the instability of the optical spring.
   \addlegendentry{Trap Length RMS Without Active Feedback}
   \end{loglogaxis}
   \end{tikzpicture}
-  \caption[Estimate of Passively Attenuated Noise]{This is the noise budget which includes the measured
-    cavity length noise with a stable optical spring.}
+    \caption[Estimate of Passively Attenuated Noise]{
+    This is the noise budget which includes the measured
+    cavity length noise with a stable optical spring.
+    }
   \label{fig:noisepassive}
 \end{figure}
 
