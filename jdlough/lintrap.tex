@@ -1,4 +1,36 @@
 
+Our goal, ultimately, is to demonstrate the angular optical trap described in
+chapter \ref{ch:angletrap}.
+To get there we need to develop the tools and techniques for generating the
+one-dimensional optical trap.
+
+The one-dimensional trap has been done before at MIT \cite{Corbitt07}.
+In that experiment they were limited by laser frequency noise.
+Since the frequency noise couples into the experiment by $\frac{L \lambda}{c}$,
+we could improve the frequency noise just by shortening the cavity. We chose
+a 7cm cavity because it was about as close as we could get two mirrors while
+being suspended in our \ac{sos}. \ref{fig:susbig} 
+
+
+
+\begin{figure}[h]
+\centering
+  \includegraphics[width=15cm]{./figures/bladesprings.jpg}
+  \caption[Blade Spring Modification for Veritcal Isolation]{
+  This is a picture of the blade springs as installed on one of the suspension
+  towers.
+  This was necessary for additional bounce mode suppression of seismic noise.
+  The bounce mode of the suspension wires were at about 22Hz.
+  This unfortunately, was very close to a peak in our seismic spectrum
+  resulting in too much vertical motion in our suspended mirrors.
+  With the addition of the blade springs, we ended up with a bounce mode of
+  about 7Hz providing more supression of the seismic by moving away from a
+  seismic peak as well as the additional suppression from a lower frequency
+  mode. See section \ref{sec:seismic}.
+  }
+  \label{fig:blades}
+\end{figure}
+
 \section{Experimental Layout}
 Using the beam from our laser (see \ref{ch:psl}) we split into two orthogonal
 polarizations. One beam we need to be at a higher power with positive detuning
@@ -50,16 +82,18 @@ We need a high finesse cavity to give us the power buildup in the cavity that
 we need for a decent resonant frequency to get beyond some environmental noise.
 Ignoring any damping effects a fairly straight-forward calculation gives the
 resonant frequency we can achieve for a given finesse and input power. For a
-high finesse, it can be shown that the maximum spring constant for a given
-power is approximately,
+high finesse, it can be shown, by taking the derivative of the intracavity power,
+that the maximum spring constant for a given power is approximately
 \begin{align}
-k &= \frac{18 F^2}{\sqrt{12} \pi \lambda c} P
+k &= \frac{18 F^2}{\sqrt{12} \pi \lambda c} P \,,
 \end{align}
-which gives a maximum resonant frequency of,
+which gives a maximum resonant frequency of
 \begin{align}
 f_0 &= \frac{F}{2 \pi} \sqrt{\frac{18 P}{\sqrt{12} \pi \lambda m c }} \\
-&\approx 3.8kHz
+&\approx 3.8kHz \,.
 \end{align}
+The frequency in the last step was arrived at by using a finesse of 8200
+with a reasonable input power of 1 Watt.
 
 \subsection{Short Cavity}
 \label{sec:lin_short}
@@ -345,25 +379,50 @@ individual cavity mirror reflectivities.
 \subsection{Glued Fiber Attachements}
 
 The final suspension design for this experiment used small cone-shaped glass
-nubs at the glue end of the fibers. This could be constructed monolithicaly
+nubs at the glue end of the fibers.
+This could be constructed monolithicaly
 by cold welding\footnote{a process where the substrate is not heated to the
 point where the materials flow together} the tip of a glass rod to a small
 mirror blank\footnote{or a mirror with a previously damaged coating...} to
-create a small nub from which the fiber is pulled. This is all done in one
+create a small nub from which the fiber is pulled.
+This is all done in one
 continuous motion where the torch is applied to the edge of the mirror to
 gently heat the point of attachement, then the rod with a sharp point is placed
-into the flame to melt the tip and cold weld to the edge of the mirror. The
+into the flame to melt the tip and cold weld to the edge of the mirror.
+The
 flame is then directed at the tip of the rod slightly back from the weld to
-soften the fiber pull spot. When the spot is sufficiently heated, the fiber
-is pulled away sharply while dropping the flame away from the fiber. What
+soften the fiber pull spot.
+When the spot is sufficiently heated, the fiber
+is pulled away sharply while dropping the flame away from the fiber.
+What
 remains is a rod attached to a small conical shaped nub monolithically through
-a very thin, high Q fiber. Now the cold weld allows us to separate this
+a very thin, high Q fiber.
+Now the cold weld allows us to separate this
 monolithic fiber assembly because the bond strength is much less than the yield
-strength of the fiber. We then glue this monolithic fiber assembly using the
-epoxy to the side of the mirror with undamaged coatings. This technique allows
-us to preserve a very high Q (~$5x10^5$) while avoiding damage to the coating.
+strength of the fiber.
+
+We then glue this monolithic fiber assembly using the epoxy to the side of the
+mirror with undamaged coatings.
+This technique allows us to preserve a very high Q ($\approx 5\times 10^5$)
+while avoiding damage to the coating.
+The results of a Q ringdown measurement can be seen in
+figure \ref{fig:Qmeasurement}.
+
+\begin{figure}[hb]
+\centering
+\includegraphics[width=15cm]{./figures/Qmeasurement.pdf}
+\caption[Q Measurement of Glass Suspension]{
+    This ringdown measurement was done by exciting the $\approx 18\mathrm{Hz}$
+    position resonance and measuring the rms motion across the resonant
+    frequency from an \ac{asd} measurement of the OSEM position resonance.
+    The OSEM position signal is of the metal ring intermediate mass of the
+    output mirror suspension as described in section \ref{sec:doublepend}.
+    }
+\label{fig:Qmeasurement}
+\end{figure}
 
 \subsection{Double Pendulum}
+\label{sec:doublepend}
 The output mirror is suspended by glass fibers inside a ring of steel which is
 three inches in diameter. The steel ring is the \ac{sos} controlled mass.
 Since the mass of the ring is considerably greater than the mass of the small
@@ -430,7 +489,6 @@ One can also present the equations of motion diagramatically as in figure
 \end{figure}
 
 \begin{figure}[hb]
-\label{fig:doublesus}
 \centering
 \tikzsetnextfilename{doublesus}
 \centering
@@ -468,10 +526,10 @@ One can also present the equations of motion diagramatically as in figure
 \caption[Double Pendulum Feedback Representation]{This diagram represents the
          double pendulum feedback loops from which one can calculate the
          response of the system.}
+\label{fig:doublesus}
 \end{figure}
 
 \begin{figure}[hb]
-\label{fig:smallsus}
 \centering
 \tikzsetnextfilename{smallmass}
 \begin{tikzpicture}
@@ -503,6 +561,7 @@ One can also present the equations of motion diagramatically as in figure
          substrate with a 5cm radius of curvature. The suspension fibers are
          monolithic to a small conical nub which is glued to the outside edge
          of the mirror.}
+\label{fig:smallsus}
 \end{figure}
 
 
@@ -512,35 +571,62 @@ One can also present the equations of motion diagramatically as in figure
 \subsection{Optical Lever}
 We found the small mirror resonances to be strong enough to prevent locking the
 trapping cavity. Our solution to this was to employ an optical lever, where a
-laser is reflected off the back of the small mirror and onto a quadrant
-photodiode. The photodiode outputs a signal corresponding to the pitch and yaw
-of the small mirror. If you aren't careful with the position of lenses, there
-will be a coupling of the small mirror position to the photodiode signals.
-We took advantage of our carelessness and used the coupled position signal
-to feedback through resonant gain filters in the digital system and applied to
-the OSEM drives of the SOS.
+laser is reflected off the back of the small mirror and onto a \ac{qpd}.
+The photodiode outputs a signal corresponding to the pitch and yaw
+of the small mirror.
 
-\section{Actuation Range}
+Using the signal from the \ac{qpd} as the error signal we feed back to the
+OSEM actuators using digital filtering.
+We employed resonant gain filters in the optical lever loops to damp resonance
+modes as necessary to acheive stable locking.
+
+%If you aren't careful with the position of lenses, there
+%will be a coupling of the small mirror position to the photodiode signals.
+%We took advantage of our carelessness and used the coupled position signal
+%to feedback through resonant gain filters in the digital system and applied to
+%the OSEM drives of the SOS.
+
+\subsection{Actuation Range and Bandwidth}
 Due to seismic noise we needed a fairly wide actuation range at low frequencies.
-The maximum range of the laser PZT is plus or minus 160MHz. This corresponds to
-about 42nm. We needed another actuation path to extend the range at low
-frequencies. For this we use the magnetic force from the OSEM coils.
-Additionally, due to the high finesse, we needed a fairly high bandwidth for
-the feedback loop. The high voltage amplifier for the laser PZT itself has a
-bandwidth limit, so we needed a high-frequency bypass which passively adds the
-HV output to the HV input.
+The maximum range of the laser PZT is plus or minus 160MHz.
+This corresponds to about 42nm.
+As can be seen in figure \ref{fig:seismic} there is more rms motion than this
+at low frequencies.
+We needed another actuation path to cover the full range of rms motion at low
+frequencies.
+For this we use the magnetic force from the OSEM coils.
+
+While attempting to acquire lock, the cavity mirror motion is much larger than
+the linewidth of the cavity.
+As a result, the \ac{pdh} error signal (fig. \ref{fig:pdh}) sweeps through
+rapidly.
+Looking at the signal in the time domain (as with an oscilloscope), the
+width of the \ac{pdh} error signal is about $50\mathrm{\mu s}$.
+One can imagine that we would want a bandwidth of at least
+$\approx 1/50\mathrm{\mu s} = 20\mathrm{kHz}$.
+In fact a unity gain frequency of about $20\mathrm{kHz}$ turned out to work
+well for acquiring lock.
+
+To get this bandwidth a modification to the laser PZT actuation path was
+required.
+The high voltage amplifier for the laser PZT itself has a bandwidth limit.
+In order to extend the range further we used a high-frequency
+bypass which passively adds the HV output to the HV input.
+
 
 \section{Sub-Carrier Servo}
 As mentioned above, we needed a way of shifting the frequency of the subcarrier
-beam in relation to the carrier by $\mathcal{O}\, 100\, kH\!z$.
-We do this using \ac{aom}s by first shifting in one direction by $80\,MH\!z$,
-then shifting the opposite direction by $80\,MH\!z + \mathrm{offset}$.
-The $80\,MH\!z$ frequency source is a crystal oscillator. The variable
-frequency source is a \ac{vco} which uses the output of a feedack servo to
-modulate the frequency. The sensor for this feedback is the demodulated beat
-signal of the output of the two \ac{aom} frequency sources. The demodulation
-is done by mixing the beat signal with the output of a function generator which
-is set to the desired offset frequency.
+beam in relation to the carrier by $\mathcal{O}\, 100\,\mathrm{kHz}$.
+We do this using \ac{aom}s by first shifting in one direction by
+$80\,\mathrm{MHz}$, then shifting the opposite direction by
+$80\,\mathrm{MHz} + \mathrm{offset}$.
+The $80\,\mathrm{MHz}$ frequency source is a crystal oscillator.
+The variable frequency source is a \ac{vco} which uses the output of a feedback
+servo to modulate the frequency.
+The sensor for this feedback is the demodulated beat signal of the output of
+the two \ac{aom} frequency sources.
+The demodulation is done by mixing the beat signal with the output of a
+function generator which is set to the desired offset frequency.
 
 \begin{figure}[hb]
 \centering
@@ -574,33 +660,32 @@ is set to the desired offset frequency.
 \end{tikzpicture}
 \caption[Subcarrier Servo Electronics]{This diagram represents the
          subcarrier servo feedback.}
+\label{fig:scsfeedback}
 \end{figure}
 
-\subsection{Noise Requirements}
-
-\section{Relative Power Tuning}
-
-\section{Differential Power Fluctuations}
-
-\section{Procedures}
-
-\subsection{Measure the optical losses up to the cavity}
-
-\subsection{Calibration of carrier and subcarrier photodiodes}
-We will calibrate the photodiodes while the cavity is not locked, knowing the incident beam power and the round trip losses.
-
-\begin{itemize}
-    \item Block carrier light in Mach-Zehnder path.
-    \item Turn the reflection monitor beam half-wave plate to minimize subcarrier light on the photodiode.
-    \item Block the reflection monitor beam to measure dark voltage at DCPD ($A$).
-    \item Unblock the reflection monitor beam and measure voltage at DCPD ($B$).
-    \item Unblock the carrier light and measure again ($C$)
-    \item Block subcarrier light and measure the carrier power using power meter after last steering mirror on table 1 ($D$).
-    \item Using the measured optical loss to the cavity ($L$) compute the mW/mV calibration:
-    \begin{itemize}
-        \item $\frac{D\cdot L}{C - B}$
-    \end{itemize}
-\end{itemize}
+%\section{Relative Power Tuning}
+%
+%\section{Differential Power Fluctuations}
+%
+%\section{Procedures}
+%
+%\subsection{Measure the optical losses up to the cavity}
+%
+%\subsection{Calibration of carrier and subcarrier photodiodes}
+%We will calibrate the photodiodes while the cavity is not locked, knowing the incident beam power and the round trip losses.
+%
+%\begin{itemize}
+%    \item Block carrier light in Mach-Zehnder path.
+%    \item Turn the reflection monitor beam half-wave plate to minimize subcarrier light on the photodiode.
+%    \item Block the reflection monitor beam to measure dark voltage at DCPD ($A$).
+%    \item Unblock the reflection monitor beam and measure voltage at DCPD ($B$).
+%    \item Unblock the carrier light and measure again ($C$)
+%    \item Block subcarrier light and measure the carrier power using power meter after last steering mirror on table 1 ($D$).
+%    \item Using the measured optical loss to the cavity ($L$) compute the mW/mV calibration:
+%    \begin{itemize}
+%        \item $\frac{D\cdot L}{C - B}$
+%    \end{itemize}
+%\end{itemize}
 
 \section{Mode Matching}
 We want to know how much power couples into the cavity from a
@@ -715,4 +800,23 @@ Power coupling into cavity is then (assuming no loss and $r_1 = r_2$),
 In equation \ref{symetricmatch} we can see readily the symmetry between
 $w_{b0}$ and $w_{c0}$, and the symmetry of $z_0$ about $0$, as expected.
 
+\begin{figure}[h]
+\centering
+  \includegraphics[width=13cm]{./figures/susbig.jpg}
+  \caption[Small Optic Suspension]{This shows the full small optic suspension
+  tower.
+  This is based on the LIGO \ac{sos} design.
+  We modified the tower base in order to get the mirrors closer together.
+  You can see in this picture the base is flush with the front of the
+  vertical side plates.
+  This suspension was modified after first cavity lock to further improve
+  seismic isolation using blade springs depicted in figure \ref{fig:blades}.
+  The extra length of cabling is for suspending the OSEM connection block
+  in case the entire platform is suspended as an extra level of seismic
+  isolation.
+  In this case, suspending the connection block may be desirable to reduce
+  seismic coupling to the platform through the stiff vacuum cabling.
+  }
+  \label{fig:susbig}
+\end{figure}
 

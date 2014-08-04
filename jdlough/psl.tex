@@ -110,15 +110,40 @@ laser frequency follows the length of the reference cavity up to several kHz.
 
 \subsection{Sensing}
 
-Sensing for the \ac{fss} is accomplished using the method of \ac{pdh}. The
-signal is essentially the derivative of the reflected power with respect to
-frequency of the laser (assuming length is fixed). This is accomplished by
-modulating the input beam with a local oscillator and demodulating the
-reflected beam with the same local oscillator. This measures the relative
-amplitude of the reflected light as opposed to the amplitude squared (power).
-The result is a signal on resonance that is zero and has maximum slope.
+Sensing for the \ac{fss} is accomplished using the method of \ac{pdh}.
+(see \cite{Black:2001})
+The signal is essentially the derivative of the reflected power with respect
+to frequency of the laser (assuming length is fixed).
+This is accomplished by modulating the frequency of the input beam with an
+\ac{eom} driven by a 25MHz local oscillator and demodulating the reflected
+beam with the same local oscillator.
+%This measures the relative amplitude of the reflected light as opposed to the
+%amplitude squared (power).
+The result is a signal on resonance that is zero and has maximum slope
+(see fig.\ref{fig:pdh}).
 Exactly the signal we want for a feedback system which keeps the laser on
-resonance with the cavity.
+resonance with the cavity. 
+
+\begin{figure}
+\centering
+\tikzsetnextfilename{pdhplot}
+\begin{tikzpicture}
+\begin{axis}[
+    samples=200,
+    grid=both,
+    xlabel={Frequency $(\mathrm{Hz})$},
+    ylabel={Error Signal $(\mathrm{V})$}
+    ]
+%  \addplot[blue,domain=-4:4,very thick] {x*exp(-x*x)};
+  \addplot[purple,domain=-4:4,very thick] {x/(x*x+0.5)/(x*x+0.5)};
+\end{axis}
+\end{tikzpicture}
+\caption[PDH Error Signal]{This shows the \ac{pdh} error signal. Our lock point
+  must be between the positive and negative cavity poles (maximum  and minimum on
+  the y-axis).
+  }
+\label{fig:pdh}
+\end{figure}
 
 \subsubsection{Cavity Assembly}
 
@@ -166,19 +191,20 @@ The mid frequency actuation is by \ac{pzt} which applies a force to change the
 cavity length. The high frequency actuation is by phase modulation of the light
 after it exits the laser head using an \ac{eom}.
 
-\todopar{Add a description of the Electro-Optic Modulator}
+%\todopar{Add a description of the Electro-Optic Modulator}
 
-\subsubsection{Laser Head Thermal}
-
-\subsubsection{Laser Head Piezo-Electric Transducer}
-\todopar{add description of peizo-electric effect}
-\todopar{describe the effects of the piezo in-loop}
+%\subsubsection{Laser Head Thermal}
+%
+%\subsubsection{Laser Head Piezo-Electric Transducer}
+%\todopar{add description of peizo-electric effect}
+%\todopar{describe the effects of the piezo in-loop}
 
 \subsubsection{Electro Optic Modulator}
 
 \section{Mode Cleaner}
-\todopar{add description of PMC, reference Willke,98}
-\cite{Willke:98}
+%\todopar{add description of PMC, reference Willke,98}
+The PMC is a ring cavity of three mirrors.
+see  \cite{Willke:98}
 
 
 \subsection{Sensing}
@@ -186,3 +212,6 @@ after it exits the laser head using an \ac{eom}.
 \subsection{Feedback}
 
 \subsection{Actuation}
+Actuation on cavity length is done with a piezo-electric transducer on one of
+the mirrors. This transducer converts voltage to cavity length.
+
