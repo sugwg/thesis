@@ -12,9 +12,9 @@ increase in force as each blade passes by. The seismic noise is plotting along
 with noise measured from the two suspensions in figure \ref{fig:seismic}.
 
 
-\begin{figure}[hb]
+\begin{figure}
   \centering
-  \includegraphics[width=16cm]{./figures/modehunting.png}
+  \includegraphics[width=15cm]{./figures/modehunting.png}
   \caption[Seismic Noise Spectrum]{
     This shows the spectrum of the seismic noise in our lab taken with a
     seismometer located on table 2.
@@ -206,7 +206,7 @@ $t$ is large compared to $\frac{R^2}{2R_m}$. Figure \ref{fig:tnoisec}
 depicts the \ac{asd} of this epoxy thermal noise contribution to the cavity
 length noise.
 
-\begin{figure}[htbp]
+\begin{figure}
   \tikzsetnextfilename{tnoisecone}
   \begin{tikzpicture}
   \begin{loglogaxis}[
@@ -239,6 +239,37 @@ interferometric nature of the experiment.
 The coupling goes as the length of the cavity as discussed in section
 \ref{sec:lin_short}.
 
+We can measure the frequency noise of the laser by referencing the beam to
+another cavity. The \ac{fss} described in section \ref{sec:fss} can be used
+for this measurement because at low frequencies (below unity gain) the control
+signal is the noise entering the control loop.
+If the control loop is designed well, the dominant noise source will be the
+frequency noise which is inherent to the laser without the presence of the
+control loop.
+Figure \ref{fig:frequencynoise} shows this laser frequency noise measurement
+converted from the Volts measured in the \ac{pzt} path to Hz laser frequency.
+
+
+\begin{figure}
+  \tikzsetnextfilename{freqnoise}
+  \begin{tikzpicture}
+  \begin{loglogaxis}[
+    xlabel={Frequency $(\mathrm{Hz})$},
+    ylabel={Frequency Noise $(\mathrm{Hz}/\sqrt{\mathrm{Hz}})$},
+    grid=both,
+  ]
+  \addplot[black,very thick] table[x index=0,y index=1]
+    {./python/fsscontrol.dat};
+  \addlegendentry{FSS Control Signal, PZT Path}
+  \end{loglogaxis}
+  \end{tikzpicture}
+  \caption[Frequency Noise]{This is the measured laser frequency noise
+    from the \ac{pzt} path of the \ac{fss}.
+    }
+  \label{fig:frequencynoise}
+\end{figure}
+
+
 \section{Laser Intensity}
 
 As mentioned in chapter \ref{ch:psl} the laser has an intensity noise
@@ -249,26 +280,42 @@ value in the frequency range we are interested in.
 The measured intensity noise compared to the laser specification is shown
 in figure \ref{fig:intensitynoise}.
 
-\begin{figure}[htbp]
+\begin{figure}
   \tikzsetnextfilename{intensitynoise}
   \begin{tikzpicture}
   \begin{loglogaxis}[
     height=12cm,
     width=14cm,
-    xlabel={Frequency $(H\!z)$},
-    ylabel={Intensity Noise $(\mathrm{RIN}/\sqrt{H\!z})$},
-    xmin=10,
-    xmax=6000,
-    ymin=1e-10,
-    ymax=1e-4,
-    grid=major,
+    xlabel={Frequency (Hz)},
+    ylabel={Intensity Noise $(\mathrm{RIN}/\sqrt{\mathrm{Hz}})$},
+    xmin=1,
+    xmax=100000,
+    ymin=1e-9,
+    ymax=1e-3,
+    grid=both,
     legend cell align=left,
+    legend style={font=\small},
   ]
-  \addplot[black,domain=10:6000,very thick] {10^(-7.5)};
-  \addlegendentry{Laser Intensity Noise (from specification)}
+  \addplot[blue,domain=1:100000,very thick] {10^(-7.5)};
+  \addlegendentry{Laser Intensity Noise (from specification sheet)}
+  \addplot[black,very thick] table[x index=0,y index=7]
+    {./matlab_traces/june_noises.dat};
+  \addlegendentry{Measured Intensity Noise}
+  \addplot[red,domain=1:100000,very thick] {9.7688e-9};
+  \addlegendentry{Shot Noise Level For Measurement (6mW)}
+  \addplot[green!80!black,very thick] table[x index=0,y index=1]
+    {./matlab_traces/oldintnoise.dat};
+%  \addplot[green!80!black,very thick] table[x index=0,y index=1]
+%    {./matlab_traces/oldintnoisehigh2.dat};
+  \addlegendentry{ISS Supressed Noise}
   \end{loglogaxis}
   \end{tikzpicture}
-  \caption[Intensity Noise]{This is the laser intensity noise}
+  \caption[Intensity Noise]{This is a comparison of intensity noise
+    levels. The noise was measured in the lab using a \ac{pd} which
+    we built for use in our \ac{iss}. I have included for reference, the
+    noise level from the specification sheet as well as the shot noise
+    level for the amount of incident power in this measurement.
+    }
   \label{fig:intensitynoise}
 \end{figure}
 
@@ -279,7 +326,7 @@ in figure \ref{fig:intensitynoise}.
 
 \section{Noise Budget}
 
-\begin{figure}[htbp]
+\begin{figure}
   \tikzsetnextfilename{noisebudgetjune}
   \begin{tikzpicture}
   \begin{loglogaxis}[
@@ -314,66 +361,70 @@ in figure \ref{fig:intensitynoise}.
   \label{fig:noisebudget}
 \end{figure}
 
-\begin{figure}[htbp]
-	\centering
-		\includegraphics[width=15cm]{./figures/noise_budget.eps}
-	\caption[Noise Budget]{Noise budget}
-	\label{fig:noise_bud}
-\end{figure}
-
-\begin{figure}[htbp]
-	\centering
-		\includegraphics[width=15cm]{./figures/NoiseBudgetBoard.pdf}
-	\caption[Noise Budget Board]{Noise budget with coil driver board noise}
-	\label{fig:noise_bud_brd}
-\end{figure}
-
-\section{Vacuum Requirements for Optical Trap}
-
-It is desired to have an understanding of limits of vacuum gas constituents for the in-vacuum experiment. From the LIGO DCC we have a few documents that describe the process that went into understanding the problem for 2 4km long Fabry-Perot cavities. I will apply these techniques to a 10-30cm cavity.\\
-
-
-\subsection{LIGO Vacuum Requirements}
-
-The amplitude spectral density of the optical path length is given by,
-
-\begin{align*}
-\Delta L ( f ) = 4 \pi \left( \frac{2 L_0 p}{k T w_0 v_0} \right)^{1/2} a e^{- \pi f w_0 / v_0 }
-\end{align*} \\
-
-
-From *** the value for $4 \pi a \left( \frac{2}{k T w_0 L_0 v_0} \right)^{1/2} $ is $ 4.8 x 10^{-21} \left( \frac{R_x}{R_{H_2}} \right) $. Where $L_0 = 4000 \mathrm{m} $ and $ w_0 = 0.06 \mathrm{m} $. \\
-
-For our purposes (single arm cavity) we will lose a factor of $ \sqrt{2} $. \\
-
-We end up with a formula for amplitude spectral density in a one-arm cavity that is:
-
-\begin{align*}
-\Delta L ( f ) = 4 \pi \left( 5.3 \mathrm{x} 10^{-20} \right) \left(  \frac{R_x}{R_{H_2}} \right) \sqrt{\frac{ L_0 p}{ w_0 } } e^{- \pi f w_0 / v_0 }
-\end{align*} \\
-
-\subsection{Optical Trap}
-
-Now, we insert parameters for the cavity. For the first look, I use the parameters defined in the project description: 0.3m cavity length, 0.2m radius of curvature for each mirror.
-\todo{something},
-
-If we operate at a pressure of 1e-6 Torr, no constituent gas can be greater than this. The following plot is of constituent gases at this pressure.
-
-\begin{figure}[htbp]
-	\centering
-		\includegraphics[width=15cm]{./figures/trapgasnoise_1.png}
-	\caption[Gas Noise Comparison]{Gas Noise for 1e-6 Torr}
-	\label{fig:gas_noise1}
-\end{figure}
-
-If we have a residual gas analyzer that detects a minimum partial pressure of 5e-11 Torr:
-
-\begin{figure}[htbp]
-	\centering
-		\includegraphics[width=15cm]{./figures/trapgasnoise_2.png}
-	\caption[Gas Noise Comparison]{Gas Noise for 5e-11 Torr}
-	\label{fig:gas_noise2}
-\end{figure}
+%\begin{figure}
+%	\centering
+%		\includegraphics[width=15cm]{./figures/noise_budget.eps}
+%	\caption[Noise Budget]{Noise budget}
+%	\label{fig:noise_bud}
+%\end{figure}
+%
+%\begin{figure}
+%	\centering
+%		\includegraphics[width=15cm]{./figures/NoiseBudgetBoard.pdf}
+%	\caption[Noise Budget Board]{Noise budget with coil driver board noise}
+%	\label{fig:noise_bud_brd}
+%\end{figure}
+%
+%\section{Vacuum Requirements for Optical Trap}
+%
+%It is desired to have an understanding of limits of vacuum gas constituents
+%for the in-vacuum experiment.
+%From the LIGO DCC we have a few documents that describe the process that went
+%into understanding the problem for 2 4km long Fabry-Perot cavities.
+%I will apply these techniques to a 10-30cm cavity.\\
+%
+%
+%\subsection{LIGO Vacuum Requirements}
+%
+%The amplitude spectral density of the optical path length is given by,
+%
+%\begin{align*}
+%\Delta L ( f ) = 4 \pi \left( \frac{2 L_0 p}{k T w_0 v_0} \right)^{1/2} a e^{- \pi f w_0 / v_0 }
+%\end{align*} \\
+%
+%
+%From *** the value for $4 \pi a \left( \frac{2}{k T w_0 L_0 v_0} \right)^{1/2} $ is $ 4.8 x 10^{-21} \left( \frac{R_x}{R_{H_2}} \right) $. Where $L_0 = 4000 \mathrm{m} $ and $ w_0 = 0.06 \mathrm{m} $. \\
+%
+%For our purposes (single arm cavity) we will lose a factor of $ \sqrt{2} $. \\
+%
+%We end up with a formula for amplitude spectral density in a one-arm cavity that is:
+%
+%\begin{align*}
+%\Delta L ( f ) = 4 \pi \left( 5.3 \mathrm{x} 10^{-20} \right) \left(  \frac{R_x}{R_{H_2}} \right) \sqrt{\frac{ L_0 p}{ w_0 } } e^{- \pi f w_0 / v_0 }
+%\end{align*} \\
+%
+%\subsection{Optical Trap}
+%
+%Now, we insert parameters for the cavity. For the first look, I use the parameters defined in the project description: 0.3m cavity length, 0.2m radius of curvature for each mirror.
+%\todo{something},
+%
+%If we operate at a pressure of 1e-6 Torr, no constituent gas can be greater than this. The following plot is of constituent gases at this pressure.
+%
+%\begin{figure}
+%	\centering
+%		\includegraphics[width=15cm]{./figures/trapgasnoise_1.png}
+%	\caption[Gas Noise Comparison]{Gas Noise for 1e-6 Torr}
+%	\label{fig:gas_noise1}
+%\end{figure}
+%
+%If we have a residual gas analyzer that detects a minimum partial pressure of 5e-11 Torr:
+%
+%\begin{figure}
+%	\centering
+%		\includegraphics[width=15cm]{./figures/trapgasnoise_2.png}
+%	\caption[Gas Noise Comparison]{Gas Noise for 5e-11 Torr}
+%	\label{fig:gas_noise2}
+%\end{figure}
 
 %\section{Epoxy Thermal Noise}
 %

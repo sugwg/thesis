@@ -19,7 +19,8 @@ figures/trap_drawing_paper2.pdf \
 figures/trap_radPresA_paper2.pdf
 
 BIBFILES=references.bib \
-OT_paper.bib
+OT_paper.bib \
+papers.bib
 
 STYFILES=bibunits.sty syrthesis.sty
 

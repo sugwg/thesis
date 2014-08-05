@@ -25,7 +25,7 @@ well aligned to the subcarrier beam causing drifts in the power ratio between
 carrier and subcarrier as the overall alignment drifted.
 Another complication in the first run was due to the fact that the carrier and
 subcarrier beams had exactly the same polarizations which caused a strong
-beat signal at $355kH\!z$. This beat signal was low enough in frequency that
+beat signal at 355kHz. This beat signal was low enough in frequency that
 it would show strongly in the resonant \ac{rfpd} output, likely causing
 saturation effects in the electronics that would lead to an unpredictable
 subcarrier detuning.
@@ -38,7 +38,7 @@ measurements that did line up with the model with certain assumptions
 about the parameter space.
 
 
-\begin{figure}[htbp]
+\begin{figure}
   \label{fig:april_space1}
   \tikzsetnextfilename{april_space1}
   \begin{tikzpicture}
@@ -60,7 +60,8 @@ about the parameter space.
     {./matlab_traces/april_pointspace_unstable.dat};
   \end{axis}
   \end{tikzpicture}
-    \caption[Parameters from 1st Experiment]{The solid lines show the theoretical
+    \caption[Parameters from 1st Experiment]{
+      The solid lines show the theoretical
       spring frequencies for all of the measurements that took place in a span
       of about 30 minutes during the first experiment at the end of one lock
       stretch.
@@ -71,11 +72,23 @@ about the parameter space.
       Blue is dynamically stable.
       Green is dynamically unstable.
       The carrier frequency remained at a fixed offset from the subcarrier at
-      $355\, kH\!z$.
+      355 kHz.
+      The fitting for this plot was done by plotting the actual measured
+      resonant frequency vs. the error point offset in mV.
+      The theoretical curve was transformed to match the axes using the
+      \ac{pdh} transformation shown in figure \ref{fig:pdh}.
+      I could then fit the curve using four parameters:
+      finesse, total power, error point voltage offset,
+      and carrier to subcarrier power ratio.
+      The parameters used in this plot are:
+      $\mathcal{F}=8000$, power ratio$=1.5$, total power$=344.7\mathrm{mW}$,
+      error point offset$=-670\mathrm{mV}=-19.07\mathrm{kHz}$.
+      This does not include any effect due to the thermal expansion of the
+      optics mentioned in section \ref{sec:opticthermalexpansion}.
       }
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}
   \label{fig:april_olg1}
   \tikzsetnextfilename{april_olg1}
   \begin{tikzpicture}
@@ -96,14 +109,53 @@ about the parameter space.
   \addplot[green] table[x index=0,y index=5] {./matlab_traces/april_fit.dat};
   \end{semilogyaxis}
 
-  \begin{semilogyaxis}[
-    name=plot2,
-    at=(plot1.below south), anchor=above north,
+
+  \begin{axis}[
+    name=plot3,
+    at=(plot1.below south), anchor=north,
     height=5cm,
     width=7cm,
     xmin=760,
     xmax=880,
-    xlabel={Frequency $(H\!z)$},
+    xlabel={Frequency (Hz)},
+    ylabel={Phase},
+    grid=major,
+  ]
+  \addplot[blue,very thick] table[x index=0,y index=2] {./matlab_traces/april_olg_38.dat};
+  \addplot[blue] table[x index=0,y index=2] {./matlab_traces/april_fit.dat};
+  \addplot[red,very thick] table[x index=0,y index=2] {./matlab_traces/april_olg_39.dat};
+  \addplot[red] table[x index=0,y index=4] {./matlab_traces/april_fit.dat};
+  \addplot[green,very thick] table[x index=0,y index=2] {./matlab_traces/april_olg_40.dat};
+  \addplot[green] table[x index=0,y index=6] {./matlab_traces/april_fit.dat};
+  \end{axis}
+  \begin{axis}[
+    name=plot4,
+    at=(plot3.east), anchor=left of west,
+    height=5cm,
+    width=7cm,
+    xmin=760,
+    xmax=880,
+    xlabel={Frequency (Hz)},
+    ylabel={Phase},
+    grid=major,
+  ]
+  \addplot[blue,very thick] table[x index=0,y index=2] {./matlab_traces/april_olg_41.dat};
+  \addplot[blue] table[x index=0,y index=8] {./matlab_traces/april_fit.dat};
+  \addplot[red,very thick] table[x index=0,y index=2] {./matlab_traces/april_olg_42.dat};
+  \addplot[red] table[x index=0,y index=10] {./matlab_traces/april_fit.dat};
+  \addplot[green,very thick] table[x index=0,y index=2] {./matlab_traces/april_olg_43.dat};
+  \addplot[green] table[x index=0,y index=12] {./matlab_traces/april_fit.dat};
+  \addplot[black,very thick] table[x index=0,y index=2] {./matlab_traces/april_olg_44.dat};
+  \addplot[black] table[x index=0,y index=14] {./matlab_traces/april_fit.dat};
+  \end{axis}
+
+  \begin{semilogyaxis}[
+    name=plot2,
+    at=(plot4.north), anchor=below south,
+    height=5cm,
+    width=7cm,
+    xmin=760,
+    xmax=880,
     ylabel={Magnitude},
     grid=major,
   ]
@@ -117,43 +169,6 @@ about the parameter space.
   \addplot[black] table[x index=0,y index=13] {./matlab_traces/april_fit.dat};
   \end{semilogyaxis}
 
-  \begin{axis}[
-    name=plot3,
-    at=(plot1.right of east), anchor=left of west,
-    height=5cm,
-    width=7cm,
-    xmin=760,
-    xmax=880,
-    ylabel={Phase},
-    grid=major,
-  ]
-  \addplot[blue,very thick] table[x index=0,y index=2] {./matlab_traces/april_olg_38.dat};
-  \addplot[blue] table[x index=0,y index=2] {./matlab_traces/april_fit.dat};
-  \addplot[red,very thick] table[x index=0,y index=2] {./matlab_traces/april_olg_39.dat};
-  \addplot[red] table[x index=0,y index=4] {./matlab_traces/april_fit.dat};
-  \addplot[green,very thick] table[x index=0,y index=2] {./matlab_traces/april_olg_40.dat};
-  \addplot[green] table[x index=0,y index=6] {./matlab_traces/april_fit.dat};
-  \end{axis}
-  \begin{axis}[
-    name=plot4,
-    at=(plot2.right of east), anchor=left of west,
-    height=5cm,
-    width=7cm,
-    xmin=760,
-    xmax=880,
-    xlabel={Frequency $(H\!z)$},
-    ylabel={Phase},
-    grid=major,
-  ]
-  \addplot[blue,very thick] table[x index=0,y index=2] {./matlab_traces/april_olg_41.dat};
-  \addplot[blue] table[x index=0,y index=8] {./matlab_traces/april_fit.dat};
-  \addplot[red,very thick] table[x index=0,y index=2] {./matlab_traces/april_olg_42.dat};
-  \addplot[red] table[x index=0,y index=10] {./matlab_traces/april_fit.dat};
-  \addplot[green,very thick] table[x index=0,y index=2] {./matlab_traces/april_olg_43.dat};
-  \addplot[green] table[x index=0,y index=12] {./matlab_traces/april_fit.dat};
-  \addplot[black,very thick] table[x index=0,y index=2] {./matlab_traces/april_olg_44.dat};
-  \addplot[black] table[x index=0,y index=14] {./matlab_traces/april_fit.dat};
-  \end{axis}
   \end{tikzpicture}
     \caption[Data Fitting of Open Loop Gain for 1st Results]{This is the open
         loop gain fit of the last 7 measurements taken during a segment of
@@ -258,7 +273,8 @@ the thickness of the optic itself due to thermal expansion.
 We want to first consider the penetration depth $d$ of the thermal
 fluctuations. This is given by,
 \begin{align}
-d &= \sqrt{\frac{\kappa}{2\pi fC\rho}} = 50\mu m \sqrt{\frac{400 H\!z}{f}} \,.
+d &= \sqrt{\frac{\kappa}{2\pi fC\rho}} = 50\mu m
+     \sqrt{\frac{400 \mathrm{Hz}}{f}} \,.
 \end{align}
 This is nearly an order of magnitude smaller than the beam spot diameter, which
 is about $320\mu m$. The change in thickness $\Delta_z$ of the optic can then
@@ -284,34 +300,42 @@ increase the intracavity power.
 The intracavity power fluctuations will thus have a positive feedback and add
 to the instability of the optical spring.
 
-\begin{figure}[hb]
+\begin{figure}
 \centering
 \tikzsetnextfilename{traploopCTE}
-\begin{tikzpicture}
-  [analog/.style={rectangle,draw=blue!50,fill=blue!20,thick,align=center,
-                  outer sep=0,minimum size=2cm,text width=1.8cm},
-   digital/.style={rectangle,draw=black!50,fill=black!20,thick,align=center,
-                   outer sep=0,minimum size=2cm,text width=1.8cm},
-   physical/.style={rectangle,draw=green!50,fill=green!20,thick,align=center,
-                    outer sep=0,minimum size=2cm,text width=1.8cm},
-   optical/.style={rectangle,draw=red!50,fill=red!20,thick,align=center,
-                   outer sep=0,minimum size=2cm,text width=1.8cm}]
+\begin{tikzpicture}[
+  analog/.style={rectangle,draw=blue!50,fill=blue!20,thick,align=center,
+    outer sep=0,minimum width=2cm,
+    minimum height=1cm,
+    text width=1.8cm},
+  digital/.style={rectangle,draw=black!50,fill=black!20,thick,align=center,
+    outer sep=0,minimum width=2cm,
+     minimum height=1cm,
+    text width=1.8cm},
+  physical/.style={rectangle,draw=green!50,fill=green!20,thick,align=center,
+    outer sep=0,minimum width=2cm,
+    minimum height=1cm,
+    text width=1.8cm},
+  optical/.style={rectangle,draw=red!50,fill=red!20,thick,align=center,
+    outer sep=0,minimum width=2cm,
+    minimum height=1cm,
+    text width=1.8cm}]
   \renewcommand{\baselinestretch}{0.9}
   \begin{scriptsize}
-  \node[circle,draw=black] (sum1) at (-3,-3) {$+$};
+  \node[circle,draw=black] (sum1) at (-3,-1.5) {$+$};
   \node[circle,draw=black] (sum2) at (3,0) {$+$};
-  \node[analog] (F) at (0,-6) {Active Feedback};
-  \node[optical] (O) at (0,-3) {Optical Spring};
-  \node[physical] (S) at (0,3) {Small Mass Suspension};
+  \node[analog] (F) at (0,-3) {Active Feedback};
+  \node[optical] (O) at (0,-1.5) {Optical Spring};
+  \node[physical] (S) at (0,1.5) {Small Mass Suspension};
   \node[physical] (CTE) at (0,0) {Thermal Optic Expansion};
-  \coordinate (j1) at (-3,-6) {};
-  \coordinate (j2) at (-3,-3) {};
+  \coordinate (j1) at (-3,-3) {};
+  \coordinate (j2) at (-3,-1.5) {};
   \coordinate (j3) at (-3,0) {};
-  \coordinate (j4) at (-3,3) {};
-  \coordinate (j5) at (3,-6) {};
-  \coordinate (j6) at (3,-3) {};
+  \coordinate (j4) at (-3,1.5) {};
+  \coordinate (j5) at (3,-3) {};
+  \coordinate (j6) at (3,-1.5) {};
   \coordinate (j7) at (3,0) {};
-  \coordinate (j8) at (3,3) {};
+  \coordinate (j8) at (3,1.5) {};
   \draw[thick] (F) -- (j1);
   \draw[thick,->] (O) -- (sum1);
   \draw[thick,->] (j3) -- (CTE);
@@ -339,7 +363,7 @@ to the instability of the optical spring.
 \end{figure}
 
 
-\begin{figure}[htbp]
+\begin{figure}
   \tikzsetnextfilename{juneOLGresults}
   \begin{tikzpicture}
   \begin{loglogaxis}[
@@ -379,7 +403,7 @@ to the instability of the optical spring.
     xmin=100,
     xmax=2000,
     xtick={1e2,1e3},
-    xlabel={Frequency $(H\!z)$},
+    xlabel={Frequency (Hz)},
     ylabel={Phase (Deg)},
     legend style={legend pos=north west,font=\tiny},
     grid=both,
@@ -397,17 +421,17 @@ to the instability of the optical spring.
   \addplot[yellow,very thick,dashed,forget plot] table[x index=0,y index=2]
     {./matlab_traces/juneResults19fit.dat};
   \addplot[blue,very thick] table[x index=0,y index=2] {./matlab_traces/juneResults13.dat};
-  \addlegendentry{DetC$=290.8kH\!z$,DetS$=-39.2kH\!z$,Pratio=3.46}
+  \addlegendentry{DetC=290.8kHz,DetS=-39.2kHz,Pratio=3.46}
   \addplot[green,very thick] table[x index=0,y index=2] {./matlab_traces/juneResults20.dat};
-  \addlegendentry{DetC$=285.0kH\!z$,DetS$=-45.0kH\!z$,Pratio=3.96}
+  \addlegendentry{DetC=285.0kHz,DetS=-45.0kHz,Pratio=3.96}
   \addplot[red,very thick] table[x index=0,y index=2] {./matlab_traces/juneResults10.dat};
-  \addlegendentry{DetC$=285.1kH\!z$,DetS$=-34.9kH\!z$,Pratio=3.50}
+  \addlegendentry{DetC=285.1kHz,DetS=-34.9kHz,Pratio=3.50}
   \addplot[teal,very thick] table[x index=0,y index=2] {./matlab_traces/juneResults15.dat};
-  \addlegendentry{DetC$=264.2kH\!z$,DetS$=-35.8kH\!z$,Pratio=3.94}
+  \addlegendentry{DetC=264.2kHz,DetS=-35.8kHz,Pratio=3.94}
   \addplot[magenta,very thick] table[x index=0,y index=2] {./matlab_traces/juneResults18.dat};
-  \addlegendentry{DetC$=238.2kH\!z$,DetS$=-21.8kH\!z$,Pratio=4.27}
+  \addlegendentry{DetC=238.2kHz,DetS=-21.8kHz,Pratio=4.27}
   \addplot[yellow,very thick] table[x index=0,y index=2] {./matlab_traces/juneResults19.dat};
-  \addlegendentry{DetC$=222.5kH\!z$,DetS$=-17.5kH\!z$,Pratio=4.42}
+  \addlegendentry{DetC=222.5kHz,DetS=-17.5kHz,Pratio=4.42}
   \end{semilogxaxis}
   \end{tikzpicture}
     \caption[Data Fitting of Open Loop Gain for 1st Results]{This is the open
@@ -420,14 +444,14 @@ to the instability of the optical spring.
 \end{figure}
 
 
-\begin{figure}[htbp]
+\begin{figure}
   \tikzsetnextfilename{noisepassive}
   \begin{tikzpicture}
   \begin{loglogaxis}[
     height=12cm,
     width=14cm,
-    xlabel={Frequency $(H\!z)$},
-    ylabel={Trap Length Noise $(m/\sqrt{H\!z})$},
+    xlabel={Frequency (Hz},
+    ylabel={Trap Length Noise $(\mathrm{m}/\sqrt{\mathrm{Hz}})$},
     xmin=10,
     xmax=6000,
     ymin=1e-16,

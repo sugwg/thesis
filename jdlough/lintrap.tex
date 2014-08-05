@@ -13,10 +13,30 @@ being suspended in our \ac{sos}. Figure \ref{fig:susbig} shows what one of the
 suspension towers we use looked like before the modification described in
 Figure \ref{fig:blades}.
 
+\begin{figure}
+\centering
+  \includegraphics[width=8cm]{./figures/susbig.jpg}
+  \caption[Small Optic Suspension]{This shows the full small optic suspension
+  tower.
+  This is based on the LIGO \ac{sos} design.
+  We modified the tower base in order to get the mirrors closer together.
+  You can see in this picture the base is flush with the front of the
+  vertical side plates.
+  This suspension was modified after first cavity lock to further improve
+  seismic isolation using blade springs depicted in figure \ref{fig:blades}.
+  The extra length of cabling is for suspending the OSEM connection block
+  in case the entire platform is suspended as an extra level of seismic
+  isolation.
+  In this case, suspending the connection block may be desirable to reduce
+  seismic coupling to the platform through the stiff vacuum cabling.
+  }
+  \label{fig:susbig}
+\end{figure}
+
 Another improvement we made was to develop a high-Q glass suspension for the
 small mass. The details of which are described in section \ref{sec:highQsus}.
 
-\begin{figure}[h]
+\begin{figure}
 \centering
   \includegraphics[width=15cm]{./figures/bladesprings.jpg}
   \caption[Blade Spring Modification for Veritcal Isolation]{
@@ -51,7 +71,7 @@ off the reflected light from the cavity which is used to generate the \ac{pdh}
 signal. There are additional $\lambda/2$ and $\lambda/4$ waveplates at various
 points in the path for polarization optimization.
 
-\subsection{Subcarrier Servo}
+%\subsection{Subcarrier Servo}
 Because of our short cavity length we have a large \ac{fsr} in frequency of
 about 2.14GHz.
 This produces a technical problem in attempting to set the
@@ -77,7 +97,8 @@ same, coherent, frequency noise with the second \ac{aom}.
 And the frequency noise due to the function generator is lower due to the
 fact that we are using a lower frequency tunable oscillator.
 Tunable oscillators generally have a frequency noise that is relative to the
-set frequency.
+set frequency. The subcarrier servo is discussed in more detail in section
+\ref{sec:scservo}.
 
 \section{Features of Experiment}
 \subsection{High Finesse}
@@ -105,88 +126,41 @@ to the noise budget. This reduction scales as the cavity length. This also
 affects the free spectral range, however, and with our finesse, the cavity
 pole is about 140kHz. 
 
-\subsection{High Spring Frequency}
-
-\begin{figure}[hb]
-\centering
-\tikzsetnextfilename{roomlayout}
-\begin{tikzpicture}[scale=1.2]
-    \begin{footnotesize}
-    \renewcommand{\baselinestretch}{1}
-    \filldraw[fill=white!60!gray,draw=black] (8,2) rectangle (2,6)
-        node[black,align=left,anchor=north west] {Table1};
-    \filldraw[fill=white!60!gray,draw=black] (8,8) rectangle (2,12)
-        node[black,align=left,anchor=north west] {Table2};
-    \filldraw[fill=white!60!gray,draw=black] (3,14) rectangle (0,16)
-        node[black,align=left,anchor=north west] { digital \\ electronics };
-    \filldraw[fill=white!60!gray,draw=black] (9,0.25) rectangle (7,1.75)
-        node[black,align=left,anchor=north west] { analog \\ electronics };
-    \fill[white!30!gray] (5,10) circle (1.5)
-        node[black,align=center] (v0) { vacuum \\ chamber };
-    \fill[white!30!gray] (7,10) rectangle (7.8,11.5);
-    \end{footnotesize}
-    \begin{scriptsize}
-    \renewcommand{\baselinestretch}{0.8}
-    \draw (2.5,5) node(laser) [draw] {laser}
-        (3.5,2.5) node(eom) [draw] {EOM}
-        (5.5,2.5) node(pmc) [draw] {PMC}
-        (7,4) node[align=center](scs) [draw] {subcarrier \\ servo}
-        (7,8.8) node[align=center,fill=red,minimum height=0.5cm,minimum width=0.5cm](peris) [draw] {}
-        (3,10) node[align=center,fill=red,minimum height=0.5cm,minimum width=0.5cm](peris2) [draw] {}
-        (7,10) node(io) {};
-    \end{scriptsize}
-    \draw (5.75,10) ++(-30:0.5cm) arc (-30:30:0.5);
-    \draw (5.55,10) arc (180:150:0.5)
-        arc (150:210:0.5);
-    \fill[red] (5.75,10) ++(-10:0.5cm) arc (-10:10:0.5)
-        arc (280:260:1.971825337) arc (170:190:0.5) arc (100:80:1.971825337);
-    \draw[red,very thick] (laser.south) |- (eom.west);
-    \draw[red,very thick] (eom.east) |- (pmc.west);
-    \draw[red,very thick] (pmc.east) -| (scs.south);
-    \draw[red,very thick] (scs.north) |- (peris.south);
-    \draw[red,very thick] (peris.north) |- (v0.east);
-    \draw[red,very thick] (v0.west) -| (peris2.east);
-\end{tikzpicture}
-\caption[Room Layout]{This depicts the basic layout of how the experiment
-    is situated in the lab. The red boxes on table 2 are periscopes necessary
-    for getting the laser to the height of the trap cavity, and on the ouput
-    side for getting back to the table height for the output optics.}
-\label{fig:roomlayout}
-\end{figure}
-
-\begin{figure}[hb]
+\begin{figure}
 \centering
 \tikzsetnextfilename{traploops}
 \begin{tikzpicture}
   [analog/.style={rectangle,draw=blue!50,fill=blue!20,thick,align=center,
-                  outer sep=0,minimum size=2cm,text width=1.8cm},
+                  outer sep=0,minimum size=1.5cm,text width=1.4cm},
    digital/.style={rectangle,draw=black!50,fill=black!20,thick,align=center,
-                   outer sep=0,minimum size=2cm,text width=1.8cm},
+                   outer sep=0,minimum size=1.5cm,text width=1.4cm},
    physical/.style={rectangle,draw=green!50,fill=green!20,thick,align=center,
-                    outer sep=0,minimum size=2cm,text width=1.8cm},
+                    outer sep=0,minimum size=1.5cm,text width=1.4cm},
    optical/.style={rectangle,draw=red!50,fill=red!20,thick,align=center,
-                   outer sep=0,minimum size=2cm,text width=1.8cm}]
+                   outer sep=0,minimum size=1.5cm,text width=1.4cm},
+                   scale=1,
+                   every node/.style={scale=1}]
   \renewcommand{\baselinestretch}{0.9}
   \begin{scriptsize}
-  \node[circle,draw=black] (sum) at (0,0) {+};
-  \node[circle,draw=black] (sumcoil) at (6,-7.5) {+};
-  \node[circle,draw,fill=black,minimum size=0.1cm,inner sep=0,outer sep=0] (intersection1) at (0,-4.5) {};
-  \node[circle,draw,fill=black,minimum size=0.1cm,inner sep=0,outer sep=0] (intersection2) at (0,-7.5) {};
-  \node[analog] (X) at (0,-3) {photodiode/ mixer};
-  \node[analog] (F) at (0,-6) {main feedback servo};
-  \node[analog] (T) at (3,-7.5) {coil servo};
-  \node[analog] (C) at (6,-5.5) {coil driver $\rightarrow$ OSEMS};
-  \node[physical] (P) at (6,-3) {large mass pendulum transfer function};
+  \node[circle,draw=black] (sum) at (0,-0.5) {+};
+  \node[circle,draw=black] (sumcoil) at (4,-6.5) {+};
+  \node[circle,draw,fill=black,minimum size=0.1cm,inner sep=0,outer sep=0] (intersection1) at (0,-3.5) {};
+  \node[circle,draw,fill=black,minimum size=0.1cm,inner sep=0,outer sep=0] (intersection2) at (0,-6.5) {};
+  \node[analog] (X) at (0,-2) {photodiode/ mixer};
+  \node[analog] (F) at (0,-5) {main feedback servo};
+  \node[analog] (T) at (2,-6.5) {coil servo};
+  \node[analog] (C) at (4,-4) {coil driver $\rightarrow$ OSEMS};
+  \node[physical] (P) at (4,-2) {large mass pendulum transfer function};
 %  \node[analog] (A) [below=of F] {attenutation for digital system input};
-  \node[digital] (D) at (9,-3) {position feedback filters};
-  \node[digital] (E) at (9,-7.5) {coil drive filters};
-  \node[analog] (H) at (-3,-7.5) {high voltage drive network};
-  \node[physical] (L) at (-6,-7.5) {laser};
-  \node[physical] (M) at (-6,-3) {frequency to cavity length};
-  \node[optical] (O) at (0,3) {optical spring};
-  \node[physical] (S) at (3,3) {small mass pendulum transfer function};
-  \node[circle,draw=black] (ep) at (1.5,-4.5) {EP};
-  \node[circle,draw=black] (cp) at (0,-8.5) {CP};
+  \node[digital] (D) at (6,-2) {position feedback filters};
+  \node[digital] (E) at (6,-6.5) {coil drive filters};
+  \node[analog] (H) at (-2,-6.5) {high voltage drive network};
+  \node[physical] (L) at (-4,-6.5) {laser};
+  \node[physical] (M) at (-4,-2) {frequency to cavity length};
+  \node[optical] (O) at (0,1) {optical spring};
+  \node[physical] (S) at (2,1) {small mass pendulum transfer function};
+  \node[circle,draw=black] (ep) at (1,-3.5) {EP};
+  \node[circle,draw=black] (cp) at (0,-7.5) {CP};
   \draw[thick,->] (sum) to (X);
   \draw[thick] (X) to (intersection1);
   \draw[thick,->] (intersection1) to (F);
@@ -217,7 +191,7 @@ pole is about 140kHz.
 \label{fig:traploops}
 \end{figure}
 
-\begin{figure}[hb]
+\begin{figure}
 \centering
 \tikzsetnextfilename{scservo}
 \begin{tikzpicture}
@@ -411,7 +385,7 @@ while avoiding damage to the coating.
 The results of a Q ringdown measurement can be seen in
 figure \ref{fig:Qmeasurement}.
 
-\begin{figure}[hb]
+\begin{figure}
 \centering
 \includegraphics[width=15cm]{./figures/Qmeasurement.pdf}
 \caption[Q Measurement of Glass Suspension]{
@@ -443,8 +417,7 @@ One can also present the equations of motion diagramatically as in figure
 \ref{fig:doublesus}.
 
 
-\begin{figure}[hb]
-\label{fig:doublependulum}
+\begin{figure}
 \centering
 \tikzsetnextfilename{doublependulum}
 \begin{tikzpicture}
@@ -489,9 +462,10 @@ One can also present the equations of motion diagramatically as in figure
     small mirror and $m_2$ represents the steel ring. If the system depicted
     here was a scale model of the actual small mirror suspension, the relative
     size of the masses and lengths of the pendulums would be more extreme.}
+\label{fig:doublependulum}
 \end{figure}
 
-\begin{figure}[hb]
+\begin{figure}
 \centering
 \tikzsetnextfilename{doublesus}
 \centering
@@ -532,7 +506,7 @@ One can also present the equations of motion diagramatically as in figure
 \label{fig:doublesus}
 \end{figure}
 
-\begin{figure}[hb]
+\begin{figure}
 \centering
 \tikzsetnextfilename{smallmass}
 \begin{tikzpicture}
@@ -618,6 +592,7 @@ bypass which passively adds the HV output to the HV input.
 
 
 \section{Sub-Carrier Servo}
+\label{sec:scservo}
 As mentioned above, we needed a way of shifting the frequency of the subcarrier
 beam in relation to the carrier by $\mathcal{O}\, 100\,\mathrm{kHz}$.
 We do this using \ac{aom}s by first shifting in one direction by
@@ -630,39 +605,78 @@ The sensor for this feedback is the demodulated beat signal of the output of
 the two \ac{aom} frequency sources.
 The demodulation is done by mixing the beat signal with the output of a
 function generator which is set to the desired offset frequency.
+See figure \ref{fig:scsfeedback} for the layout of the electronics.
 
-\begin{figure}[hb]
+\begin{figure}
 \centering
 \tikzsetnextfilename{scsfeedback}
 \begin{tikzpicture}
-  [block/.style={rectangle,draw=blue!50,fill=blue!20,thick,align=center,
-                  outer sep=0,minimum size=2cm,text width=1.8cm},
-   oscillator/.style={circle,draw=blue!50,fill=blue!20,thick,align=center,
-                  outer sep=0,minimum size=2cm,text width=1.8cm},
+  [block/.style={rectangle,draw=black,very thick,align=center,
+                  outer sep=0,minimum size=1cm,align=left},
+   oscillator/.style={circle,draw=black,very thick,align=center,
+                  outer sep=0,minimum size=1cm},
    digital/.style={rectangle,draw=black!50,fill=black!20,thick,align=center,
-                   outer sep=0,minimum size=2cm,text width=1.8cm},
+                   outer sep=0,minimum size=1cm,text width=0.9cm},
    physical/.style={rectangle,draw=green!50,fill=green!20,thick,align=center,
-                    outer sep=0,minimum size=2cm,text width=1.8cm},
+                    outer sep=0,minimum size=1cm,text width=0.9cm},
    spring/.style={rectangle,draw=red!50,fill=red!20,thick,align=center,
-                   outer sep=0,minimum size=2cm,text width=1.8cm}]
-%  \renewcommand{\baselinestretch}{0.9}
-%  \begin{small}
-  \node[block] (servo) at (0,0) {feedback};
-  \node[block] (mixer2) at (-4,0) {mixer};
-  \node[block] (mixer1) at (-4,-4) {mixer};
-  \node[oscillator] (osc1) at (0,-4) {vco};
-  \node[oscillator] (osc2) at (-4,-8) {xtal};
-  \node[oscillator] (osc3) at (-8,0) {osc};
-  \draw[thick,->] (servo) to (osc1);
-  \draw[thick,->] (osc2) to (mixer1);
-  \draw[thick,->] (osc3) to (mixer2);
-  \draw[thick,->] (mixer1) to (mixer2);
-  \draw[thick,->] (osc1) to (mixer1);
-  \draw[thick,->] (mixer2) to (servo);
-%\end{small}
+                   outer sep=0,minimum size=1cm,text width=0.9cm}]
+  \renewcommand{\baselinestretch}{0.9}
+  \begin{small}
+  \node[block] (servo) at (2,2) {feedback};
+  \node[oscillator] (mixer2) at (-3,2) {};
+  \node[block] (filt1) at (-3,0) {};
+  \node[block] (filt2) at (-1,2) {};
+  \node[oscillator] (mixer1) at (-3,-2) {};
+  \node[oscillator] (osc1) at (2,-2) {};
+  \node[oscillator] (osc2) at (-5,-2) {};
+  \node[oscillator] (osc3) at (-5,2) {};
+  \node[align=left,anchor=west] (vco) at (2.6,-2)
+    {vco\\$f_v=f_x+f_g$};
+  \node[align=right,anchor=east] (crystal) at (-5.6,-2)
+    {crystal\\$f_x=80 \mathrm{MHz}$};
+  \node[align=right,anchor=east] (fungen) at (-5.6,2)
+    {function\\generator\\$f_{g}\approx 200-400 \mathrm{kHz}$};
+  \draw[very thick,->] (servo) to (osc1);
+  \draw[very thick,->] (osc2) to (mixer1);
+  \draw[very thick,->] (osc3) to (mixer2);
+  \draw[very thick,->] (mixer1) to (filt1);
+  \draw[very thick,->] (filt1) to (mixer2);
+  \draw[very thick,->] (osc1) to (mixer1);
+  \draw[very thick,->] (mixer2) to (filt2);
+  \draw[very thick,->] (filt2) to (servo);
+  \draw[very thick] (1.75,-2) arc (180:0:0.125) arc (180:360:0.125);
+  \draw[very thick] (-5.25,-2) arc (180:0:0.125) arc (180:360:0.125);
+  \draw[very thick] (-5.25,2) arc (180:0:0.125) arc (180:360:0.125);
+  \draw[very thick] (-3,2) -- ++(45:0.5);
+  \draw[very thick] (-3,2) -- ++(135:0.5);
+  \draw[very thick] (-3,2) -- ++(225:0.5);
+  \draw[very thick] (-3,2) -- ++(315:0.5);
+  \draw[very thick] (-3,-2) -- ++(45:0.5);
+  \draw[very thick] (-3,-2) -- ++(135:0.5);
+  \draw[very thick] (-3,-2) -- ++(225:0.5);
+  \draw[very thick] (-3,-2) -- ++(315:0.5);
+  \draw[very thick] (-3.4,0.25) -- (-3.1,0.25) -- (-2.6,-0.25);
+  \draw[very thick] (-1.4,2.25) -- (-1.1,2.25) -- (-0.6,1.75);
+\end{small}
 \end{tikzpicture}
 \caption[Subcarrier Servo Electronics]{This diagram represents the
-         subcarrier servo feedback.}
+    electronic path of the subcarrier servo. This circuit locks the frequency
+    of the vco to the frequency of the crystal oscillator plus an offset
+    which is set by the function generator. This works by mixing the vco
+    output and the crystal oscillator output together in a mixer ($\times$ in
+    the diagram).
+    We take the output of the first mixer and filter it with a low pass
+    filter to remove the high frequency output of the mixer so that we
+    are left with a sine wave at a frequency which is $f_v-f_x$.
+    This low frequency signal is then mixed with the signal from the function
+    generator.
+    This mixer output is then the filtered with another low pass
+    filter.
+    The resulting error signal becomes the phase difference between the function
+    generator signal and the vco, crystal difference signal, $f_v-f_x$.
+    The feedback servo completes this modified phase locked loop.
+    }
 \label{fig:scsfeedback}
 \end{figure}
 
@@ -691,6 +705,15 @@ function generator which is set to the desired offset frequency.
 %\end{itemize}
 
 \section{Mode Matching}
+As will be discussed in section
+\ref{sec:expimps}, we went through a revision in our overall layout.
+This changed the beam size and waist location in reference to the cavity.
+We did not want to open the chamber again for alignment and mode matching.
+It was useful to know the power coupling into the cavity with the wrong
+mode matching to give us an idea of how much transmitted light we should
+expect when the cavity is properly aligned since mode matching is a difficult
+process of moving the lenses along the beam path and realigning the beam.
+
 We want to know how much power couples into the cavity from a
 perfectly gaussian beam of the wrong size and location. We start with
 the equations for the Hermite-Gaussian beam decomposition as discussed in
@@ -803,23 +826,50 @@ Power coupling into cavity is then (assuming no loss and $r_1 = r_2$),
 In equation \ref{symetricmatch} we can see readily the symmetry between
 $w_{b0}$ and $w_{c0}$, and the symmetry of $z_0$ about $0$, as expected.
 
-\begin{figure}[h]
+\begin{figure}
 \centering
-  \includegraphics[width=13cm]{./figures/susbig.jpg}
-  \caption[Small Optic Suspension]{This shows the full small optic suspension
-  tower.
-  This is based on the LIGO \ac{sos} design.
-  We modified the tower base in order to get the mirrors closer together.
-  You can see in this picture the base is flush with the front of the
-  vertical side plates.
-  This suspension was modified after first cavity lock to further improve
-  seismic isolation using blade springs depicted in figure \ref{fig:blades}.
-  The extra length of cabling is for suspending the OSEM connection block
-  in case the entire platform is suspended as an extra level of seismic
-  isolation.
-  In this case, suspending the connection block may be desirable to reduce
-  seismic coupling to the platform through the stiff vacuum cabling.
-  }
-  \label{fig:susbig}
+\tikzsetnextfilename{roomlayout}
+\begin{tikzpicture}[scale=1.2]
+    \begin{footnotesize}
+    \renewcommand{\baselinestretch}{1}
+    \filldraw[fill=white!60!gray,draw=black] (8,2) rectangle (2,6)
+        node[black,align=left,anchor=north west] {Table1};
+    \filldraw[fill=white!60!gray,draw=black] (8,8) rectangle (2,12)
+        node[black,align=left,anchor=north west] {Table2};
+    \filldraw[fill=white!60!gray,draw=black] (3,14) rectangle (0,16)
+        node[black,align=left,anchor=north west] { digital \\ electronics };
+    \filldraw[fill=white!60!gray,draw=black] (9,0.25) rectangle (7,1.75)
+        node[black,align=left,anchor=north west] { analog \\ electronics };
+    \fill[white!30!gray] (5,10) circle (1.5)
+        node[black,align=center] (v0) { vacuum \\ chamber };
+    \fill[white!30!gray] (7,10) rectangle (7.8,11.5);
+    \end{footnotesize}
+    \begin{scriptsize}
+    \renewcommand{\baselinestretch}{0.8}
+    \draw (2.5,5) node(laser) [draw] {laser}
+        (3.5,2.5) node(eom) [draw] {EOM}
+        (5.5,2.5) node(pmc) [draw] {PMC}
+        (7,4) node[align=center](scs) [draw] {subcarrier \\ servo}
+        (7,8.8) node[align=center,fill=red,minimum height=0.5cm,minimum width=0.5cm](peris) [draw] {}
+        (3,10) node[align=center,fill=red,minimum height=0.5cm,minimum width=0.5cm](peris2) [draw] {}
+        (7,10) node(io) {};
+    \end{scriptsize}
+    \draw (5.75,10) ++(-30:0.5cm) arc (-30:30:0.5);
+    \draw (5.55,10) arc (180:150:0.5)
+        arc (150:210:0.5);
+    \fill[red] (5.75,10) ++(-10:0.5cm) arc (-10:10:0.5)
+        arc (280:260:1.971825337) arc (170:190:0.5) arc (100:80:1.971825337);
+    \draw[red,very thick] (laser.south) |- (eom.west);
+    \draw[red,very thick] (eom.east) |- (pmc.west);
+    \draw[red,very thick] (pmc.east) -| (scs.south);
+    \draw[red,very thick] (scs.north) |- (peris.south);
+    \draw[red,very thick] (peris.north) |- (v0.east);
+    \draw[red,very thick] (v0.west) -| (peris2.east);
+\end{tikzpicture}
+\caption[Room Layout]{This depicts the basic layout of how the experiment
+    is situated in the lab. The red boxes on table 2 are periscopes necessary
+    for getting the laser to the height of the trap cavity, and on the ouput
+    side for getting back to the table height for the output optics.}
+\label{fig:roomlayout}
 \end{figure}
 
