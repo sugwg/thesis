@@ -78,6 +78,36 @@ S_{xx}(\omega) = & \frac{4 k_B T k \phi / \omega}{(k \phi)^2 +
 In this case we still have the peak at the resonant frequency, however the form
 of the noise is different above and below the resonant frequency.
 
+\begin{figure}
+\centering
+  \tikzsetnextfilename{tnoisesketch}
+  \begin{tikzpicture}
+    \draw[gray!50,thick] (0,-1.1) -- (0,-3);
+    \draw[gray!50,thick] (275:1.1) -- (275:3);
+    \draw[black,thick,->] (0,-2.9) arc (270:275:2.9);
+    \node (angle) at (280:2.9) {$\theta$};
+    \filldraw[rounded corners=0.1mm,fill=green!10] (-0.1,1) -- (-0.1,-1) -- ++(0.1,0)
+      arc (270:275:1) -- ++(5:0.1) -- ++(95:2) -- cycle;
+    \fill[fill=blue!10] (-0.1,2) rectangle (-6,-2);
+%    \shade[top color=white,bottom color=blue!10] (-0.1,2) rectangle (-6,3);
+    \draw (-0.1,2) -- (-0.1,-2);
+    \filldraw[rounded corners=0.1mm,fill=blue!10,rotate=5] (0.1,1) -- ++(0,-2)
+      -- (3.1,0) -- cycle;
+    \draw[rotate=5] (0.1,-1.1) -- (0.1,-2);
+    \draw[rotate=5] (0.85,-0.9) -- (0.85,-2);
+    \draw[rotate=5] (0.85,-0.3) -- (0.85,-0.7);
+    \draw[rotate=5] (0.85,-0.2) -- (0.85,0.2);
+    \draw[rotate=5] (0.65,0) -- (1.05,0);
+    \node (rcm) at (0.65,-1.8) {$r_{cm}$};
+  \end{tikzpicture}
+  \caption[Sketch of Thermal Noise Calculation]{
+    This shows the setup for the thermal noise derivations starting with
+    equations \ref{eq:fullT}.
+    The fiber is not included in the calculation for this.
+    }
+  \label{fig:tnoisesketch}
+\end{figure}
+
 Now we will derive the thermal noise for our small mirror assembly. We are
 concerned with thermal noise due to the epoxy used to glue the fibers to the
 mass. We start with the Lagrangian to get the dynamics of the system and
@@ -210,8 +240,8 @@ length noise.
   \tikzsetnextfilename{tnoisecone}
   \begin{tikzpicture}
   \begin{loglogaxis}[
-    xlabel={Frequency $\left( Hz \right)$},
-    ylabel={Thermal Noise $\left( m/\sqrt{H\!z} \right)$},
+    xlabel={Frequency $\left[ \mathrm{Hz} \right]$},
+    ylabel={Thermal Noise $\left[ m/\sqrt{\mathrm{Hz}} \right]$},
     grid=minor,
   ]
   \addplot[red] table {python/tnoisecone.dat};
@@ -254,8 +284,8 @@ converted from the Volts measured in the \ac{pzt} path to Hz laser frequency.
   \tikzsetnextfilename{freqnoise}
   \begin{tikzpicture}
   \begin{loglogaxis}[
-    xlabel={Frequency $(\mathrm{Hz})$},
-    ylabel={Frequency Noise $(\mathrm{Hz}/\sqrt{\mathrm{Hz}})$},
+    xlabel={Frequency $\left[\mathrm{Hz}\right]$},
+    ylabel={Frequency Noise $\left[\mathrm{Hz}/\sqrt{\mathrm{Hz}}\right]$},
     grid=both,
   ]
   \addplot[black,very thick] table[x index=0,y index=1]
@@ -273,8 +303,8 @@ converted from the Volts measured in the \ac{pzt} path to Hz laser frequency.
 \section{Laser Intensity}
 
 As mentioned in chapter \ref{ch:psl} the laser has an intensity noise
-specification of \ac{rin} -150 $dB/Hz$. This is equivalent to a noise
-spectrum of $10^{-7.5} W/\sqrt{H\!z}$ for a $1 W$ beam.
+specification of \ac{rin} -150 $\mathrm{dB}/\mathrm{Hz}$. This is equivalent to a noise
+spectrum of $10^{-7.5} W/\sqrt{\mathrm{Hz}}$ for a $1 W$ beam.
 Measurements of the intensity noise in the lab, however, differ from this
 value in the frequency range we are interested in.
 The measured intensity noise compared to the laser specification is shown
@@ -286,8 +316,8 @@ in figure \ref{fig:intensitynoise}.
   \begin{loglogaxis}[
     height=12cm,
     width=14cm,
-    xlabel={Frequency (Hz)},
-    ylabel={Intensity Noise $(\mathrm{RIN}/\sqrt{\mathrm{Hz}})$},
+    xlabel={Frequency $\left[\mathrm{Hz}\right]$},
+    ylabel={Intensity Noise $\left[\mathrm{RIN}/\sqrt{\mathrm{Hz}}\right]$},
     xmin=1,
     xmax=100000,
     ymin=1e-9,
@@ -332,8 +362,8 @@ in figure \ref{fig:intensitynoise}.
   \begin{loglogaxis}[
     height=12cm,
     width=14cm,
-    xlabel={Frequency $(H\!z)$},
-    ylabel={Trap Length Noise $(m/\sqrt{H\!z})$},
+    xlabel={Frequency $\left[\mathrm{Hz}\right]$},
+    ylabel={Trap Length Noise $\left[m/\sqrt{\mathrm{Hz}}\right]$},
     xmin=10,
     xmax=6000,
     ymin=1e-16,

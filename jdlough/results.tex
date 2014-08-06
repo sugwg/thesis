@@ -46,8 +46,8 @@ about the parameter space.
     name=plot1,
     height=8cm,
     width=14cm,
-    ylabel={Resonant Frequency $(H\!z)$},
-    xlabel={Subcarrier Detuning $(kH\!z)$},
+    ylabel={Resonant Frequency $\left[\mathrm{Hz}\right]$ },
+    xlabel={Subcarrier Detuning $\left[\mathrm{kHz}\right]$},
     grid=major,
   ]
   \addplot[blue,very thick] table[x index=1,y index=2]
@@ -117,7 +117,7 @@ about the parameter space.
     width=7cm,
     xmin=760,
     xmax=880,
-    xlabel={Frequency (Hz)},
+    xlabel={Frequency $\left[\mathrm{Hz}\right]$},
     ylabel={Phase},
     grid=major,
   ]
@@ -135,7 +135,7 @@ about the parameter space.
     width=7cm,
     xmin=760,
     xmax=880,
-    xlabel={Frequency (Hz)},
+    xlabel={Frequency $\left[\mathrm{Hz}\right]$},
     ylabel={Phase},
     grid=major,
   ]
@@ -197,10 +197,40 @@ carrier and subcarrier beams before a \ac{fi} which resulted in the two beams
 having the same polarization.
 This produces a beat signal of the difference in the two frequencies.
 The beat signal shows up in our resonant \ac{rfpd} because we use a small
-frequency offset.
-We feared there could be saturations in the photodiode electronics that would
-cause unpredictable electronic offsets in the trap locking feedback servo
+frequency offset between the two beams. An offset of 355kHz has a gain of
+-3dBc for one sideband and -1dBc for the other.
+
+We observed that, with the power on the \ac{rfpd} at the nominal value to give
+us a 20kHz unity gain frequency, the signal directly from the \ac{rfpd} was
+nearly the $\pm 5\mathrm{V}$ of the supply voltage to the op-amp.
+By varying the power onto the \ac{rfpd} we could see that the signal in
+fact did not get much larger and seemed to be at point where the size of the
+beat signal did not increase at the same rate as the overall power.
+
+Saturations in the electronics can cause unpredictable electronic
+offsets in the trap locking feedback servo
 resulting in an error on the subcarrier detuning lock point.
+We solved this problem by using a \ac{pbs} cube to combine the two beams
+instead of a non-polarizing beamsplitter.
+The carrier polarization was set to s and the subcarrier polarization to p.
+We made the beams incident to the \ac{pbs} cube such that the carrier was
+reflected along the path of the transmitted subcarrier beam.
+The resulting combination of orthogonally polarized beams was propagated
+to experiment.
+An added benefit was that we could combine the beams with little loss of
+power.
+
+A quarter wave-plate was needed in the combined path due to some ellipticity
+in the reflected beam.
+This is apparently from birefringence in the window to the vacuum chamber.
+The birefringence causes a phase delay in one linear polarization of light
+with respect to it's orthogonal counterpart.
+If there is only one birefringent optic in the path we could use a
+half wave-plate and simply rotate the orthogonal beams so they align with
+the fast and slow axes of the birefringent material.
+The quarter wave-plate solves this with an added benefit of having the
+flexibility to rearrange the return beams. One could direct the carrier
+back along the subcarrier and vice-versa, for instance.
 
 Additional improvements included several things to make the experiment easier.
 We added a camera to look at the reflected beam which helped with alignment.
@@ -211,9 +241,17 @@ polarizations and monitor the two beams independently.
 Aligning the beam to the cavity using the steering mirrors on table 2 was very
 difficult because the cavity mirrors could get excited quite easily from
 touching the table.
-So added steering mirrors on table 1 after the carrier and subcarrier
+So we added steering mirrors on table 1 after the carrier and subcarrier
 beams are combined. This allowed us to compensate for drifts in alignment
 between the two tables without having to touch table 2.
+The new layout can be seen in figure \ref{fig:newinput}.
+
+\begin{figure}
+\centering
+  \includegraphics[width=15cm]{./figures/newinput.pdf}
+  \caption[Table 1 Input Optics]{Table 1 Input Optics}
+  \label{fig:newinput}
+\end{figure}
 
 \subsection{Faraday Isolator}
 The Faraday isolator is composed of a Faraday rotator and two \ac{pbs} cubes.
@@ -267,15 +305,19 @@ The results of this fitting can be seen in figure \ref{fig:juneOLGresults}.
 \subsection{Optic Thermal Expansion Contribution}
 \label{sec:opticthermalexpansion}
 See section 2.8.5 of Stefan Ballmer's thesis  \cite{Ballmer:thesis} for
-a thorough discussion on thermal noise couplings.
+a thorough discussion on thermal expansion to cavity lenght couplings.
 The relevant part that we are interested in is the effect of changing
 the thickness of the optic itself due to thermal expansion.
 We want to first consider the penetration depth $d$ of the thermal
 fluctuations. This is given by,
 \begin{align}
-d &= \sqrt{\frac{\kappa}{2\pi fC\rho}} = 50\mu m
+\label{eq:pendepth}
+d &= \sqrt{\frac{\kappa}{2\pi fC\rho}} = 18.4 \mathrm{\mu m}
      \sqrt{\frac{400 \mathrm{Hz}}{f}} \,.
 \end{align}
+I have written the equation in this form to illustrate that at the lower
+optical spring frequencies from the experiment, we have a maximum penetration
+depth of about $18\mathrm{\mu m}$.
 This is nearly an order of magnitude smaller than the beam spot diameter, which
 is about $320\mu m$. The change in thickness $\Delta_z$ of the optic can then
 be approximated with
@@ -403,8 +445,8 @@ to the instability of the optical spring.
     xmin=100,
     xmax=2000,
     xtick={1e2,1e3},
-    xlabel={Frequency (Hz)},
-    ylabel={Phase (Deg)},
+    xlabel={Frequency [Hz]},
+    ylabel={Phase [Deg]},
     legend style={legend pos=north west,font=\tiny},
     grid=both,
   ]
@@ -450,8 +492,8 @@ to the instability of the optical spring.
   \begin{loglogaxis}[
     height=12cm,
     width=14cm,
-    xlabel={Frequency (Hz},
-    ylabel={Trap Length Noise $(\mathrm{m}/\sqrt{\mathrm{Hz}})$},
+    xlabel={Frequency $\left[\mathrm{Hz}\right]$},
+    ylabel={Trap Length Noise $\left[\mathrm{m}/\sqrt{\mathrm{Hz}}\right]$},
     xmin=10,
     xmax=6000,
     ymin=1e-16,
