@@ -7,7 +7,8 @@ digsys.tex \
 noises.tex \
 psl.tex \
 optical_spring.tex \
-results.tex
+results.tex \
+conclusions.tex
 
 
 PNGFILES=figures/block_mimo_paper.pdf \
