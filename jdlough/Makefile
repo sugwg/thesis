@@ -2,13 +2,17 @@ TEXFILES= thesis.tex \
 acknowledge.tex \
 introduction.tex \
 lintrap.tex \
-OT_paper.tex \
 digsys.tex \
 noises.tex \
 psl.tex \
 optical_spring.tex \
 results.tex \
-conclusions.tex
+conclusions.tex \
+ottheory.tex \
+otstab.tex \
+otcon.tex \
+otanginst.tex \
+otradnoise.tex
 
 
 PNGFILES=figures/block_mimo_paper.pdf \
