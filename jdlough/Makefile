@@ -42,6 +42,10 @@ thesis.pdf: python/ $(TEXFILES) $(BIBFILES) $(STYFILES) $(BSTFILES) $(TIKZFILES)
 	latexmk -pdf -pdflatex="pdflatex --shell-escape %O %S" thesis.tex && \
 	cp thesis.pdf ~/Dropbox/JimsThesis/
 
+thesisvita.pdf: thesisvita.tex papersfull.bib vita.bst
+	latexmk -pdf -pdflatex="pdflatex --shell-escape %O %S" thesisvita.tex
+
+
 gr-qc: thesis.tgz
 
 thesis.tgz: thesis.pdf
