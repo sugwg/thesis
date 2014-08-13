@@ -12,7 +12,9 @@ ottheory.tex \
 otstab.tex \
 otcon.tex \
 otanginst.tex \
-otradnoise.tex
+otradnoise.tex \
+otderive.tex \
+fluff.tex
 
 
 PNGFILES=figures/block_mimo_paper.pdf \
