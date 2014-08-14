@@ -14,7 +14,8 @@ otcon.tex \
 otanginst.tex \
 otradnoise.tex \
 otderive.tex \
-fluff.tex
+fluff.tex \
+usefulformulas.tex
 
 
 PNGFILES=figures/block_mimo_paper.pdf \
