@@ -1,5 +1,78 @@
 \acresetall
 
+In order to observe the optical spring effect and actually measure it and
+characterize it we have set up the experiment as described in chapter
+\ref{ch:lintrapex}.
+The measurement that we take is the open loop transfer function of the servo.
+This is accomplished at the electronic servo board itself as shown in figure
+\ref{fig:results:servoloop}.
+
+
+\begin{figure}
+\tikzsetnextfilename{results_servoloop}
+\centering
+\begin{tikzpicture}
+  [block/.style={rectangle,draw=black,very thick,align=center,
+                  outer sep=0,minimum size=1cm,align=left},
+   oscillator/.style={circle,draw=black,very thick,align=center,
+                  outer sep=0,minimum size=1cm},
+   digital/.style={rectangle,draw=black!50,fill=black!20,thick,align=center,
+                   outer sep=0,minimum size=1cm,text width=0.9cm},
+   physical/.style={rectangle,draw=green!50,fill=green!20,thick,align=center,
+                    outer sep=0,minimum size=1cm,text width=0.9cm},
+   spring/.style={rectangle,draw=red!50,fill=red!20,thick,align=center,
+                   outer sep=0,minimum size=1cm,text width=0.9cm}]
+  \node[circle,inner sep=0,draw,very thick] (sum) at (0,0) {+};
+  \node[oscillator] (sumOS) at (-3,4) {};
+  \draw[very thick] (-3.4,4) -- (-2.6,4);
+  \draw[very thick] (-3,3.6) -- (-3,4.4);
+  \node[block] (optspr) at (-5,4) {$K_{OS}$};
+  \node[block] (mass) at (-3,6) {$\frac{1}{m\omega^2}$};
+  \node[circle,outer sep=0,inner sep=0,fill=black,minimum size=0.2cm] (outa) at (-1.5,0) {};
+  \node[circle,outer sep=0,inner sep=0,fill=black,minimum size=0.2cm] (outb) at (1.5,0) {};
+  \node (outat) at (-1.5,-1) {out A};
+  \node (outbt) at (1.5,-1) {out B};
+  \node (int) at (0,-1) {in};
+  \node[block] (filt1) at (3,0) {};
+  \node[block] (actuation) at (5,2) {Actuation};
+  \draw[very thick] (2.6,0.25) -- (2.9,0.25) -- (3.4,-0.25);
+%  \node[oscillator] (mixer1) at (-3,0) {};
+%  \draw[very thick] (-3,0) -- ++(45:0.5);
+%  \draw[very thick] (-3,0) -- ++(135:0.5);
+%  \draw[very thick] (-3,0) -- ++(225:0.5);
+%  \draw[very thick] (-3,0) -- ++(315:0.5);
+  \draw[very thick,->] (outa) -- (sum);
+  \draw[very thick] (sum) -- (outb);
+  \draw[very thick,->] (outa) -- (outat);
+  \draw[very thick,->] (outb) -- (outbt);
+  \draw[very thick,->] (int) -- (sum);
+  \draw[very thick] (sumOS) |- (outa);
+  \draw[very thick] (outb) -- (filt1);
+  \draw[very thick] (filt1) -| (actuation);
+  \draw[very thick,->] (actuation) |- (sumOS);
+  \draw[very thick] (sumOS) -- (optspr);
+  \draw[very thick] (optspr) |- (mass);
+  \draw[very thick,->] (mass) -- (sumOS);
+  \draw[very thick] (outat.north west) -- (outat.north east);
+  \draw[very thick] (outbt.north west) -- (outbt.north east);
+  \draw[very thick] (int.north west) -- (int.north east);
+\end{tikzpicture}
+\caption[Open Loop Gain Measurement]{This is a simplified schematic showing how
+  measure the optical spring.
+  While the loop is closed, we can inject a sine wave of a specific frequency
+  at "in", then measure the amplitude and phase shift of this sine wave at the
+  points, outA and outB, giving us the complex numbers $A$ and $B$.
+  The open loop gain at each point is then given by $A/B$
+  The transfer function is then constructed out of many of these measurements
+  at different frequencies.
+  A Bode plot can then be made which is a plot of gain versus frequency.
+  The plot is actually two plots: one for the magnitude of the gain and one
+  for the phase of the gain.
+  }
+\label{fig:results:servoloop}
+\end{figure}
+
+
 Linear trap measurements have been taken twice.
 The first measurement was with the subcarrier at the same offset frequency from
 the carrier for each measurement.
