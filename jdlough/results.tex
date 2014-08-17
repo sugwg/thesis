@@ -78,12 +78,150 @@ This is accomplished at the electronic servo board itself as shown in figure
 \label{fig:results:servoloop}
 \end{figure}
 
+\section{Stability}
+
+I will review the import points of the optical spring theory.
+As a reminder, a single optical spring has a delayed response in the cavity
+which causes it to be unstable.
+The first thought is why? Why does that make it unstable?
+
+One way to visualize this is that we have a system that, without the delay,
+the force is maximum when the length is minimum.
+This is a critical point to be at because the energy that you put into the
+system is balanced, Work $=$ Force $\times$ Distance.
+In this case as the cavity shortens, a force is applied in the opposite
+direction.
+As the cavity lengthens, a force is applied in the same direction as the motion.
+And the total work done over each cycle is zero.
+With a positive delay, the force applied while the cavity is lengthening is
+greater than when it is shortening which makes the total work per cycle greater
+than zero.
+We're adding energy to the system, making it unstable.
+This is only strictly valid at one instant in time because we are leaving out
+the effect that the force has on the motion of the mirror.
+We can think of it as if we had a device that required the mirror to follow a
+sinusoidal motion at a specific amplitude and frequency regardless of external
+forces and placed in a cavity to form an optical spring, work would be done on
+the optic by the spring and taken up by the special device.
+In fact, assuming zero friction, the energy going into the device could be
+converted to lighting a bulb for instance.
+Of course there's no magic here, the energy comes from the power delivered by
+the laser.
+Without the device to take up the energy the spring is delivering to
+the optic, the energy must go into the motion of the optic where the total
+energy is related to the motion by,
+\begin{equation}
+E = \frac{1}{2}kx^2,
+\end{equation}
+where $k$ is the spring constant and $x$ is the amplitude of the motion.
+This is illustrated in figure \ref{fig:otstabletime}.
+
+Of course, we can also solve the equations of motion,
+\begin{align}
+F = ma &= -kx \\
+  m\ddot x &= -kx\;.
+\end{align}
+The solution to this is harmonic motion of the form,
+\begin{align}
+x = Ae^{i\sqrt{k/m}t} + Be^{i\sqrt{k/m}t} \;.
+\end{align}
+With harmonic motion If we allow k to be a complex number, $k = k_0(1+i\phi)$, we have
+\begin{align}
+x &= Ae^{i\sqrt{k_0e^{i\phi}/m}t} + Be^{-i\sqrt{k_0e^{i\phi}/m}t} \\
+  &= Ae^{ie^{i\phi/2}\sqrt{k_0/m}t} + Be^{-ie^{i\phi/2}\sqrt{k_0/m}t} \;.
+\end{align}
+Then, assuming $\phi$ is small, we'll set $\omega_0=\sqrt{k_0/m}$,
+\begin{align}
+x &= Ae^{i(1+i\phi/2)\omega_0t} + Be^{-i(1+i\phi/2)\omega_0t} \\
+  &= Ae^{i\omega_0t}e^{\frac{-\phi}{2}\omega_0t} +
+    Be^{-i\omega_0t}e^{\frac{\phi}{2}\omega_0t} \\
+  &= Ae^{i\omega_0t}e^{\frac{-\phi}{2}\omega_0t} +
+    Be^{-i\omega_0t}e^{\frac{\phi}{2}\omega_0t} \;.
+\end{align}
+
+Looking at the transfer function of the closed loop,
+\begin{align}
+\mathrm{CLG} &= \frac{1}{1-\frac{k_0(1+i\phi)}{m\omega^2}} \\
+  &= \frac{m\omega^2}{m\omega^2-k_0(1+i\phi)} \;,
+\end{align}
+when the frequency is such that $m\omega^2 = k_0$,
+the closed loop gain looks like,
+\begin{align}
+&\frac{im\omega^2}{\phi} \\
+=&\frac{m\omega^2}{\phi}e^{i\pi/2} \;.
+\end{align}
+For a positive $\phi$, the phase of the transfer function goes through $\pi/2$
+at the resonant frequency.
+Conversely for the negative $\phi$, the phase goes through $-\pi/2$.
+For the pure closed loop gain of a spring we see that the phase must be $-\pi$
+below the resonant frequency and $0$ above the resonant frequency.
+Therefore, for the case of the stable spring $\phi>0$, we see that the phase of
+the transfer must decrease as the frequency increases through the resonance.
+For the unstable spring $\phi<0$ the phase will increase over the resonance.
+Now, in our case, the measurement isn't the pure closed loop gain of the
+optical spring.
+We are actually measuring this closed loop gain times the gain of the feedback
+loop.
+The result is that the characteristic shape of the falling phase over the
+resonance preserved.
+This can be seen by writing the complex gains with exponential functions to
+generate the imaginary parts,
+\begin{align}
+FG &= F_0e^{i\theta_1}G_0e^{i\theta_2} \\
+  &= F_0G_0e^{i(\theta_1+\theta_2)} \;.
+\end{align}
+Knowing $\theta_1$ we can subtract it from the measured phase. I will actually
+present the results though as they were measured and compare with the
+theoretical plot of the transfer function including both the optical spring
+closed loop transfer function and the feedback transfer function.
+
+\begin{figure}
+\centering
+\tikzsetnextfilename{OT_stable_time}
+\begin{tikzpicture}
+  \begin{axis}[
+    name=plot1,
+    height=6cm,
+    ymax=2.5,
+    legend cell align=left,
+    legend style={font=\scriptsize},
+    grid=major,
+    ]
+  \addplot[very thick,samples=200,domain=-720:720,blue!80!black] {sin(x)};
+  \addlegendentry{$\sin (x)$};
+  \addplot[very thick,samples=200,domain=-720:720,red!80!black] {-sin(x+20)};
+  \addlegendentry{$-\sin (x+20)$};
+  \addplot[very thick,samples=200,domain=-720:720,green!80!black] {-cos(x)*sin(x+20)};
+  \addlegendentry{$-\cos(x) \sin (x+20)$};
+  \end{axis}
+  \begin{axis}[
+    name=plot2,
+    at=(plot1.below south), anchor=above north,
+    height=6cm,
+    ymax=2.5,
+    legend cell align=left,
+    legend style={font=\scriptsize},
+    grid=major,
+    ]
+  \addplot[very thick,samples=200,domain=-720:720,blue!80!black] {sin(x)};
+  \addlegendentry{$\sin (x)$};
+  \addplot[very thick,samples=200,domain=-720:720,red!80!black] {-sin(x-20)};
+  \addlegendentry{$-\sin (x-20)$};
+  \addplot[very thick,samples=200,domain=-720:720,green!80!black] {-cos(x)*sin(x-20)};
+  \addlegendentry{$-\cos(x) \sin (x-20)$};
+  \end{axis}
+\end{tikzpicture}
+\caption[]{}
+\label{fig:otstabletime}
+\end{figure}
+
+\section{Measurements}
 
 Linear trap measurements have been taken twice.
 The first measurement was with the subcarrier at the same offset frequency from
 the carrier for each measurement.
 The results generally were in line with the theory, however there were
-complications with the layout that we felt should be improved on.
+complications from the layout which needed to be addressed.
 
 \section{First Experiment}
 
@@ -100,7 +238,8 @@ complications with the layout that we felt should be improved on.
 %    \label{fig:olgapril}
 %\end{figure}
 
-The first set of measurements seemed to have a large drift.
+The first set of measurements seemed to have a large drift in the resonant
+frequency.
 One of the reasons for this is the fact that the carrier beam was not
 well aligned to the subcarrier beam causing drifts in the power ratio between
 carrier and subcarrier as the overall alignment drifted.
