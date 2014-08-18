@@ -17,6 +17,8 @@ otderive.tex \
 fluff.tex \
 usefulformulas.tex
 
+DATFILES= matlab_traces/damposcmag.dat \
+	  matlab_traces/damposcphase.dat
 
 PNGFILES=figures/block_mimo_paper.pdf \
 figures/blocks_paper.pdf \
@@ -44,7 +46,7 @@ TIKZPDFS=tikz/roomlayout.pdf \
 
 all: thesis.pdf
 
-thesis.pdf: python/ $(TEXFILES) $(BIBFILES) $(STYFILES) $(BSTFILES) $(TIKZFILES)
+thesis.pdf: python/ $(TEXFILES) $(BIBFILES) $(STYFILES) $(BSTFILES) $(TIKZFILES) $(DATFILES)
 	$(MAKE) -C python all && \
 	latexmk -pdf -pdflatex="pdflatex --shell-escape %O %S" thesis.tex && \
 	cp thesis.pdf ~/Dropbox/JimsThesis/
