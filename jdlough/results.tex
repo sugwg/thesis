@@ -755,36 +755,42 @@ section.
     \begin{axis}[
       ylabel={Magnitude},
       xlabel={Frequency[Hz]},
+      height=6cm,
 %      xmin=1500,
 %      xmax=2000,
 %      ymin=5,
 %      ymax=20,
+      legend style={legend pos=north east,font=\small},
       grid=both,
       ]
       \addplot[blue,very thick] table[x index=0,y index=1]
         {./matlab_traces/april_olg_zoom_38.dat};
-      \addlegendentry{-872};
+      \addlegendentry{-872 mV};
       \addplot[red,very thick] table[x index=0,y index=1]
         {./matlab_traces/april_olg_zoom_39.dat};
-      \addlegendentry{-522};
+      \addlegendentry{-522 mV};
       \addplot[green,very thick] table[x index=0,y index=1]
         {./matlab_traces/april_olg_zoom_40.dat};
-      \addlegendentry{-172};
+      \addlegendentry{-172 mV};
       \addplot[brown,very thick] table[x index=0,y index=1]
         {./matlab_traces/april_olg_zoom_41.dat};
-      \addlegendentry{28};
+      \addlegendentry{28 mV};
       \addplot[yellow,very thick] table[x index=0,y index=1]
         {./matlab_traces/april_olg_zoom_42.dat};
-      \addlegendentry{137};
+      \addlegendentry{137 mV};
       \addplot[orange,very thick] table[x index=0,y index=1]
         {./matlab_traces/april_olg_zoom_43.dat};
-      \addlegendentry{438};
+      \addlegendentry{438 mV};
       \addplot[magenta,very thick] table[x index=0,y index=1]
         {./matlab_traces/april_olg_zoom_44.dat};
-      \addlegendentry{879};
+      \addlegendentry{879 mV};
     \end{axis}
   \end{tikzpicture}
-  \caption[Subcarrier Detuning Gain Factor]{}
+  \caption[Subcarrier Detuning Gain Factor]{
+    relative gain above resonant frequency for different subcarrier detunings.
+    The peak gain appears to be at an offset of about 250mV which contradicts
+    the fit in figure \ref{fig:april_space1}.
+    }
   \label{fig:aprilolg2}
 \end{figure}
 
@@ -949,20 +955,66 @@ the observed resonant frequency, and the subcarrier servo offset form a set
 of parameters from which we can determine the optical spring parameters leaving
 us with no free parameters in the fitting.
 
-The measurement parameters and spring frequencies can be seen in table
+Measurement parameters and spring frequencies can be seen in table
 \ref{tab:experiment2params}.
+The subcarrier detuning was set by checking the carrier power; then increasing
+the subcarrier servo offset by 50kHz, which increases the carrier detuning by
+50kHz because of the lock offset;
+then changing the electronic offset for the subcarrier detuning to get back to
+the original carrier transmitted power.
+This procedure allowed us to use the well defined frequency offset from the
+subcarrier servo to set the subcarrier detuning to -50kHz. The uncertainty
+with this comes from noise in the transmitted carrier \ac{pd} signal relative
+to the slope of W/Hz (Transmitted Power/Carrier Detuning).
 
+
+
+\begin{table}
+  \begin{center}
+    \small
+    \begin{tabular}{|l|l|l|}
+      \hline
+      Measurement ID & Subcarrier Servo Offset $[\mathrm{kHz}]$ & Resonant Frequency [Hz] \\
+      \hline
+      \hline
+      2-13 & 330  & 274.8 \\
+      \hline
+      2-20 & 330  & 370.7 \\
+      \hline
+      2-10 & 320  & 424 \\
+      \hline
+      2-15 & 300  & 609 \\
+      \hline
+      2-18 & 260  & 915 \\
+      \hline
+      2-19 & 240  & 1047 \\
+      \hline
+    \end{tabular}
+  \end{center}
+  \caption[Optical Trap, 2nd Edition Spring Measurements]{
+      parameters of measurements presented in figure \ref{fig:juneOLGresults}.
+      }
+  \label{tab:experiment2params}
+\end{table}
+
+When fitting the data using the technique above, we were not able to get the
+stability to fit correctly.
+The measured springs were consistently more unstable than the model.
+This gave an indication that our model must be missing some physics.
 %The stability of the optical springs would not match with the theory without
 %the addition of some extra physics.
-%With the addition of an effect from the thermal expansion of the high
-%reflective optical coatings, we were able to fit the stablility
-%properly.
+With the addition of an effect from the thermal expansion of the high
+reflective optical coatings, we were able to fit the stablility
+properly.
 
-Thermal expansion couples in to the transfer function by the fact that driving
-the position of the mirror causes an intracavity power fluctuation and thus a
-temperature fluctuation in the surface of the mirror due to absorption.
-This temperature fluctuation causes a fluctuation in the thickness
-of the optic.
+%Thermal expansion couples in to the transfer function by the fact that driving
+%the position of the mirror causes an intracavity power fluctuation and thus a
+%temperature fluctuation in the surface of the mirror due to absorption.
+%This temperature fluctuation causes a fluctuation in the thickness
+%of the optic.
+Thermal expansion couples into the transfer function by absorption of the
+circulating power in the cavity at the surface of the mirror expanding the
+optic and making the cavity length shorter.
 This will be expained in more detail in section
 \ref{sec:opticthermalexpansion}.
 It turns out that only 5ppm absorption is required to account for the
@@ -973,11 +1025,19 @@ The results of this fitting can be seen in figure \ref{fig:juneOLGresults}.
 
 \subsection{Optic Thermal Expansion Contribution}
 \label{sec:opticthermalexpansion}
-See section 2.8.5 of Stefan Ballmer's thesis  \cite{Ballmer:thesis} for
-a thorough discussion on thermal expansion to cavity lenght couplings.
+The power fluctuations which provide the force feedback for the optical spring
+also cause fluctuations of the absorbed power at the surface of the mirror.
+This leads to thermal expension fluctuations of the mirror changing the length
+of the cavity.
+The effect was observed during initial LIGO as a noise coupling, see
+\cite{Ballmer:thesis}.
 The relevant part that we are interested in is the effect of changing
 the thickness of the optic itself due to thermal expansion.
-We want to first consider the penetration depth $d$ of the thermal
+
+At the frequencies we're interested in, the depth of the thermal expansion
+oscillations is very shallow compared to the thickness of the optic due to
+the slow heat conduction through the optic substrate.
+We want to first consider this penetration depth $d$ of the thermal
 fluctuations. This is given by,
 \begin{align}
 \label{eq:pendepth}
@@ -1145,7 +1205,7 @@ to the instability of the optical spring.
   \addlegendentry{DetC=222.5kHz,DetS=-17.5kHz,Pratio=4.42}
   \end{semilogxaxis}
   \end{tikzpicture}
-    \caption[Data Fitting of Open Loop Gain for 1st Results]{This is the open
+    \caption[Data Fitting of Open Loop Gain for 2nd Results]{This is the open
       loop gain fit for the second experiment. The solid lines are the measured
       optical spring transfer functions. The dashed lines are the corresponding
       theoretical transfer functions. In the legend, "DetC" and "DetS" stand for
