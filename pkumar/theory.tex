@@ -12,6 +12,7 @@
 \newcommand{\Quad}{\mathcal{Q}}
 \newcommand{\vecx}{\mathbf{x}}
 \newcommand{\vecr}{\mathbf{r}}
+% \newcommand{\eff}{\mathrm{eff}}
 
 In this chapter we briefly review the treatment of compact object
 binaries in General Relativity (henceforth GR), with a view at providing a 
@@ -866,7 +867,37 @@ to LIGO-Virgo sources in Sec.~\ref{sec:PNWaveforms} and~\ref{ssec:EOB}.
 \section{Gravtional Waveforms for Compact Binaries}
 \subsection{Post-{N}ewtonian Approximation}
 \label{sec:PNWaveforms}
-
+Due to the nonlinear nature of the gravitational field equations, 
+only a handful of exact solutions are known. However, solving them
+in the weak field approximation is often useful, mainly because the 
+gravitational fields from compact binaries are indeed weak by the time 
+they reach us.
+A weak gravitational field is characterized by a metric of the form
+\begin{equation}\label{eq:metric_weak_field}
+ g_{\mu\nu} = \eta_{\mu\nu} + h_{\mu\nu}
+\end{equation}
+with $|h_{\mu\nu}|\ll 1$. In this approximation, we can think of the 
+spacetime as flat with $h_{\mu\nu}$ representing a ${2\choose 0}$ tensor
+field propagating on it. In the {\it transverse-traceless} gauge, where
+\begin{equation}\label{eq:h_gauge_fixing2}
+ h_{00} = h_{0\mu} = 0;\hspace{10mm} h = h^\mu_\mu = 0;\hspace{10mm} \pd_\mu h^{\mu\nu} = 0.
+\end{equation}
+the {\it quadrupolar radiation formula} which gives the metric perturbation in
+terms of the source mass distribution states that~\cite{Peters:1963ux} 
+%
+\begin{equation}
+\label{eq:quadrupole_formula}
+h^{TT}_{jk} = \frac{2}{r}\left[ \pd_0^2\Quad_{jk} (t-r)\right]^{TT},
+\end{equation}
+%
+where $\Quad_{ij}$ is the traceless part of the quadrupole moment of the 
+binary with a mass distribution $\rho(\mathbf{x},t)$, i.e.
+%
+\begin{equation}
+\Quad_{ij}(t) = \int \D^3 x \rho(\mathbf{x},t)(x_i x_j - \frac{1}{3}r^2 \delta^{ij});
+\end{equation}
+and $\pd_0$ is the partial derivative with respect to the observer's
+time coordinate.%; and $\rho(\mathbf{x},t)$ is the mass density at a given spacetime point.
 A binary system of compact objects loses energy according to 
 %
 \begin{equation}
@@ -876,7 +907,7 @@ A binary system of compact objects loses energy according to
 %
 where $\langle\dots\rangle$ denote an averaging over a finite region
 of space around a spacetime event, which is several wavelengths in size,
-but small enough that the background metric does not vary;
+but small enough that the background metric does not vary.
 % This is necessary
 % becase the energy can not be localized to any one point of the wave,
 % as any point can be placed in a Local Lorentz Frame where there is no wave.
@@ -886,16 +917,16 @@ but small enough that the background metric does not vary;
 % tensor of the gravitational wave perturbations $t_{\mu\nu}$. We refer 
 % to~\cite{mtw,RevModPhys.29.509} for a detailed treatment.
 % 
-$\pd_0$ is the partial derivative with respect to the observer's
-time coordinate; and $\Quad_{ij}$ is the traceless part of the quadrupole 
-moment of the source mass distribution, i.e.
-%
-\begin{equation}
-\Quad_{ij}(t) = \int \D^3 x \rho(\mathbf{x},t)(x_i x_j - \frac{1}{3}r^2 \delta^{ij}),
-\end{equation}
+% $\pd_0$ is the partial derivative with respect to the observer's
+% time coordinate; and $\Quad_{ij}$ is the traceless part of the quadrupole 
+% moment of the source mass distribution, i.e.
+% %
+% \begin{equation}
+% \Quad_{ij}(t) = \int \D^3 x \rho(\mathbf{x},t)(x_i x_j - \frac{1}{3}r^2 \delta^{ij}),
+% \end{equation}
 % 
-where $\rho(\mathbf{x},t)$ is the mass density at a given spacetime point.
-% Eq.~\ref{eq:energy_loss} 
+% where $\rho(\mathbf{x},t)$ is the mass density at a given spacetime point.
+% % Eq.~\ref{eq:energy_loss} 
 As a result, the binary moves on continuously shrinking orbits.
 % The approximations we made in the previous section, are not 
 % sufficiently accurate when the two objects are close and moving fast, 
@@ -922,7 +953,8 @@ as expansions in $v$.
 
 % {\bf What is its energy, and how go you get its energy loss?}
 
-The key to obtaining the trajectory the binary follows and obtaining the emitted
+The key to obtaining the trajectory that the binary follows and to 
+obtaining the emitted
 gravitational waveform is equating the loss of the orbital energy 
 with the energy flux carried by the outgoing gravitational radiation,
 \begin{equation}\label{eq:energy_balance}
@@ -975,28 +1007,33 @@ In frequency domain, the emitted gravitational waveform $\tilde{h}(f)$ is
 % h(t) = A(t) \cos(\phi(t)) = \frac{1}{2} A(t) \left(e^{i\phi(t)} + e^{-i\phi(t)} \right),
 % \end{equation}
 % and obtain its Fourier transform as
+% 
+% \begin{equation}\label{eq:h_ft}
+% \tilde{h}(f) \defeq \int h(t) e^{2\pi\ii f t} \D t= \int\D t\, A(t) \mathrm{cos}(\phi(t))\, e^{2\pi\ii f t},
+% \end{equation}
+% 
 \begin{equation}\label{eq:h_ft}
-\tilde{h}(f) \defeq \int h(t) e^{2\pi\ii f t} \D t= \frac{1}{2} \int\D t\, A(t) \left(e^{2\pi i f t + \ii \phi(t)} 
-+ e^{2\pi i f t - \ii \phi(t)}\right),
+\tilde{h}(f) \defeq \int h(t) e^{2\pi\ii f t} \D t= \int\D t\, A(t) \,e^{2\pi i f t + \ii \phi(t)},
 \end{equation}
 where $A(t)$ is the time-dependent amplitude, and $\phi(t)$ is the
 instantaneous gravitational-wave phase.
-Gravitational wave searches for the LIGO/Virgo detectors involve filtering 
-the data in the frequncy domain with the modeled waveforms.
-Therefore it is preferable to work in the 
-frequency domain from a computational perspective. We can use the 
-{\it stationary phase approximation}~\cite{MatthewsWalker} to analytically
-compute the integral in Eq.~\ref{eq:h_ft}. Oscillatory integrands contribute 
-the most at the points where their phase is {\it stationary}, i.e. at the 
+% Gravitational wave searches for the LIGO/Virgo detectors involve filtering 
+% the data in the frequency domain with the modeled waveforms.
+% Therefore it is preferable to work in the 
+% frequency domain from a computational perspective. 
+Using the {\it stationary phase approximation}~\cite{MatthewsWalker}, the 
+integral in Eq.~\ref{eq:h_ft} can be computed analytically. 
+Oscillatory integrands contribute the most at the points where their phase 
+is {\it stationary}, i.e. at the 
 extrema of the derivative of the phase. Therefore we can expand the 
-exponents in Eq.~\ref{eq:h_ft} as
+exponent in Eq.~\ref{eq:h_ft} as
 \begin{equation}
  2\pi\ii f t + \ii \phi (t) \approx 2\pi\ii f t_0 + \ii \phi(t_0) + 
  \ii\frac{1}{2} \frac{\pd^2\phi}{\pd t^2} (t_0) (t-t_0)^2,
 \end{equation}
 which reduces Eq.~\ref{eq:h_ft} to a Gaussian integral. Completing the last piece,
 we get the gravitational wave phase as a function of the instantaneous 
-frequency, which can be written as~\cite{Brown:2004vh}
+frequency, which can be written as
 %
 \begin{equation}
 \label{eq:spa_waveform}
@@ -1010,14 +1047,13 @@ f^{-\frac{7}{6}} \Theta(f - f_c) e^{\ii \Psi(f;M,\eta)}.
 Here we have re-introduced physical units, $\msun$ is the mass of the sun,
 the unit in which the two masses $M$ and $m$ are taken. The step function 
 $\Theta$ ensures the termination at a certain cutoff frequency, which is  
-formally where we stop trusting the PN approximation. The phase $\Psi$ is 
-obtained from Eq.~\ref{eq:phi_of_v}, and it depends strongly on 
-the {\it chirp} mass $\mathcal{M}_c\defeq M\eta^{3/5}$ and the symmetric 
-mass-ratio $\eta\defeq \mu/M$.
-
+formally where we stop trusting the PN approximation. The phase $\Psi$ 
+depends strongly on the {\it chirp} mass $\mathcal{M}_c\defeq M\eta^{3/5}$ 
+and the symmetric mass-ratio $\eta\defeq \mu/M$, and is given in Eq.~\ref{eq:PsiSPA}.
+% 
 % {\bf How are different Taylor approximants obtained?
 % (Refer to appendix)}
-
+% 
 This particular way of solving for and expressing the gravitational waveform 
 is known as the {\it TaylorF2} approximant. However, there are other ways
 of solving the energy balance equation, either analytically or numerically,
@@ -1031,8 +1067,9 @@ the subject of recent studies~\cite{Buonanno:2009zt,NRPNComparisonBoyleetal}.
 \label{sec:NRWaveforms}
 
 General Relativity plays a major role in describing some of the most exotic 
-astrophysical systems and processes, such as the physics of neutron stars, 
-black holes and accretion disks, supernova explosions, etc. Yet the theory 
+astrophysical systems and processes, such as the physics of 
+black holes and accretion disks, neutron stars, stellar-collapse supernova 
+explosions, etc. Yet the theory 
 remains largely untested, except in the weak field slow motion regime. 
 The observation of gravitational radiation from merging neutron stars and/or
 black holes has the potential of probing the dynamics of strong gravitational
@@ -1047,13 +1084,13 @@ the weak field regime, and become increasingly inadequate in
 modeling the last phases of compact binary coalescence. 
 This statement has been qualified in recent articles, e.g.~\cite{Nitz:2013mxa}.
 
-Many fields of Science and Engineering make use of (super-)computers for 
+Many fields of science and engineering make use of (super-)computers for 
 high-accuracy numerical solutions of partial differential equations. 
-Einstein's field equations are in a particularly difficult class of such
+Einstein's field equations are in a particularly challenging class of such
 equations, but it is possible to obtain fully numerical solutions for dynamical
-scenarios governed by them. This proved to be a remarkably difficult task
+scenarios governed by them. This proved to be a remarkably challenging task
 when the first attempts were made, both due to technical and conceptual 
-difficulties as well as limited computing power. After the breakthrough
+challenges as well as limited computing power. After the breakthrough
 simulations of merging black holes by Pretorius in 
 2005~\cite{Pretorius2005}, and foundational work by researchers at 
 Goddard~\cite{Campanelli:2005dd}, University of Texas at Brownville and Florida
@@ -1077,7 +1114,7 @@ written in the manifestly covariant form as
 \end{align*}
 %
 where $F$ is the electromagnetic field strength tensor and $F_*$ is its dual. 
-While conceptually simpler, this is not the form that is the most convenient 
+While formally simpler, this is not the form that is the most convenient 
 for performing numerical evolutions. Instead, these are re-written in a 
 form that makes explicit the role of time, disentangling it from other degrees
 of freedom:
@@ -1119,7 +1156,7 @@ evolved. This is because, when the system is discretized, it is possible for
 numerical instabilities to grow and possibly lead to constraint violating 
 solutions.
 
-In this dissertation, we would concern ourselves with vacuum systems, where 
+In this dissertation, we will concern ourselves with vacuum systems, where 
 we only need to use the field equations of general relativity. More 
 specifically, we will concern ourselves with black hole binaries, for which 
 $T_{\mu\nu}=0$ everywhere. 
@@ -1129,7 +1166,8 @@ Once the decomposition is chosen, it is necessary to find the initial
 field configuration that satisfies the Einstein constraint equations as well as
 describe the system of interest. Most approaches construct the initial 
 data by treating the metric on the initial hypersurface as being 
-{\it conformally} flat. This means that each spacetime point and a finite 
+{\it conformally} flat~\cite{Cook:2000vr}. 
+This means that each spacetime point and a finite 
 neighborhood is treated as having a flat spacetime metric.
 While we can put ourselves in a frame where the metric and its first
 derivatives vanish at a point, it is not true for a finite neighborhood in 
@@ -1140,7 +1178,7 @@ radiation at the beginning of the simulation.
 The spacetime singularity of black holes pose another problem for the 
 numerical construction of he initial data. A careful treatment of the 
 singularity is necessary to ensure that none of the physical fields on the
-numerical grid blow up to infinity. One conceptually simpler approach is to 
+numerical grid blow up to infinity. One conceptually simple approach is to 
 excise the singularity from the computational grid. In this case, it is
 made sure that the excised region is causally disconnected with the exterior. 
 Another more commonly used approach involves treating the black holes as 
@@ -1240,7 +1278,8 @@ harmonics.
 Numerical simulation of BBH systems are computationally expensive, and results
 are only available for a relatively small number of binary systems (see
 e.g.~\cite{Ajith:2012tt}).  The Effective-One-Body (EOB) model~\cite{EOBOriginalBuonannoDamour}
-provides a framework for computing the gravitational waveforms emitted during
+provides a semi-analytic 
+framework for computing the gravitational waveforms emitted during
 the inspiral and merger of BBH systems. By calibrating the model to numerical
 relativity (NR) simulations and attaching the post-merger quasi-normal-mode
 (QNM) waveform, the EOB framework provides for accurate modeling of complete 
@@ -1266,12 +1305,12 @@ The dynamics is determined by the deformed-spacetime's metric coefficients, the
 EOB Hamiltonian~\cite{EOBOriginalBuonannoDamour}, and the radiation-reaction
 force. In polar coordinates $(r,\Phi)$, the EOB metric is written as
 \begin{equation}\label{eq:dsEOB}
-\D s_{\eff}^2 = -A(r)\D t^2 + \dfrac{A(r)}{D(r)}\D r^2 + r^2\left(\D\Theta^2 + \sin^2\Theta \D\Phi^2\right).
+\D s_{\mathrm{eff}}^2 = -A(r)\D t^2 + \dfrac{A(r)}{D(r)}\D r^2 + r^2\left(\D\Theta^2 + \sin^2\Theta \D\Phi^2\right).
 \end{equation}
 The geodesic dynamics of the \textit{effective} mass $\mu\,=\,m_1 m_2 /
 M$ in the background of Eq.~\eqref{eq:dsEOB} is described by an effective
-Hamiltonian $H^{\eff}$~\cite{EOBOriginalBuonannoDamour,PadeAD}.
-The EOBNRv2 model uses Pade-resummations of the third-order post-Newtonian
+Hamiltonian $H^{\mathrm{eff}}$~\cite{EOBOriginalBuonannoDamour,PadeAD}.
+The EOBNRv2 model uses Pad\'{e}-resummations of the third-order post-Newtonian
 Taylor expansions of the metric coefficients $A(r)$ and $D(r)$, with
 additional 4PN and 5PN coefficients that are
 calibrated~\cite{EOBNRdevel01,EOBNRdevel02,EOBNRdevel03,EOBNRdevel04,BuonannoEOBv2Main} 
@@ -1284,7 +1323,8 @@ to shrink. This is related to the energy flux as
 \begin{equation}
 \hat{F}_{\Phi} = -\dfrac{1}{\eta \hat{\Omega}} \dfrac{\D E}{\D t} = -\dfrac{1}{\eta v^3} \dfrac{\D E}{\D t},
 \end{equation}
-where, $v=(\hat{\Omega})^{1/3}=(\pi Mf)^{1/3}$ and $f$ is the instantaneous
+where $\eta\defeq m_1m_2/(m_1 + m_2)^2$,
+$v=(\hat{\Omega})^{1/3}=(\pi Mf)^{1/3}$ and $f$ is the instantaneous
 gravitational-wave frequency. The energy flux $\D E/\D t$ is obtained by
 summing over the contribution from each term in the multipole expansion of the
 waveform, i.e. 
@@ -1305,14 +1345,14 @@ factors~\cite{DamourFluxhlm01},
 \begin{subequations}\label{eq:hlmdef}
 \begin{align}
 h_{lm} &= h^F_{lm} N_{lm}\label{eq:hNQC},\\
-h^F_{lm} &= h^{(N,\epsilon)}_{lm} \hat{S}_{\eff}^{(\epsilon)} T_{lm} e^{\ii\delta_{lm}} (\rho_{lm})^l\label{eq:hNoNQC};
+h^F_{lm} &= h^{(N,\epsilon)}_{lm} \hat{S}_{\mathrm{eff}}^{(\epsilon)} T_{lm} e^{\ii\delta_{lm}} (\rho_{lm})^l\label{eq:hNoNQC};
 \end{align}
 \end{subequations}
 where $\epsilon$ is $0$ if $\left( l+m\right)$ is even, and is $1$ otherwise. This
 factorized-re-summation of the waveform multipoles ensures agreement with NR
 waveform multipoles~\cite{EOBNRdevel01,EOBNRdevel02,EOBNR01}.  The first
 factor $h^{(N,\epsilon)}_{lm}$ is the re-summation of the Newtonian order
-contribution and the second factor  $\hat{S}_{\eff}^{(\epsilon)}$ is the
+contribution and the second factor  $\hat{S}_{\mathrm{eff}}^{(\epsilon)}$ is the
 source term, given by the mass or the current moments of the binary in the EOB
 formalism~\cite{DamourFluxhlm01,BuonannoEOBTerms}. The tail term $T_{lm}$ is
 the re-summation of the leading order logarithmic terms that enter into the
@@ -1324,8 +1364,37 @@ Ref.~\cite{BuonannoEOBv2Main}, which calibrates the coefficients of the flux
 so that resulting EOB waveform multipoles reproduce their NR counterparts with
 high accuracy.
 
-We use the EOBNRv2 Hamiltonian and flux in the equations of motion for the
-binary, given by
+The geodesic dynamics of the \textit{effective} mass $\mu$ in the background of
+Eq.~\eqref{eq:dsEOB} is described by the Hamiltonian 
+$H^{\mathrm{eff}}$~\cite{EOBEffHamiltonian},
+which can be written as~\cite{EOBOriginalBuonannoDamour}
+\begin{equation}
+\begin{split}
+H^{\mathrm{eff}} =& \mu\hat{H}^{\mathrm{eff}} \\
+         =& \mu\sqrt{A(r) \left( 1 +  \dfrac{A(r)}{D(r)}p_r^2 + 2(4 - 3\eta)\eta \dfrac{p_r^4}{r^2} + \dfrac{p^2_{\Phi}}{r^2} \right)},
+\end{split}
+\end{equation}
+where $(p_r,p_{\Phi})$ are momenta conjugate to $(r,\Phi)$ respectively. It was found
+convenient to replace the radial momentum $p_r$, with the momentum conjugate to the EOB 
+extension of the Regge-Wheeler \textit{tortoise} radial coordinate $r_*$, where 
+$r_*\equiv\int\sqrt{D(r)}/A(r)\,\D r$~\cite{DamourNQC01} . This momentum coordinate 
+$p_{r_*}$ is related to $p_r$ as
+\begin{equation}
+p_{r_*} = \dfrac{A(r)}{\sqrt{D(r)}}\,p_r.
+\end{equation}
+In $\l(r,\Phi,p_{r_*},p_{\Phi}\r)$ coordinates, the effective Hamiltonian can be re-written 
+as~\cite{BuonannoEOBv2Main},
+\begin{equation}
+\hat{H}^{\mathrm{eff}} = \sqrt{p^2_{r_*} + A(r) \left( 1 + 2(4 - 3\eta)\eta \dfrac{p_{r_*}^4}{r^2} + \dfrac{p^2_{\Phi}}{r^2} \right)}.
+\end{equation}
+The EOB Hamiltonian (labelled the \textit{real} Hamiltonian), that describes the conservative
+dynamics of the binary,  is related to the effective Hamiltonian as,
+\begin{equation}
+H^{\real} = \mu\hat{H}^{\real} = \mu\dfrac{1}{\eta} \sqrt{1 + 2\eta (\hat{H}^{\mathrm{eff}} - 1)}.
+\end{equation}
+%
+We use the Hamiltonian $H^{\real}$ and flux to get the equations of motion for the
+binary, 
 \begin{subequations}\label{eq:EOBHamiltonianEqs}	
  \begin{align}
 \dfrac{\D r}{\D\hat{t}} &\equiv \dfrac{\partial \hat{H}^{\real}}{\partial p_r} = \dfrac{A(r)}{\sqrt{D(r)}}\dfrac{\partial \hat{H}^{\real}}{\partial p_{r*}} (r, p_{r*}, p_{\Phi}) ,\\
