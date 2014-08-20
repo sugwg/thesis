@@ -2,13 +2,23 @@ TEXFILES= thesis.tex \
 acknowledge.tex \
 introduction.tex \
 lintrap.tex \
-OT_paper.tex \
 digsys.tex \
 noises.tex \
 psl.tex \
 optical_spring.tex \
-results.tex
+results.tex \
+conclusions.tex \
+ottheory.tex \
+otstab.tex \
+otcon.tex \
+otanginst.tex \
+otradnoise.tex \
+otderive.tex \
+fluff.tex \
+usefulformulas.tex
 
+DATFILES= matlab_traces/damposcmag.dat \
+	  matlab_traces/damposcphase.dat
 
 PNGFILES=figures/block_mimo_paper.pdf \
 figures/blocks_paper.pdf \
@@ -19,7 +29,8 @@ figures/trap_drawing_paper2.pdf \
 figures/trap_radPresA_paper2.pdf
 
 BIBFILES=references.bib \
-OT_paper.bib
+OT_paper.bib \
+papers.bib
 
 STYFILES=bibunits.sty syrthesis.sty
 
@@ -35,10 +46,14 @@ TIKZPDFS=tikz/roomlayout.pdf \
 
 all: thesis.pdf
 
-thesis.pdf: python/ $(TEXFILES) $(BIBFILES) $(STYFILES) $(BSTFILES) $(TIKZFILES)
+thesis.pdf: python/ $(TEXFILES) $(BIBFILES) $(STYFILES) $(BSTFILES) $(TIKZFILES) $(DATFILES)
 	$(MAKE) -C python all && \
 	latexmk -pdf -pdflatex="pdflatex --shell-escape %O %S" thesis.tex && \
 	cp thesis.pdf ~/Dropbox/JimsThesis/
+
+thesisvita.pdf: thesisvita.tex papersfull.bib vita.bst
+	latexmk -pdf -pdflatex="pdflatex --shell-escape %O %S" thesisvita.tex
+
 
 gr-qc: thesis.tgz
 

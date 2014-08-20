@@ -399,6 +399,7 @@ MACRO {ijmpd} {"International Journal of Modern Physics D"}
 MACRO {ip} {"Infrared Physics"}
 MACRO {inc} {"Il Nouvo Cimento"}
 MACRO {jap} {"Journal of Applied Physics"}
+MACRO {jcap} {"Journal of Cosmology and Astroparticle Physics"}
 MACRO {jcp} {"Journal of Computational Physics"}
 MACRO {jetp} {"Soviet Physics-JETP"}
 MACRO {jfe} {"Journal of Fusion Energy"}

@@ -16,6 +16,7 @@
 \usepackage{array}
 \usepackage{multirow}
 \usepackage{color}
+\usepackage[table]{xcolor}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{amsfonts}
@@ -26,6 +27,8 @@
   basicstyle=\ttfamily\footnotesize}
 \usepackage{lscape}
 \usepackage{hyperref}
+\usepackage{caption}
+%\usepackage[all]{hypcap}
 \usepackage{dsfont}
 \usepackage[disable,colorinlistoftodos]{todonotes}
 \usepackage{tikz}
@@ -53,6 +56,7 @@
 \newcommand{\prsl}{{\it Proc. R. Soc. Lond. A}}
 \newcommand{\ptrsl}{{\it Phil. Trans. Roy. Soc. London}}
 \newcommand{\rmp}{{\it Rev. Mod. Phys.}}
+\newcommand{\jcap}{{\it J. Cosmol. Astropart. Phys.}}
 
 % acronymn definitions
 \acrodef{LIGO}{Laser Interferometer Gravitational-wave Observatory}
@@ -88,20 +92,20 @@
 \acrodef{GR}{General Relativity}
 \acrodef{EM}{electromagnetic}
 \acrodef{pdh}[PDH]{Pound Drever Hall}
-\acrodef{psl}[PSL]{Pre-Stabilized Laser}
-\acrodef{iss}[ISS]{Intensity Stabilization Servo}
-\acrodef{fss}[FSS]{Frequency Stabilization Servo}
-\acrodef{pmc}[PMC]{Pre-Mode Cleaner}
+\acrodef{psl}[PSL]{pre-stabilized laser}
+\acrodef{iss}[ISS]{intensity stabilization servo}
+\acrodef{fss}[FSS]{frequency stabilization servo}
+\acrodef{pmc}[PMC]{pre-mode cleaner}
 \acrodef{scs}[SCS]{Sub-Carrier Servo}
 \acrodef{ndyag}[Nd:YAG]{neodymium-doped yttrium aluminum garnet}
-\acrodef{npro}[NPRO]{Non-planar Ring Oscillator}
-\acrodef{aom}[AOM]{Accousto-Optic Modulator}
-\acrodef{eom}[EOM]{Electro-Optic Modulator}
-\acrodef{pd}[PD]{Photo-Diode}
-\acrodef{daq}[DAQ]{Data Acquisitions}
-\acrodef{daqd}[daqd]{\ac{daq} Daemon}
+\acrodef{npro}[NPRO]{non-planar ring oscillator}
+\acrodef{aom}[AOM]{accousto-optic modulator}
+\acrodef{eom}[EOM]{electro-optic modulator}
+\acrodef{pd}[PD]{photo-diode}
+\acrodef{daq}[DAQ]{data acquisitions}
+\acrodef{daqd}[daqd]{\ac{daq} daemon}
 \acrodef{dtt}[DTT]{Diagnostic Test Tools}
-\acrodef{asd}[ASD]{Amplitude Spectral Density}
+\acrodef{asd}[ASD]{amplitude spectral density}
 \acrodef{fsr}[FSR]{free spectral range}
 \acrodef{fwhm}[FWHM]{full width at half max}
 \acrodef{pzt}[PZT]{piezo electric transducer}
@@ -112,6 +116,7 @@
 \acrodef{sos}[SOS]{small optic suspension}
 \acrodef{rfpd}[RFPD]{radio frequency photodiode}
 \acrodef{fi}[FI]{faraday isolator}
+\acrodef{qpd}[QPD]{quadrant photodiode}
 
 % common macros
 \def\Msun{\ensuremath{\mathrm{M_\odot}}}
@@ -138,14 +143,49 @@
 \newcommand\PI{3.1415927}
 \newcommand\RHOFS{2.2e3}
 \newcommand\EEPOXY{3.378e9}
+\newcommand{\tcr}{\textcolor{red}}
+\newcommand{\tcb}{\textcolor{blue}}
+\newcommand{\tcm}{\textcolor{magenta}}
+\newcommand{\tcg}{\textcolor{green}}
+\newcommand{\tcp}{\textcolor{purple}}
+\newcommand{\irm}{\mathrm{i}}
 
 
 \begin{document}
 
 \Abstract{
 
+The Advanced LIGO detectors will soon be online with enough sensitivity to
+begin detecting gravitational waves,
+based on conservative estimates of the rate of
+neutron star inspirals.
+These first detections are sure to be significant, however, we will always
+strive to do better. More questions will be asked about the nature of
+neutron star material, rates of black hole inspirals, electromagnetic
+counterparts, etc.
+To begin to answer all of the questions aLIGO will bring
+us we will need even better sensitivity in future gravitational wave
+detectors.
 
-This thesis describes various bits of graduate work from the last 14 years. It is really cool and should be read by everyone.
+This thesis addresses one aspect that will limit us in the future:
+angular stability of the test masses.
+Angular stability in advanced LIGO uses an active feedback system.
+We are proposing to replace the active feedback system with a passive
+one, eliminating sensing noise contributions.
+This technique uses the radiation pressure of light inside a cavity as a
+stable optical spring, fundamentaly the same as technique developed by
+Corbitt, et al. with an additional degree of freedom.
+
+I will review the theory of the one dimensional technique and discuss the
+the multidimensional control theory and angular trap setup.
+I will then present results from the one-dimensional trap which we have
+built and tested. And propose improvements for the angular trap experiment.
+
+Along the way we have discovered an interesting coupling with thermal
+expansion due to round trip absorption in the high reflective coatings.
+The front surface HR coating limits our spring stability in this experiment
+due to the high circulating power and small beam spot size.
+
 
 }
 
@@ -172,26 +212,80 @@ Optical Spring Stabilization
 
 \beforepreface \prefacesection{Preface}
 
-The work presented in this thesis stems from my participation in the LIGO
-Scientific Collaboration and the Virgo Collaboration.
+The thesis presented here would not have been possible without collaboration
+with my colleagues.
+First, and foremost, the main subject of this thesis is the optical trap
+experiment taking place at Syracuse University.
+Much of the work in setting up the experiment was done together and will
+be difficult to differential exact contributions from members.
+
+This experiment was very much a combined effort of primarily four people:
+our PI Stefan Ballmer, David Kelley, Antonio Perreca, and myself.
+We were fortunate to have some major infrastructure in place when we started:
+two large vacuum bell jars, two optics benches with floating legs.
+The rest of the experiment was pretty much built from the ground up.
+
+Another graduate student, Fabian Magana-Sandoval recently joined our team
+and has contributed to the building of \ac{qpd}s and the commissioning of the
+optical lever.
+
+There has also been contributions from other graduate students as part of
+requirements for the course Graduate Laboratory:
+\begin{itemize}
+\item Prayush Kumar designed the \ac{iss}.
+\item Alex Nitz worked on the \ac{pmc}.
+\item Chris Biwer is adding a feedforward modification to the \ac{pmc}.
+\end{itemize}
+Also, my work on building and commissioning the \ac{iss} was for fulfillment of the
+grad lab course.
+
+My major contributions to the experiment have been:
+\begin{itemize}
+\item setting up the vacuum system infrastructure and electrical feedthroughs,
+\item designing and building the reference cavity and suspension for the
+  \ac{fss},
+\item designing the trap output mirror "payload" suspension,
+\item assembling the digital control system,
+\item and assembling and commissioning the suspension control loops.
+\end{itemize}
+
+The theory presented in chapter \ref{ch:theory} is primarily copied from our
+group's recent paper, Multidimensional optical trapping of a mirror,
+Perreca et al. \cite{Perreca:2014}
+
+%The work presented in this thesis stems from my participation in the LIGO
+%Scientific Collaboration and the Virgo Collaboration.
+%
+%A bit of LIGO history and motivation for LIGO itself.
+%
+%What lies ahead?
+%
+%Future of radiation pressure applications.
 
 \prefacesection{Conventions}
 
-We use the Einstein summation convention in which repeated upper and lower
-indices are summed over. Greek indices indicate all four spacetime dimensions,
-Latin indicate spatial dimensions only. An over-arrow indicates a vector with
-spatial components only, e.g., $\vec{x} = (x^1,x^2,x^3)$.
+Mirror reflectivities are designated by $r$ for the amplitude reflectivity
+and $R$ for the power reflectivity.
+I will use $\mathcal{R}$ for radius of curvature,
+but the distinction should be apparent in the context.
 
-\vspace{0.5cm}
 
-\noindent Expectation values of a variable are indicated by $\mathbb{E}()$.
-Averages, unless otherwise noted, are indicated by an overbar.
 
-\vspace{0.5cm}
-
-\noindent The time-stamps of interferometer data are measured in
-Global Positioning System (GPS) seconds: seconds since 00:00.00 UTC
-January 6, 1980 as measured by an atomic clock.
+%We use the Einstein summation convention in which repeated upper and lower
+%indices are summed over. Greek indices indicate all four spacetime dimensions,
+%Latin indicate spatial dimensions only. An over-arrow indicates a vector with
+%spatial components only, e.g., $\vec{x} = (x^1,x^2,x^3)$.
+%
+%\vspace{0.5cm}
+%
+%\noindent Expectation values of a variable are indicated by $\mathbb{E}()$.
+%Averages, unless otherwise noted, are indicated by an overbar.
+%
+%\vspace{0.5cm}
+%
+%\noindent The time-stamps of interferometer data are measured in
+%Global Positioning System (GPS) seconds: seconds since 00:00.00 UTC
+%January 6, 1980 as measured by an atomic clock.
 
 \prefacesection{Acknowledgments}
 \input{acknowledge}
@@ -216,9 +310,13 @@ January 6, 1980 as measured by an atomic clock.
 %\label{ch:opspringstab}
 %\input{optical_spring.tex}
 
-\Chapter{Angular Trapping}
-\label{ch:angletrap}
-\input{OT_paper.tex}
+\Chapter{Theory}
+\label{ch:theory}
+\input{ottheory.tex}
+
+%\Chapter{Angular Trapping}
+%\label{ch:angletrap}
+%\input{OT_paper.tex}
 
 \Chapter{Pre-Stabilized Laser}
 \label{ch:psl}
@@ -236,9 +334,18 @@ January 6, 1980 as measured by an atomic clock.
 \label{ch:results}
 \input{results.tex}
 
+\Chapter{Conclusions}
+\label{ch:conclusions}
+\input{conclusions.tex}
+
+\appendix
 \Chapter{Digital System}
 \label{ch:digital}
 \input{digsys.tex}
+
+\Chapter{Magic Beans}
+\label{ch:usefulformulas}
+\input{usefulformulas.tex}
 
 
 %\Chapter{Feedback Control}
@@ -275,6 +382,7 @@ January 6, 1980 as measured by an atomic clock.
 \begin{publications}
 \putbib[papers]
 \end{publications}
+
 
 \begin{honorarysocieties}
 \end{honorarysocieties}
