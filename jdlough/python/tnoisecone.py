@@ -7,7 +7,7 @@ E = 3.378e9
 rho = 2.2e3
 T = 295.0
 
-freq = np.logspace(1.0,6.0,num=1001)
+freq = np.logspace(0.0,6.0,num=1001)
 omega = 2*np.pi*freq
 M = 5.0e-4
 R = 1.0e-3

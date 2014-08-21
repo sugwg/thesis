@@ -246,7 +246,7 @@ length noise.
     ylabel={Thermal Noise $\left[ m/\sqrt{\mathrm{Hz}} \right]$},
     grid=minor,
   ]
-  \addplot[red] table {python/tnoisecone.dat};
+  \addplot[red,thick] table {python/tnoisecone.dat};
   \end{loglogaxis}
   \end{tikzpicture}
   \caption[Epoxy Thermal Noise Contribution to Trap Length]{This is a plot
@@ -255,6 +255,83 @@ length noise.
     the full expression in \eqref{eq:tnoisesusfull}.}
   \label{fig:tnoisec}
 \end{figure}
+
+\subsection{Other Thermal Noise Sources}
+
+Additionally there are thermal noises from the glue used in the reference
+cavity, the mirror coatings, and the input mirror mount.
+
+The reference cavity was glued using 4 spots of the Optocast 3553 per mirror.
+The mirrors are one inch in diameter with a radius of curvature of $0.5m$
+mounted to a spacer which has a 0.5 inch hole drilled through the middle.
+Centering the mirror over the 0.5 inch hole, there is at most a distance of
+$120 \mu\mathrm{m}$ from the curved surface of the mirror to the flat end
+of the spacer.
+I have used a value of $50 \mu\mathrm{m}$ for the thickness of the glue spots.
+
+Parameters for glue used are provided in table
+\ref{tab:epoxyparams}.
+
+
+\begin{table}
+  \begin{center}
+    \small
+    \begin{tabular}{|l|l|l|}
+      \hline
+      Parameter & Symbol & Value \\
+      \hline
+      \hline
+      Young's Modulus & $E_0$ & 3.378 GPa \\
+      \hline
+      Density & $\rho$ & 1118 $\mathrm{kg/m^3}$ \\
+      \hline
+      Loss Angle & $\phi$ & 0.005 \\
+      \hline
+    \end{tabular}
+  \end{center}
+  \caption[Epoxy Parameters]{
+      parameters of the OptoCast 3553 epoxy resin.
+      The loss angle $\phi$ has not been measured for this material.
+      }
+  \label{tab:epoxyparams}
+\end{table}
+
+These additional noise sources are presented in figure \ref{fig:thermalnoises}.
+
+\begin{figure}
+  \tikzsetnextfilename{thermalnoises}
+  \begin{tikzpicture}
+  \begin{loglogaxis}[
+    height=8cm,
+    xlabel={Frequency $\left[ \mathrm{Hz} \right]$},
+    ylabel={Thermal Noise $\left[ m/\sqrt{\mathrm{Hz}} \right]$},
+    xmin=10,
+    xmax=1000000,
+    legend cell align=left,
+    legend style={legend pos=south west,font=\small},
+    grid=minor,
+    ]
+    \addplot[blue,very thick] table[x index=0,y index=1]
+      {./matlab_traces/thermalnoises.dat};
+    \addplot[green,very thick] table[x index=0,y index=2]
+      {./matlab_traces/thermalnoises.dat};
+    \addplot[magenta,very thick] table[x index=0,y index=5]
+      {./matlab_traces/thermalnoises.dat};
+    \addplot[yellow,very thick] table[x index=0,y index=4]
+      {./matlab_traces/thermalnoises.dat};
+    \addplot[red,very thick] table {python/tnoisecone.dat};
+    \addlegendentry{Input Mirror Mounting};
+    \addlegendentry{Trap Mirror Coatings};
+    \addlegendentry{Reference Cavity Glue};
+    \addlegendentry{Reference Cavity Mirror Coatings};
+    \addlegendentry{Small Mirror Suspension Glue};
+  \end{loglogaxis}
+  \end{tikzpicture}
+  \caption[Thermal Noise Sources]{thermal noise contributions to experiment.}
+  \label{fig:thermalnoises}
+\end{figure}
+
+
 
 %\begin{figure}[htbp]
 %	\centering
