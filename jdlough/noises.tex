@@ -311,20 +311,25 @@ These additional noise sources are presented in figure \ref{fig:thermalnoises}.
     legend style={legend pos=south west,font=\small},
     grid=minor,
     ]
-    \addplot[blue,very thick] table[x index=0,y index=1]
+    \addplot[blue!90!black,very thick] table[x index=0,y index=1]
       {./matlab_traces/thermalnoises.dat};
-    \addplot[green,very thick] table[x index=0,y index=2]
+    \addplot[green!90!black,very thick] table[x index=0,y index=2]
       {./matlab_traces/thermalnoises.dat};
-    \addplot[magenta,very thick] table[x index=0,y index=5]
+    \addplot[red!90!black,very thick] table[x index=0,y index=3]
       {./matlab_traces/thermalnoises.dat};
-    \addplot[yellow,very thick] table[x index=0,y index=4]
+    \addplot[yellow!90!black,very thick] table[x index=0,y index=4]
       {./matlab_traces/thermalnoises.dat};
-    \addplot[red,very thick] table {python/tnoisecone.dat};
-    \addlegendentry{Input Mirror Mounting};
+    \addplot[magenta!90!black,very thick] table[x index=0,y index=5]
+      {./matlab_traces/thermalnoises.dat};
+    \addplot[cyan!90!black,very thick] table[x index=0,y index=6]
+      {./matlab_traces/thermalnoises.dat};
+%    \addplot[red,very thick] table {python/tnoisecone.dat};
+    \addlegendentry{Small Mirror Suspension Glue};
     \addlegendentry{Trap Mirror Coatings};
+    \addlegendentry{Input Mirror Mounting};
     \addlegendentry{Reference Cavity Glue};
     \addlegendentry{Reference Cavity Mirror Coatings};
-    \addlegendentry{Small Mirror Suspension Glue};
+    \addlegendentry{Total};
   \end{loglogaxis}
   \end{tikzpicture}
   \caption[Thermal Noise Sources]{thermal noise contributions to experiment.}
@@ -348,17 +353,6 @@ interferometric nature of the experiment.
 The coupling goes as the length of the cavity as discussed in section
 \ref{sec:lin_short}.
 
-We can measure the frequency noise of the laser by referencing the beam to
-another cavity. The \ac{fss} described in section \ref{sec:fss} can be used
-for this measurement because at low frequencies (below unity gain) the control
-signal is the noise entering the control loop.
-If the control loop is designed well, the dominant noise source will be the
-frequency noise which is inherent to the laser without the presence of the
-control loop.
-Figure \ref{fig:frequencynoise} shows this laser frequency noise measurement
-converted from the Volts measured in the \ac{pzt} path to Hz laser frequency.
-
-
 \begin{figure}
   \tikzsetnextfilename{freqnoise}
   \begin{tikzpicture}
@@ -378,6 +372,18 @@ converted from the Volts measured in the \ac{pzt} path to Hz laser frequency.
     }
   \label{fig:frequencynoise}
 \end{figure}
+
+We can measure the frequency noise of the laser by referencing the beam to
+another cavity. The \ac{fss} described in section \ref{sec:fss} can be used
+for this measurement because at low frequencies (below unity gain) the control
+signal is the noise entering the control loop.
+If the control loop is designed well, the dominant noise source will be the
+frequency noise which is inherent to the laser without the presence of the
+control loop.
+Figure \ref{fig:frequencynoise} shows this laser frequency noise measurement
+converted from the Volts measured in the \ac{pzt} path to Hz laser frequency.
+
+
 
 
 \section{Laser Intensity}
@@ -440,13 +446,13 @@ in figure \ref{fig:intensitynoise}.
   \tikzsetnextfilename{noisebudgetjune}
   \begin{tikzpicture}
   \begin{loglogaxis}[
-    height=10cm,
+    height=11cm,
 %    width=14cm,
     xlabel={Frequency $\left[\mathrm{Hz}\right]$},
     ylabel={Trap Length Noise $\left[m/\sqrt{\mathrm{Hz}}\right]$},
     xmin=10,
     xmax=6000,
-    ymin=1e-16,
+    ymin=1e-18,
     ymax=1e-8,
     grid=major,
     legend cell align=left,
@@ -463,11 +469,21 @@ in figure \ref{fig:intensitynoise}.
   \addplot[red,very thick] table[x index=0,y index=4]
     {./matlab_traces/june_noises.dat};
   \addlegendentry{Seismic Noise}
-  \addplot[purple,very thick,domain=10:10000] {2.3e-9/x/x};
+  \addplot[cyan!90!black,very thick] table[x index=0,y index=6]
+    {./matlab_traces/thermalnoises.dat};
+  \addlegendentry{Total Thermal}
+  \addplot[magenta!90!black,very thick] table[x index=0,y index=1]
+    {./matlab_traces/quantumlimit.dat};
+  \addlegendentry{Quantum Noise}
+%  \addplot[purple,very thick,domain=10:10000] {2.3e-9/x/x};
   \end{loglogaxis}
   \end{tikzpicture}
-  \caption[Noise Budget]{This is the noise budget which includes the measured
-    cavity length noise with a stable optical spring.}
+  \caption[Noise Budget]{total noise budget including measured noise.
+    The measured trap length noise is the measurement presented in the results
+    section.
+    The quantum noise limit shown was computed using the parameters of the
+    optical spring during trap length noise measurement.
+    }
   \label{fig:noisebudget}
 \end{figure}
 
