@@ -81,29 +81,42 @@ This is accomplished at the electronic servo board itself as shown in figure
 \section{Stability}
 
 The definition of a stable system is one which has a bounded output for a
-bounded input. In the case of a spring attached to a mass, if we apply a finite
-motion to the end of the spring opposite the mass, the motion of the mass must
-grow indefinitely. For us, our mass is a small mirror at one end of an optical
-spring cavity.
+bounded input.
+In our case we are interested in the closed-loop system consisting of an
+optical spring attached to the small mass.
+%if we apply a finite
+%motion to the end of the spring opposite the mass, the motion of the mass must
+%grow indefinitely.
+%For us, our mass is a small mirror at one end of an optical
+%spring cavity.
 
-The ideal system for us to work with is one that is linear and time-invariant
+%The ideal system for us to work with is one that is linear and time-invariant
+This system is linear and time-invariant
 (LTI).
-This system can be well understood, and it is in the acheivement of a LTI
-system where much of our effort is focused.
-A system which is linear and time invariant will multiply a sinusoidal input
+%This system can be well understood, and it is in the acheivement of a LTI
+%system where much of our effort is focused.
+%A system which is linear and time invariant
+As such it will multiply a sinusoidal input
 of a specific frequency with a complex number which is only dependant on this
 frequency and will not change over time.
-Any signal (input) in the time domain can be expressed in a Fourier series, a sum
-of sinusoidal functions of different frequencies and amplitudes.
-The sinusoidal functions $e^{i\omega t}$ form a continuous basis set for the
-LTI system.
-As long as the output of a LTI system has $\Im(\omega) > 0$ the system is stable.
-But this definition is not directly useful for measuring stability.
+These values are called transfer function and fully describe the system.
 
-I will review the important points of the optical spring theory.
+The criterion for stability above translates into the requirement that all
+poles of the transfer function lie in the upper half of the complex plane,
+that is none of its eigenmodes are exponentially growing.
+%Any signal (input) in the time domain can be expressed in a Fourier series, a sum
+%of sinusoidal functions of different frequencies and amplitudes.
+%The sinusoidal functions $e^{i\omega t}$ form a continuous basis set for the
+%LTI system.
+%As long as the output of a LTI system has $\Im(\omega) > 0$ the system is stable.
+%But this definition is not directly useful for measuring stability.
+
+%I will review the important points of the optical spring theory.
+To convert this statement into a experimentally measurable criterion I first
+look at the energy budget of the system.
 As a reminder, a single optical spring has a delayed response in the cavity
 which causes it to be unstable.
-The first thought is why? Why does that make it unstable?
+%The first thought is why? Why does that make it unstable?
 
 One way to visualize this is that we have a system that, without the delay,
 the force is maximum when the length is minimum.
@@ -139,10 +152,9 @@ energy is related to the motion by,
 E = \frac{1}{2}kx_0^2 \;,
 \end{equation}
 where $k$ is the spring constant and $x_0$ is the amplitude of the motion.
-%Plots of the power from stable and unstable springs are shown in figure
-%\ref{fig:otstabletime}.
-
-We can also solve the equations of motion,
+A delay manifests itself in the transfer function as a phase lag.
+To further work out how the transfer function phase is related to stability
+we can solve the equations of motion,
 \begin{align*}
 F = ma &= -kx \\
   m\ddot x &= -kx\;.
@@ -157,6 +169,9 @@ Motion in the real world is real, so we always take the real part of the
 complex motion when we're done. The imaginary part is just a mathematical
 construct that helps with the calculations.
 
+%Plots of the power from stable and unstable springs are shown in figure
+%\ref{fig:otstabletime}.
+
 We can damp the system in way similar to what was discussed in section
 \ref{sec:II}. I will leave out the velocity term from equation
 \ref{eqn:motion} and instead use a complex $k$ for the damping.
@@ -168,7 +183,7 @@ shifts the wave in time.
 %like we see in figure \ref{fig:otstabletime}.
 For $\phi \ll 1$ we can write $k=k_0e^{i\phi}$,
 \begin{align}
-x &= -kx \nonumber \\
+F &= -kx \nonumber \\
   &= -k_0Ae^{i\omega t + i\phi} \;.
 \end{align}
 And the energy is,
@@ -213,8 +228,8 @@ Looking at the transfer function of the closed loop,
 \mathrm{CLG} &= \frac{1}{1-\frac{k_0(1+i\phi)}{m\omega^2}} \nonumber \\
   &= \frac{m\omega^2}{m\omega^2-k_0(1+i\phi)} \;,
 \end{align}
-when the frequency is such that $m\omega^2 = k_0$,
-the closed loop gain looks like,
+when the frequency is near resonance $m\omega^2 = k_0$,
+the closed loop gain takes the form,
 \begin{align}
 &\frac{im\omega^2}{\phi} \nonumber \\
 =&\frac{m\omega^2}{\phi}e^{i\pi/2} \;.
@@ -227,12 +242,13 @@ below the resonant frequency and $0$ above the resonant frequency.
 Therefore, for the case of the stable spring $\phi>0$, we see that the phase of
 the transfer must decrease as the frequency increases through the resonance.
 For the unstable spring $\phi<0$ the phase will increase over the resonance.
-This can be seen in figure \ref{fig:dampedspringtf}.
+This can be seen in figure \ref{fig:dampedspringtf} and is experimentally
+accessible in a closed loop measurement of the spring.
 
 Now, in our case, the measurement isn't the pure closed loop gain of the
 optical spring.
-We are actually measuring this closed loop gain times the gain of the feedback
-loop.
+We are actually measuring this closed loop gain times the open loop gain of the
+feedback loop.
 The result is that the characteristic shape of the falling phase over the
 resonance preserved.
 This can be seen by writing the complex gains with exponential functions to
@@ -449,50 +465,52 @@ in turn reduces the resonant frequency.
 Because of the power ratio, cavity finesse, and subcarrier servo offset
 frequency we expect to see stable springs at some point after detuning the
 subcarrier beam to the opposite side of the resonant frequency of the cavity.
-This is illustrated in figure \ref{fig:paramspace1}.
+%This is illustrated in figure \ref{fig:paramspace1}.
 
 During the optical spring measurements we were sensitive to variations in
 power.
 I observed that the stable optical spring frequency could drift over a few
 hours by as much as 100Hz without me changing any of the parameters of the
 setup.
-This is shown in figure \ref{fig:stablefixedoffset}.
+%This is shown in figure \ref{fig:stablefixedoffset}.
+This is shown in table \ref{tab:experiment1lock2}.
 
 \begin{table}
   \begin{center}
-    \small
-    \begin{tabular}{|l|l|l|}
+    \footnotesize
+    \begin{tabular}{|l|l|l|l|}
       \hline
-      Measurement ID & Error point offset $[\mathrm{mV}]$ & Resonant Frequency [Hz] \\
+      Measurement ID & Error point offset $[\mathrm{mV}]$ &
+        Resonant Frequency [Hz] & Time of Measurement [Min] \\
       \hline
       \hline
-      30 & -604  & 742 \\
+      1-30 & -604  & 742 & 0 \\
       \hline
-      31 & -873  & 757 \\
+      1-31 & -873  & 757 & 4 \\
       \hline
-      33 & -1120 & 782 \\
+      1-33 & -1120 & 782 & 9 \\
       \hline
-      34 & -1410 & 834 \\
+      1-34 & -1410 & 834 & 12 \\
       \hline
-      35 & -827  & 768 \\
+      1-35 & -827  & 768 & 17 \\
       \hline
-      36 & -827  & 789 \\
+      1-36 & -827  & 789 & 52 \\
       \hline
-      37 & -827  & 870 \\
+      1-37 & -827  & 870 & 91 \\
       \hline
-      38 & -827  & 820 \\
+      1-38 & -827  & 820 & 102 \\
       \hline
-      39 & -522  & 800 \\
+      1-39 & -522  & 800 & 107 \\
       \hline
-      40 & -172  & 797 \\
+      1-40 & -172  & 797 & 112 \\
       \hline
-      41 & 28    & 801 \\
+      1-41 & 28    & 801 & 117 \\
       \hline
-      42 & 137   & 806 \\
+      1-42 & 137   & 806 & 120 \\
       \hline
-      43 & 438   & 818 \\
+      1-43 & 438   & 818 & 125 \\
       \hline
-      44 & 879   & 840 \\
+      1-44 & 879   & 840 & 130 \\
       \hline
     \end{tabular}
   \end{center}
@@ -502,66 +520,71 @@ This is shown in figure \ref{fig:stablefixedoffset}.
       The frequencies indicated were measured from the data by finding the
       frequency corresponding to the $\pm 90$ degree phase point of the closed
       loop optical spring.
+      Measurements 35-38 were taken at the same error point offset and had
+      a wide range in resonant frequencies compared to the rest of the data.
+      Measurement ID 1-32 is not included in this table because the data was
+      saved twice.
+      The data is identical to 1-33.
       }
   \label{tab:experiment1lock2}
 \end{table}
 
-\begin{figure}
-\centering
-\tikzsetnextfilename{stablefixedoffset}
-\begin{tikzpicture}
-  \small
-  \begin{loglogaxis}[
-    name=plot1,
-    height=5cm,
-    xmin=400,
-    xmax=2000,
-    xtick={400,500,600,700,800,900,1000,2000},
-%    log basis x=10,
-    log ticks with fixed point,
+%\begin{figure}
+%\centering
+%\tikzsetnextfilename{stablefixedoffset}
+%\begin{tikzpicture}
+%  \small
+%  \begin{loglogaxis}[
+%    name=plot1,
+%    height=5cm,
+%    xmin=400,
+%    xmax=2000,
+%    xtick={400,500,600,700,800,900,1000,2000},
+%%    log basis x=10,
+%    log ticks with fixed point,
+%%    xlabel={$\mathrm{Frequency} [\mathrm{Hz}]$},
+%    ylabel={$\mathrm{Magnitude}$},
+%    legend cell align=left,
+%    legend style={font=\scriptsize},
+%    grid=both,
+%    ]
+%    \addplot[blue,very thick] table[x index=0,y index=1]
+%      {./matlab_traces/april_olg_35.dat};
+%    \addplot[red,very thick] table[x index=0,y index=1]
+%      {./matlab_traces/april_olg_36.dat};
+%    \addplot[green,very thick] table[x index=0,y index=1]
+%      {./matlab_traces/april_olg_37.dat};
+%    \addplot[orange,very thick] table[x index=0,y index=1]
+%      {./matlab_traces/april_olg_38.dat};
+%  \end{loglogaxis}
+%  \begin{semilogxaxis}[
+%    name=plot2,
+%    at=(plot1.below south), anchor=above north,
+%    height=5cm,
+%    xmin=400,
+%    xmax=2000,
+%    xtick={400,500,600,700,800,900,1000,2000},
+%%    log basis x=10,
+%    log ticks with fixed point,
 %    xlabel={$\mathrm{Frequency} [\mathrm{Hz}]$},
-    ylabel={$\mathrm{Magnitude}$},
-    legend cell align=left,
-    legend style={font=\scriptsize},
-    grid=both,
-    ]
-    \addplot[blue,very thick] table[x index=0,y index=1]
-      {./matlab_traces/april_olg_35.dat};
-    \addplot[red,very thick] table[x index=0,y index=1]
-      {./matlab_traces/april_olg_36.dat};
-    \addplot[green,very thick] table[x index=0,y index=1]
-      {./matlab_traces/april_olg_37.dat};
-    \addplot[orange,very thick] table[x index=0,y index=1]
-      {./matlab_traces/april_olg_38.dat};
-  \end{loglogaxis}
-  \begin{semilogxaxis}[
-    name=plot2,
-    at=(plot1.below south), anchor=above north,
-    height=5cm,
-    xmin=400,
-    xmax=2000,
-    xtick={400,500,600,700,800,900,1000,2000},
-%    log basis x=10,
-    log ticks with fixed point,
-    xlabel={$\mathrm{Frequency} [\mathrm{Hz}]$},
-    ylabel={$\mathrm{Phase}$},
-    legend cell align=left,
-    legend style={font=\scriptsize},
-    grid=both,
-    ]
-    \addplot[blue,very thick] table[x index=0,y index=2]
-      {./matlab_traces/april_olg_35.dat};
-    \addplot[red,very thick] table[x index=0,y index=2]
-      {./matlab_traces/april_olg_36.dat};
-    \addplot[green,very thick] table[x index=0,y index=2]
-      {./matlab_traces/april_olg_37.dat};
-    \addplot[orange,very thick] table[x index=0,y index=2]
-      {./matlab_traces/april_olg_38.dat};
-  \end{semilogxaxis}
-\end{tikzpicture}
-\caption[]{}
-\label{fig:stablefixedoffset}
-\end{figure}
+%    ylabel={$\mathrm{Phase}$},
+%    legend cell align=left,
+%    legend style={font=\scriptsize},
+%    grid=both,
+%    ]
+%    \addplot[blue,very thick] table[x index=0,y index=2]
+%      {./matlab_traces/april_olg_35.dat};
+%    \addplot[red,very thick] table[x index=0,y index=2]
+%      {./matlab_traces/april_olg_36.dat};
+%    \addplot[green,very thick] table[x index=0,y index=2]
+%      {./matlab_traces/april_olg_37.dat};
+%    \addplot[orange,very thick] table[x index=0,y index=2]
+%      {./matlab_traces/april_olg_38.dat};
+%  \end{semilogxaxis}
+%\end{tikzpicture}
+%\caption[]{}
+%\label{fig:stablefixedoffset}
+%\end{figure}
 
 After the data was taken of the stable spring with fixed parameters and before
 losing lock on the feedback loop, I took several measurements in a row in a
@@ -1017,11 +1040,76 @@ circulating power in the cavity at the surface of the mirror expanding the
 optic and making the cavity length shorter.
 This will be expained in more detail in section
 \ref{sec:opticthermalexpansion}.
-It turns out that only 5ppm absorption is required to account for the
+It turns out that only about 5ppm absorption is required to account for the
 discrepancy in stablility.
 This is, in part, due to the high circulating power and the small
 beam spot size on the cavity end mirrors.
 The results of this fitting can be seen in figure \ref{fig:juneOLGresults}.
+
+\subsection{Optical Spring Cavity Residual Motion}
+
+We want to know the residual motion of the cavity if we were to remove the
+active feedback.
+In ordet to do this we need to measure the control signal while locked with
+a stable spring.
+The control signal is the output of the feedback servo before the
+actuation.
+Since the error point (input to feedback servo) is set to zero by the
+feedback servo below the unity gain frequency of the loop, the control
+signal tells us what actuation is required to cancel noise entering the
+system.
+This allows us to estimate how much motion there would be if we remove
+the active feedback loop.
+Knowing the actuation transfer functions, we can convert the control signal
+to the length noise entering the system.
+The sum of the two actuation paths and we'll call this $A$.
+The sensing and feedback we will call $F$.
+So the open loop gain is $AF$ in the absence of the optical spring.
+With the optical spring, this becomes $\frac{AF}{1-O}$, where $O$ is the
+open loop gain of the optical spring.
+Closing the loop, the control signal $f$ will be,
+\begin{align}
+\frac{Fn}{1-\left(O+AF\right)} \label{eq:control} \;.
+\end{align}
+Since $AF$ is much larger than everything else in the denominator below
+the unity gain frequency, we get,
+\begin{equation}
+f\approx -\frac{1}{A}n \label{eq:noisefunc} \;,
+\end{equation}
+where $n$ is the noise entering the system.
+Taking the inverse of the equation \eqref{eq:control} gives us a function
+to convert the measured control signal to the length noise entering the system.
+We can then apply the closed loop gain of the optical spring loop to compute
+what the residual length motion of the cavity would be in the absence of the
+active feedback.
+\begin{equation}
+\frac{\left(1-O-AF\right)}{F\left(1-O\right)}f
+\end{equation}
+Since we have made a measurement $G$ that includes the optical spring,
+\begin{equation}
+G=\frac{AF}{1-O},
+\end{equation}
+We can replace $1-O$ in equation \eqref{eq:noisefunc} with
+$\frac{AF}{G}$. With a bit of algrabra we get,
+\begin{equation}
+n = \frac{1-G}{F}f \;.
+\end{equation}
+The result of this measurement is shown in figure \ref{fig:noisepassive}
+where the noise measurement was taken with the spring from measurement \#2-13.
+
+It can be seen from the plot that the residual \ac{rms} motion is about
+$1.3\times 10^{-11} \mathrm{m}$.
+We want this to be significantly less than the stability range as defined in
+section \ref{sec:III}.
+I say significantly because across the stability range the system is
+non-linear since the quality factor $Q$ of the spring increases toward
+edge of the range.
+The response is non-linear for motion on the order of the stability range.
+
+
+%So, this noise entering the system below the unity gain frequency will be
+%$Af$, where $f$ is the control signal.
+
 
 \subsection{Optic Thermal Expansion Contribution}
 \label{sec:opticthermalexpansion}
