@@ -1,0 +1,180 @@
+Tom's comments:-
+
+-------------
+
+I don't see the argument why you would use this method in preference to a waveform model such as EOBNR(v2+) which can be made sufficiently accurate in fitting NR and can interpolate between different q values. Are there clear benefits of an NR / hybrid bank? I see some arguments against, eg inflexibility, also computational cost of filtering, coincidence and event processing, if (as seems inevitable) the NR bank contains more templates than a standard variable-q bank laid out via a metric or stochastic method.  Though I can't tell how many more, because the paper doesn't say...
+
+A:
+This paper is intended to demonstrate the feasibility of using numerical 
+waveforms as templates, with the aim of extending it to spin aligned binaries.
+Waveform models, such as EOB models, use fitted resummations of perturbative
+expressions for metric coefficients, waveform multipoles etc, to extrapolate (?)
+the information from PN calculations to the late-inspiral regime, after
+mapping to an equivalent single body problem. They are calibrated to a given
+set of mass-ratios, and subsequently interpolated or extrapolated to others.
+The intrinsic errors in the waveforms, specifically in the late-inspiral 
+portion (before the numerical simulations begin) and for un-calibrated 
+mass-ratios, are difficult to quantify. 
+
+For constructing hybrids, we use the post-Newtonian waveforms up to the same
+late-inspiral regime and join the numerical waveforms that cover the later
+portion. While these are not free of waveform errors, we know the source
+of the errors is the PN portion due to the yet-unknown higher order terms 
+which contribute as the characteristic velocity increases. This allows us 
+to put a (conservative) quantitative bound on the hybrid's intrinsic errors,
+as we have, and we can take that into account while constructing effectual
+banks (ignoring errors in the numerical waveforms themselves, which, in the
+phase, are relatively much smaller).
+
+Thus the benefit of using hybrids is the determinacy of model errors, with 
+not a prohibitively large increase in the number of templates. This paper 
+demonstrates the feasibility of using numerical waveforms as templates,
+with the aim of extending it to spin aligned binaries. For aligned-spin 
+binaries, it is again (more) difficult to quantify the modeling errors in the 
+the waveform models that model the merger-ringdown phase, while it could be
+possible to put a bound on the intrinsic errors in hybrid templates. If 
+quantified model errors are taken into consideration while building 
+effectual banks, it would give us more confidence in our search filters.
+
+Also, for aligned spin binaries, the number of templates is likely to be 
+significantly higher. Using a bank restricted in mass-ratios and spins, 
+would mitigate the cost of generating the templates (relative 
+to using time-domain templates), in searches.
+
+To cover the mass region with minimum component masses above 12 Msun and
+maximum total mass 200 Msun (lets call this region Z), the hybrid bank 
+needs 612 templates. The numbers quoted in the paper, i.e. 2457 templates,
+includes templates that cover the region with component masses 
+below 12 Msun, as shown in Figs.6-8. Also, in a good fraction of region Z, 
+the FF stays above 98% after including waveform errors. Requiring a net 
+minimal-match, across the bank, of 97%, the number of templates is likely to 
+reduce. This is comparable to the number of templates in a bank placed 
+using the 2PN metric, (i.e. 522 templates for 97%, 736 for 98%), and is 
+unlikely to have a significant addition to the cost of filtering, 
+coincidence, and subsequent steps in the search. I have added these numbers
+to the discussion of hybrid banks.
+
+
+-------------
+p.2 seems to say the point at which the merger-ringdown starts adding signal power in LIGO is around 25-35 Msun. Previous theoretical studies put this around 12-15 Msun so I'm not sure why there are larger numbers quoted.
+
+A:
+"Higher mass binaries, with M >= 25 - 35Msun, are expected
+to have a significant fraction of signal power coming from
+the merger phase, as it occurs within the sensitive band of
+LIGO. Complete inspiral-merger-ringdown EOB waveforms
+were used to search for GWs from such BBH systems during
+the LIGO-Virgo observation period between 2005-07 and
+2009-10"
+
+This was meant to imply that for binaries with M >=25-35Msun, which are
+the lowest total masses at which the high-mass searches focused on,
+merger-ringdown definitely contributes a significant fraction of signal
+power, and not that these masses are the lowest masses where the
+merger-ringdown begins to contribute. I've clarified the wording to:
+
+"Higher mass binaries are expected to have a significant 
+fraction of signal power coming from the merger phase, 
+as it occurs within the sensitive band of LIGO. Complete
+inspiral-merger-ringdown EOB waveforms were used to search
+for GWs from such systems for the LIGO-Virgo observation 
+period between 2005-07 and 2009-10"
+
+-------------
+p.2 claims that a mother template method involving resampling/rescaling hybrids at constant q would be 'relatively computationally inexpensive' for searches. But relative to what, and in what context? Is the computational cost of producing the NR waveforms and hybrids included? Would any computational saving (presumably in generating templates?) be significant next to the cost of actually performing the matched filter? Sathya's Mother Template paper doesn't claim there would be computational savings in carrying out an actual search.
+
+A:
+"Such a bank would be relatively computationally inexpensive
+to use in detection searches, as is the case for using 
+frequency-domain analytic closed-form models for templates."
+
+This statement is focused at the cost of generating templates in a bank,
+assuming we have hybrids available on disk.
+
+By pre-loading the hybrids corresponding to the lowest total mass for each
+mass-ratio, every other template can be obtained by re-scaling them
+appropriately in frequency domain. This would be relatively computationally
+inexpensive as compared to the cost of generating and fourier transforming
+time domain templates for a metric-based or a non-restricted stochastic bank.
+Put another way, the cost of generating the hybrid template bank would be
+comparable to a similar bank of TaylorF2/Phenom? waveforms, and lesser 
+than the same for a bank of EOB waveforms. I've clarified the wording to:
+
+"Used in detection searches, such a bank would be computationally inexpensive 
+to generate relative to a bank of time-domain modeled waveforms, as is the 
+case for frequency-domain closed-form analytic templates."
+
+
+-------------
+On p.3 the paper refers to 'daunting computational cost' of performing FFTs (!) for each template if they start off in the time domain. This sounds just wrong and I don't see any evidence for it, the highmass search routinely FFTs several thousand EOBNR templates within a single job and it's not the dominant cost - I would guess it is also insignificant next to the cost of generating the templates in the time domain.
+
+A:
+This is a fair point that the cost of FFT is definitely not 'daunting'
+compared to that of generating templates in the time domain. I have 
+changed
+
+"Past GW searches have extensively used the TaylorF2 
+approximant, as it has a closed form and saves the daunting
+computational cost of a numerical fourier-transform for 
+each template"
+
+to:
+
+"Past GW searches have extensively used the TaylorF2 
+approximant, as it has a closed form and mitigates the
+computational cost of generating and numerically 
+fourier-transforming time-domain templates"
+
+-------------
+If you think computational cost of generating (either TD or FD) templates will be a significant issue for searches *compared to matched filtering a year of data through them* then there are many alternative methods to address it. I can't see if the paper is making a claim that there are computational cost issues or not. [It certainly *is* an problem for BBH parameter estimation where the demand for waveform computation is much higher.]
+
+A:
+This paper is meant to demonstrate the feasibility of using numerical-PN
+hybrid waveforms as templates. The aim is to extend the method to aligned-spin
+systems where the benefits of using hybrids would be clearer, in terms of
+having templates with easily quantifiable errors. Whenever we refer to
+computational cost mitigation, we mean to imply that the cost of 
+generating templates could be decreased by pre-generating one template
+for each mass-ratio. This, again, would be a more prominent effect when 
+the method is extended to aligned-spin systems, and in this paper we simply
+point this out without stressing upon it.
+
+-------------
+One thing that would be very useful to include is simply comparing the number of templates in the NR or hybrid banks to a standard metric placement as in Ref.[109] or a 'normal' stochastic bank (using, say, EOBNRv2 templates). This is important to know for doing searches if we do care about computational cost.
+
+For what it's worth, lalapps_tmpltbank (with a *2PN* metric) with minimum component mass 12, maximum total mass 200 (ZDHP, 15 cutoff etc.) and intended minimal match 0.98 produces 736 templates (522 at nominal 0.97 minimal match) so 2000-plus is significantly more. [For LSC members :
+https://atlas1.atlas.aei.uni-hannover.de/~tdent/LSC/harald_tmplt.png ]
+
+A:
+To cover the mass region with minimum component masses above 12 Msun and
+maximum total mass 200 Msun (lets call this region Z), the hybrid bank 
+needs 612 templates. The numbers quoted in the paper, i.e. 2457 templates,
+includes templates that cover the region with component masses 
+below 12 Msun, as shown in Figs.6-8. Also, in a good fraction of region Z, 
+the FF stays above 98% after including waveform errors. Requiring a net 
+minimal-match, across the bank, of 97%, the number of templates is likely to 
+reduce. This is comparable to the number of templates in a 97% bank placed 
+using the 2PN metric, which, as you said, will have 522 templates. I have
+added these numbers to the discussion of hybrid banks.
+
+-------------
+I think it would be appropriate to have a bit more discussion of subdominant (non-2,2) waveform modes given that they may contribute significantly for higher mass ratios and/or at the upper end of the mass range, not just for precessing waveforms as implied on p.14. It is not clear whether we want to perform a dominant-mode only search all the way up to 200 solar masses and for relatively asymmetric systems (though it's also not clear what the alternative is).
+
+A:
+I have modified the discussion on pg. 14, to reflect that subdominant modes 
+become increasingly important at higher masses (and mass-ratios), not for
+precessing binaries alone but also for non-spinning or aligned-spin binaries,
+and is something that should be considered in future work.
+
+-------------
+I think the material about hybridization errors is interesting, that is something that will have to be watched closely as more NR waveforms become available...
+
+Cheers, Tom
+
+
+-- 
+-----------------------------------
+Institute for Gravitational Physics
+(Albert Einstein Institute)
+Hannover, Germany
+

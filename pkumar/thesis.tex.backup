@@ -1,0 +1,439 @@
+%-----------------------------------------------------------------------
+%
+% File Name: thesis.tex
+%
+% Author: Kumar, P.
+%
+% Revision: $Id$
+%
+%-----------------------------------------------------------------------
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% document class and packages
+\documentclass[12pt,notitlepage]{report}
+\usepackage{setspace}
+\usepackage{graphicx}\usepackage{latexsym}
+% \usepackage{iopams}
+
+\usepackage{syrthesis}
+% \usepackage{color}
+\usepackage{amsmath,mathtools}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{rotating}
+\usepackage{tensor}
+\usepackage{lscape}
+\usepackage{bm}
+\usepackage{units} %  do things like \units[1.234]{sec}i
+% \usepackage{chapterfolder} % Organize the graphics etc of each chapter in a sub-directory
+\usepackage{amsopn, amstext, wasysym}
+\usepackage{colonequals}
+\usepackage{subfigure}
+\usepackage{rotating}
+\usepackage{braket}
+\usepackage{multirow}
+\usepackage{xspace}
+\usepackage[usenames,dvipsnames]{color}
+
+\usepackage[bookmarksnumbered, bookmarksopen, breaklinks, colorlinks, linkcolor=blue, citecolor=magenta]{hyperref}
+\usepackage{bibunits}
+
+\usepackage{url}
+\usepackage{alltt}
+
+\usepackage{ulem}
+\normalem
+\DeclareGraphicsExtensions{.eps,.pdf,.png}
+\usepackage{epstopdf}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% NINJA-2 packages
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{dcolumn}
+\usepackage{units}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\makeatletter
+\let\protect\relax
+{\catcode`\|=\active
+  \xdef\InnerProduct{\protect\expandafter\noexpand\csname InnerProduct
+\endcsname}
+  \expandafter\gdef\csname InnerProduct \endcsname#1{%
+    \begingroup
+    \ifx\SavedDoubleVert\relax
+    \let\SavedDoubleVert\|\let\|\IpDoubleVert
+    \fi
+    \mathcode`\|32768\let|\IPVert
+    \left({#1}\right)
+    \endgroup
+  }
+}
+\def\IPVert{\@ifnextchar|{\|\@gobble}% turn || into \|
+     {\egroup\,\mid@vertical\,\bgroup}}
+\def\IPDoubleVert{\egroup\,\mid@dblvertical\,\bgroup}
+\let\SavedDoubleVert\relax
+\def\midvert{\egroup\mid\bgroup}
+\def\SetVert{\@ifnextchar|{\|\@gobble}% turn || into \|
+    {\egroup\;\mid@vertical\;\bgroup}}
+\def\SetDoubleVert{\egroup\;\mid@dblvertical\;\bgroup}
+\def\mid@vertical{\mskip1mu\vrule\mskip1mu}
+\def\mid@dblvertical{\mskip1mu\vrule\mskip2.5mu\vrule\mskip1mu}
+\makeatother
+\usepackage{braket}
+\newcommand{\Overlap}{\Braket}
+
+\pdfoutput=1
+
+\hbadness=10000
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% new command definitions
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\half}{\frac{1}{2}}
+\newcommand{\ospsd}{\ensuremath{S_n\left(\left|f_{k}\right|\right)}}
+
+\newcommand{\msun}{M_\odot}
+\newcommand{\chisq}{\chi^2}
+\newcommand{\newsnr}{\rho_{\textrm{new}}}
+\newcommand{\erf}{\mathrm{erf}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% more new commands
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\Sum}{\displaystyle\sum\limits}
+\newcommand{\Int}{\displaystyle\int\limits}
+\newcommand{\ii}{{\rm i}}
+\newcommand{\D}{\mathrm{d}}
+\newcommand{\eff}{\mathrm{eff}}
+\newcommand{\phys}{\mathrm{phys}}
+\newcommand{\real}{\mathrm{real}}
+\newcommand{\peak}{\mathrm{peak}}
+% \newcommand{\EOB}{\mathrm{EOB}}
+\newcommand{\NR}{\mathrm{NR}}
+\newcommand{\RD}{\mathrm{RD}}
+\newcommand{\Olap}{\mathcal{O}}
+\newcommand{\FF}{\mathcal{FF}}
+\newcommand{\MM}{\mathrm{MM}}
+\newcommand{\EFF}{\mathrm{EFF}}
+\newcommand{\X}{\mathrm{X}}
+\newcommand{\Y}{\mathrm{Y}}
+\newcommand{\Z}{\mathrm{Z}}
+\newcommand{\horizon}{\mathrm{Horizon}}
+\newcommand{\opt}{\mathrm{opt}}
+\newcommand{\iso}{\mathrm{iso}}
+\newcommand{\refr}{\mathrm{ref}}
+\newcommand{\start}{\mathrm{start}}
+
+\def\l({\left(}
+\def\r){\right)}
+\newcommand{\lt}{\left}
+\newcommand{\rt}{\right}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% more new commands
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\EOB}{\mathrm{EOBNRv2}}
+\newcommand{\M}{\mathit{M}}
+\newcommand{\bnk}{\mathrm{bank}}
+\newcommand{\mn}{\mathrm{min}}
+\newcommand{\mx}{\mathrm{max}}
+\newcommand{\tr}{\mathrm{tr}}
+\newcommand{\mm}{\mathrm{mm}}
+\newcommand{\Hyb}{\mathrm{Hyb}}
+\newcommand{\leftn}{\left|\left|}
+\newcommand{\rightn}{\right|\right|}
+\newcommand{\lefti}{\left\langle}
+\newcommand{\righti}{\right\rangle}
+\newcommand{\Mis}{\mathcal{M}}
+\newcommand{\N}{\mathrm{N}}
+\newcommand{\cyc}{\mathrm{cyc}}
+\newcommand{\E}{\mathcal{E}}
+
+\newcommand{\red}{\textcolor{red}}
+\newcommand{\blue}{\textcolor{blue}}
+\newcommand{\etal}{\textit{et~al}\@ifnextchar{\relax}{.\relax}{\ifx\@let@token.\else\ifx\@let@token~.\else.\@\xspace\fi\fi}}
+
+
+%% Macros for comments
+\newcommand\fake[1]{\textcolor{red}{#1}}
+\newcommand\checkme[1]{\textcolor{blue}{\textbf{#1}}}
+\newcommand{\Note}[1]{\textcolor{red}{\textbf{[#1]}}}
+% \newcommand\checked[1]{#1}
+\newcommand\marginnote[2]{%
+  \mbox{}\marginpar{\raggedleft\hspace{0pt}\scriptsize
+    \textcolor{blue}{#1: #2}}}
+
+
+\newcommand\weakheader[1]{
+\vspace*{5mm}
+\noindent {\it #1}
+\vspace*{5mm}
+}
+
+
+\usepackage{hyperref} 
+
+\begin{document}
+
+\title{
+Topics in Gravitational-Wave Astrophysics
+}
+\author{\bf Prayush Kumar}
+\majorprof{Duncan Brown}
+\submitdate{August 2014}
+\degree{Doctor of Philosophy}
+\program{Physics}
+\copyrightyear{2014}
+\majordept{Physics}
+\havededicationtrue
+\dedication{to\\ my parents and Bithika}
+\haveminorfalse
+\copyrighttrue
+\doctoratetrue
+\figurespagetrue
+\tablespagetrue
+
+
+\Abstract{
+A direct observable consequence of General Relativity is gravitational
+radiation. A direct detection of gravitational waves would not only be a much
+awaited discovery, but also open up the possibility of doing astronomy and 
+observing exotic astrophysical phenomena in a different light. There will 
+also be an opportunity to test the theory of General Relativity in a strong 
+field regime, which no past tests have probed. There are 
+concerted efforts in the present era towards this aim. The major ground
+based observatories include the LIGO detectors in the United States, Virgo
+detector in Italy, GEO600 in Germany, the planned KAGRA detector in Japan
+and the LIGO-India project in India. The second generation detectors are 
+expected to begin observation next year, with the hope of reaching design
+sensitivity in $2019$. 
+
+Binary systems of compact astrophysical objects such as black holes and 
+neutron stars emit gravitational waves as they move in orbit. With the emitted
+radiation, they lose energy and momentum resulting in the shrinking of their 
+orbit, leading eventually to a merger. These are also the sources of prime
+importance for the ground-based detectors operating in the $10-2000$~Hz 
+frequency band. As the gravitational waves become very weak by the time they 
+reach us, instrumental noise usually overwhelms them in the detector data
+making it a challenge to search for them. Contemporary and past gravitational
+wave searches fold in the theoretical knowledge of expected signals by using
+modeled waveforms to filter the data. This technique is called 
+matched-filtering, and is highly sensitive to the accuracy of pre-known 
+waveform templates. 
+
+There has been considerable effort in the recent decades to develop systematic
+approximations to the Einstein field equations of General Relativity. Most 
+of such schemes use the assumption that the two bodies are moving slowly and 
+are well separated. As the binary shrinks, these waveform {\it models} become 
+increasingly inaccurate. More recently, numerical relativists have been 
+able to solve the field equations of gravity numerically to high accuracy.
+With the advent of this field, we have gained detailed knowledge of the last
+stages of the binary motion before the black holes and/or neutron stars merge.
+However, due to the pressing computational cost of numerical simulations, these
+are restricted to the very last stages of binary coalescence. Some theoretical
+techniques are able to interpolate between the post Newtonian regime and the 
+numerical relativity regime, in an attempt to capture the entire inspiral and
+merger process.
+
+In this thesis we probe the question of accuracy of waveform models for 
+comparable mass binaries. Computational cost is expected to be a significant
+for advanced LIGO searches. We determine the domain of applicability of the
+computationally inexpensive closed form models, and the same for the more 
+expensive calibrated semi-analytic ones. We further explore the option of 
+using {\it hybrid} waveforms constructed by numerically stitching post 
+Newtonian and numerically simulated ones. 
+
+
+
+In this thesis we utilize recent results from numerical relativity to
+study both the degree to which analytic models match realistic
+waveforms and the ability of LIGO searches to make detections.  We
+also apply the matched-filter search to the problem of removing times
+of excess noise from the search.
+}
+\beforepreface
+\prefacesection{Preface}
+The work presented in this thesis stems from my participation in the
+LIGO Scientific Collaboration (LSC) and the NINJA-2 Collaboration.  This
+work does not reflect the scientific opinion of the LSC and it was not
+reviewed by the collaboration.
+
+\vspace*{0.5cm}
+
+\noindent Chapter~\ref{ch:EOBF2_Effectualness} is based on material from
+
+\vspace*{0.25cm}
+
+\noindent D. A. Brown, P. Kumar and A. H. Nitz, ``Template banks to 
+search for low-mass binary black holes with Advanced Gravitational-wave 
+detectors,''
+{\it Phys. Rev. D} {\bf 87}, 082004 (2013)
+
+\vspace*{0.5cm}
+
+\noindent Chapter~\ref{ch:NRHyb_bank} is based on material from
+
+\vspace*{0.25cm}
+
+\noindent P. Kumar, I. MacDonald, D. A. Brown, H. P. Pfeiffer, K. Cannon,
+M. Boyle, L. E. Kidder, A. H. Mroue, B. Szilagyi and A. Zeninoglu, 
+``Template banks for binary black hole searches with numerical relativity
+waveforms,''
+{\it Phys. Rev. D} {\bf 89}, 042002 (2014)
+
+\vspace*{0.5cm}
+
+\noindent Chapter~\ref{ch:ninja2} is based on material from
+
+\vspace*{0.25cm}
+
+\noindent The LIGO Scientific Collaboration, the Virgo Collaboration, 
+the NINJA-2 Collaboration, ``The NINJA-2 project: 
+Detecting and characterizing gravitational waveforms modelled using 
+numerical binary black hole simulations,''
+{\it arXiv:1401.0939} (2014) {\rm Submitted to Classical and Quantum Gravity}
+
+\vspace*{0.5cm}
+
+\noindent Chapter~\ref{ch:insSFIMRI} is based on material from
+
+\vspace*{0.25cm}
+
+\noindent E. A. Huerta, P. Kumar, D. A. Brown, 
+``Accurate modeling of intermediate-mass-ratio inspirals:
+Exploring the form of the self-force in the intermediate-mass-ratio regime,''
+{\it Phys. Rev. D} {\bf 86}, 024024 (2012)
+
+\vspace*{0.5cm}
+
+\noindent Chapter~\ref{ch:imrSFIMRI} is based on material from
+
+\vspace*{0.25cm}
+
+\noindent E. A. Huerta, P. Kumar, J. R. Gair, S. T. McWilliams, 
+``Self-forced evolutions of an implicit rotating source:
+a natural framework to model comparable and intermediate mass-ratio 
+systems from inspiral through ringdown,''
+{\it arXiv:1403.0561} (2014) {\rm Submitted to Phys. Rev. D}
+
+\vspace*{0.5cm}
+
+
+\prefacesection{Acknowledgments}
+
+I have been fortunate to work with many wonderful people through my
+membership in the LIGO-Virgo and NINJA collaborations.  Sadly space makes it
+impossible to thank them all individually, and I hope the vast
+majority I must omit will forgive me.
+
+I would first and foremost like to thank my advisor, Duncan Brown..
+
+
+\prefacesection{Conventions}
+
+We adopt the Einstein summation convention where repeated indices are
+summed over.  
+% Parenthesis are shorthand for the fully symmetric sum
+% %
+% \begin{equation*}
+% A_{(\alpha\beta)}
+% = \frac{1}{2} \left(A_{\alpha\beta} 
+% + A_{\beta\alpha} \right)
+% \end{equation*}
+% %
+% and square brackets are fully antisymmetric
+% %
+% \begin{equation*}
+% A_{[\alpha\beta]}
+% = \frac{1}{2} \left(A_{\alpha\beta} 
+% - A_{\beta\alpha} \right)
+% \end{equation*}
+%
+The signature of spacetime is taken to be $(-1,+1,+1,+1)$.
+
+\noindent Except where otherwise noted we work in geometric units where
+$G=c=1$.  We will often measure masses in multiples of the mass of the
+sun $1 \msun \approx 1.99 \times 10^{30}$ kg 
+
+\vspace{0.5cm}
+
+\noindent We define the Fourier transform of a function of time $g(t)$ to be
+$\tilde{g}(f)$, where
+%
+\begin{equation*}
+\tilde{g}(f)=\int_{-\infty}^\infty g(t)\, e^{- 2 \pi i f t}\, dt
+\end{equation*}
+%
+and the inverse Fourier transform is
+%
+\begin{equation*}
+g(t)=\int_{-\infty}^\infty \tilde{g}(f)\, e^{2 \pi i f t}\, dt
+\end{equation*}
+%
+This convention differs from that used in some gravitational-wave
+literature, but is the adopted convention in the LIGO Scientific
+Collaboration.
+
+% \vspace{0.5cm}
+% 
+% \noindent The time-stamps of interferometer data are measured in
+% Global Positioning System (GPS) seconds: seconds since 00:00.00 UTC
+% January 6, 1980 as measured by an atomic clock.
+
+
+\afterpreface
+
+\Chapter{Introduction}
+\label{ch:introduction}
+\input{introduction}
+
+\Chapter{Gravitational waves and Compact binaries in General Relativity}
+\label{ch:theory}
+\input{theory}
+
+\Chapter{Introduction to LIGO}
+\label{ch:ligo}
+\input{ligo}
+
+\Chapter{Search template banks for low-mass binary black holes in the 
+Advanced gravitational-wave detector era}
+\label{ch:EOBF2_Effectualness}
+\input{eobpn_1-5pnmetric_effectualness}
+
+\Chapter{Binary black hole search template banks with Numerical 
+Relativity waveforms}
+\label{ch:NRHyb_bank}
+\input{nrhyb_tmpltbank}
+
+\Chapter{NINJA-2: Detecting gravitational waveforms modelled
+using numerical binary black hole simulations}
+\label{ch:ninja2}
+\input{ninja2}
+
+\Chapter{Modeling of intermediate mass-ratio inspirals: 
+Exploring the form of the self-force in the intermediate mass-ratio regime}
+\label{ch:insSFIMRI}
+\input{inspiral_IMRI}
+
+\Chapter{Self-forced evolutions of an implicit rotating source: 
+a natural framework to model comparable and intermediate mass-ratio systems 
+from inspiral through ringdown}
+\label{ch:imrSFIMRI}
+\input{imr_IMRI}
+
+\Chapter{Conclusions}
+\label{ch:conclusions}
+\input{conclusions}
+
+\appendix
+ \Chapter{Post-Newtonian Waveforms}
+\label{ch:pn_waveforms}
+\input{PNApproximants}
+
+\clearpage
+\bibliographystyle{unsrt}
+\bibliography{references}
+\addcontentsline{toc}{chapter}{\numberline {Bibliography}}
+
+\end{document}
+

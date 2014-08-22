@@ -1,0 +1,225 @@
+
+The upgrades currently being installed to increase the sensitivity of the
+ground based interferometric gravitational-wave detectors LIGO and
+Virgo~\cite{Harry:2010zz,aVIRGO} are scheduled to complete within the next
+two years. The second generation detectors will have a factor of $10$ better 
+sensitivity across the sensitive frequency band, with the lower frequency
+limit being pushed from $40$Hz down to $\sim 10$Hz. 
+They will be able to detect GWs from stellar-mass BBHs up to distances of a few
+Gpc, with the expected frequency of detection between 
+$0.4 - 1000\, yr^{-1}$~\cite{LSCCBCRates2010}.
+
+Gravitational-wave detection searches for BBHs operate by matched-filtering
+the detector data against a bank of modeled waveform 
+templates~\cite{Babak:2012zx,Sathyaprakash:1991mt, SathyaMetric2PN,
+OwenTemplateSpacing,BabaketalBankPlacement,SathyaBankPlacementTauN,
+Cokelaer:2007kx}.
+Early LIGO-Virgo searches employed PN waveform template banks
+that spanned only the inspiral phase of the
+coalescence~\cite{Colaboration:2011nz,Abadie:2010yb,Abbott:2009qj,
+Abbott:2009tt,Messaritaki:2005wv}.
+Recent work has shown that a similar bank of PN templates would be
+effectual for the advanced detectors, to detect non-spinning BBHs with 
+$m_1 + m_2 \lesssim 12M_\odot$~\cite{Brown:2012nn,CompTemplates2009}.
+Searches from the observation period between $2005-07$ and $2009-10$ 
+employed templates that also included the late-inspiral, merger and 
+ringdown phases of binary coalescence~\cite{Abadie:2011kd,Aasi:2012rja}. 
+
+Recent advancements in Numerical Relativity have led to high-accuracy 
+simulations of the late-inspiral and mergers of BBHs. The multi-domain SpEC
+code~\cite{spec} has been used to perform simulations for non-spinning 
+binaries with mass-ratios
+$q=1,2,3,4,6,8$~\cite{Buchman:2012dw,Mroue:2012kv,Mroue:2013inPrep}. 
+Owing to their high computational complexity, the length of these
+simulations varies between $15-33$ orbits. Accurate modeling of the
+late-inspiral and merger phases is important for stellar mass BBHs,
+as they merge at frequencies that the advanced detectors would be 
+sensitive to~\cite{Brown:2012nn}. Analytic models, like those within the 
+Effective-One-Body formalism, have been calibrated to the NR simulations 
+to increase their accuracy during these 
+phases~\cite{EOBOriginalBuonannoDamour,EOBNRdevel01,BuonannoEOBv2Main,
+Taracchini:2012ig}. Other independent models have also been developed 
+using information from NR simulations and their hybrids~\cite{NRAR:home,
+Ajith:2007qp,Santamaria:2010yb,Huerta:2012zy}. An alternate derived 
+prescription is that of NR+PN hybrid waveforms, that
+are constructed by joining long PN early-inspirals and late-inspiral-merger
+simulations from NR~\cite{Boyle:2011dy,MacDonald:2011ne,MacDonald:2012mp,
+Ohme:2011zm,Hannam:2010ky}. 
+
+
+NR has long sought to contribute template banks for gravitational-wave
+searches. Due to the restrictions on the length and number of NR waveforms,
+this has been conventionally pursued by calibrating intermediary
+waveform models, and
+using those for search templates. In this paper, we explore the alternative
+of using NR waveforms and their hybrids directly in template banks.
+We demonstrate the feasibility of this idea for non-spinning binaries,
+and extending it to spinning binaries would be the subject of a future
+work. We find that with only six non-spinning NR simulations, we can 
+cover down to $m_{1,2}\gtrsim 12M_\odot$. We show that with
+$26$ additional NR simulations, we can complete the non-spinning template
+banks down to $M\simeq 12M_\odot$, below which existing PN waveforms 
+have been shown to suffice for aLIGO. From template bank accuracy 
+requirements, we are able to put a bound on the required length and 
+initial GW frequencies for the new simulations. This method can therefore
+be used to lay down the parameters for future simulations. 
+%The ability to use hybrid waveforms
+%within the software infracture of the LIGO-Virgo collaboration has been 
+%demonstrated in the NINJA-2 collaboration~\cite{NINJA2:2013inPrep}. The
+%template banks we present here can be directly used in aLIGO searches. 
+
+% We propose the use of the NR waveforms themselves, or hybrids constructed
+% out of them, in template banks for aLIGO GW searches. We demonstrate this 
+% for the case of non-spinning BBHs, and aim to extend to spinning binaries 
+% in future work. There are two benefits of using hybrid waveforms in 
+% template banks. First, the intrinsic model errors in hybrid waveforms 
+% arise out of the yet-unknown higher-order PN terms. These errors can be
+% (conservatively) put a bound on~\cite{MacDonald:2011ne,MacDonald:2012mp}, 
+% and we show that they can and should be taken into account when 
+% constructing banks for stellar mass BBHs. Complete IMR waveform models
+% are based on resummed or phenomenological extensions of PN calculations.
+% Their free parameters are fitted to ensure the model agrees with NR 
+% simulations that span a few tens of orbits before merger.
+% However, their intrinsic errors in the late-inspiral regime, where the 
+% PN theory begins to be inaccurate, are difficult to precisely quantify;
+% especially for binary masses and spins to which the models are 
+% interpolated or extrapolated to. Bounding of model errors in hybrids is
+% useful for developing conservatively effectual banks. We expect this
+% to be an even bigger advantage for template banks for spinning BBHs.
+% Second, we are able to predict the simulations that would be required
+% to complete the hybrid bank at lower masses, down to $M\sim 12M_\odot$.
+% This is useful in choosing parameters for future NR simulations, which
+% can be directly applied to GW searches.
+
+First, we construct a bank for using pure-NR waveforms as templates, 
+using a stochastic algorithm similar to Ref.~\cite{Harry:2009ea,
+Ajith:2012mn,Manca:2009xw}. The filter templates are constrained to 
+mass-ratios for which we have NR simulations available, i.e. 
+$q=1,2,3,4,6,8$. 
+We assume that the simulations available to us are $\geq 20$ orbits in
+length. To test the bank, we simulate a population of $100,000$ BBH 
+signals and filter them through the bank. The signals and templates 
+are both modeled with the EOBNRv2 model~\cite{BuonannoEOBv2Main}. We 
+demonstrate that this bank is indeed effectual and recovers 
+$\geq 97\%$ of the optimal SNR for GWs from BBHs with mass-ratios 
+$1\leq q\leq 10$ and chirp-mass 
+$\mathcal{M}_c\equiv (m_1+m_2)^{-1/5}(m_1 m_2)^{3/5}$ above $27M_\odot$. 
+Fig.~\ref{fig:bank001_01_match} shows this fraction at different 
+simulated points over the binary mass space. With an additional 
+simulation for $q=9.2$, we are able to extend the coverage to higher
+mass-ratios. We show that a bank viable for NR waveform templates for
+$q=1,2,3,4,6,9.2$, would recover $\geq 97\%$ of the optimal SNR
+for BBHs with $10\leq q\leq 11$. The SNR recovery fraction from
+such a bank is shown in Fig.~\ref{fig:bank006_01_match}.
+
+
+Second, we construct effectual banks for currently available
+NR-PN hybrid waveform templates. We derive a bound on waveform model
+errors, which is independent of analytical models and can be used
+to independently assess the errors of such models (see
+Sec.~\ref{s1:quantifyingerrors} for details). This allows us to estimate
+the hybrid waveform mismatches due to PN error, which are negligible
+at high masses, and become significant at lower binary masses. We
+take their contribution to the SNR loss into account while 
+characterizing template banks. For hybrid banks, we demonstrate and 
+compare two independent algorithms of template bank construction. 
+First, we stochastically
+place a bank grid, as for the purely-NR template bank. Second, we lay down
+independent sub-banks for each mass-ratio, with a fixed overlap between
+neighboring templates, and take their union as the final bank. 
+To test these banks, we simulate a population of $100,000$ BBH signals
+and filter them through each. We simulate the GW signals and the 
+templates using the recently developed EOBNRv2 model~\cite{BuonannoEOBv2Main}. 
+The fraction of the optimal SNR recovered by the two banks, before and after
+accounting for the hybrid errors, are shown in the left and right panels 
+of Fig.~\ref{fig:Current-hybrids-stochastic-FF} and 
+Fig.~\ref{fig:Current-hybrids-FF} (respectively).
+We observe that for BBHs with $m_{1,2}\geq 12M_\odot$ hybrid template 
+banks will recover $\geq 96.5\%$ of the optimal SNR.  For testing the
+robustness of our conclusions, we also test the banks using TaylorT4+NR
+hybrid templates. The SNR recovery from a bank of these is shown in
+Fig.~\ref{fig:Current-real-hybrids-FF}. We conclude that, 
+the currently available NR+PN hybrid waveforms can be used as templates in 
+a matched-filtering search for GWs from BBHs with $m_{1,2}\geq 12M_\odot$
+and $1\leq q\leq 10$. The number of templates required to provide coverage
+over this region was found to be comparable to a bank constructed using 
+the second-order post-Newtonian TaylorF2 hexagonal template placement 
+method~\cite{SathyaBankPlacementTauN,BabaketalBankPlacement,
+SathyaMetric2PN,Cokelaer:2007kx}.
+The two algorithms we demonstrate yield grids of $667$ and $627$ templates,
+respectively; while the metric based placement method yields a grid of $522$ 
+and $736$ templates, for $97\%$ and $98\%$ minimal match, respectively.
+
+
+At lower mass, the length of the waveform in the sensitive frequency
+band of the detectors increases, increasing the resolution of 
+the matched-filter. We therefore see regions of undercoverage 
+between mass ratios for which we have NR/hybrid templates 
+(see, e.g. Fig.~\ref{fig:Current-hybrids-FF} at the left edge).
+For $M\lesssim 12M_\odot$, existing PN waveforms were shown to 
+be sufficient for aLIGO searches. 
+We find the additional simulations that would be needed to extend
+the hybrid tempalte bank down to $12M_\odot$. We show that a bank
+of hybrids restricted to the $26$ mass-ratios listed in 
+Table~\ref{table:fullqlist} would be sufficiently dense at $12M_\odot$.
+This demonstrates that the method proposed here can be used 
+to decide which NR simulations should be prioritized for the purpose
+of the GW detection problem.
+By filtering a population of $100,000$ BBH signals
+through this bank, we show that the SNR loss due to its discreteness
+stays below $2\%$ over the entire relevant range of masses.
+The fraction of optimal SNR recovered is shown in 
+Fig.~\ref{fig:templatebank_halfMassRatios}. Constraining the 
+detection rate loss below $10\%$ requires that detection template 
+banks recover more than $96.5\%$ of the optimal SNR. Therefore
+our bank would need hybrids with hybridization mismatches below 
+$1.5\%$. From this accuracy requirement, we obtain the length
+requirement for all the $26$ simulations. This is depicted in the 
+left panel of Fig.~\ref{fig:NRorbits2merger}, where we show the region
+of the mass space that can be covered with hybrids, as the length of 
+their NR portion varies. We find that for $1\leq q\leq 10$  the 
+new simulations should be about $50$ orbits in length. In the right 
+panel of Fig.~\ref{fig:NRorbits2merger} we show the corresponding
+initial GW frequencies. The requirement of $\sim 50$ orbit long NR
+simulations is ambitious, but certainly feasible with the current BBH 
+simulation technology~\cite{BelaLongSimulation}.
+
+In summary, we refer to the right panel of
+Fig.~\ref{fig:templatebank_halfMassRatios}.
+The region above the dashed (red) line and above the solid (blue) line can
+be covered with a bank of purely-NR waveforms currently available. The region
+above the dashed (red) and the dash-dotted (black) line can be covered with
+the same simulations hybridized to long PN inspirals. With an additional set
+of NR simulations summarized in Table~\ref{table:fullqlist}, the coverage
+of the bank can be extended down to the magenta (solid) line in the lower
+left corner of the figure. Thus between hybrids and PN waveforms, 
+we can cover the entire non-spinning BBH space. The ability to use hybrid
+waveforms within the software infrastructure of the LIGO-Virgo collaboration 
+has been demonstrated in the NINJA-2 collaboration~\cite{NINJA2:2013inPrep}.
+The template banks we present here can be directly used in aLIGO searches. 
+This work will be most useful when extended to aligned spin and 
+precessing binaries~\cite{Boyle:2013nka,Schmidt:2012rh}, which is the
+subject of a future work.
+
+The detector noise power is modeled using the zero-detuning high-power 
+noise curve for Advanced LIGO~\cite{aLIGONoiseCurve}.
+The construction of our template banks is sensitive to the breadth
+of the frequency range that the detector would be 
+sensitive to. The noise curve we use is the broad-band final design 
+sensitivity estimate. For lower sensitivities
+at the low/high frequencies, our results would become more conservative, 
+i.e. the template banks would over-cover (and not under-cover).
+
+We finally note that in this paper we have only considered the
+dominant $(2,2)$ mode of the spherical decomposition of the 
+gravitational waveform. For high mass-ratios and high binary masses,
+other modes would also become important, both for spinning as well
+as non-spinning black hole binaries~\cite{Pekowsky:2012sr,
+Brown:2012nn,Capano:2013inPrep}.
+Thus, in future work, it would be relevant to examine the
+sub-dominant modes of the gravitational waves. Lastly, though we have
+looked at the feasibility of using this template bank for Advanced
+LIGO as a single detector, this instrument will be part of a network
+of detectors, which comes with increased sensitivity and sky
+localization. For this reason, in subsequent studies it would be
+useful to consider a network of detectors.
