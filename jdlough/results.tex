@@ -264,6 +264,128 @@ I will actually present the results as they were measured and compare with the
 theoretical plot of the transfer function including both the optical spring
 closed loop transfer function and the feedback transfer function.
 
+\subsection{Stability Range}
+\label{sec:results_stability}
+We know how to make a stable spring but any spring becomes nonlinear at some
+range of motion.
+For us to be able to remove the active feedback to the system, we
+need to understand what this range is so we can stay with its limits.
+We can first define a region of stability where the phase of the spring is
+positive.
+An example parameter space is shown in figure \ref{fig:experiment2space}.
+On the y-axis of this plot you see the subcarrier detuning. This is the
+overall detuning of the cavity in frequency, which directly corresponds to
+a cavity length by,
+\begin{equation}
+\frac{\Delta L}{L} = \frac{\Delta f}{f} \label{eq:lengthtofreq} \;,
+\end{equation}
+Where $L$ is the length of the cavity and $f$ is the frequency of the laser.
+The x-axis changes the nature of the double optical field that we're sending
+into the cavity.
+It is completely indepedent of the cavity length change.
+
+We want the mirror to stay within the limits of positive phase which is within
+the zero phase line on the plot.
+If we pick a spot along the x-axis and vary the subcarrier offset
+(or mirror position) we see that the frequency of the spring increases quite a
+bit from the center of the stable range.
+Additionally, the phase of the spring decreases to zero.
+To give a margin, we will want the range of motion to really stay within about
+a tenth of the overall stable boundary.
+Looking at the blue star in this plot, we can see that the frequency and phase
+of the spring don't change dramatically within about 10kHz of subcarrier
+detuning compared to the $\approx 100$ kHz stable region. By equation
+\eqref{eq:lengthtofreq} we get a length displacement of,
+\begin{align}
+\Delta L &= \frac{10\mathrm{kHz}}{2.8\times 10^{11}\mathrm{kHz}}
+    0.07\mathrm{m} \nonumber \\
+  &= 2.5 \mathrm{pm} \;.
+\end{align}
+
+Because the spring frequency actually increases toward the boundary, more force
+is required to get the spring into the unstable region than what one would
+compute from the central k value with $F=-kx$.
+We would actually need a force of $m\omega^2 x$ to get into the region of
+instability, where $\omega$ is the spring angular frequency at the boundary.
+For example, in the case of the blue star from the plot, the lower spring
+frequency at the boundary is $f_\mathrm{limit} = 800\mathrm{Hz}$.
+The force required to exceed this boundary will be then given by,
+\begin{align*}
+F &= 4\pi^2mf_\mathrm{limit}^2x \\
+  &= 4\pi^2 \times 0.0005 \mathrm{kg} \times (800\mathrm{Hz})^2 \times 10
+     \mathrm{pm} \\
+  &= 1.26 \times 10^{-7} \mathrm{N} \;.
+\end{align*}
+This is all good for the adiabatic case where the motion is less than the spring
+resonance.
+The resonantly enhanced motion at the spring resonance, however, is strongly
+dependant on the phase of the spring.
+The damped spring removes energy entering the system at a rate determined by
+the phase.
+Since we are not always at the equilibrium point, the average phase and
+therefore the average amount of energy dissipated is less than at the
+equilibrium point, effectively increasing the $Q$ of the spring.
+
+Since we have a high $Q$ optical spring most of the \ac{rms} motion of the mass
+will come from the amplification at the resonance until we include very low
+frequency motion.
+As we go lower in frequency the optical spring filters out more of the motion
+as seen in figure \ref{fig:dampedspringtf}.
+This decreases as $f^2$ until we get to the suspension resonance, which is not
+shown in the plot.
+At frequencies below this point, the optical spring response flattens out
+and no longer depends on the frequency.
+Our suspension resonance is at about 18Hz and below this point, the amount
+of displacement noise due to seismic starts to become the dominant noise
+source.
+At low enough frequencies, if the optical spring is not strong enough, the
+seismic motion will dominate the total \ac{rms} motion.
+The closed loop suppression at frequencies below the suspension resonance can
+be found easily since we know the transfer function is 1 at very high
+frequencies and $f^2$ between the the suspension resonance and the optical
+resonance.
+The suspression below the suspension frequency is then,
+\begin{align}
+\left( f_\mathrm{sus}/f_\mathrm{OS} \right)^2 \;,
+\end{align}
+which with an optical spring frequency of 720 Hz we have seismic supression of,
+\begin{align*}
+& \left(\frac{1}{40}\right)^2 \\
+&= \frac{1}{1600} \\
+&\approx 6\times 10^{-4} \;.
+\end{align*}
+At very low frequencies, where the \ac{rms} motion will increase again, we are
+in the adiabatic condition and have the advantage of the steep energy
+boundaries of the spring. An example of two different spring configurations can
+be seen in figure \ref{fig:rmsspringcompare}.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=14cm]{./figures/rmsspringcompare.pdf}
+  \caption[RMS Optical Spring Residual Motion]{
+    rms motion after applying optical spring.
+    The carrier and subcarrier input powers are fixed for both examples.
+    The subcarrier detuning was chosen to maximize the damping for each
+    carrier detuning.
+    }
+  \label{fig:rmsspringcompare}
+\end{figure}
+
+
+
+
+
+\begin{figure}
+  \centering
+  \includegraphics[width=14cm]{./figures/experiment2space.pdf}
+  \caption[Parameter Space for 2nd Edition]{the parameter space of the
+    experiment.
+    We can see the stability values for different detunings.
+    Ideally we want a high frequency and phase.
+    }
+  \label{fig:experiment2space}
+\end{figure}
+
 %\begin{figure}
 %\centering
 %\tikzsetnextfilename{OT_stable_time}
@@ -1045,7 +1167,7 @@ The results of this fitting can be seen in figure \ref{fig:juneOLGresults}.
 
 We want to know the residual motion of the cavity if we were to remove the
 active feedback.
-In ordet to do this we need to measure the control signal while locked with
+In order to do this we need to measure the control signal while locked with
 a stable spring.
 The control signal is the output of the feedback servo before the
 actuation.
@@ -1096,30 +1218,21 @@ where the noise measurement was taken with the spring from measurement \#2-13.
 It can be seen from the plot that the residual \ac{rms} motion is about
 $1.3\times 10^{-11} \mathrm{m}$.
 We want this to be significantly less than the stability range as defined in
-section \ref{sec:III}.
+section \ref{sec:results_stability}.
 I say significantly because across the stability range the system is
 non-linear since the quality factor $Q$ of the spring increases toward
 edge of the range.
 The response is non-linear for motion on the order of the stability range.
 
-\begin{figure}
-  \centering
-  \includegraphics[width=14cm]{./figures/experiment2space.pdf}
-  \caption[Parameter Space for 2nd Edition]{the parameter space of the
-    experiment.
-    We can see the stability values for different detunings.
-    Ideally we want a high frequency and phase.
-    }
-  \label{fig:experiment2space}
-\end{figure}
 
 The stability range can be seen for various detunings in figure
 \ref{fig:experiment2space}.
 There is a trade off between phase and frequency however.
-The lower phase will create a higher Q spring resonance which will amplify the
+The lower phase will create a higher $Q$ spring resonance which will amplify the
 noise entering the system at the resonance more than the higher phase/
-lower Q spring resonance.
-At higher frequencies, the noise entering the system is lower.
+lower $Q$ spring resonance.
+At higher frequencies, the noise entering the system is enough lower to
+compensate for the higher $Q$.
 
 
 %So, this noise entering the system below the unity gain frequency will be
@@ -1151,10 +1264,10 @@ I have written the equation in this form to illustrate that at the lower
 optical spring frequencies from the experiment, we have a maximum penetration
 depth of about $18\mathrm{\mu m}$.
 This is nearly an order of magnitude smaller than the beam spot diameter, which
-is about $320\mu m$. The change in thickness $\Delta_z$ of the optic can then
+is about $320\mu m$. The change in thickness $\Delta z$ of the optic can then
 be approximated with
 \begin{equation} \label{eq:deltaz}
-\Delta_z = \left(1+\eta\right)\alpha\frac{ \delta P }{2\pi ifC\rho A} \, ,
+\Delta z = \left(1+\eta\right)\alpha\frac{ \delta P }{2\pi ifC\rho A} \, ,
 \end{equation}
 where $\delta$ is the absorption coefficient, $A$ is the area of the beam,
 $\alpha$ is the linear coefficient of thermal expansion, and $\eta$ is the
