@@ -1,6 +1,6 @@
 \acresetall
 
-In order to observe the optical spring effect and measure it
+In order to observe the optical spring effect
 we have set up the experiment as described in chapter
 \ref{ch:lintrapex}.
 The measurement that we take is the open loop transfer function of the servo.
@@ -181,7 +181,7 @@ Allowing k to be a complex number, $k = k_0e^{i\phi}$,
 we can see readily that this corresponds to a transfer function $-k$ which
 shifts the wave in time.
 %like we see in figure \ref{fig:otstabletime}.
-For $\phi \ll 1$ we can write $k=k_0e^{i\phi}$,
+%For  we can write $k=k_0e^{i\phi}$,
 \begin{align}
 F &= -kx \nonumber \\
   &= -k_0Ae^{i\omega t + i\phi} \;.
@@ -223,7 +223,7 @@ making it unstable.
 %    Be^{-i\omega_0t}e^{\frac{\phi}{2}\omega_0t} \;.
 %\end{align}
 
-Looking at the transfer function of the closed loop,
+Looking at the transfer function of the closed loop and assuming $\phi \ll 1$,
 \begin{align}
 \mathrm{CLG} &= \frac{1}{1-\frac{k_0(1+i\phi)}{m\omega^2}} \nonumber \\
   &= \frac{m\omega^2}{m\omega^2-k_0(1+i\phi)} \;,
@@ -269,7 +269,7 @@ closed loop transfer function and the feedback transfer function.
 We know how to make a stable spring but any spring becomes nonlinear at some
 range of motion.
 For us to be able to remove the active feedback to the system, we
-need to understand what this range is so we can stay with its limits.
+need to understand what this range is so we can stay within its limits.
 We can first define a region of stability where the phase of the spring is
 positive.
 An example parameter space is shown in figure \ref{fig:experiment2space}.
@@ -284,7 +284,7 @@ The x-axis changes the nature of the double optical field that we're sending
 into the cavity.
 It is completely indepedent of the cavity length change.
 
-We want the mirror to stay within the limits of positive phase which is within
+We want the mirror to stay within the limits of positive phase, which is within
 the zero phase line on the plot.
 If we pick a spot along the x-axis and vary the subcarrier offset
 (or mirror position) we see that the frequency of the spring increases quite a
@@ -363,10 +363,13 @@ be seen in figure \ref{fig:rmsspringcompare}.
   \centering
   \includegraphics[width=14cm]{./figures/rmsspringcompare.pdf}
   \caption[RMS Optical Spring Residual Motion]{
-    rms motion after applying optical spring.
+    RMS motion after applying optical spring.
     The carrier and subcarrier input powers are fixed for both examples.
     The subcarrier detuning was chosen to maximize the damping for each
     carrier detuning.
+    This plot uses the noise measurement from section 
+    includes the coefficient of thermal expansion term that
+    is discussed in section \ref{sec:opticthermalexpansion}.
     }
   \label{fig:rmsspringcompare}
 \end{figure}
@@ -378,9 +381,10 @@ be seen in figure \ref{fig:rmsspringcompare}.
 \begin{figure}
   \centering
   \includegraphics[width=14cm]{./figures/experiment2space.pdf}
-  \caption[Parameter Space for 2nd Edition]{the parameter space of the
+  \caption[Parameter Space for 2nd Edition]{The parameter space of the
     experiment.
-    We can see the stability values for different detunings.
+    We can see the stability values for different detunings given
+    by the phase contours which are in units of radians.
     Ideally we want a high frequency and phase.
     }
   \label{fig:experiment2space}
@@ -513,6 +517,7 @@ be seen in figure \ref{fig:rmsspringcompare}.
   the unstable spring has the opposite behavior.
   Notice that the stability cannot be determined from the magnitude plot.
   Positive and negative $\phi$ look exactly the same.
+  Loss angle $\phi$ is presented in radians.
   }
 \label{fig:dampedspringtf}
 \end{figure}
@@ -564,7 +569,7 @@ A list of parameters is provided in table \ref{tab:trapparams1}.
       Subcarrier Servo Offset & 355 & kHz \\
       PDH Local Oscillator & 35 & MHz \\
       Specified EOM Modulation Depth & $>0.2$ & rad/V \\
-      Local Oscillator Power (EOM) & & \\
+%      Local Oscillator Power (EOM) & & \\
       \hline
     \end{tabular}
   \end{center}
@@ -607,31 +612,18 @@ This is shown in table \ref{tab:experiment1lock2}.
       \hline
       \hline
       1-30 & -604  & 742 & 0 \\
-      \hline
       1-31 & -873  & 757 & 4 \\
-      \hline
       1-33 & -1120 & 782 & 9 \\
-      \hline
       1-34 & -1410 & 834 & 12 \\
-      \hline
       1-35 & -827  & 768 & 17 \\
-      \hline
       1-36 & -827  & 789 & 52 \\
-      \hline
       1-37 & -827  & 870 & 91 \\
-      \hline
       1-38 & -827  & 820 & 102 \\
-      \hline
       1-39 & -522  & 800 & 107 \\
-      \hline
       1-40 & -172  & 797 & 112 \\
-      \hline
       1-41 & 28    & 801 & 117 \\
-      \hline
       1-42 & 137   & 806 & 120 \\
-      \hline
       1-43 & 438   & 818 & 125 \\
-      \hline
       1-44 & 879   & 840 & 130 \\
       \hline
     \end{tabular}
@@ -735,7 +727,7 @@ which keeps the system quite linear.
 But as we change the error point offset the slope of the signal changes.
 This slope corresponds to an overall gain factor in the system.
 We can actually see the effect in the measurements of figure
-\ref{fig:aprilolg1}.
+\ref{fig:aprilolg2}.
 
 
 Despite these issues we were clearly able to observe
@@ -767,10 +759,10 @@ section.
     {./matlab_traces/april_pointspace_unstable.dat};
   \end{axis}
   \end{tikzpicture}
-    \caption[Parameters from 1st Experiment]{
+    \caption[Parameters from the 1st Edition]{
       The solid lines show the theoretical
       spring frequencies for all of the measurements that took place in a span
-      of about 30 minutes during the first experiment at the end of one lock
+      of about 30 minutes during the first edition at the end of one lock
       stretch.
       The dots correspond to the actual measurements of the optical spring at
       different subcarrier detunings. The entire space depicted is in the region
@@ -932,9 +924,11 @@ section.
     \end{axis}
   \end{tikzpicture}
   \caption[Subcarrier Detuning Gain Factor]{
-    relative gain above resonant frequency for different subcarrier detunings.
+    Relative gain above resonant frequency for different subcarrier detunings.
     The peak gain appears to be at an offset of about 250mV which contradicts
     the fit in figure \ref{fig:april_space1}.
+    This provides further motivation to constrain the measurements better
+    by monitoring key parameter needed to fit the model.
     }
   \label{fig:aprilolg2}
 \end{figure}
@@ -1034,7 +1028,7 @@ Additional improvements included several things to make the experiment easier.
 We added a camera to look at the reflected beam which helped with alignment.
 
 We also added some polarization cubes to take advantage of the orthogonal
-polarizations and monitor the two beams independently.
+polarizations and monitor the two transmitted beams independently.
 
 Aligning the beam to the cavity using the steering mirrors on table 2 was very
 difficult because the cavity mirrors could get excited quite easily from
@@ -1074,7 +1068,7 @@ reflected by the input \ac{pbs}.
 
 
 \section{Linear Trap Experiment, 2nd Edition}
-
+\label{sec:results_second}
 With the changes described above in place, we were able to observe several
 stable and unstable springs as before.
 This time the measurement procedure was to vary the frequency offset between
@@ -1091,9 +1085,69 @@ extent because the \ac{pdh} error signal is not linear at the scale of large
 detuning changes. The change in gain due to subcarrier offset can be seen in
 figure \ref{fig:aprilolg2}
 
+\begin{figure}
+\centering
+  \tikzsetnextfilename{servoactuation}
+  \begin{tikzpicture}
+  \begin{loglogaxis}[
+    name=plot1,
+    height=6cm,
+    ylabel={Magnitude},
+    xlabel={Frequency [Hz]},
+%    ylabel={Magnitude [dB]},
+%    ymin=0,
+%    xmin=32000000,
+%    xmax=38000000,
+    ymin=0.1,
+    xmin=10,
+    xmax=100000,
+    grid=both,
+  ]
+    \addplot[red,very thick] table[x index=0,y index=1]
+      {./matlab_traces/servoactuation.dat};
+    \addlegendentry{OSEM};
+    \addplot[blue,very thick] table[x index=0,y index=2]
+      {./matlab_traces/servoactuation.dat};
+    \addlegendentry{Laser PZT};
+  \end{loglogaxis}
+%  \begin{semilogxaxis}[
+%    name=plot2,
+%    at=(plot1.below south), anchor=above north,
+%    height=4cm,
+%    ylabel={Phase [Deg]},
+%    xlabel={Frequency [Hz]},
+%    xmin=10,
+%    xmax=100000,
+%    grid=both,
+%    ]
+%    \addplot[red,very thick] table[x index=0,y index=3]
+%      {./matlab_traces/servoactuation.dat};
+%    \addplot[blue,very thick] table[x index=0,y index=4]
+%      {./matlab_traces/servoactuation.dat};
+%  \end{semilogxaxis}
+  \end{tikzpicture}
+  \caption[Active Feedback Control for 2nd Edition]{
+    Active feedback used for the second edition of the experiment.
+    This shows each of the two actuation paths used with the
+    crossover point.
+    }
+  \label{fig:servoactuation}
+\end{figure}
+
+
+For active feedback we used two actuation paths, one to the laser \ac{pzt} and
+one to the \ac{osem} actuators which provide a force to the input mass.
+The electronic servo which is common to both paths had the 100 Hz integrator
+engaged.
+This integrator has a flat response above 100 Hz and provides a boost below
+100 Hz for better seismic suppression.
+The two paths have a crossover frequency of 200Hz as can be seen in figure
+\ref{fig:servoactuation}.
+
+
 With the orthogonal polarization of the beams, we were able to monitor the
 transmitted power for each beam.
-The optical spring basically has four parameters that can change during the
+The optical spring has four parameters that can change during the
 measurement: carrier power, subcarrier power, carrier detuning, and subcarrier
 detuning. The measurements of the carrier and subcarrier transmitted powers,
 the observed resonant frequency, and the subcarrier servo offset form a set
@@ -1132,13 +1186,13 @@ to the slope of W/Hz (Transmitted Power/Carrier Detuning).
     \end{tabular}
   \end{center}
   \caption[Optical Trap, 2nd Edition Spring Measurements]{
-      parameters of measurements presented in figure \ref{fig:juneOLGresults}.
+      Parameters of measurements presented in figure \ref{fig:juneOLGresults}.
       }
   \label{tab:experiment2params}
 \end{table}
 
 When fitting the data using the technique above, we were not able to get the
-stability to fit correctly.
+stability to fit correctly, see figure \ref{fig:juneOLGresults_noabs}.
 The measured springs were consistently more unstable than the model.
 This gave an indication that our model must be missing some physics.
 %The stability of the optical springs would not match with the theory without
@@ -1179,7 +1233,9 @@ This allows us to estimate how much motion there would be if we remove
 the active feedback loop.
 Knowing the actuation transfer functions, we can convert the control signal
 to the length noise entering the system.
-The sum of the two actuation paths and we'll call this $A$.
+%The sum of the two actuation paths and we'll call this $A$.
+We have two actuation paths, to the laser and to the test mass actuator
+(\ac{osem}) with a crossover frequency of 300Hz.
 The sensing and feedback we will call $F$.
 So the open loop gain is $AF$ in the absence of the optical spring.
 With the optical spring, this becomes $\frac{AF}{1-O}$, where $O$ is the
@@ -1217,11 +1273,11 @@ where the noise measurement was taken with the spring from measurement \#2-13.
 
 It can be seen from the plot that the residual \ac{rms} motion is about
 $1.3\times 10^{-11} \mathrm{m}$.
-We want this to be significantly less than the stability range as defined in
+We want this to be less than the stability range as defined in
 section \ref{sec:results_stability}.
-I say significantly because across the stability range the system is
-non-linear since the quality factor $Q$ of the spring increases toward
-edge of the range.
+%I say significantly because across the stability range the system is
+%non-linear since the quality factor $Q$ of the spring increases toward
+%edge of the range.
 The response is non-linear for motion on the order of the stability range.
 
 
@@ -1232,7 +1288,71 @@ The lower phase will create a higher $Q$ spring resonance which will amplify the
 noise entering the system at the resonance more than the higher phase/
 lower $Q$ spring resonance.
 At higher frequencies, the noise entering the system is enough lower to
-compensate for the higher $Q$.
+compensate for the higher $Q$ (see fig. \ref{fig:rmsspringcompare})
+so that we can reduce the overall rms motion.
+We can also see that noise dominating the \ac{rms} motion at low frequencies
+is from the bounce mode of our vertical isolation at about 7 Hz and
+pure seismic takes over below about 3 Hz.
+
+\subsubsection{Purely Passive Spring}
+\label{sec:results2imp}
+
+With a 800Hz optical spring using the same total input power used in this
+experiment we see that we can get the \ac{rms} motion at
+the resonance down to about the 2.5 pm limit.
+This is marginally good enough at the resonance but we would still need active
+feedback for the noise below 10Hz.
+
+To improve the stability of the spring we have three main areas we can address:
+the residual motion at the resonance frequency, the residual motion below 10
+Hz, and the stability range itself.
+
+At the resonant frequency we can
+increase the laser power which we can use to increase the
+spring frequency further, decrease the $Q$, or a combination
+of the two.
+The increased laser power will result in an increase in the intensity
+noise however the limiting factor is still the laser frequency noise.
+
+We can also decrease the noise entering the system at 800Hz. The limit here
+is laser frequency noise.
+We will need to implement the \ac{fss} in order to improve this, however
+we need the full actuation range of the laser \ac{pzt} for lock acquisition.
+Once lock is acquired
+we can separately acquire the FSS and change the feedback scheme to make the
+laser follow the reference cavity.
+%we are basically using the feedback servo to stabilize
+%the laser frequency, so we should be able to run the \ac{fss} open and tune
+%the laser temperature to get the \ac{fss} error point aligned with the
+%reference cavity.
+This would drop the frequency noise down to the level of the \ac{vco} noise
+which is at $0.1\mathrm{Hz/\sqrt{Hz}}$ at 800Hz, corresponding to
+$2.5\times 10^{-17}\mathrm{Hz/\sqrt{Hz}}$.
+Thus the noise budget would then be limited by the laser intensity noise, which
+is at the level of about $5\times 10^{-16}\mathrm{Hz/\sqrt{Hz}}$ at 800 Hz.
+%We can then do a control handoff for the frequency stabilization from the
+%trap servo to the \ac{fss}.
+This drops the overall noise at 800 Hz by a factor of 20, reducing the \ac{rms}
+noise to roughly $1.3\times 10^{-13} \mathrm{m/\sqrt{Hz}}$.
+
+For the low frequency motion we can simply keep the feedback engaged below 10Hz.
+Also, by increasing laser power to improve the \ac{rms} motion at high
+frequency, we
+will also improve the \ac{rms} motion at low frequency, either by having a
+stronger spring which will improve the low frequency suppression or by
+increasing the phase of the optical spring which will increase the stability
+range for the system.
+Another option for improving the motion at low frequencies would be to add an
+additional seismic isolation stage.
+This would be a common isolation platform with a resonant frequency below
+about 0.5 Hz.
+The design is already partially complete on this, but was delayed due to
+complexity.
+The main difficulty with this will be controlling it below the resonant
+frequency for alignment.
+
+
+
 
 
 %So, this noise entering the system below the unity gain frequency will be
@@ -1423,13 +1543,27 @@ to the instability of the optical spring.
   \end{semilogxaxis}
   \end{tikzpicture}
     \caption[Data Fitting of Open Loop Gain for 2nd Results]{This is the open
-      loop gain fit for the second experiment. The solid lines are the measured
+      loop gain fit for the second edition of the experiment.
+      The solid lines are the measured
       optical spring transfer functions. The dashed lines are the corresponding
       theoretical transfer functions. In the legend, "DetC" and "DetS" stand for
       carrier and subcarrier detuning respectively. Pratio is the power ratio
       of carrier to subcarrier input power.}
   \label{fig:juneOLGresults}
 \end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=14cm]{./figures/spring2noabs}
+\caption[Data Fitting Without Absorption Coefficient]{
+  Open loop gain measurements of the second edition of the experiment.
+  This plot shows the fit without the absorption term.
+  Two of the optical springs become stable which does not match with the
+  measurement.
+  }
+\label{fig:juneOLGresults_noabs}
+\end{figure}
+
 
 \begin{table}
   \begin{center}
@@ -1441,17 +1575,17 @@ to the instability of the optical spring.
         Power [mW] & Power [mW] \\
       \hline
       \hline
-      2-13 & 290.8  & -39.2  & & \\
-      2-20 & 285.0  & -45.0  & & \\
-      2-10 & 285.1  & -34.9  & & \\
-      2-15 & 264.2  & -35.8  & & \\
-      2-18 & 238.2  & -21.8  & & \\
-      2-19 & 222.5  & -17.5  & & \\
+      2-13 & 290.8  & -39.2  & 215.9 & 62.5 \\
+      2-20 & 285.0  & -45.0  & 213.3 & 53.8 \\
+      2-10 & 285.1  & -34.9  & 223.0 & 63.7 \\
+      2-15 & 264.2  & -35.8  & 215.2 & 54.6 \\
+      2-18 & 238.2  & -21.8  & 224.2 & 52.5 \\
+      2-19 & 222.5  & -17.5  & 228.5 & 51.7 \\
       \hline
     \end{tabular}
   \end{center}
   \caption[Optical Trap, 2nd Edition Optical Spring Fit Parametrers]{
-      parameters of measurements presented in figure \ref{fig:juneOLGresults}.
+      Parameters of measurements presented in figure \ref{fig:juneOLGresults}.
       }
   \label{tab:experiment2fitparams}
 \end{table}
