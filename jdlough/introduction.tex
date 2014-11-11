@@ -60,9 +60,12 @@ amplitude of the wave.
 It is important to note that this factor of 2 increase in the signal, though
 helpful, is not the primary motivation for two arms. 
 The big benefit comes from common noise cancellation.
-We can cancel out common length noise in the two arms because the gravitational
+We can cancel out common length noise,
+typically dominated by frequency noise
+in the two arms because the gravitational
 wave will couple directly into the differential degree of freedom in the
-detector. See figure \ref{fig:ligoschematic}.
+detector.
+See figure \ref{fig:ligoschematic}.
 
 \begin{figure}
 \tikzsetnextfilename{ligoschematic}
@@ -118,7 +121,7 @@ In Advanced LIGO we use an active feedback control for angular alignment of
 the main mirrors\cite{aligowfs}.
 %which is discussed in more detail in the angular instability section of our
 %theory paper which is provided in \ref{sec:IV}.
-Sensing for this feedback is done with a technique known as wavefront sensing.
+Sensing for this feedback is done with a technique known as \ac{wfs}.
 The beam entering a cavity is phase modulated to produce sidebands.
 The phase modulation is done at a high enough frequency so that almost all
 of the sideband beams are reflected.
@@ -403,7 +406,7 @@ $\braopket{10}{\mathrm{PD}}{10}$ become zero.
 %%%%%%
 % The beat signal is demodulated to give the error signal.
 
-The non zero beat signal is then demodulated to give us the error signal.
+The non-zero beat signal is then demodulated to give us the error signal.
 
 
 %%%%%%
@@ -486,20 +489,47 @@ sensing noise in the sensitive band of LIGO.
 There is very little room to attenuate the sensing noise sufficiently above 10
 Hz while keeping a stable feedback loop with a unity gain frequency above 6 Hz.
 
+% The technique just described is known as \ac{wfs} and has been a system from initial
+% \ac{ligo} and carried over to \ac{aligo}.
+
+As power is increased, the sensing noise from \ac{wfs} will contribute more
+to the interferometer noise budget due to the necessary feedback control
+requirements.
+
+The \ac{wfs} noise contribution will actually increase at a higher rate
+than the contribution
+from radiation pressure noise, assuming the control loop has a steep cutoff
+above the unity gain frequency.
+If we take the sensing noise from \ac{wfs} as constant, the frequency of the
+hard mode of the angular instability will increase with $\sqrt{\mathrm{P}}$.
+The control bandwith must then also increase at the same rate.
+If we also increase the cutoff frequency by $\sqrt{\mathrm{P}}$, the noise
+contribution from frequencies above the cutoff will then increase by
+$\sqrt{\mathrm{P}^{n}}$, where $n$ is the cutoff rate (feedback open loop goes as
+$f^{-n}$).
+
+Without changing power ratios for the \ac{wfs}, the situation is improved a
+little.
+If we allow the power incident on the \ac{wfs} sensors to increase with the
+circulating power in the interferometer, the \ac{wfs} sensing noise will
+decrease by $\sqrt{\mathrm{P}}$.
+The noise contribution from \ac{wfs} will then increase by
+$\sqrt{\mathrm{P}^{n-1}}$ instead of $\sqrt{\mathrm{P}^{n}}$.
 
 At some point, as we push for better sensitivity in the low frequency regime,
 there will be a tradeoff between going to higher power in the
-interferometer and reducing WFS sensing noise coupling to the gravitational
+interferometer and reducing \ac{wfs} sensing noise coupling to the gravitational
 wave strain measurement at low frequencies.
-As power is increased, the frequency of the hard mode of the angular
-instability increases by $\sqrt{\mathrm{P}}$.
-The sensing noise contribution must also increase by $\sqrt{\mathrm{P}}$
-where the feedback transfer function falls off as $1/f$.
-Where the feedback has a steep cutoff, $1/f^\mathrm{n}$, the sensing noise
-contribution must increase by $\sqrt{\mathrm{P^n}}$.
-Likewise, the radiation pressure noise increases by $\sqrt{\mathrm{P}}$.
-The sensing noise will therefore overtake the radiation pressure noise as the
-laser power increases.
+% As power is increased, the frequency of the hard mode of the angular
+% instability increases by $\sqrt{\mathrm{P}}$.
+% The sensing noise contribution must also increase by $\sqrt{\mathrm{P}}$
+% where the feedback transfer function falls off as $1/f$.
+% Where the feedback has a steep cutoff, $1/f^\mathrm{n}$, the sensing noise
+% contribution must increase by $\sqrt{\mathrm{P^n}}$.
+In the region where the noise contribution from \ac{wfs} increases by
+$\sqrt{\mathrm{P}^{n-1}}$,
+the radiation pressure noise increases by $\sqrt{\mathrm{P}}$.
+If the cutoff falls steeper than $f^{-2}$ the \ac{wfs} noise will eventually overtake the radiation pressure noise as the laser power increases.
 
 %It is basically a \ac{pdh} lock with quadrant photo-diodes measuring
 %the differential \ac{pdh} signal from opposite quadrants of the photo-diode.
