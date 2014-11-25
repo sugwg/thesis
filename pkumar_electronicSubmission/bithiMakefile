@@ -1,0 +1,12 @@
+TEXFILES=
+
+default: clean thesis.pdf clean-nopdf
+
+thesis.pdf: $(TEXFILES) $(BIBFILES) $(STYFILES) $(BSTFILES)
+	pdflatex $(TEXFILES) && bibtex $(TEXFILES) && bibtex $(TEXFILES) && pdflatex $(TEXFILES) && pdflatex $(TEXFILES)
+
+clean:
+	rm -f $(TEXFILES).pdf *.aux *.bbl *.blg *.log *.lot *.toc *.lof *.bak *.tgz *.out
+
+clean-nopdf:
+	rm -f *.aux *.bbl *.blg *.log *.lot *.toc *.lof *.bak *.tgz *.out
