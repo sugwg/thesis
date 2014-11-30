@@ -63,7 +63,7 @@ thesisvita.pdf: thesisvita.tex papersfull.bib vita.bst
 df: ~/Dropbox/JimsThesis/thesis.pdf
 
 ~/Dropbox/JimsThesis/thesis.pdf: thesis.pdf
-	cp thesis.pdf ~/Dropbox/JimThesis/
+	cp thesis.pdf ~/Dropbox/JimsThesis/
 
 worksp: workspace.pdf
 
