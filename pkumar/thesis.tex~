@@ -1,0 +1,286 @@
+%-----------------------------------------------------------------------
+%
+% File Name: thesis.tex
+%
+% Author: Kumar, P.
+%
+% Revision: $Id$
+%
+%-----------------------------------------------------------------------
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% document class and packages
+\documentclass[12pt,notitlepage]{report}
+\usepackage{setspace}
+\usepackage{graphicx}\usepackage{latexsym}
+% \usepackage{iopams}
+
+\usepackage{syrthesis}
+% \usepackage{color}
+\usepackage{amsmath,mathtools}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{rotating}
+\usepackage{tensor}
+\usepackage{lscape}
+\usepackage{bm}
+\usepackage{units} %  do things like \units[1.234]{sec}i
+% \usepackage{chapterfolder} % Organize the graphics etc of each chapter in a sub-directory
+\usepackage{amsopn, amstext, wasysym}
+\usepackage{colonequals}
+\usepackage{subfigure}
+\usepackage{rotating}
+\usepackage{braket}
+\usepackage{multirow}
+\usepackage{xspace}
+\usepackage[usenames,dvipsnames]{color}
+
+\usepackage[bookmarksnumbered, bookmarksopen, breaklinks, colorlinks, linkcolor=blue, citecolor=magenta]{hyperref}
+\usepackage{bibunits}
+
+\usepackage{url}
+\usepackage{alltt}
+
+\usepackage{ulem}
+\normalem
+\DeclareGraphicsExtensions{.eps,.pdf,.png}
+\usepackage{epstopdf}
+\usepackage[justification=centering]{caption}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% NINJA-2 packages
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{dcolumn}
+\usepackage{units}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\makeatletter
+\let\protect\relax
+{\catcode`\|=\active
+  \xdef\InnerProduct{\protect\expandafter\noexpand\csname InnerProduct
+\endcsname}
+  \expandafter\gdef\csname InnerProduct \endcsname#1{%
+    \begingroup
+    \ifx\SavedDoubleVert\relax
+    \let\SavedDoubleVert\|\let\|\IpDoubleVert
+    \fi
+    \mathcode`\|32768\let|\IPVert
+    \left({#1}\right)
+    \endgroup
+  }
+}
+\def\IPVert{\@ifnextchar|{\|\@gobble}% turn || into \|
+     {\egroup\,\mid@vertical\,\bgroup}}
+\def\IPDoubleVert{\egroup\,\mid@dblvertical\,\bgroup}
+\let\SavedDoubleVert\relax
+\def\midvert{\egroup\mid\bgroup}
+\def\SetVert{\@ifnextchar|{\|\@gobble}% turn || into \|
+    {\egroup\;\mid@vertical\;\bgroup}}
+\def\SetDoubleVert{\egroup\;\mid@dblvertical\;\bgroup}
+\def\mid@vertical{\mskip1mu\vrule\mskip1mu}
+\def\mid@dblvertical{\mskip1mu\vrule\mskip2.5mu\vrule\mskip1mu}
+\makeatother
+\usepackage{braket}
+
+\pdfoutput=1
+
+\hbadness=10000
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% journal definitions
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\apj}{{\it Astrophysical J.}}
+\newcommand{\apjl}{{\it Astrophysical J.}}
+\newcommand{\aap}{{\it Astron. and Astrophys.}}
+\newcommand{\cmp}{{\it Commun. Math. Phys.}}
+\newcommand{\grg}{{\it Gen. Rel. Grav.}}
+\newcommand{\cqg}{{\it Class. Quant. Grav.}}
+\newcommand{\lr}{{\it Living Reviews in Relativity}}
+\newcommand{\mnras}{{\it Mon. Not. Roy. Astr. Soc.}}
+\newcommand{\pr}{{\it Phys. Rev.}}
+\newcommand{\prl}{{\it Phys. Rev. Lett.}}
+\newcommand{\pra}{{\it Phys. Rev. A}}
+\newcommand{\prd}{{\it Phys. Rev. D}}
+\newcommand{\nat}{{\it Nature}}
+\newcommand{\prsl}{{\it Proc. R. Soc. Lond. A}}
+\newcommand{\ptrsl}{{\it Phil. Trans. Roy. Soc. London}}
+\newcommand{\rmp}{{\it Rev. Mod. Phys.}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% new command definitions
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\half}{\frac{1}{2}}
+\newcommand{\ospsd}{\ensuremath{S_n\left(\left|f_{k}\right|\right)}}
+
+\newcommand{\msun}{M_\odot}
+\newcommand{\chisq}{\chi^2}
+\newcommand{\newsnr}{\rho_{\textrm{new}}}
+\newcommand{\erf}{\mathrm{erf}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% more new commands
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\Sum}{\displaystyle\sum\limits}
+\newcommand{\Int}{\displaystyle\int\limits}
+\newcommand{\ii}{{\rm i}}
+\newcommand{\D}{\mathrm{d}}
+\newcommand{\eff}{\mathrm{eff}}
+\newcommand{\phys}{\mathrm{phys}}
+\newcommand{\real}{\mathrm{real}}
+\newcommand{\peak}{\mathrm{peak}}
+% \newcommand{\EOB}{\mathrm{EOB}}
+\newcommand{\NR}{\mathrm{NR}}
+\newcommand{\RD}{\mathrm{RD}}
+\newcommand{\Olap}{\mathcal{O}}
+\newcommand{\FF}{\mathcal{FF}}
+\newcommand{\MM}{\mathrm{MM}}
+\newcommand{\EFF}{\mathrm{EFF}}
+\newcommand{\X}{\mathrm{X}}
+\newcommand{\Y}{\mathrm{Y}}
+\newcommand{\Z}{\mathrm{Z}}
+\newcommand{\horizon}{\mathrm{Horizon}}
+\newcommand{\opt}{\mathrm{opt}}
+\newcommand{\iso}{\mathrm{iso}}
+\newcommand{\refr}{\mathrm{ref}}
+\newcommand{\start}{\mathrm{start}}
+
+\def\l({\left(}
+\def\r){\right)}
+\newcommand{\lt}{\left}
+\newcommand{\rt}{\right}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% more new commands
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\EOB}{\mathrm{EOBNRv2}}
+\newcommand{\M}{\mathit{M}}
+\newcommand{\bnk}{\mathrm{bank}}
+\newcommand{\mn}{\mathrm{min}}
+\newcommand{\mx}{\mathrm{max}}
+\newcommand{\tr}{\mathrm{tr}}
+\newcommand{\mm}{\mathrm{mm}}
+\newcommand{\Hyb}{\mathrm{Hyb}}
+\newcommand{\leftn}{\left|\left|}
+\newcommand{\rightn}{\right|\right|}
+\newcommand{\lefti}{\left\langle}
+\newcommand{\righti}{\right\rangle}
+\newcommand{\Mis}{\mathcal{M}}
+\newcommand{\N}{\mathrm{N}}
+\newcommand{\cyc}{\mathrm{cyc}}
+\newcommand{\E}{\mathcal{E}}
+
+\newcommand{\red}{\textcolor{red}}
+\newcommand{\blue}{\textcolor{blue}}
+\newcommand{\etal}{\textit{et~al}\@ifnextchar{\relax}{.\relax}{\ifx\@let@token.\else\ifx\@let@token~.\else.\@\xspace\fi\fi}}
+
+
+%% Macros for comments
+\newcommand\fake[1]{\textcolor{red}{#1}}
+\newcommand\checkme[1]{\textcolor{blue}{\textbf{#1}}}
+\newcommand{\Note}[1]{\textcolor{red}{\textbf{[#1]}}}
+% \newcommand\checked[1]{#1}
+\newcommand\marginnote[2]{%
+  \mbox{}\marginpar{\raggedleft\hspace{0pt}\scriptsize
+    \textcolor{blue}{#1: #2}}}
+
+
+\newcommand\weakheader[1]{
+\vspace*{5mm}
+\noindent {\it #1}
+\vspace*{5mm}
+}
+
+
+\usepackage{hyperref} 
+
+\begin{document}
+\Abstract{\input{abstract}}
+
+\title{% taken from dissertator fellowship application
+Topics in Gravitational-Wave Astrophysics
+}
+\author{Prayush Kumar}
+% \pastdegrees{B.E. , 2009}
+\majorprof{Duncan A. Brown}
+\submitdate{August 2014}
+\degree{Doctor of Philosophy}
+\program{Physics}
+\copyrightyear{2014}
+
+\majordept{Physics}
+\havededicationtrue
+\dedication{to\\ my parents and Bithika}
+\haveminorfalse
+\copyrighttrue
+\doctoratetrue
+\figurespagetrue
+\tablespagetrue
+\signedtitlepfalse
+
+% \doublespacing
+% \Abstract{
+% \input{abstract}
+% }
+\beforepreface
+\prefacesection{Preface}
+\input{preface}
+
+\prefacesection{Acknowledgments}
+\input{acknowledgements}
+
+\prefacesection{Conventions}
+\input{conventions}
+
+\afterpreface
+
+\Chapter{Introduction}
+\label{ch:introduction}
+\input{introduction}
+
+\Chapter{Gravitational waves and Compact binaries in General Relativity}
+\label{ch:theory}
+\input{theory}
+
+\Chapter{Introduction to LIGO}
+\label{ch:ligo}
+\input{ligo}
+
+\Chapter{Search template banks for low-mass binary black holes in the 
+Advanced gravitational-wave detector era}
+\label{ch:EOBF2_Effectualness}
+\input{eobpn_1-5pnmetric_effectualness}
+
+\Chapter{Binary black hole search template banks with Numerical 
+Relativity waveforms}
+\label{ch:NRHyb_bank}
+\input{nrhyb_tmpltbank}
+
+\Chapter{NINJA-2: Detecting gravitational waveforms modelled
+using numerical binary black hole simulations}
+\label{ch:ninja2}
+\input{ninja2}
+
+% \Chapter{Modeling of intermediate mass-ratio inspirals: 
+% Exploring the form of the self-force in the intermediate mass-ratio regime}
+% \label{ch:insSFIMRI}
+% \input{inspiral_IMRI}
+
+\Chapter{Self-forced evolutions of intermediate mass-ratio systems}
+\label{ch:imrSFIMRI}
+\input{imr_IMRI}
+
+\Chapter{Conclusions}
+\label{ch:conclusions}
+\input{conclusions}
+
+\appendix
+ \Chapter{Post-Newtonian Waveforms}
+\label{ch:pn_waveforms}
+\input{PNApproximants}
+
+\clearpage
+\bibliographystyle{unsrt}
+\bibliography{references}
+\addcontentsline{toc}{chapter}{\numberline {Bibliography}}
+
+\end{document}
+
