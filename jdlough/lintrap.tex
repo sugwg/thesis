@@ -1,25 +1,144 @@
 \acresetall
 
-Our goal, ultimately, is to demonstrate the angular optical trap described in
-chapter \ref{ch:theory}.
-To get there we need to develop the tools and techniques for generating the
-one-dimensional optical trap.
+%
+% We are targeting an optical spring frequency of about 1kHz because this
+% about where we can operate given limited budget for seismic isolation.
+% With a 2watt laser and finesse of ~10k we constrain the mass to be no more
+% than...
+%
 
-The one-dimensional trap has been done before at MIT \cite{Corbitt07}.
-In that experiment they were limited by laser frequency noise.
-Since the frequency noise couples into the experiment by $\frac{L \lambda}{c}$,
-we could improve the frequency noise just by shortening the cavity.
+% optical spring frequency choice
 
-In choosing a cavity length, we had to balance several factors. We wanted it to
-be short. We had limitations on how close we could get the suspension towers.
-We also wanted to keep a negative $g$ factor, defined by
-\begin{equation}
-g = 1-\frac{L}{R} \;,
-\end{equation}
-in order to avoid Sidles Sigg
-instablity since we are by design operating in a radiation pressure dominated
-regime.
-And finally, we wanted to avoid overlap of higher order modes on the TEM00 mode.
+We want our optical spring frequency to be high enough so the experiment is
+not limited by seismic noise.
+Without the resources for elaborate seismic isolation we are limited to single
+pendulum isolation stages with a natural frequency of order 1Hz.
+At 1kHz we have seismic motion below $10^{-12} \mathrm{m/\sqrt{Hz}}$.
+With a pendulum isolation we can attenuate at 1kHz by a factor of $10^{-6}$.
+Assuming we have a cavity length of order 30cm we can assume a corresponding
+frequency noise of about $1 \mathrm{mHz/\sqrt{Hz}}$.
+This is well below the free running laser noise of the NPRO laser of about
+$10\mathrm{Hz/\sqrt{Hz}}$ at 1kHz.
+
+% how to get optical spring frequency
+
+To achieve this resonant frequency we will need to have a small mass.
+Just how small is determined by the $\mathrm{dP/dL}$ dependance that gives
+us the optical spring constant.
+For a high finesse, it can be shown, by taking the derivative of the
+intracavity power,
+that the maximum spring constant for a given power is approximately
+\begin{align}
+k &= \frac{3^{5/2} F^2}{\pi \lambda c} P \,.
+\end{align}
+This gives us a minimum mass of
+\begin{align}
+m &= 3^{5/2} \frac{F^2}{\pi \lambda c \omega^2_0} P \, .
+\end{align}
+% which gives a maximum resonant frequency of
+% \begin{align}
+% f_0 &= \frac{F}{2 \pi} \sqrt{\frac{18 P}{\sqrt{12} \pi \lambda m c }} \\
+% &\approx 3.8kHz \,.
+% \end{align}
+% The frequency in the last step was arrived at by using a finesse of 8200
+% with a reasonable input power of 1 Watt.
+
+
+%
+% Need high q suspension for small optic in order for the spring stability to be
+% dominated by the optical field.
+%
+
+Additionally, we need a high Q suspension for the small optic in order for the
+spring stability to be dominated by the optical field.
+The optical spring will have fairly low phase since we will be operating a
+frequency much lower than the cavity pole.
+
+
+
+%
+% Frequency noise will dominate experiment.
+% We can reduce the effect of frequency noise by using a shorter cavity.
+%
+
+We use a smaller cavity in order to reduce the effect of frequency noise.
+The frequency noise couples in by the ratio of the cavity length and
+laser frequency.
+
+
+%
+% With a negative g-factor we get stable angular modes assuming the other
+% mass is heavy.
+%
+
+As described in section  if we choose a sufficiently heavy mass for the
+input mirror, the angular stability of the small mass is governed by the
+following relationship,
+\begin{align}
+T &= \frac{F_0 L}{1 - g_1 g_2} g_1 \theta
+\end{align}
+By choosing negative g-factors we get the stable angular mode for the small
+mirror since the large mirror is essentially fixed.
+
+% This is statically stable, what about dynamic instability due to the cavity
+% delay?
+
+%
+% Goal for experiment was low noise so that we could turn off active feedback.
+%
+
+Ultimately, we wanted to lower the frequency impact of frequency noise, so we
+chose a short cavity.
+Since the linewidth of the resonance is fixed in terms of cavity length
+$ ( \mathrm{FWHM}(m) = \lambda / \mathcal{F} ) $ it is
+natural to convert the frequency noise to cavity length.
+The cavity length noise is related to the frequency noise by,
+\begin{align}
+\delta L &= \delta f \frac{L}{f} \, .
+\end{align}
+By using a shorter cavity, we reduce the effect of frequency noise by geometry
+alone.
+
+The cavity length is related to the radius of curvature by the fact that we want
+negative g-factors, which constrains the length to 1 to 2 times the radius of
+curvature (for the case $g_1 = g_2$).
+With the off the shelf substrates available at the time, we chose to use a 5cm
+radius of curvature for both input and output mirror.
+
+Incedentally, the sizes of the mirrors available with a 5cm radius of curvature
+are quite small.
+We chose the smallest one for the output mirror, which gave us a payload mass of
+about 0.41 grams, well within our criteria for optical spring resonance frequency.
+
+In order to avoid higher order modes near the resonance we examined the resonance
+condition for the first ten orders.
+We determined that with a radius of curvature of 5cm, we could avoid these modes
+well with a cavity length of 7cm.
+
+These criteria lead us to the experimental parameters listed in table
+\ref{tab:lintrap1}.
+
+
+% Our goal, ultimately, is to demonstrate the angular optical trap described in
+% chapter \ref{ch:theory}.
+% To get there we need to develop the tools and techniques for generating the
+% one-dimensional optical trap.
+
+% The one-dimensional trap has been done before at MIT \cite{Corbitt07}.
+% In that experiment they were limited by laser frequency noise.
+% Since the frequency noise couples into the experiment by $\frac{L \lambda}{c}$,
+% we could improve the frequency noise just by shortening the cavity.
+
+% In choosing a cavity length, we had to balance several factors. We wanted it to
+% be short. We had limitations on how close we could get the suspension towers.
+% We also wanted to keep a negative $g$ factor, defined by
+% \begin{equation}
+% g = 1-\frac{L}{R} \;,
+% \end{equation}
+% in order to avoid Sidles Sigg
+% instablity since we are by design operating in a radiation pressure dominated
+% regime.
+% And finally, we wanted to avoid overlap of higher order modes on the TEM00 mode.
 
 \begin{table}
 \begin{center}
@@ -39,30 +158,31 @@ And finally, we wanted to avoid overlap of higher order modes on the TEM00 mode.
 \end{tabular}
 \end{center}
 \caption[Trap Cavity Parameters]{Trap Cavity Parameters for the expermiment.}
+\label{tab:lintrap1}
 \end{table}
 
 
-For the experiment to work, we need to be able to push on the mirror with the
-radiation pressure of the laser.
-For this, we wanted a light mirror suspended in some way to allow it to move.
-Additionally, we need to filter out some background seismic noise in the
-region of the experiment.
-We can do this by suspending each mirror in a pendulum.
-This works well for noise supression at higher frequencies, but hanging a
-pendulum from very thin wires creates a sharp resonance peak in the transfer
-function, meaning that the motion of the mirror will look like a very large
-amplitude sine with a frequency of $\sqrt{g/l}/2\pi$.
-We need a way of damping the motion while giving us the ability to align the
-cavity mirrors.
-Fortunately, the design for such a device exists already for use in LIGO to
-suspend and control some of the smaller optics in the instrument.
-With a bit of modification the LIGO \ac{sos} was exactly what we needed.
+%For the experiment to work, we need to be able to push on the mirror with the
+%radiation pressure of the laser.
+%For this, we wanted a light mirror suspended in some way to allow it to move.
+%Additionally, we need to filter out some background seismic noise in the
+%region of the experiment.
+%We can do this by suspending each mirror in a pendulum.
+%This works well for noise supression at higher frequencies, but hanging a
+%pendulum from very thin wires creates a sharp resonance peak in the transfer
+%function, meaning that the motion of the mirror will look like a very large
+%amplitude sine with a frequency of $\sqrt{g/l}/2\pi$.
+%We need a way of damping the motion while giving us the ability to align the
+%cavity mirrors.
+%Fortunately, the design for such a device exists already for use in LIGO to
+%suspend and control some of the smaller optics in the instrument.
+%With a bit of modification the LIGO \ac{sos} was exactly what we needed.
 
-So, we built these structures and borrowed some of the more complicated parts
-from friends.\footnote{It's nice to be in a collaboration}
-Figure \ref{fig:susbig} shows what one of the suspension towers we use looked
-like before the modification described in
-Figure \ref{fig:blades}.
+%So, we built these structures and borrowed some of the more complicated parts
+%from friends.\footnote{It's nice to be in a collaboration}
+%Figure \ref{fig:susbig} shows what one of the suspension towers we use looked
+%like before the modification described in
+%Figure \ref{fig:blades}.
 
 \begin{figure}
 \centering
@@ -84,8 +204,8 @@ Figure \ref{fig:blades}.
   \label{fig:susbig}
 \end{figure}
 
-Another improvement we made was to develop a high-Q glass suspension for the
-small mass. The details of which are described in section \ref{sec:highQsus}.
+%Another improvement we made was to develop a high-Q glass suspension for the
+%small mass. The details of which are described in section \ref{sec:highQsus}.
 
 \begin{figure}
 \centering

@@ -48,15 +48,22 @@ all: thesis.pdf
 
 thesis.pdf: python/ $(TEXFILES) $(BIBFILES) $(STYFILES) $(BSTFILES) $(TIKZFILES) $(DATFILES)
 	$(MAKE) -C python all && \
-	latexmk -pdf -pdflatex="pdflatex --shell-escape %O %S" thesis.tex && \
-	cp thesis.pdf ~/Dropbox/JimsThesis/
+	latexmk -pdf -pdflatex="pdflatex --shell-escape %O %S" thesis.tex
 
+#
+#	cp thesis.pdf ~/Dropbox/JimsThesis/
+#
 #
 #	cp thesis.pdf ~/Dropbox/Documents/LaTeX_Source/NewThesis/
 #
 
 thesisvita.pdf: thesisvita.tex papersfull.bib vita.bst
 	latexmk -pdf -pdflatex="pdflatex --shell-escape %O %S" thesisvita.tex
+
+df: ~/Dropbox/JimsThesis/thesis.pdf
+
+~/Dropbox/JimsThesis/thesis.pdf: thesis.pdf
+	cp thesis.pdf ~/Dropbox/JimThesis/
 
 worksp: workspace.pdf
 
