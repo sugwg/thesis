@@ -1,5 +1,14 @@
 \acresetall
 
+In designing the experiment we knew that frequency noise would be a
+primary limiting factor.
+For the goal of reaching the quantum noise limit, additional factors will
+play a role, not the least of which is thermal noise from the suspension.
+Seismic noise can be attenuated quite well by choosing a higher frequency.
+
+With these limitations in mind we designed the trap cavity and the supporting
+optics and electronics.
+
 %
 % We are targeting an optical spring frequency of about 1kHz because this
 % about where we can operate given limited budget for seismic isolation.
@@ -8,6 +17,9 @@
 %
 
 % optical spring frequency choice
+
+\section{Design Considerations}
+\label{sec:lintrap:design}
 
 We want our optical spring frequency to be high enough so the experiment is
 not limited by seismic noise.
@@ -18,7 +30,7 @@ With a pendulum isolation we can attenuate at 1kHz by a factor of $10^{-6}$.
 Assuming we have a cavity length of order 30cm we can assume a corresponding
 frequency noise of about $1 \mathrm{mHz/\sqrt{Hz}}$.
 This is well below the free running laser noise of the NPRO laser of about
-$10\mathrm{Hz/\sqrt{Hz}}$ at 1kHz.
+$10\mathrm{Hz/\sqrt{Hz}}$ at 1kHz (see section \ref{sec:noise:freq}).
 
 % how to get optical spring frequency
 
@@ -225,78 +237,32 @@ These criteria lead us to the experimental parameters listed in table
   \label{fig:blades}
 \end{figure}
 
-\section{Experimental Layout}
-Using the beam from our laser (ch.\ref{ch:psl}) we split into two orthogonal
-polarizations. One beam we need to be at a higher power with positive detuning
-(statically stable and dynamically unstable) we call the carrier beam. The
-beam with less power and negative detuning we call the subcarrier.
 
-The subcarrier optical path (fig.\ref{fig:scservo}) consists of a pair of \ac{aom}s that we use to
-detune the subcarrier relative to the carrier beam.
-There is also a resonant
-\ac{eom} which is used to impart sidebands on the subcarrier beam for \ac{pdh}
-locking.
-The carrier and subcarrier are then combined using a \ac{pbs} to preserve their
-orthogonal polarizations. There is a beamsplitter in the subcarrier path to pick
-off the reflected light from the cavity which is used to generate the \ac{pdh}
-signal. There are additional $\lambda/2$ and $\lambda/4$ waveplates at various
-points in the path for polarization optimization.
-
-%\subsection{Subcarrier Servo}
-Because of our short cavity length we have a large \ac{fsr} in frequency of
-about 2.14GHz.
-This produces a technical problem in attempting to set the
-subcarrier on the next resonance, one \ac{fsr} away.
-\ac{aom}s are limited in the range of frequencies they can operate in.
-The minimum is higher than the linewidth for our cavity.
-The maximum is less than \ac{fsr}.
-
-The solution for us was to set the subcarrier on the same resonance fringe
-using two \ac{aom}s, each one shifting the frequency by about 80MHz in
-opposite directions.
-One is driven by a crystal oscillator.
-The other is driven by a tunable oscillator, a \ac{vco}, which gives us the
-knob to detune the subcarrier.
-
-We produce a beat signal between the two oscillators and we lock the beat
-signal to a function generator operating in the range of frequencies we are
-need to detune the subcarrier with. So, now we can set directly, the carrier
-to subcarrier offset frequency using the knob on the function generator.
-This setup essentially eliminates frequency noise due to the crystal
-oscillator, which is quite low to begin with, since we are subtracting the
-same, coherent, frequency noise with the second \ac{aom}.
-And the frequency noise due to the function generator is lower due to the
-fact that we are using a lower frequency tunable oscillator.
-Tunable oscillators generally have a frequency noise that is relative to the
-set frequency.
-The subcarrier servo is discussed in more detail in section
-\ref{sec:scservo}.
-
-\section{Features of Experiment}
-\subsection{High Finesse}
-We need a high finesse cavity to give us the power buildup in the cavity that
-we need for a decent resonant frequency to get beyond some environmental noise.
-Ignoring any damping effects a fairly straight-forward calculation gives the
-resonant frequency we can achieve for a given finesse and input power. For a
-high finesse, it can be shown, by taking the derivative of the intracavity power,
-that the maximum spring constant for a given power is approximately
-\begin{align}
-k &= \frac{18 F^2}{\sqrt{12} \pi \lambda c} P \,,
-\end{align}
-which gives a maximum resonant frequency of
-\begin{align}
-f_0 &= \frac{F}{2 \pi} \sqrt{\frac{18 P}{\sqrt{12} \pi \lambda m c }} \\
-&\approx 3.8kHz \,.
-\end{align}
-The frequency in the last step was arrived at by using a finesse of 8200
-with a reasonable input power of 1 Watt.
-
-\subsection{Short Cavity}
-\label{sec:lin_short}
-The short cavity gives us a reduction in the frequency noise contribution
-to the noise budget. This reduction scales as the cavity length. This also
-affects the free spectral range, however, and with our finesse, the cavity
-pole is about 140kHz. 
+% \section{Features of Experiment}
+% \subsection{High Finesse}
+% We need a high finesse cavity to give us the power buildup in the cavity that
+% we need for a decent resonant frequency to get beyond some environmental noise.
+% Ignoring any damping effects a fairly straight-forward calculation gives the
+% resonant frequency we can achieve for a given finesse and input power. For a
+% high finesse, it can be shown, by taking the derivative of the intracavity power,
+% that the maximum spring constant for a given power is approximately
+% \begin{align}
+% k &= \frac{18 F^2}{\sqrt{12} \pi \lambda c} P \,,
+% \end{align}
+% which gives a maximum resonant frequency of
+% \begin{align}
+% f_0 &= \frac{F}{2 \pi} \sqrt{\frac{18 P}{\sqrt{12} \pi \lambda m c }} \\
+% &\approx 3.8kHz \,.
+% \end{align}
+% The frequency in the last step was arrived at by using a finesse of 8200
+% with a reasonable input power of 1 Watt.
+% 
+% \subsection{Short Cavity}
+% \label{sec:lin_short}
+% The short cavity gives us a reduction in the frequency noise contribution
+% to the noise budget. This reduction scales as the cavity length. This also
+% affects the free spectral range, however, and with our finesse, the cavity
+% pole is about 140kHz. 
 
 \begin{figure}
 \centering
@@ -489,8 +455,56 @@ pole is about 140kHz.
 %\end{axis}
 %\end{tikzpicture}
 
-\section{High-Q Payload Suspension}
+\section{Suspension Systems}
+
+For seismic isolation we have 30cm pendulums attached to the lab optics table.
+The table is suspended on pneumatic legs which provide additional isolation
+above about 1Hz.
+For the input mirror, the mirror is fixed to the pendulum mass.
+For the output mirror (payload), the mirror is suspended from the pendulum
+mass using thin fibers (see figure \ref{fig:smallsus}).
+
+\begin{figure}
+\centering
+  \includegraphics[width=15cm]{./figures/seismic130930.pdf}
+  \caption[Background Seismic Noise]{
+  background seismic noise.
+  The red trace in the upper plot is from the seismometer.
+  The rms motion due to the noise around 500Hz is about
+  $10^{-4}\mu\mathrm{m}/\sqrt{\mathrm{Hz}}$.
+  This is about a factor of 10 too much for our experiment
+  just from the point of view of the stability criteria.
+  }
+  \label{fig:seismicnoise130930}
+\end{figure}
+
+\subsection{Payload Suspension}
 \label{sec:highQsus}
+
+We want the suspension to have a high Q and low resonant frequency.
+The high Q reduces thermal noise in the area of interest
+(above the resonant frequency).
+And the low resonant frequency gives us better seismic isolation at high
+frequencies
+
+With a lower resonant frequency, the response of the mirror due to a force from
+radiation pressure is unchanged as long as the resonant frequency is sufficiently lower than the operating frequency. This can be shown by the transfer function of force
+applied a mass on a spring. From force to position, this is,
+\begin{align}
+H &= \frac{1}{k-m\omega^2} \\
+  &\approx \frac{1}{-m\omega^2} \; (\omega >> \omega_0)
+\end{align}
+and is then independant of the spring constant.
+The mass acts as a free mass.
+
+For the seismic isolation, however, there is a dependance on the spring constant.
+In this case the transfer function from a position displacement at the attachment
+point of the spring to the position of the mass looks like,
+\begin{align}
+H &= \frac{k}{m\omega^2 - k} \\
+  &\approx \frac{k}{m\omega^2} \; (\omega >> \omega_0)
+\end{align}
+
 In designing the suspension for the small mirror we went through the thermal
 noise analysis to determine the best approach. We wanted to suspend the small
 mirror using thin glass fibers with a low tension for isolating the mass from
@@ -505,28 +519,106 @@ thermal noise based on the analysis. The result of the analysis was to have a
 small mass at the glue end of the fiber with a center of gravity close to the
 glue surface.
 
-\subsection{Monolithic Welding}
+\subsubsection{Glass Fibers}
 
-We began by gaining experience with welding fibers. In doing so, we decided it
-should not be too difficult to weld the fibers directly to the small mirror.
-This actually proved to be more difficult than anticipated.
-The first attempt at welding a mirror damaged the coating quite visibly even
-though we were careful to shield the coating surface by clamping the mirror
-with quartz tubes.
+We needed glass fibers in the final suspension for the high quality factor.
+These were produced by heating up a thin section of fused silica and pulling
+abruptly while removing the heat.
+The resulting fiber has an incredibly high tensile strength and quality factor.
 
-After making several improvements to the welding stand, we welded a mirror
-with no visible damage to the coating, however once installed, we found the
-finesse to be too low.
-The mirror was welded, suspended, and placed in vacuum system
-for assembly of the cavity.
-After careful alignment we found the finesse to be about 700, much lower than
-desired.
-Since this was the cavity output mirror that was damaged, it dramatically
-affected the performance of the experiment.
-The power buildup in the cavity is dependent on the
-individual cavity mirror reflectivities.
+The ratio of tensile strength to weight makes fused silica an ideal material
+for seismic isolation.
+Seismic isolation is limited by standing waves in the suspension fiber.
+This effect is analogous to that from surging in coil springs.
+The mass is not as well isolated above the violin modes as the $1/m\omega^2$
+of the free mass.
+See, for example, Winterflood\cite{0264-9381-19-7-355}.
 
-\subsection{Glued Fiber Attachements}
+In our lab we use a small hydrogen and oxygen torch.
+The procedure used for the suspension fibers in gravitational wave detectors
+is similar except that $\mathrm{CO}_2$ lasers are used instead of a flame
+and the process is automated.
+
+Prior to the actual fiber pulling some preparation work with the torch must
+be done to get the right shape for the preform.
+We prepare the preforms by making a small point on each where the fiber will
+connect the two pieces.
+The preform work is done with a torch as well.
+In our case the preform work was done with a larger torch.
+The rod preform is created by heating a rod with a torch and pulling it apart
+to form a cone shape at the end of the rod.
+The tip of one cone is then used to weld a nub of glass onto the side of the
+mirror.
+Then, using a small torch we weld the tip of the preforms together and pull
+abruptly while removing the torch.
+
+The length and diameter of the fibers can be controlled somewhat and becomes
+a bit of an art in practice.
+In general, though, one can vary these parameters
+through the choice of torch tip size, pressure of gases, and the starting size
+and shape of the glass rod.
+In the end, generating the right fibers requires the sort of finesse that has
+nothing to do with optical cavities.
+
+
+
+% We began by gaining experience with welding fibers. In doing so, we decided it
+% should not be too difficult to weld the fibers directly to the small mirror.
+% This actually proved to be more difficult than anticipated.
+% The first attempt at welding a mirror damaged the coating quite visibly even
+% though we were careful to shield the coating surface by clamping the mirror
+% with quartz tubes.
+
+% After making several improvements to the welding stand, we welded a mirror
+% with no visible damage to the coating, however once installed, we found the
+% finesse to be too low.
+% The mirror was welded, suspended, and placed in vacuum system
+% for assembly of the cavity.
+% After careful alignment we found the finesse to be about 700, much lower than
+% desired.
+% Since this was the cavity output mirror that was damaged, it dramatically
+% affected the performance of the experiment.
+% The power buildup in the cavity is dependent on the
+% individual cavity mirror reflectivities.
+
+\subsubsection{Welding Fibers to the Mirror}
+
+The procedure of directly welding to the mirror was a challenge.
+The first few attempts produces clearly visible damage.
+We needed to protect the coating from the hot gases of the torch
+by employing a holder made of graphite.
+
+After upgrading the fiber welding process with the graphite holders we could
+weld fibers to the mirror without producing any obvious damage.
+The mirror produced from this was used in a cavity with another mirror of the
+same coating run.
+
+The finesse of a cavity using mirrors from the same coating run was about 8000
+but the finesse of this cavity was only about 800.
+The exact nature of this degradation is currently unknown, but since the
+finesse is high (800 is still pretty high), the damage to the optic resulted
+in only about $0.31\%$ more in additional losses either in absorption or 
+scattering.
+
+
+The order of magnitude lower in finesse was far too much for the
+experiment.
+So, we came up with a method of glueing the fibers to the mass.
+
+\subsubsection{Glued Fiber Attachements}
+
+It may be that the coating of the welded mirror was damaged directly from the
+heat in the substrate,
+though the melting point of the Ta2O5 is higher than the temperature of the
+substrate during welding. 
+It is also quite possible that some of the graphite was deposited onto the
+coating and remained despite attempts to clean the coating or that the coating
+was damaged during handling.
+
+It would be interesting to find out the exact cause of the damage and possibly
+refine the welding procedure.
+Though not immediately useful since we decided to go for glueing the fibers to
+the small mirror instead.
 
 The final suspension design for this experiment used small cone-shaped glass
 nubs at the glue end of the fibers.
@@ -535,28 +627,32 @@ by cold welding\footnote{a process where the substrate is not heated to the
 point where the materials flow together} the tip of a glass rod to a small
 mirror blank\footnote{or a mirror with a previously damaged coating...} to
 create a small nub from which the fiber is pulled.
-This is all done in one
-continuous motion where the torch is applied to the edge of the mirror to
-gently heat the point of attachement, then the rod with a sharp point is placed
-into the flame to melt the tip and cold weld to the edge of the mirror.
-The
-flame is then directed at the tip of the rod slightly back from the weld to
-soften the fiber pull spot.
+
+After creating the glass rod preforms, this procedure is done in one
+continuous motion.
+The torch is applied to the edge of the mirror blank to
+gently heat the point of attachement, then the rod with a sharp point is
+placed into the flame to melt the tip and cold weld to the edge of the mirror.
+The flame is then directed at the tip of the rod slightly back from the weld
+to soften the fiber pull spot.
 When the spot is sufficiently heated, the fiber
 is pulled away sharply while dropping the flame away from the fiber.
 What
 remains is a rod attached to a small conical shaped nub monolithically through
 a very thin, high Q fiber.
-Now the cold weld allows us to separate this
-monolithic fiber assembly because the bond strength is much less than the yield
-strength of the fiber.
+
+The cold weld allows us to separate this
+monolithic fiber assembly because the bond strength is much less than the
+yield strength of the fiber.
 
 We then glue this monolithic fiber assembly using the epoxy to the side of the
 mirror with undamaged coatings.
 This technique allows us to preserve a very high Q ($\approx 5\times 10^5$)
 while avoiding damage to the coating.
 The results of a Q ringdown measurement can be seen in
-figure \ref{fig:Qmeasurement}.
+figure \ref{fig:Qmeasurement}. 
+
+
 
 \begin{figure}
 \centering
@@ -571,8 +667,31 @@ figure \ref{fig:Qmeasurement}.
 \label{fig:Qmeasurement}
 \end{figure}
 
-\subsection{Double Pendulum}
+\subsection{Intermediate Suspension}
+
+We have engineered the assembly for the small mirror to have about the
+same mass and dimensions as the input mirror assembly.
+Both of which fit nicely in a LIGO designed small optic suspension.
+
+The original design of this suspension had no vertical isolation aside
+from stretching of the metal suspension wire itself.
+This mode was about 22Hz and there was no active damping.
+We modified the design to incorporate blade springs for better vertical
+isolation with a mode of about 7Hz.
+These suspension towers can be seen in figures \ref{fig:susbig} and
+\ref{fig:blades}.
+
+The vertical isolation mode is still not damped directly,
+although we can damp indirectly since the suspension has some vertical
+to horizontal coupling.
+We needed to move the resonance frequency away from some large peaks in
+the background seismic.
+Moving the resonance down in frequency also helps reduce the amount of
+vertical seismic motion that couples into the cavity length.
+
+\subsubsection{Double Pendulum}
 \label{sec:doublepend}
+
 The output mirror is suspended by glass fibers inside a ring of steel which is
 three inches in diameter. The steel ring is the \ac{sos} controlled mass.
 Since the mass of the ring is considerably greater than the mass of the small
@@ -653,29 +772,37 @@ One can also present the equations of motion diagramatically as in figure
                    outer sep=0,minimum size=2cm,text width=1.8cm}]
 %  \renewcommand{\baselinestretch}{0.9}
 %  \begin{small}
-  \node[spring] (spring2) at (0,0) {$-k_2$};
-  \node[mass] (mass2) at (0,-4) {$\frac{-1}{m_2\omega^2}$};
-  \node[spring] (spring1) at (0,-8) {$-k_1$};
-  \node[mass] (mass1) at (0,-12) {$\frac{-1}{m_1\omega^2}$};
-  \node[circle,draw=black] (sum2) at (-4,-4) {};
-  \node (plus2) at (-4,-3.5) {$+$};
-  \node (minus2) at (-4,-4.5) {$-$};
-  \node[circle,draw=black] (sum1) at (4,-8) {};
-  \node (plus1) at (4,-8.5) {$+$};
-  \node (minus1)  at (4,-7.5) {$-$};
-  \draw[thick,->] (spring2) to (sum2);
-  \draw[thick,->] (sum2) to (mass2);
-  \draw[thick,->] (mass2) to (spring2);
-  \draw[thick,->] (mass2) to (sum1);
-  \draw[thick,->] (sum1) to (spring1);
-  \draw[thick,->] (spring1) to (sum2);
-  \draw[thick,->] (spring1) to (mass1);
-  \draw[thick,->] (mass1) to (sum1);
+  \draw[very thick,dashed,green!50!black] (-4,2) node[anchor=north west]{upper mass} rectangle (4,-5);
+  \draw[very thick,dashed,green!50!black] (-4,-6) node[anchor=north west]{lower mass} rectangle (4,-13);
+  \node[spring] (spring2) at (0,-3) {$-k_2$};
+  \node[mass] (mass2) at (0,0) {$\frac{-1}{m_2\omega^2}$};
+  \node[spring] (spring1) at (0,-11) {$-k_1$};
+  \node[mass] (mass1) at (0,-8) {$\frac{-1}{m_1\omega^2}$};
+  \node[circle,draw=black] (sum2) at (-3,0) {};
+  \node (plus2) at (-2.5,-0.5) {$+$};
+  \node (minus2) at (-3.5,-0.5) {$-$};
+  \node[circle,draw=black] (sum1) at (3,-8) {};
+  \node (plus1) at (2.5,-8.5) {$+$};
+  \node (minus1)  at (3.5,-7.5) {$-$};
+  \node[above](labelf) at (-3,-8) {force};
+  \draw[thick,->] (spring2) -- node [above] {force} (-3,-3) -- (sum2);
+  \draw[thick,->] (sum2) -- (mass2);
+  \draw[thick,->] (mass2) -- (3,0) |- (spring2);
+  \draw[thick,->] (mass2) -- node [above] {position} (5,0) |- (sum1);
+  \draw[thick,->] (sum1) |- (spring1);
+  \draw[thick,->] (-3,-8) -- (-5,-8) |- (sum2);
+  \draw[thick,->] (spring1) -- (-3,-11) |- (mass1);
+  \draw[thick,->] (mass1) -- node [above] {position} (sum1);
 %\end{small}
 \end{tikzpicture}
-\caption[Double Pendulum Feedback Representation]{This diagram represents the
+\caption[Double Pendulum Feedback Representation]{feedback representation of
+         double pendulum.
+         This diagram represents the
          double pendulum feedback loops from which one can calculate the
-         response of the system.}
+         response of the system.
+         The upper and lower masses form a feedback loop with the upper mass
+         position and the lower spring (pendulum) force.
+         }
 \label{fig:doublesus}
 \end{figure}
 
@@ -714,6 +841,75 @@ One can also present the equations of motion diagramatically as in figure
 \label{fig:smallsus}
 \end{figure}
 
+\section{Experimental Layout}
+
+As a reminder, we need two beams at different frequencies to couple into the
+cavity.
+We employ an optics path with active control on the frequency offset between
+the two beams which we call the "subcarrier servo".
+
+There are four parameters of the optical fields entering the cavity:
+amplitude and frequency of each beam.
+The control scheme for these parameters can be seen in figure
+\ref{fig:trapcontrol1}.
+
+
+\begin{figure}
+\centering
+\includegraphics[width=15cm]{./figures/trapcontrol1.pdf}
+\caption[Linear Trap Control]{
+    trap control scheme. The figure depicts how we control the amplitude and
+    frequency detuning of the two beams.
+    }
+\label{fig:trapcontrol1}
+\end{figure}
+
+
+Using the beam from our laser (ch.\ref{ch:psl}) we split into two orthogonal
+polarizations. One beam we need to be at a higher power with positive detuning
+(statically stable and dynamically unstable) we call the carrier beam. The
+beam with less power and negative detuning we call the subcarrier.
+
+The subcarrier optical path (fig.\ref{fig:scservo}) consists of a pair of \ac{aom}s that we use to
+detune the subcarrier relative to the carrier beam.
+There is also a resonant
+\ac{eom} which is used to impart sidebands on the subcarrier beam for \ac{pdh}
+locking.
+The carrier and subcarrier are then combined using a \ac{pbs} to preserve their
+orthogonal polarizations. There is a beamsplitter in the subcarrier path to pick
+off the reflected light from the cavity which is used to generate the \ac{pdh}
+signal. There are additional $\lambda/2$ and $\lambda/4$ waveplates at various
+points in the path for polarization optimization.
+
+%\subsection{Subcarrier Servo}
+Because of our short cavity length we have a large \ac{fsr} in frequency of
+about 2.14GHz.
+This produces a technical problem in attempting to set the
+subcarrier on the next resonance, one \ac{fsr} away.
+\ac{aom}s are limited in the range of frequencies they can operate in.
+The minimum is higher than the linewidth for our cavity.
+The maximum is less than \ac{fsr}.
+
+The solution for us was to set the subcarrier on the same resonance fringe
+using two \ac{aom}s, each one shifting the frequency by about 80MHz in
+opposite directions.
+One is driven by a crystal oscillator.
+The other is driven by a tunable oscillator, a \ac{vco}, which gives us the
+knob to detune the subcarrier.
+
+We produce a beat signal between the two oscillators and we lock the beat
+signal to a function generator operating in the range of frequencies we are
+need to detune the subcarrier with. So, now we can set directly, the carrier
+to subcarrier offset frequency using the knob on the function generator.
+This setup essentially eliminates frequency noise due to the crystal
+oscillator, which is quite low to begin with, since we are subtracting the
+same, coherent, frequency noise with the second \ac{aom}.
+And the frequency noise due to the function generator is lower due to the
+fact that we are using a lower frequency tunable oscillator.
+Tunable oscillators generally have a frequency noise that is relative to the
+set frequency.
+The subcarrier servo is discussed in more detail in section
+\ref{sec:scservo}.
 
 
 \section{Locking Challenges}
@@ -742,6 +938,7 @@ The maximum range of the laser PZT is plus or minus 160MHz.
 This corresponds to about 42nm.
 As can be seen in figure \ref{fig:seismic} there is more rms motion than this
 at low frequencies.
+
 We needed another actuation path to cover the full range of rms motion at low
 frequencies.
 For this we use the magnetic force from the OSEM coils.
@@ -877,127 +1074,26 @@ See figure \ref{fig:scsfeedback} for the layout of the electronics.
 %    \end{itemize}
 %\end{itemize}
 
-\section{Mode Matching}
-As will be discussed in section
-\ref{sec:expimps}, we went through a revision in our overall layout.
-This changed the beam size and waist location in reference to the cavity.
-We did not want to open the chamber again for alignment and mode matching.
-It was useful to know the power coupling into the cavity with the wrong
-mode matching to give us an idea of how much transmitted light we should
-expect when the cavity is properly aligned since mode matching is a difficult
-process of moving the lenses along the beam path and realigning the beam.
-
-We want to know how much power couples into the cavity from a
-perfectly gaussian beam of the wrong size and location. We start with
-the equations for the Hermite-Gaussian beam decomposition as discussed in
-Siegman \cite{Siegman86}. 
-
-\newcommand{\intinfxy}[1]{\int^{\infty}_{- \infty} \int^{\infty}_{- \infty} #1 \,dx \,dy}
-\newcommand{\intinfrt}[1]{\int^{2 \pi}_{0} \int^{\infty}_{0} #1 r \,dr \,d\theta}
+% \section{Trap Environment}
+%
+% The benefits of the suspension isolation would naturally be lost if the
+% cavity were to be placed in air.
+% Clearly we needed a decent vacuum system.
+% Fortunately there was already a large bell jar in the lab.
+%
+%
+%
+% \section{Trap Control}
 
 
-\begin{align}
-    c_{nm} &= \intinfxy{
-    E(x,y,z) u_n^*(x,z)u_m^*(y,z)} \nonumber
-\\  &= \intinfxy{
-    E(x,y,z) u_0^*(x,z)u_0^*(y,z)} \nonumber
-\\  &= \intinfxy{
-    u_0(x,z-z_0)u_0(y,z-z_0) u_0^*(x,z)u_0^*(y,z)}
-\end{align}
+%\section{Noise Limitations}
 
-We now assign the labels $b$ for the beam and $c$ for the cavity,
+%We have decided on experimental parameters with a focus on frequency noise reduction as
+%this is the primary limitation as seen by Corbitt.
 
-\begin{align}
-    c_{00} &= \intinfxy{
-    u_{b0}(x,z-z_0)u_{b0}(y,z-z_0) u_{c0}^*(x,z)u_{c0}^*(y,z)} \nonumber
-\\  &= \intinfxy{ \left( \frac{2}{\pi w^2_0} \right) \left( \frac{q_{b0}}{q_{b}(z)} \right)
-    \left( \frac{q^*_{c0}}{q^*_{c}(z)} \right) \exp \left[-ik \left( x^2 + y^2  \right)
-    \left( \frac{1}{2q_b(z)} + \frac{1}{2q^*_c(z)} \right) \right]}
-\end{align}
+%Ultimately we want to have low enough technical noise so that we can turn off the active
+%feedback.
 
-Since $q(z) = q_0 + z - z_0$, and $q_0$ is purely imaginary,
-
-
-\begin{multline}
-    c_{00} = \intinfxy{ \left( \frac{2}{\pi w_{b0} w_{c0}} \right)
-    \left( \frac{- q_{b0} q_{c0}}{(q_{b0}+z-z_0)(-q_{c0}+z)} \right) \\
-    \exp \left[
-    \frac{-ik \left( x^2 + y^2  \right)}{2} \left( \frac{(q_{b0}+z-z_0)-(-q_{c0}+z)}{(q_{b0}+z-z_0)(-q_{c0}+z)} \right)
-    \right]}
-\end{multline}
-
-We start by changing to cylindrical coordinates,
-
-\begin{multline}
-    c_{00} = \intinfrt{ \left( \frac{2}{\pi w_{b0} w_{c0}} \right)
-    \left( \frac{- q_{b0} q_{c0}}{(q_{b0}+z-z_0)(-q_{c0}+z)} \right) \\
-    \exp \left[
-    \frac{-ik \left( r^2  \right)}{2} \left( \frac{(q_{b0}+z-z_0)-(-q_{c0}+z)}{(q_{b0}+z-z_0)(-q_{c0}+z)} \right)
-    \right]}
-\end{multline}
-
-A careful analysis of the exponent will reveal that the real part must be less than $0$.
-We can therefore solve the Gaussian integral, setting $s =
-\frac{-ik \left( r^2  \right)}{2} \left( \frac{(q_{b0}+z-z_0)-(-q_{c0}+z)}{(q_{b0}+z-z_0)(-q_{c0}+z)} \right)
-$,
-
-\begin{align}
-    c_{00} &= \intinfrt{ \left( \frac{2}{\pi w_{b0} w_{c0}} \right)
-    \left( \frac{- q_{b0} q_{c0}}{(q_{b0}+z-z_0)(-q_{c0}+z)} \right)
-    \exp \left[ s
-    \right]} \nonumber
-\\  &= \int^{\infty}_{0} \left( \frac{4}{w_{b0} w_{c0}} \right)
-    \left( \frac{- q_{b0} q_{c0}}{(q_{b0}+z-z_0)(-q_{c0}+z)} \right)
-    \exp \left[ s
-    \right] r \,dr
-\end{align}
-
-Now we transform the differential and the limits of integration, remembering
-that the real part of $s$ is less than $0$, $ds =
--ik \left( \frac{(q_{b0}+z-z_0)-(-q_{c0}+z)}{(q_{b0}+z-z_0)(-q_{c0}+z)} \right) r \,dr
-$,
-
-\begin{align}
-    c_{00} &= \left( \frac{4i}{k w_{b0} w_{c0}} \right)
-    \left( \frac{- q_{b0} q_{c0}}{(q_{b0}+z-z_0)-(-q_{c0}+z)} \right)
-    \int^{0}_{-\infty} e^s \,ds \nonumber
-\\  &= \left( \frac{4i}{k w_{b0} w_{c0}} \right)
-    \left( \frac{- q_{b0} q_{c0}}{(q_{b0}+z-z_0)-(-q_{c0}+z)} \right) \nonumber
-\\  &= \left( \frac{4i}{k w_{b0} w_{c0}} \right)
-    \left( \frac{- q_{b0} q_{c0}}{(q_{b0}+q_{c0}-z_0)} \right)
-\end{align}
-
-Now, we rewrite the coefficient in terms of waist sizes and distance between waists, using,
-\begin{align*}
-    q_0 &= \frac{i \pi w_0^2}{\lambda}
-\\  k &= 2 \pi / \lambda
-\end{align*}
-
-\begin{align}
-    c_{00} &= \frac{2 w_{b0} w_{c0}}{w_{b0}^2 + w_{c0}^2 + i z_0 \lambda / \pi} \nonumber
-\\  &= \frac{2 w_{b0} / w_{c0}}{1 + \left( w_{b0} /w_{c0} \right)^2 + i z_0 / z_R}
-\end{align}
-
-Power coupling into cavity is then (assuming no loss and $r_1 = r_2$),
-
-%\begin{align}
-%    P_{mathrm{trans}} &= P_{mathrm{incident}} \frac{}{}
-%\end{align}
-
-\begin{align}
-    P_{\mathrm{trans}}  &= P_{\mathrm{incident}} \frac{4 w_{b0}^2 / w_{c0}^2}{1 +
-    2 \left( w_{b0} /w_{c0} \right)^2 + \left( w_{b0} /w_{c0} \right)^4 + \left(
-    z_0 / z_R \right)^2} \nonumber
-\\  P_{\mathrm{trans}}  &= P_{\mathrm{incident}} \frac{4}{ 2 + \left( w_{c0} /
-    w_{b0} \right)^2 + \left( w_{b0} /w_{c0} \right)^2 + \left(
-    z_0 / z_R \right)^2}
-\\  P_{\mathrm{trans}}  &= P_{\mathrm{incident}} \frac{4}{ \left( w_{c0} /
-    w_{b0} + w_{b0} / w_{c0} \right)^2 + \left( z_0 / z_R \right)^2}
-    \label{eq:symetricmatch}
-\end{align}
-
-In equation \ref{eq:symetricmatch} we can see readily the symmetry between
-$w_{b0}$ and $w_{c0}$, and the symmetry of $z_0$ about $0$, as expected.
 
 \begin{figure}
 \centering

@@ -1,0 +1,122 @@
+
+\section{Mode Matching}
+As will be discussed in section
+\ref{sec:expimps}, we went through a revision in our overall layout.
+This changed the beam size and waist location in reference to the cavity.
+We did not want to open the chamber again for alignment and mode matching.
+It was useful to know the power coupling into the cavity with the wrong
+mode matching to give us an idea of how much transmitted light we should
+expect when the cavity is properly aligned since mode matching is a difficult
+process of moving the lenses along the beam path and realigning the beam.
+
+We want to know how much power couples into the cavity from a
+perfectly gaussian beam of the wrong size and location. We start with
+the equations for the Hermite-Gaussian beam decomposition as discussed in
+Siegman \cite{Siegman86}. 
+
+\newcommand{\intinfxy}[1]{\int^{\infty}_{- \infty} \int^{\infty}_{- \infty} #1 \,dx \,dy}
+\newcommand{\intinfrt}[1]{\int^{2 \pi}_{0} \int^{\infty}_{0} #1 r \,dr \,d\theta}
+
+
+\begin{align}
+    c_{nm} &= \intinfxy{
+    E(x,y,z) u_n^*(x,z)u_m^*(y,z)} \nonumber
+\\  &= \intinfxy{
+    E(x,y,z) u_0^*(x,z)u_0^*(y,z)} \nonumber
+\\  &= \intinfxy{
+    u_0(x,z-z_0)u_0(y,z-z_0) u_0^*(x,z)u_0^*(y,z)}
+\end{align}
+
+We now assign the labels $b$ for the beam and $c$ for the cavity,
+
+\begin{align}
+    c_{00} &= \intinfxy{
+    u_{b0}(x,z-z_0)u_{b0}(y,z-z_0) u_{c0}^*(x,z)u_{c0}^*(y,z)} \nonumber
+\\  &= \intinfxy{ \left( \frac{2}{\pi w^2_0} \right) \left( \frac{q_{b0}}{q_{b}(z)} \right)
+    \left( \frac{q^*_{c0}}{q^*_{c}(z)} \right) \exp \left[-ik \left( x^2 + y^2  \right)
+    \left( \frac{1}{2q_b(z)} + \frac{1}{2q^*_c(z)} \right) \right]}
+\end{align}
+
+Since $q(z) = q_0 + z - z_0$, and $q_0$ is purely imaginary,
+
+
+\begin{multline}
+    c_{00} = \intinfxy{ \left( \frac{2}{\pi w_{b0} w_{c0}} \right)
+    \left( \frac{- q_{b0} q_{c0}}{(q_{b0}+z-z_0)(-q_{c0}+z)} \right) \\
+    \exp \left[
+    \frac{-ik \left( x^2 + y^2  \right)}{2} \left( \frac{(q_{b0}+z-z_0)-(-q_{c0}+z)}{(q_{b0}+z-z_0)(-q_{c0}+z)} \right)
+    \right]}
+\end{multline}
+
+We start by changing to cylindrical coordinates,
+
+\begin{multline}
+    c_{00} = \intinfrt{ \left( \frac{2}{\pi w_{b0} w_{c0}} \right)
+    \left( \frac{- q_{b0} q_{c0}}{(q_{b0}+z-z_0)(-q_{c0}+z)} \right) \\
+    \exp \left[
+    \frac{-ik \left( r^2  \right)}{2} \left( \frac{(q_{b0}+z-z_0)-(-q_{c0}+z)}{(q_{b0}+z-z_0)(-q_{c0}+z)} \right)
+    \right]}
+\end{multline}
+
+A careful analysis of the exponent will reveal that the real part must be less than $0$.
+We can therefore solve the Gaussian integral, setting $s =
+\frac{-ik \left( r^2  \right)}{2} \left( \frac{(q_{b0}+z-z_0)-(-q_{c0}+z)}{(q_{b0}+z-z_0)(-q_{c0}+z)} \right)
+$,
+
+\begin{align}
+    c_{00} &= \intinfrt{ \left( \frac{2}{\pi w_{b0} w_{c0}} \right)
+    \left( \frac{- q_{b0} q_{c0}}{(q_{b0}+z-z_0)(-q_{c0}+z)} \right)
+    \exp \left[ s
+    \right]} \nonumber
+\\  &= \int^{\infty}_{0} \left( \frac{4}{w_{b0} w_{c0}} \right)
+    \left( \frac{- q_{b0} q_{c0}}{(q_{b0}+z-z_0)(-q_{c0}+z)} \right)
+    \exp \left[ s
+    \right] r \,dr
+\end{align}
+
+Now we transform the differential and the limits of integration, remembering
+that the real part of $s$ is less than $0$, $ds =
+-ik \left( \frac{(q_{b0}+z-z_0)-(-q_{c0}+z)}{(q_{b0}+z-z_0)(-q_{c0}+z)} \right) r \,dr
+$,
+
+\begin{align}
+    c_{00} &= \left( \frac{4i}{k w_{b0} w_{c0}} \right)
+    \left( \frac{- q_{b0} q_{c0}}{(q_{b0}+z-z_0)-(-q_{c0}+z)} \right)
+    \int^{0}_{-\infty} e^s \,ds \nonumber
+\\  &= \left( \frac{4i}{k w_{b0} w_{c0}} \right)
+    \left( \frac{- q_{b0} q_{c0}}{(q_{b0}+z-z_0)-(-q_{c0}+z)} \right) \nonumber
+\\  &= \left( \frac{4i}{k w_{b0} w_{c0}} \right)
+    \left( \frac{- q_{b0} q_{c0}}{(q_{b0}+q_{c0}-z_0)} \right)
+\end{align}
+
+Now, we rewrite the coefficient in terms of waist sizes and distance between waists, using,
+\begin{align*}
+    q_0 &= \frac{i \pi w_0^2}{\lambda}
+\\  k &= 2 \pi / \lambda
+\end{align*}
+
+\begin{align}
+    c_{00} &= \frac{2 w_{b0} w_{c0}}{w_{b0}^2 + w_{c0}^2 + i z_0 \lambda / \pi} \nonumber
+\\  &= \frac{2 w_{b0} / w_{c0}}{1 + \left( w_{b0} /w_{c0} \right)^2 + i z_0 / z_R}
+\end{align}
+
+Power coupling into cavity is then (assuming no loss and $r_1 = r_2$),
+
+%\begin{align}
+%    P_{mathrm{trans}} &= P_{mathrm{incident}} \frac{}{}
+%\end{align}
+
+\begin{align}
+    P_{\mathrm{trans}}  &= P_{\mathrm{incident}} \frac{4 w_{b0}^2 / w_{c0}^2}{1 +
+    2 \left( w_{b0} /w_{c0} \right)^2 + \left( w_{b0} /w_{c0} \right)^4 + \left(
+    z_0 / z_R \right)^2} \nonumber
+\\  P_{\mathrm{trans}}  &= P_{\mathrm{incident}} \frac{4}{ 2 + \left( w_{c0} /
+    w_{b0} \right)^2 + \left( w_{b0} /w_{c0} \right)^2 + \left(
+    z_0 / z_R \right)^2}
+\\  P_{\mathrm{trans}}  &= P_{\mathrm{incident}} \frac{4}{ \left( w_{c0} /
+    w_{b0} + w_{b0} / w_{c0} \right)^2 + \left( z_0 / z_R \right)^2}
+    \label{eq:symetricmatch}
+\end{align}
+
+In equation \ref{eq:symetricmatch} we can see readily the symmetry between
+$w_{b0}$ and $w_{c0}$, and the symmetry of $z_0$ about $0$, as expected.

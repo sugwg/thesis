@@ -1,10 +1,35 @@
 \acresetall
+
+The goal of this thesis is to develop the control for the optical spring
+experiment, observe the signature of the optical spring in the transfer
+function, and determine the noise level and steps for noise mitigation
+in order to remove active feedback at the spring resonance.
+
+In this chapter I will define the sources of noise which we have identified
+and describe their impact to the experiment.
+
+We have identified sources of noise and projected their contribution to noise
+in the length of the cavity.
+We could also choose frequency of the light as a reference, but we choose the
+cavity length as this is the natural dimension when talking about a spring,
+$F=-kx$.
+This "noise budget" is necessary for building the full picture for explaining our
+observations.
+
+The \ac{pdh} error signal for the trap cavity is our observation of the length
+of the cavity.
+With the cavity locked we use the \ac{pdh} signal to infer residual motion of
+the cavity.
+We calibrate the error signal by measuring the open loop gain and dividing out
+the feedback servo and actuation function.
+
 \section{Seismic}
 \label{sec:seismic}
 
 Seismic noise in our lab was a bit problematic due to the fact there is a giant
 inflatable roof sports dome right next door. The fans required to keep the roof
 up create a great deal of seismic noise at specific frequencies.
+
 This causes peaks in our seismic spectrum at frequencies that are integer
 multiples of each fans rotational frequency $\Omega_f$.
 The frequency at $n_b\Omega_f$, where $n_b$ is the number of blades in the fan,
@@ -12,6 +37,15 @@ will likely be the highest since a section of air near the fan will feel an
 increase in force as each blade passes by. The seismic noise is plotting along
 with noise measured from the two suspensions in figure \ref{fig:seismic}.
 
+Aside from the seismic peaks, the background seismic spectrum was basically as
+expected.
+The falloff was $1/f^2$ with $\approx 10^{-10} \mathrm{m/\sqrt{Hz}}$ at
+$\mathrm{100 Hz}$.
+The total rms motion was less than $1\mu \mathrm{m}$ at $\mathrm{100 mHz}$.
+With a voltage range of $\pm 10 \mathrm{V}$ at the coil drivers for our
+suspensions we can get a position range of about $\pm 68\mathrm{\mu m}$ for
+the suspended mass at DC.
+This gives us plenty of range to cover the background seismic motion.
 
 \begin{figure}
   \centering
@@ -20,6 +54,13 @@ with noise measured from the two suspensions in figure \ref{fig:seismic}.
     This shows the spectrum of the seismic noise in our lab taken with a
     seismometer located on table 2.
     The peppers represent peaks in the seismic background.
+    This spectrum was taken with the first payload assembly
+    suspended from our small optic suspension
+    before installing blade springs for vertical isolation.
+    We needed to move the bounce mode frequency down in order to not excite
+    it with the background seismic peaks.
+    The suspension upgrade took place concurrently with the payload upgrade
+    discussed in section \ref{sec:highQsus}.
     }
   \label{fig:seismic}
 \end{figure}
@@ -47,10 +88,43 @@ with noise measured from the two suspensions in figure \ref{fig:seismic}.
 
 \section{Thermal}
 
+Thermal noise is the random aggregate fluctuations of an object due to the
+random motion of the constituent particles.
+The spectral density of this motion is dependant on the temperature and the
+dissipation of the material.
+The random motion in a dimension of interest also depends on the geometry of
+the system.
+
+These motions are tiny and only really affect us in a cavity where we rely on
+the constructive interference of the micron wavelength light.
+So, we look closely at the materials in direct contact with the mirrors.
+
+Specifically, we identify the payload suspension attachment to the small
+mirror, the aluminum disk within which the large mirror is imbedded, and the
+layers of the high reflective coatings.
+
+Thermal noise will also affect us indirectly if we use another cavity for
+reference.
+The \ac{fss} will not be able to suppress the frequency noise below the
+thermal noise from the mirrors of the reference cavity.
+This thermal noise is part of the sensing noise for the servo and thus gets
+imprinted on the laser frequency which will account for detuning noise of
+the cavity.
+
+If we were to implement the \ac{fss} we would need to account for the
+reference cavity's thermal noise as well.
+% This would be the case for us if we were to implement the \ac{fss} described
+% in section \ref{sec:fss}.
+We estimate these noise effects as well in order to quantify the possible
+improvements gained by the implementation of this system.
+
 We derive the thermal noise of a system using the fluctuation-dissipation
-theorem which describes a relationship between the fluctuation of a system
-and its dissipation. The starting point for our thermal noise calculations
-is the Callen form of the theorem. \cite{Saulson,Callen}
+theorem which describes the relationship between the fluctuation of a system
+and its dissipation.
+The starting point for our thermal noise calculations
+is the Callen form of the theorem \cite{Saulson,Callen}.
+
+This calculation requires us to know the dynamics of the system.
 
 The \ac{psd} of the thermal noise is defined,
 \begin{align}
@@ -349,11 +423,12 @@ These additional noise sources are presented in figure \ref{fig:thermalnoises}.
 %\end{figure}
 
 \section{Laser Frequency}
+\label{sec:noise:freq}
 
 Laser frequency noise couples into the measurement significantly due to the
 interferometric nature of the experiment.
 The coupling goes as the length of the cavity as discussed in section
-\ref{sec:lin_short}.
+\ref{sec:lintrap:design}.
 
 \begin{figure}
   \tikzsetnextfilename{freqnoise}
