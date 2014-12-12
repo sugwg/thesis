@@ -118,6 +118,12 @@ reference cavity's thermal noise as well.
 We estimate these noise effects as well in order to quantify the possible
 improvements gained by the implementation of this system.
 
+Thermal noise from the reference cavity consists of the same coating thermal
+for the trap cavity and thermal noise from the glue used to attach the
+mirrors on the ends of the fused silica spacer.
+
+\subsection{Derivation of Payload Suspension Thermal Noise}
+
 We derive the thermal noise of a system using the fluctuation-dissipation
 theorem which describes the relationship between the fluctuation of a system
 and its dissipation.
@@ -332,8 +338,16 @@ length noise.
 
 \subsection{Other Thermal Noise Sources}
 
-Additionally there are thermal noises from the glue used in the reference
-cavity, the mirror coatings, and the input mirror mount.
+As mentioned above, we have several sources of thermal noise to consider.
+The sources fall into two basic categories: elastic deformation of an object
+and bending at a glue joint.
+
+I have presented the derivation of thermal noise from the glue joints attached to
+the payload mirror.
+The glue joints for the reference cavity mirrors are done in a similar way,
+however the geometry is much simpler.
+The equations of motion used were simply from the longitudinal compression of the
+glue which attaches the mirror to the spacer.
 
 The reference cavity was glued using 4 spots of the Optocast 3553 per mirror.
 The mirrors are one inch in diameter with a radius of curvature of $0.5m$
@@ -343,7 +357,7 @@ $120 \mu\mathrm{m}$ from the curved surface of the mirror to the flat end
 of the spacer.
 I have used a value of $50 \mu\mathrm{m}$ for the thickness of the glue spots.
 
-Parameters for glue used are provided in table
+Parameters for glue used in thermal noise modelling are provided in table
 \ref{tab:epoxyparams}.
 
 
@@ -365,13 +379,44 @@ Parameters for glue used are provided in table
   \end{center}
   \caption[Epoxy Parameters]{
       parameters of the OptoCast 3553 epoxy resin.
+      All parameters were taken from the data sheet except for the loss angle.
       The loss angle $\phi$ has not been measured for this material,
       so a fairly conservative value was assumed.
       }
   \label{tab:epoxyparams}
 \end{table}
 
+The other category of thermal noise source that I mentioned comes from the
+elastic deformation of an object.
+The method chosen for this calculation comes from Levin \cite{PhysRevD.57.659}.
+This method is derived from the same form of the fluctuation dissipation therom
+as above, except that now, we compute the non-homogeneous deformation of
+an object where the deformation has a gaussian profile of the same diameter
+as the beam spot.
+
+In the case of the coating thermal noise we use a direct application of the
+method presented by Levin.
+
+There is one additional source which I place in the same non-homgeneous
+deformation category.
+That is the deformation of the aluminum disk which the large mirror is
+attached to.
+The mirror was attached by thermally expanding the aluminum and allowing it to
+cool around the large mirror.
+This gives a pretty solid attachment and we expect that the dominant thermal
+noise from this mount will come from the non-homogenous deformation of the
+aluminum itself.
+For this calculation we simply apply the same calculation as we do for the
+coating to the aluminum disk with a "beam spot" diameter equal to the
+diameter of the large mirror.
+This will be correct up to some small geometric correction.
+
+
+
 These additional noise sources are presented in figure \ref{fig:thermalnoises}.
+The total thermal noise contribution is quite low.
+With the fiber suspension design, the dominant thermal noise source is actually
+from the coatings.
 
 \begin{figure}
   \tikzsetnextfilename{thermalnoises}
@@ -408,7 +453,12 @@ These additional noise sources are presented in figure \ref{fig:thermalnoises}.
     \addlegendentry{Total};
   \end{loglogaxis}
   \end{tikzpicture}
-  \caption[Thermal Noise Sources]{thermal noise contributions to experiment.}
+  \caption[Thermal Noise Sources]{
+    thermal noise contributions to experiment.
+    The limiting thermal noise factors are from the coatings which are
+    difficult to improve on.
+    However, the total thermal noise is quite low.
+    }
   \label{fig:thermalnoises}
 \end{figure}
 
@@ -444,8 +494,14 @@ The coupling goes as the length of the cavity as discussed in section
   \addlegendentry{FSS Control Signal, PZT Path}
   \end{loglogaxis}
   \end{tikzpicture}
-  \caption[Frequency Noise]{This is the measured laser frequency noise
+  \caption[Frequency Noise]{measured laser frequency noise
     from the \ac{pzt} path of the \ac{fss}.
+    This measurement was taken with the \ac{fss} locked with a unity gain
+    frequency above 100kHz.
+    We measured the control signal which gives us the free running laser
+    frequency noise.
+    The $1/f$ shape and $\mathrm{1Hz/\sqrt{Hz}}$ at 1kHz are characteristics
+    of the NPRO laser.
     }
   \label{fig:frequencynoise}
 \end{figure}
@@ -460,7 +516,8 @@ control loop.
 Figure \ref{fig:frequencynoise} shows this laser frequency noise measurement
 converted from the Volts measured in the \ac{pzt} path to Hz laser frequency.
 
-
+The laser frequency noise is the dominant noise source above a few hundred Hz.
+The level of noise is low enough to be able to control the cavity.
 
 
 \section{Laser Intensity}
@@ -512,12 +569,19 @@ in figure \ref{fig:intensitynoise}.
   \label{fig:intensitynoise}
 \end{figure}
 
+\section{Total Noise Budget}
+
 In figure \ref{fig:noisebudget} I show the total thermal noise with the laser
 noises and the quantum noise limit. From here it is clear there is a lot of
 room for improving the laser noise. In the range of our experiment of several
 hundred Hz, we can improve by more than an order of magnitude before
 improvements to seismic isolation are needed. Laser noise is more than 3 orders
 of magnitude above the thermal and quantum noises.
+
+The PZT range is about $\pm 160\mathrm{MHz}$.
+Converting this to cavity length, the range is about $4\times10^{-8}$ m.
+This easily covers the range needed for the noise depicted in figure
+\ref{fig:noisebudget}.
 
 
 \begin{figure}
