@@ -436,7 +436,12 @@ These criteria lead us to the experimental parameters listed in table
 %  \end{scriptsize}
 \end{tikzpicture}
 \caption[Subcarrier Servo]{This is a schematic of the optical path for the
-         subcarrier servo on Table 1.}
+         subcarrier servo on Table 1.
+         We mix the output of the crystal oscillator with the output of the
+         voltage controlled oscillator.
+         This is then filtered to give the beat frequency signal which is
+         then phase locked to the low frequency function generator.
+         }
 \label{fig:scservo}
 \end{figure}
 
@@ -469,11 +474,22 @@ mass using thin fibers (see figure \ref{fig:smallsus}).
   \includegraphics[width=15cm]{./figures/seismic130930.pdf}
   \caption[Background Seismic Noise]{
   background seismic noise.
+  The units in the top plot are $\mathrm{\mu m /\sqrt{Hz}}$.
+  The bottom plot is in counts from the analog to digital
+  converter.
   The red trace in the upper plot is from the seismometer.
   The rms motion due to the noise around 500Hz is about
   $10^{-4}\mu\mathrm{m}/\sqrt{\mathrm{Hz}}$.
   This is about a factor of 10 too much for our experiment
   just from the point of view of the stability criteria.
+  The bottom plot of the signals in counts shows the relative
+  strength of the signals into the digital system.
+  Channels 20, 22, and 23 show the noise floor digital inputs.
+  The 10Hz peak shows up in the empty channels due to a small
+  amount of crosstalk between channels.
+  This plot shows that even though the seismometer input is quite
+  high, the amount of crosstalk is low enough to not be a concern
+  for us.
   }
   \label{fig:seismicnoise130930}
 \end{figure}
@@ -933,15 +949,25 @@ modes as necessary to acheive stable locking.
 %the OSEM drives of the SOS.
 
 \subsection{Actuation Range and Bandwidth}
+\label{sec:actrangebw}
 Due to seismic noise we needed a fairly wide actuation range at low frequencies.
 The maximum range of the laser PZT is plus or minus 160MHz.
 This corresponds to about 42nm.
-As can be seen in figure \ref{fig:seismic} there is more rms motion than this
+As can be seen in figure \ref{fig:seismicnoise130930} there is more rms motion than this
 at low frequencies.
 
 We needed another actuation path to cover the full range of rms motion at low
 frequencies.
 For this we use the magnetic force from the OSEM coils.
+From the OSEM coils, we calibrated a force per voltage (voltage input to current
+driver board) value of $2\times 10^{-5} \mathrm{N/V}$ per coil.
+With four coils we get a force range of about $\pm 8\times 10^{-4} \mathrm{N}$
+for the suspension.
+Most of the rms motion will come from the 18Hz resonance of the payload suspension
+which is undamped.
+At this frequency we are well above the pendulum frequency of the input mirror
+suspension so we can treat the input mirror as a free mass.
+The actuation range at this frequency is then $2\times 10^{-7}\mathrm{m}$.
 
 While attempting to acquire lock, the cavity mirror motion is much larger than
 the linewidth of the cavity.
@@ -956,10 +982,14 @@ well for acquiring lock.
 
 To get this bandwidth a modification to the laser PZT actuation path was
 required.
-The high voltage amplifier for the laser PZT itself has a bandwidth limit.
-In order to extend the range further we used a high-frequency
-bypass which passively adds the HV output to the HV input.
-
+The high voltage amplifier for the laser PZT was limiting our bandwidth due
+to it having a complex double pole at 50kHz.
+This gave a rather strong rolloff in phase starting around 10kHz.
+By passively adding the HV output to the HV input we could extend the
+bandwidth of the PZT path.
+The passive path which doesn't have the phase rolloff dominates at
+high frequencies, extending the unity gain frequency we can get with
+this loop.
 
 \section{Sub-Carrier Servo}
 \label{sec:scservo}

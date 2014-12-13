@@ -45,14 +45,41 @@ future optical trap experiments.
 
 We start with a Mephisto 2 Watt laser head with an integrated intensity
 noise reduction system.
+
 This laser has good noise characteristics on its own.
 It is a \ac{ndyag} \ac{npro} laser. The monolithic cavity allows for an
 extemely small spectral linewidth of less than 1kHz \ac{fwhm}.
 %The noise eater option gives a \ac{rin} of less than -150dB/Hz.
-With the noise eater option, the \ac{rin} we measure is
+The NPRO is characterized as having a frequency noise amplitude spectral
+density which is proportional to $1/f$, where $f$ is the frequency
+of the noise fluctuations of the laser frequency.
+At 1kHz the frequency noise is $\mathrm{10Hz/\sqrt{Hz}}$.
+
+The noise eater option gives a \ac{rin} of less than -150dB/Hz per the
+specification sheet.
+\ac{rin} is the noise level of the laser power relative to the average
+laser power.
+The average laser power is sometimes referred to as the DC power
+or carrier power.
+It is fairly standard to specify \ac{rin} with the slightly confusing
+units of dB/Hz.
+This is actually dB relative to carrier power or dBc.
+The confusing part is that 20dB, which is normally a factor of 10
+in amplitude is actually a factor of ten in laser power.
+It \emph{is} however a factor of 10 in the amplitude of the voltage read
+from a \ac{pd}.
+This is important when trying to compute the radiation pressure noise
+in $\mathrm{N/\sqrt{Hz}}$, for example.
+
+The \ac{rin} specification is actually for frequencies above 100kHz.
+We're actually interested in the intensity noise at frequencies
+much lower than this so we measure the the noise in the lab.
+With the noise eater on, the \ac{rin} we measure is
 $\frac{\mathrm{RIN}}{\sqrt{\mathrm{Hz}}}\leq \approx 10^{-6}$
 above $100\mathrm{Hz}$ (see figure \ref{fig:intensitynoise}).
-It's lasing medium is one solid piece of \ac{ndyag} with four internally
+
+
+The NPRO's lasing medium is one solid piece of \ac{ndyag} with four internally
 reflecting surfaces that form a ring shaped cavity.
 Three points define a plane, the addition of the fourth mirror outside of this
 plane enables a rotation of the polarization of the laser for each round trip
@@ -98,6 +125,10 @@ intensity of the beam before the \ac{pmc}. The actuator is an \ac{aom}.
            This is the open loop transfer function for the ISS.
            The feedback is AC coupled to prevent large DC offsets in the
            actuator.
+           There is a switch to turn on a boost stage which gives another
+           factor of 10 in gain at frequencies between 40Hz and 4kHz.
+           This is where our optical spring frequency will be and where
+           we will be most affected by the noise.
         }
 	\label{fig:isstf}
 \end{figure}
@@ -260,17 +291,30 @@ magnetic field lines of the damping magnets.
 \begin{figure}[htbp]
 	\centering
 		\includegraphics[width=15cm]{./figures/refcavsusdesign.pdf}
-	\caption[Reference Cavity Suspension Design]{Design of the reference cavity suspension}
+	\caption[Reference Cavity Suspension Design]{design of the reference cavity suspension.
+        Eddy current dampers were added to this suspension design by attaching two U-shaped
+        pieces of steel to the frame and two aluminum paddles to the reference cavity.
+        Permanent magnets were attached to the steel to create a magnetic field which the
+        aluminum paddles are suspended in.
+        Motion of the reference cavity in relation to the suspension frame creates eddy
+        currents in the aluminum which damp the motion.
+        }
 	\label{fig:refcav_sus}
 \end{figure}
 
 
 \subsection{Feedback}
 The feedback electronics used for the \ac{fss} are from initial LIGO. The board
-provides feedback signal for 2 different actuation paths. The low frequency path
-is to the laser cavity length which is split again into two different actuation
-paths (thermal control and a piezo electric transducer in the laser head). The
-other path is to an \ac{eom} to actuate on the phase of the laser beam.
+provides feedback signal for 2 different actuation paths with a crossover
+frequency of 10kHz.
+The low frequency path actuates on the laser frequency by changing the laser
+cavity length.
+The other path is to an \ac{eom} to actuate on the phase of the laser beam.
+
+The low frequency path is split again into two different actuation
+paths with a crossover frequency of about 10Hz.
+Below the crossover the laser cavity length is changed by thermal expansion.
+Above the crossover the actuation is by \ac{pzt}.
 
 \subsection{Actuation}
 
