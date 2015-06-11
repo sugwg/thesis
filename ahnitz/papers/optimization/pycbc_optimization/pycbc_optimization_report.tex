@@ -1,0 +1,376 @@
+\documentclass{article}
+
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{url}
+\usepackage{ifpdf}
+\usepackage{acronym}
+\usepackage{tabularx, tabulary, array, multirow, ctable, booktabs, rotating}
+\usepackage{acronym}
+\usepackage{float}
+
+\acrodef{BBH}{binary black hole}
+\acrodef{BH}{black hole}
+\acrodef{BNS}{binary neutron star}
+\acrodef{CBC}{compact binary coalescence}
+\acrodef{EM}{electromagnetic}
+\acrodef{EOS}{equation of state}
+\acrodef{GRB}{gamma-ray burst}
+\acrodef{GW}{gravitational wave}
+\acrodef{MBTA}{Multi-Band Template Analysis}
+\acrodef{NS}{neutron star}
+\acrodef{NSBH}{neutron star-black hole binary}
+\acrodef{PSD}{power spectral density}
+\acrodef{SNR}{signal-to-noise ratio}
+
+\begin{document}
+
+\textbf{FIXME: Add references throughout!!!}
+
+\section{Pipeline overview}
+\label{sec:pipeline-overview}
+
+\textbf{FIXME: Add this section, including some indication of the FLOP and
+  bandwidth counts for the various kernels in the matched-filtering loop, since
+  such counts are referenced later.  Do we also want to discuss sampling rate,
+  data segmentation, etc., here?  At all?}
+
+\section{Performance and optimization}
+\label{sec:perf-optim}
+
+In this section we discuss the current performance of the pipeline, the
+optimizations that have been undertaken, and future optimizations that we are
+investigating for further performance improvements.
+
+An important component of performance improvements over the past year have been
+algorithmic improvements to expensive kernels in the pipeline.  Those
+improvements that are independent of the kind of hardware on which the pipeline
+executes are discussed in the following subsection.  After that, the second and
+third subsections address the optimizations specific to CPU and GPU
+architectures specifically.
+
+\subsection{Algorithmic improvements}
+\label{sec:algor-impr}
+
+We have already reviewed in section~\ref{sec:pipeline-overview} the algorithmic
+improvements that are built into the FINDCHIRP matched filtering algorithm, and
+the rationale for their selection. We there also summarized the main steps of
+the algorithm.  While detailed profiling results are presented in following
+sections, we have made algorithmic improvements to two of those kernels:
+evaluation of the chi-squared signal consistency test, and the thresholding and
+clustering kernels that identify candidate triggers from the output. We briefly
+describe those algorithmic optimizations here; the performance reported in the
+following two subsections reflects these optimizations.
+
+\subsubsection{Implementation of the $\chi^2$ signal consistency veto.}
+\label{sec:impl-chi2-sign}
+
+For initial LIGO data analysis, the $\chi^2$ signal consistency veto was implemented
+in a manner that was computationally very expensive and scaled with the number
+of ``bins'' chosen for the veto.  Ideally the number of bins should be tuned to
+maximize detection efficiency, and would conceivably have increased
+significantly with advanced detector data.  A new implementation of that
+algorithm obviates that cost, and speeds up the overall execution of the
+kernel. \textbf{FIXME: By what factor? Tested how and when? CPU vs GPU?}
+
+That algorithmic improvement\ldots\textbf{FIXME: Add description of algorithm}
+
+\subsubsection{Thresholding and clustering}
+\label{sec:thresh-clust}
+
+After the convolution of the data
+with the template is calculated through the inverse FFT, the resulting time
+series must be searched for points above a runtime-specified threshold that are
+candidate triggers.  Moreover, since either a loud signal or glitch can produce
+many nearby points above any threshold which do not represent truly independent
+triggers, these points above threshold are then further clustered in time, so
+that there is a guaranteed minimum spacing of a user-specified length (the
+clustering window) between any two consecutive clustered triggers.
+
+Thus far these two steps (thresholding and clustering) were implemented as
+separate kernels; the optimization fuses them into one.  The primary motivation
+for this fusion is the thresholding step.  Searching through an array for points
+above threshold is trivial to implement in serial, unvectorized code.  As soon
+as one attempts either vectorization or parallelization of this code, however,
+the problem is seen to be essentially equivalent to \emph{stream compaction},
+which is difficult to vectorize or parallelize without requiring multiple passes
+over the array to be compacted, which must be avoided if possible in a
+bandwidth-limited computation.  The key difficulty is that stream compaction
+takes its input array and writes out another array consisting of all elements of
+the input satisfying some criterion, consecutively.  This cannot be vectorized
+or parallelized in one step, because the location to which the output should be
+written potentially depends on the calculation of all input array elements
+before any given element. 
+
+While it is possible to vectorize and parallize stream compaction if two passes
+over the data are taken \textbf{FIXME: add reference}, by fusing the
+thresholding with clustering, we can perform both in a single pass. The key
+idea is to find the maximum of the output over sub-arrays no longer than the
+clustering window, and writing one output for each such window.  This can be
+done in a single pass over the data, and then one only need cluster in a
+followup pass that looks at the maximum for each window.  While that followup
+pass is not parallelized, in our typical configurations it looks at of order one
+hundred array elements, rather than a million, and so has trivial cost in
+comparison.
+
+\subsection{CPU performance and optimization}
+\label{sec:cpu-perf-optim}
+
+In section~\ref{sec:hardware-study} we will present a hardware trade study
+summarizing investigations of the performance of PyCBC on at least three
+different architectures, which between them cover different clock speeds, cache
+sizes, and instruction sets.  In this subsection where we discuss in detail the
+performance and optimization of PyCBC for CPU architectures we focus on one of
+those hardware choices in particular: the Sandy-Bridge E5-2670, which is a
+dual-socket CPU running at a 2.60~GHz clock speed.  Each socket has eight cores
+and a 20 MB last-level (L3) cache shared among all eight of those cores; each
+core has its own L1 and L2 caches, of 32 KB and 256 KB, respectively. The Sandy
+Bridge architecture has the AVX (but not AVX2) instruction set available. We focus
+on one choice of hardware to simplify the discussion of performance and 
+optimization in the following several paragraphs; we choose the E5-2670 for that
+hardware discussion point because it is nearly identical to the Stampede nodes
+in which our XSEDE service unit needs are calculated (the Stampede chips are
+also Sandy Bridge E5 dual-socket CPUs with the same instruction set and cache
+hierarchy as the E5-2670, but they have a 2.7~GHz clock speed rather than
+2.6~GHz). Though our discussion is focused on one architecture, similar
+considerations will apply to other CPU architectures.
+
+All benchmarks are performed with CPU affinity set to bind the calculation to
+specified cores.
+
+\subsubsection{Choice of compilers and libraries}
+\label{sec:choice-comp-libr}
+
+By design, our matched filtering floating point operation count is dominated by
+the inverse FFT through which the correlation is implemented. Hence it is
+crucial that we use the best library for that operation, configured in the
+optimal way.
+
+Since all of the hardware we have benchmarked on thus far is Intel, we have
+investigated two high-performance libraries: the Intel Math Kernel Library (MKL)
+and the Fastest Fourier Transform in the West (FFTW). Both support vectorized
+and parallelized operations, though FFTW only supports them when they have been
+expressly compiled in (which we do).  We have performed dedicated benchmarks of
+the FFT to identify the configuration that gives the highest throughput
+\emph{for the FFT alone}, so that we can know when non-dominant parts of the
+code might in fact be limiting the performance of the FFT.  We require an
+out-of-place transform because the follow-up veto analysis needs the input to
+the FFT.  That study showed that for the E5-2670 the optimal choice of library
+and configuration for the FFT was to use the FFTW library with a multi-threaded
+FFT using all eight cores of a socket, which is not unexected since the
+multithreaded configuration allows all of the FFT memory to remain in cache.
+
+\textbf{FIXME: Add table showing timings?  Comment on smaller/larger FFT sizes?
+  What do we say about choice of compilers?  Weave seems hard for icc without
+  recompiling Python (is that still true?)}
+
+\subsubsection{Profiling of expensive kernels}
+\label{sec:prof-expens-kern}
+
+\textbf{FIXME: Add updated profiling results in absolute numbers once available
+  from our ``most optimized'' code base.  Do we want a table showing performance
+  in isolated benchmarking as well as performance in-situ? I think we need a
+  call-graph also.}
+
+\subsubsection{Parallelization of expensive kernels}
+\label{sec:parall-expens-kern}
+
+The two libraries that we have benchmarked for the FFT are capable of
+multi-threaded execution; our parallelization efforts are therefore focused on
+the kernels before and after the FFT.
+
+Both the correlation of the frequency-domain data segment with the frequency
+domain template (to produce the input to the inverse FFT) and the combined
+thresholding and clustering algorithm (described in
+subsection~\ref{sec:algor-impr} above, and acting on the output of the inverse
+FFT) are implemented in the pipeline as C-code kernels.  These are parallelized
+with OpenMP and will dynamically adjust to run on all cores made available to
+the kernel. The optimal performance was achieved not by a straightforward
+\texttt{for} loop parallelization, but rather by parallelizing a loop that
+called another function to act on ``chunks'' of data, where the chunk size is
+chosen to maximize the amount of data that can fit in the L2 cache of each
+core.
+
+\textbf{FIXME: Also parallelize the chi-square veto}.
+
+The quality of parallelization is relatively easy to quantify: a given kernel is
+benchmarked running on a single core with all other cores idle, and that
+benchmark compared to the kernel executing on all cores of the socket. Again, we
+reiterate that we always set the CPU affinity of a kernel so that the operating
+system cannot dynamically migrate it. If the parallelization is optimal, then
+the ratio of the single-threaded execution to multithreaded should be the number
+of cores on the socket, in our case eight.
+
+\textbf{FIXME: Provide these ratios}.
+
+As a further check, we can also check that the overall throughput is maximized
+by running in the multithreaded case, since we know from isolated FFT
+benchmarking that this configuration provides maximal FFT
+performance. \textbf{FIXME: provide that comparison}.
+
+\subsubsection{Vectorization of expensive kernels}
+\label{sec:vect-expens-kern}
+
+Just as the C-implementation of the correlation and thresholding and clustering
+algorithms has been parallelized using OpenMP, it has also been vectorized to
+support SSE4.1 and AVX where those are available, and to fall back to a straight
+C implementation when not. The vectorization is hand-coded using compiler
+provided instrinsic functions that map directly onto SIMD instructions, and the
+loops are unrolled to permit the vectorized kernel to operate on an entire cache
+line. Wherever possible memory loads and stores are performed with the
+``aligned'' memory intrinsics, and the arrays on which these kernels act are
+allocated with 32-byte aligned memory (which is also done for the arguments to
+the inverse FFT call). Much as for parallelization, for the fused
+threshold-and-cluster kernel, an efficient vectorization is only possible
+because of the algorithmic change summarized in section~\ref{sec:algor-impr}.
+
+We can quantify the quality of the vectorization similarly to our
+quantification of the parallelization: benchmarking the kernel with it on and
+off. In our case it is relatively straightforward to disable most of the
+vectorization; though it has been hand-coded with vector intrinsics, these are
+always wrapped in preprocessor directives to allow a graceful fall-back to
+straight C-code.  Hence the instrinsics can be commented out and compiler flags
+given to prevent the compiler from generating most such instructions on its
+own\footnote{It is not possible to prevent \emph{all} SIMD instructions; because
+  the operating system is 64-bit, the C-library is compiled with a minimal set
+  of SSE instructions, so that turning off all SIMD instructions generates linking
+  errors.}.
+This comparison has been made for both the correlation and thresholding and
+clustering kernels, where the ratios are \textbf{FIXME: insert these ratios},
+respectively. 
+
+For the Sandy Bridge AVX instruction set, the peak theoretical speedup from
+vectorization is a factor of sixteen for single precision code.  That factor
+comes from a factor of eight for the SIMD single-precision vector width and
+another factor of two because the core can generate a multiply and an add at
+each clock cycle.  Of course, achieving this peak theoretical speedup is often
+difficult in practice: the latencies of the multiply and add instructions are
+five and three clock cycles, respectively, and there are only sixteen SIMD
+registers that can serve as operands for these instructions. Thus only very
+specific problems will have the necessary data independence and structure to
+allow retiring 16 single-precision SIMD arithmetic operations per clock cycle.
+
+Our kernels do not have such structure.  The correlate kernel is simpler to
+analyze, since it is almost identical to element-by-element complex
+multiplication, for which AVX optimized code is widely available (including from
+Intel). The only difference between our code and these is that we must add a
+single instruction, to complex conjugate one of the input vectors. A standard
+single-precision complex multiplication requires six floating point operations
+(four multiplications and two additions); an AVX register can hold four single
+precision complex numbers. Thus the relevant speedup would be how many clock
+cycles are required to execute the AVX multiplication of the 24 floating point
+operations equivalent to the multiplication of four complex numbers
+simultaneously. Because of the need to conjugate an operand as well as the
+shuffle operations inherent to complex multiplication, there are seven
+instructions needed for this calculation (there are six in the widely available
+libraries for AVX complex multiplication; our modification to calculate the
+complex conjugate adds only a single instruction with a latency of one clock
+cycle),  giving a theoretical speedup of a factor of $2\times (24/7) = 6.86$, if
+we were in fact able to retire two AVX instructions per clock cycle. The
+analysis of the thresholding and clustering algorithm is similar if more
+complex; each execution of the inner loop requires eight AVX instructions to
+find the location and values of the maximum of four consecutive complex numbers,
+which corresponds to 16 scalar floating point operations if we include the
+comparison. Thus the maximum speedup is only a factor of four, at most. 
+
+The further gap between the theoretical peak speedup of vectorization and what
+we have measured can be attributed to memory bandwidth. \textbf{FIXME: include
+  numbers, and justify this!  Needs new version of code w/o overhead}.
+
+\subsubsection{Performance relative to theoretical peak}
+\label{sec:perf-relat-theor}
+
+Since we have designed our overall algorithm to be dominated by the FFT, the
+first measurement of performance we make is of that kernel.  We find through
+benchmarking that the most effecient FFT is a multi-threaded configuration using
+all eight cores of a single socket of the E5-2670; we further found that in this
+configuration the FFTW library provided better performance than MKL. For the
+$2^{20}$ single-precision, out-of-place inverse FFT that is the dominant cost in our
+algorithm, the input and output vectors each require 8~MB of memory, and so the
+arguments for the FFT together require 16~MB and hence fit entirely in the 20~MB
+L3 cache of the socket.
+
+The benchmarked optimal time for this FFT (with ``patient'' planning for FFTW)
+was 970~$\mu$s.  If we use $5N\log{N}$ as the number of floating point
+operations performed by the FFT, then this corresponds to a performance of
+108~GFlops. For comparison, we also measure the floating point operations using
+the Linux \texttt{perf-stat} tool.  That measurement indicated first that
+99.999\% of the instructions retired were single-precision AVX instructions, so
+the FFTW library code is extrememly well vectorized.  The corresponding
+performance is 91~Gflops, or 84\% of the $5N\log{N}$ estimate. Since there are
+FFT algorithms with a floating point count as low $4N\log{N}$, this is
+consistent with the library having chosen an FFT algorithm with lower floating
+point cost.  With eight AVX capable cores that can retire as many as two AVX
+instructions per clock cycle, the E5-2670 has a peak theoretical floating-point
+rate of 333 GFlops; we therefore achieve 27\% of the peak flop rate.  For an
+algorithm with the complex memory access pattern of the FFT, this is a not
+unreasonable performance.
+
+The two kernels on either side of the FFT---correlation before, thresholding and
+clustering after---are expected to be much more bandwidth limited. Correlation
+must read two complex numbers and write a third, while performing a total of six
+floating point operations for those six floating point memory operations.
+Thresholding reads one complex number and performs three floating point
+arithmetic operations (and one floating point comparison); because of the fusion
+of thresholding and clustering the writes are negligible. Thus we have from a
+one-to-one to 1.5-to-one ratio between arithmetic and memory operations, which
+is extremely low. 
+
+We have attempted to determine the peak memory bandwidth in several different
+ways. First, we have run the STREAM benchmark, which measures bandwidth from
+main memory on aligned memory; for a single socket this bandwidth is
+approximately 26~GB/s\footnote{It is possible to improve this by roughly a third
+  by forcing the use of \emph{streaming stores}; however, while this
+  significantly improves the bandwidth as measured by STREAM, it does so by
+  bypassing the cache on writes.  Since the only kernel with significant writes
+  is correlation, this is not beneficial: the output of the correlation
+  \emph{needs} to remain in cache if possible since it will immediately become
+  the input to the FFT}. For correlation, this would imply an execution time of
+460~$\mu$s, much higher than what is measured, and 307~$\mu$s for thresholding,
+again much higher than observed.  This is to be expected as we want these
+calculations to remain in cache.  While the STREAM2 benchmark can in principle
+measure memory bandwidth to cache, it does not at present implement multithreaded
+or memory alignment in its measurement and hence is not particularly helpful for
+understanding our performance. Our kernels are parallelized with the goal that
+each ``chunk'' remains in L2 cache, which has a published latency of 12
+cycles. For an AVX load or store of 32 bytes per core, at the E5-2670 clock
+speed this implies a bandwidth of 55~GB/s, implying 218~$\mu$s for correlation
+and 145~$\mu$s for thresholding and clustering.  Our performance is slightly
+better than this, likely indicating that hardware prefetching is effective at
+hiding some of this latency, though this requires further investigation.
+
+There is one last important point concerning the ability of our code to reach
+peak performance. That is the performance of our code \emph{in-situ}, as
+measured through profiling.  For the $2^{20}$ length we need for our FFT, the
+measured time of a correlation followed by an inverse FFT is significantly
+longer than the sum of the execution times of those to kernels benchmarked
+separately. \textbf{FIXME: state how much, and refer back to profiling table
+  earlier}. This is because while the memory for either correlation or an
+inverse FFT (12~MB and 16~Mb respectively) can remain in the L3 cache, the
+combined operation requires a total of 24~MB, exceeding the L3 cache.  This
+penalty can be verified by benchmarking a $2^{19}$ correlation followed by
+inverse FFT, which \emph{does} fit in cache and whose performance closely
+matches the sum of the inidvidual kernel times. \textbf{FIXME: report on this
+  benchmarking with updated code}. We are investigating ways to mitigate this,
+including loads that bypass the cache for specified memory reads, but this
+requires kernel mode code.
+
+\subsubsection{Ongoing and future optimization investigations}
+\label{sec:ongo-future-optim}
+
+\textbf{FIXME: What do we want to include here?  Downsampling? Downsampling +
+  SVDxs?  More conservative things?  Nothing?}
+
+\subsection{GPU performance and optimization}
+\label{sec:gpu-perf-optim}
+
+\textbf{FIXME: write this section}
+
+\section{Hardware trade study}
+\label{sec:hardware-study}
+
+\textbf{FIXME: write this section}
+
+
+\end{document}

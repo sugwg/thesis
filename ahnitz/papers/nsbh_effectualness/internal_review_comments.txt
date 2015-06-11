@@ -1,0 +1,63 @@
+Dear Frank,
+
+Many thanks for your careful and detailed comments on our work "Investigating the effect of precession on searches for neutron-star–black-hole binaries with Advanced LIGO". We have addressed the various comments as detailed below, have uploaded an updated version of the paper to the DCC and plan to submit to the journal and arXiv at 4:00 EST today (9 July).
+
+- I found Sec. II somewhat confusing to read. I want to know about the distribution used in the present study, instead rather narrow ranges in observed BH and NS masses are presented first. Only the last paragraph then reveals what distributions actually have been employed, and they are reasonably broad, but exactly why they have been chosen like this (e.g., why does the BH mass go up to 15 Msun) is not explained. I would prefer an upfront statement what has been chosen for this study and a subsequent explanation how these numbers are motivated by observations or if they are simply the authors' choice (which is perfectly fine if there is no conclusive data).
+
+ > We have moved Sec II around to put the actual distributions used up front, and attempted to motivate the choices we drew from the astrophysical input. 
+
+- Eq. (2) does not explicitly show log(v) terms, are they part of the F_i?
+
+ > This has been fixed to explicitly mention the log(v) terms in F_i
+
+- Brackets used in Eqs. (5), (10), (11) do not just indicate some particular truncation but a re-expansion into a Taylor series first, which should be mentioned in the text.
+
+ > This has been added to the text
+
+- The description of the TaylorT2 model is confusing. Is it not the case that Eq. (6) is integrated analytically as well as an expression for t(v). What is meant by "the integration is terminated at MECO"? (This formulation makes me think of a numerical integration, although I thought only the inversion \phi(v) & t(v) => \phi(t) is done numerically for TaylorT2.)
+
+ > The text in this area has been reworked to try to make this clearer. (We did not mean to imply that a numerical integration was being performed, but I can see that the text was unclear!)
+
+- Eq. (8): mass and distance affect the amplitude as well.
+
+ > This has been added to the equation now.
+
+- Eq. (17): The notation < ..> is not defined.
+
+ > The definition of <..> to mean the mean has been added.
+
+- Sec. V: When the transformation \xi -> physical parameters is discussed, can't you start from analytical descriptions \xi(m1, m2, ...) [similar to what was derived in arXiv:1304.7017] and invert them with a root-finding algorithm? Would that be faster?
+
+ > We use analytical descriptions of \xi(m1,m2, … ) to choose where to place the grid points, as described in Brown:2012qf. However, inverting these to obtain m1(xi_i), m2(xi_i) … proved difficult, especially as the 8-D xi_i space means that any point in that space has to be pushed into the 4-D manifold containing physical points. In the current implementation (and in the code that is in pylal) we just solved this analytically is it worked and it let us do these studies. A reference to arXiv:1304.7017 has been added to the work, this should have been there anyway and was a regrettable oversight on my part.
+
+> HOWEVER, I cannot say that I am happy with this approach (though the biggest time-consumer at the moment, by far, is figuring out the depths of the xi_3,4,5 directions). If you want to play around with methods for speeding this up I would be more than happy to show you where the relevant code snippets live!
+
+- Sec VI: To understand the performance of a 3-d lattice better, could you provide the number of templates for a 0.96 minimal match bank? Both this and the provided number for 0.97 match can then be compared to the constructed "mixed" 0.97/0.96 bank.
+
+ > This number is being calculated right now (generating 3D banks is not fast!) It will be added to the manuscript tomorrow!
+
+- Generally, I find the number of similarly looking plots somewhat hard to digest. It would be much more convenient for the reader if a limited number of plots are identified clearly to present the key results of the paper, and other plots are supplementary material that show the robustness of the results. This distinction could be done by moving some material to an appendix, collecting supplementary material in smaller panels, or simply by saying in the caption that this figure is meant to show (almost) identical results to Fig. X.
+- Along the same lines, I think that Sec. VIII A. and B. could be merged (which would make Fig. 7 redundant as it is included in Fig. 11) to present the main results concisely.
+
+ > This is a fair point, we had already tried to cut down on the plot count, but maybe we didn't go far enough. I am not in favour of moving plots to appendices, and do feel that the plots that are there do convey something useful. However, I have implemented the following to try to make this clearer:
+    > FIgure 11 has been merged with Figure 7 as suggested
+    > Figure 9 now contains some words to say that it shows similar results to Fig 8
+    > Same for Figure 10
+    > Same for Figure 14 wrt Figure 12.
+    > The reason for keeping Figs 9 and 14 is that they demonstrate that our results are not biased by the choice of waveform model. FIgure 10 illustrates that using average fitting factor does not change results much when compared the "effective fitting factor".
+
+- One main result that sticks out of the paper is the reduction of the detection rates. However, this depends upon the choice of source parameters, and in particular upon the highest BH mass considered as high mass ratios contribute most to low fitting factors (all other assumptions seem well motivated to me). So it isn't a number that the reader can keep in mind without memorizing the assumptions as well. Is there a less ambiguous number that one could give? Maybe something like fixing some canonical NS mass and quoting the BH mass beyond which more than X% of signals will be lost.
+
+  > This is a good point, though I don't like the suggested solution. Instead I have quoted the numbers at a canonical NS *and* BH mass (a 10+1.4 system), which then only depends on the assumption of isotropic spin distribution and BH spin [0,1) (which I have added upfront in the introduction). In the abstract this number replaces the previous number quoted over our mass range, and in the introduction and conclusion both numbers are quoted.
+
+- Is there any particular reason for the colour bar ranges in Fig. 12?
+
+  > The colour bars were supposed to be the same range for easy comparison. Looks like a typo sneaked into one of the images in Fig 12. This has been fixed.
+
+- What, in the authors opinion, is the reason for the discrepancy between the current results and those obtained in Ref. [33]?
+
+  > One difference is that Ref. [33] used a higher low frequency cutoff than we did. However, I have also heard (not sure if this is true or not) that a mistake with the distribution of the polarisation angles was made in that work that might affect those results (I heard that the results were going to be rerun to fix this). Given that I cannot speculate like that in a paper, we decided to not offer an explanation here (which might be incorrect anyway!) and let the reader draw their own conclusion.
+
+Many thanks
+
+Ian et al!

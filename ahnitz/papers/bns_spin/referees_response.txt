@@ -1,0 +1,150 @@
+We thank the referee for their careful reading of this manuscript and their
+helpful suggestions.  We believe that we have addressed the comments and
+respond in detail below.
+
+> This is an interesting paper that describes how inspiraling-binary
+> waveform templates that include the effects of spin can be "placed" in
+> the space of binary parameters by a clever use of the bidimensional
+> placing code developed for nonspinning binaries. The result is
+> interesting, and it uses some clever ideas, such as formulating the
+> template metric in the space of PN coefficients, rotating to a basis
+> of eigenvector, again rotating to a base aligned with the "principal"
+> distribution of the physical parameter sets in the space of PN
+> coefficients, and examining the resulting plane projections to select
+> the effective bidimensional metric.
+
+> Therefore I would like to recommend publication, and I have only a few
+> suggestions/questions for the authors.
+
+> - It is not clear to me which of the clever ideas cited above
+> originate in this paper, or are prior art. 
+
+This paper presents the first description of a metric and placement algorithm
+for constructing a template bank effictive for searching for gravitational
+waves from binary systems with aligned spin.  Prior methods of constructing
+template metrics (e.g. Owen, and Owen and Sathyaprakash) only considered
+non-spinning waveforms up to 2PN order.
+
+Our method of constructing a metric for 3.5pN binary systems with the leading
+order spin and spin-orbit terms, orthonormalizing the parameter space, and
+rotating to the space of the principal components is novel. We have attempted
+to edit the text to make this point clearer.
+
+> If they are novel, this
+> fact should be emphasized, and the ideas should be described in the
+> introduction and briefly in the abstract. If they are not, their
+> history should be explained more clearly. 
+
+We thank the referee for pointing this out; we agree that the current text is
+unclear that our method is novel, as well as the implementation and results of
+the tests.
+
+In the abstract we have noted that:
+
+"We present a new method for constructing template banks for gravitational
+wave searches for systems with spin. We present a new metric in a parameter
+space in which the template placement metric is globally flat."
+
+In the introduction, we have added a new paragraph:
+
+"We present a new geometric algorithm for placing templates for BNS systems
+with spin, which has a significantly higher sensitivity than previous
+searches.  Our new algorithm constructs a metric on the parameter space using
+the various coefficients of the TaylorF2 expansion of the orbital phase as
+coordinates. In such a coordinate system the parameter space metric is
+globally flat, therefore we can transform into a Euclidean coordinate system.
+Finally, our method uses a Principal Coordinate Analysis to identify a two
+dimensional manifold that can be used to cover the aligned spin BNS parameter
+space using existing two dimensional lattice placement algorithms."
+
+We do note that a work by Pai and Arun also used SVD on the Fisher matrix to
+derive 8 terms which express the non-spinning PN phasing for binaries.  This
+work was conducted simultaneously and independently to this ours, and does not
+address spin, nor apply the method to template placement. 
+
+> (Some papers are cited "in
+> preparation", so I suspect that those would deal with the theoretical
+> ideas more fully, while this paper is mostly about application. That's
+> fine, but again I would like this explained.)
+
+None of the work in this paper rests on the results of the works listed as
+"in preperation." Based on the referee's concerns, and to clarify this issue,
+we have deleted the references to [44] and [51] the results of which are not
+used in our work. We have also corrected Ref. [41] (the reference to the
+SpinTaylor T4 waveform) to refer to Buonnano, Chen and Vallisneri, with an
+additional reference that the implementation used here comes from the LSC
+Algorithm Library. 
+
+> - At the end of p. 3, the authors state that including higher-order
+> spin terms won't "change our results". Do they mean that the same
+> *procedure* can be used for placement, or that the same actual
+> placement (done without those terms) can be used for the enhanced
+> waveforms?
+
+The same procedure can definitely be applied and a bank generated including
+the sub-dominant spin corrections.  At the refree's suggestion we have
+investigated whether the inclusion if these terms changes our result.  We have
+added a paragraph and a new plot at the end of section III where we
+demonstrate that the effect of including the known, higher order spin terms is
+small.  The relevant text changes are as follows:
+
+The comment before the PN equations now reads:
+
+"Other spin-related corrections to the PN phasing have been computed
+\cite{Mikoczi:2005dn,Arun:2008kb}, however, in this work we mainly restrict to
+only the two dominant terms. The methods described here are easily extendable
+to include additional spin correction terms and this does not significantly
+change our results, as we demonstrate at the end of this section."
+
+and the new paragraph reads:
+
+"Finally, we wish to investigate the effect that the higher order spin
+contributions to the orbital phase have on our method. To do this we repeat
+the process described above, but include the spin(1)-spin(1) and
+spin(2)-spin(2) contributions to the $\sigma$ term at 2PN order and also the
+2.5PN spin-orbit term as given in \cite{Arun:2008kb}. In Figure
+\ref{fig:higher_order_spin} we plot $\xi_1$ against $\xi_2$ when these higher
+order spin terms are included, the color shows the mismatch between the center
+and edges in the $\xi_3$ direction. This plot can be directly compared to
+Figure \ref{fig:param_space_mismatch}.  By comparing these plots we can see
+that including the higher order spin terms has caused the parameter space to
+become larger in the $\xi_2$ direction. However, the depth of the space in the
+$\xi_3$ direction has reduced by almost an order of magnitude. In this case
+the stacking process is not required and the resulting bank consists of
+$\sim560000$ templates. "
+
+> - Are Eqs. (7)-(16) really necessary here? They're an erratum waiting
+> to happen, and could be replaced with a proper reference to an
+> authoritative source.
+
+We feel that these equations are necessary; without the explicit equations in
+the text it may not be clear what our coordinates actually are. Even though we
+acknowledge that these equations are not new, we feel that the paper is not
+self contained if we omit them. We will check these carefully in the proofs.
+
+> - The statement beginning "We can use this metric by transforming..."
+> after (18) is... blurry. The metric always works in a small enough
+> neighborhood of any point. But transforming to coordinates that
+> reduce, as it were, apparent curvature, extends the extent of the
+> neighborhood.
+
+This statement has been edited to remove the ambiguity that the referee
+reports. It now reads as follows.
+
+"This metric is used to approximate the mismatch in the neighborhood
+of any point. When doing this care must be taken to choose a ``good'' set
+of coordinates where extrinsic curvature is minimized. If a ``bad'' set of
+coordinates is chosen, the region in which this approximation can be used will
+be very small. To minimize this issue when placing the two-dimensional
+non-spinning bank, the masses $m_1, m_2$ are transformed into the ``chirp
+times'' $\tau_0, \tau_3$~\cite{OwenSathyaprakash98}."
+
+> - Above (19): Eq. (18) is a definition, so how can it be "solved"?
+
+We have edited this sentence to read: "As shown in \cite{Owen96} it is possible to evaluate the derivative in (\ref{eq:cbc_metric}), maximizing over the phase, $\phi_C$, to give the metric in terms of a 9 dimensional space:"
+
+> - Figs. 2 and on are seas of black ink... I suppose the individual
+> points are not relevant, but maybe make them gray to look less stern
+> :)
+
+The figures have been lightened as suggested.

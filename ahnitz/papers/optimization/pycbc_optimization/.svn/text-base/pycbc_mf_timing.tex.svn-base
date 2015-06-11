@@ -1,0 +1,154 @@
+\documentclass[12pt]{article}
+
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{url}
+\usepackage{acronym}
+\usepackage{tabularx, tabulary, array, multirow, ctable, booktabs, rotating}
+\usepackage[squaren]{SIunits}
+\usepackage{acronym}
+
+\begin{document}
+
+The following are the results from timing the primary steps of the PyCBC
+matched-filtering as components, and combined, to measure the effects of cache
+and memory on results, and the improvements in performance resulting from the
+hand-vectorized and hand-parallelized kernels.  The following caveats apply:
+\begin{enumerate}
+\item The procedure followed for all benchmarks was the same:
+  \begin{enumerate}
+  \item First, the number of executions of the kernel required to exceed 30~s
+    execution time was measured.
+  \item Next, a loop of this number of iterations was performed inside of a
+    timer, and the reported kernel execution time is reported as that time
+    divided by the number of iterations.
+  \item The step above was repeated nine times, to get a total of ten
+    measurements, from which a mean value and standard deviation (which is
+    quoted below as the error) could be determined.
+  \end{enumerate}
+\item All results are for single-precision calculations.
+\item All results are on CIT Sandy Bridge CPUs, Xeon E5--2670.  These results
+  were for calculations bound to all eight cores of a single socket, exectuing
+  in parallel under OpenMP. FFTs were performed using custom-compiled FFTW and
+  wisdom file pregenerated with FFTW\_PATIENT mode (what is ``measure level 2''
+  in LAL terminology).  Planning times with this file in use are not reported
+  below, but were measured and are negligible for a real-world inspiral
+  application (at most a few seconds, including the JIT compilation of C
+  kernels).
+\item The correlation calculates the elementwise multiplcation of the
+  complex-conjugate of the first argument, times the second argument, storing
+  the result into the third argument.  Whichever size was chosen for the
+  benchmark (we present results below for $2^{19}$ and $2^{20}$), the
+  correlation inputs had real and imaginary parts each generated uniformly
+  between 0 and 1 for the first half of both input arrays, and the second half
+  was zero.  Only the first halves were correlated together.
+\item The inverse FFT performs the inverse transform of the full-length vector
+  that is output from the correlation step (i.e., including the zero-padding of
+  the second half).
+\item The thresholding finds the number of points above threshold within an
+  analyzable period in the output SNR time series from the inverse FFT step
+  above. That analyzable time is chosen to be consistent with a 30~Hz low
+  frequency cutoff and 256 second segment, so that the time analyzed is from a
+  starting sample of $112\,\mathrm{sec} \cdot\,\mathrm{sample rate}$ to an
+  ending sample of $(256 - 16)\,\mathrm{sec} \cdot\,\mathrm{sample rate}$.  The
+  sample rate is 4096~Hz for the $2^{20}$ length tests, and 2048~Hz for the
+  $2^{19}$ length tests. For the ``master'' tests the times include only
+  thresholding, not clustering in time; for the ``gpuopt'' tests they also
+  include clustering in time as those operations are now fused.
+\item The threshold was chosen to have exactly one point above threshold in the
+  array. This is close to the rate for Gaussian data (about one per every 500
+  seconds) while still ensuring there is a point above threshold.
+\item The last row in each table shows the time per matched filter when we
+  iterate over 15 different stilde segments, to simulate the inner loop of a
+  real pycbc analysis in the presently-used configuration.  In particular, doing
+  this should mean that the stilde input vector must be re-read from main memory
+  rather than remaining in cache.  But we emphasize that the wall-clock times
+  shown are per matched filter, not per template; to get the per template time,
+  these numbers must be multiplied by 15.
+\end{enumerate}
+
+\begin{table}
+  \centering
+  \begin{tabular}{|c|rcr|rcr|} \\ \hline
+  \textbf{Kernel} & \multicolumn{3}{c|}{\textbf{master branch}} & \multicolumn{3}{c|}{\textbf{gpuopt branch}} \\ \hline
+    correlation        & 248.4 & $\pm$ &3.7 & 108.7 &$\pm$ &2.4 \\
+    IFFT               &       &{---}&      & 940.7 &$\pm$ &22 \\
+    correlation + IFFT & 1771 &$\pm$ &14    & 1749 &$\pm$ &68 \\
+    threshold          & 553.7 &$\pm$ &22   & 79.32 &$\pm$ &0.11 \\
+    IFFT + threshold   & 1699 &$\pm$ &39    & 1171 &$\pm$ &23 \\
+    all                & 2255 &$\pm$ &6.2   & 1884 &$\pm$ &89 \\ 
+    all, 15 segments   & 2296 &$\pm$ &58    & 1930 &$\pm$ &47 \\ \hline
+  \end{tabular}
+  \caption{Kernel performance for $2^{20}$ arrays, as wall-clock time in $\mu \mathrm{s}$}
+  \label{tab:1}
+\end{table}
+
+\begin{table}
+  \centering
+  \begin{tabular}{|c|rcr|rcr|} \\ \hline
+  \textbf{Kernel} & \multicolumn{3}{c|}{\textbf{master branch}} & \multicolumn{3}{c|}{\textbf{gpuopt branch}} \\ \hline
+    correlation        & 143.9 & $\pm$ &1.4 & 70.20 &$\pm$ &0.29 \\
+    IFFT               &      &{---}&       & 450.0 &$\pm$ &6.1 \\
+    correlation + IFFT & 625.3 &$\pm$ &0.90 & 562.5 &$\pm$ &0.92 \\
+    threshold          & 297.6 &$\pm$ &0.35 &  54.73 &$\pm$ &0.41 \\
+    IFFT + threshold   & 777.0 &$\pm$ &1.8  & 536.2 &$\pm$ &2.3 \\
+    all                & 931.7 &$\pm$ &4.1  & 641.7 &$\pm$ &2.3 \\ 
+    all, 15 segments   & 980.9 &$\pm$ &2.9  & 661.1 &$\pm$ &1.9 \\ \hline
+  \end{tabular}
+  \caption{Kernel performance for $2^{19}$ arrays, as wall-clock time in $\mu \mathrm{s}$}
+  \label{tab:2}
+\end{table}
+
+From these tables, we can draw the following conclusions:
+\begin{enumerate}
+\item For $2^{20}$ size arrays, the gpuopt branch we expect to execute in 83\%
+  the time of the current master; for $2^{19}$, in 69\% the time of the master
+  branch.
+\item Cache effects seem to be an important bottleneck for $2^{20}$ size
+  matched-filtering.  We can see this in several ways:
+  \begin{enumerate}
+  \item For $2^{20}$ size arrays, for both current master and gpuopt, the time
+    for executing a correlation followed by an IFFT is significantly longer
+    (582~$\mu\mathrm{s}$ and 700~$\mu\mathrm{s}$, respectively) than the sum of
+    the times for the two operations separately.  For the $2^{19}$ size arrays,
+    the combined correlation and IFFT times are longer than the sum of the
+    individual times by only 31.4~$\mu\mathrm{s}$ and 42.3~$\mu\mathrm{s}$. This
+    is consistent with an L3 cache of 20 MB and a total amount of memory in the
+    $2^{20}$ case of 24 MB (4 MB for htilde, 4 MB for stilde, 8 MB for qtilde,
+    and 8 MB for snr) but only 12 MB in the $2^{19}$ length case.
+  \item The relative speedup of the gpuopt to the master branch is more for a
+    $2^{19}$ versus $2^{20}$ size array (69\% versus 83\%).
+  \item The time for combined IFFT and thresholding is much closer to the sum of
+    the times for the individual operations; here for both $2^{20}$ and $2^{19}$
+    length arrays, all of the vectors fit in the L3 cache.
+  \end{enumerate}
+\item The relative speedup from vectorizing and parallelizing is much greater
+  for thresholding (factor of 7 for $2^{20}$ and 5.4 for $2^{19}$) than for
+  correlation (factors of 2.3 and 2.0, respectively).  That gap will only
+  increase as the number of points above threshold increases, since the code on
+  master scales very poorly in this case.
+\item For 15 segments of length $2^{20}$, the times per template predicted from
+  these numbers would be 33.8~ms for master and 28.3 for gpuopt.  In the XRAC
+  proposal for the Gaussian case, we quote 28~ms for the $1\times 8$ FFTW case.
+  However that is the number for both sockets on a CIT reference node; to get
+  the effective time for a single socket we should double the time in the XRAC
+  performance and scaling document, to 56~ms.  We then find that the time per
+  template for master is less (as expected, since there is overhead in the XRAC
+  numbers not included in the benchmarking in our tables above).  So this does
+  seem more sensible.
+\item If we scale the XRAC time for $1\times 8$ FFTW by the 83\% factor, we
+  would get 23~ms, which would (barely) be faster than the best throughput
+  scenario in that document ($8\times 1$ MKL).
+\item Comparing the last row in each table to the next to last, we see that
+  forcing the data segment to be reread from main memory for each matched filter
+  does not have much of an effect on the matched filter time.  For the 4096
+  sample rate case, this is expected, since we already exceed the L3 cache; for
+  the 2048 sample rate case, it is very counter-intuitive.
+\item An important open question (that should not still be open come Friday):
+  how do these numbers compare to the theoretical predictions?  What are the
+  speeds we expect reading from RAM, and from L3 cache, on our reference
+  platform?
+\end{enumerate}
+
+\end{document}
