@@ -1,4 +1,4 @@
-TEXFILES= introduction.tex thesis.tex  
+TEXFILES= introduction.tex thesis.tex preface.tex
 
 PNGFILES=
 BIBFILES=references.bib
