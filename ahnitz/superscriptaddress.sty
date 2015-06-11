@@ -1,0 +1,640 @@
+%% This has been hacked together by Michael Boyle starting from
+%% revtex4-1.cls to help iopart limp along with large author lists.
+%% To use, do 
+%%   \usepackage{superscriptaddress}
+%% in the preamble.  Then, enter the authors and affiliations just as
+%% you would in revtex4-1.  Finally, just before the abstract, do
+%%   \printauthorlist
+%% Note that this is not a robust port of revtex4-1's author
+%% commands.  In particular, the email and collaboration commands are
+%% not expected to work nicely.
+
+\makeatletter
+
+\let\iopauthor\author
+
+\newcommand\say[1]{\typeout{<\noexpand#1=\meaning#1>}}%
+\newcommand\saythe[1]{\typeout{<\noexpand#1=\the#1>}}%
+\def\andname{and}
+\long\def\appdef#1#2{%
+ \@ifxundefined#1{\toks@{}}{\toks@\expandafter{#1}}%
+ \toks@ii{#2}%
+ \edef#1{\the\toks@\the\toks@ii}%
+}%
+\long\def\appdef@val#1#2{%
+ \appdef#1{{#2}}%
+}%
+\long\def\appdef@e#1#2{%
+ \expandafter\appdef
+ \expandafter#1%
+ \expandafter{#2}%
+}%
+\long\def\appdef@eval#1#2{%
+ \expandafter\appdef@val
+ \expandafter#1%
+ \expandafter{#2}%
+}%
+\long\def\@ifnotrelax#1#2#3{\@ifx{\relax#1}{#3}{#2}}%
+\long\def\@argswap#1#2{#2#1}%
+\long\def\@argswap@val#1#2{#2{#1}}%
+\def\@ifxundefined@cs#1{\expandafter\@ifx\expandafter{\csname#1\endcsname\relax}}%
+\def\@boolean#1#2{%
+  \long\def#1{%
+    #2% \if<something>
+      \expandafter\true@sw
+    \else
+      \expandafter\false@sw
+    \fi
+  }%
+}%
+\def\@boole@def#1#{\@boolean{#1}}% Implicit #2
+\def\@booleantrue#1{\let#1\true@sw}%
+\def\@booleanfalse#1{\let#1\false@sw}%
+\@boole@def\@ifx#1{\ifx#1}%
+\@boole@def\@ifnum#1{\ifnum#1}%
+\@boole@def\@if@empty#1{\if!#1!}%
+\long\def\@ifxundefined#1{\@ifx{\undefined#1}}%
+\long\def\true@sw#1#2{#1}%
+\long\def\false@sw#1#2{#2}%
+\countdef\count@i\@ne
+\countdef\count@ii\tw@
+\toksdef\toks@ii=\tw@
+\@booleantrue\frontmatterverbose@sw
+
+ \@booleanfalse\groupauthors@sw
+ \@booleantrue\@affils@sw
+ \@booleanfalse\runinaddress@sw
+
+
+\let\class@documenthook\@empty
+\appdef\class@documenthook{\frontmatter@init}%
+\let\frontmatter@init\@empty
+\AtBeginDocument{\class@documenthook}
+
+\newcounter{affil}%
+\newcounter{collab}%
+\appdef\frontmatter@init{%
+ \c@affil\z@
+ \c@collab\z@
+}%
+\newcommand\frontmatter@author{% implicit #1
+ \@author@def{}% implicit #2
+}%
+\def\collaboration{% implicit #1
+ \@author@def{\@booleantrue\collaboration@sw}% implicit #2
+}%
+\appdef\frontmatter@init{%
+ \@booleanfalse\collaboration@sw
+}%
+\def\@author@cleared{{}{}{}}%
+\def\@author@gobble#1#2#3{}%
+\def\@author@init{%
+ \let\@author\@author@cleared
+ \@booleanfalse\collaboration@sw
+}%
+\def\@authorclear@sw{\@ifx{\@author\@author@cleared}}%
+\appdef\frontmatter@init{%
+ \@author@init
+}%
+\def\@author@def#1#2{%
+ \frontmatterverbose@sw{\typeout{\string\author\space\string\collaboration}}{}%
+ \move@AU\move@AF\move@AUAF
+ \let\@AF@join\@author@join
+ #1%
+ \def\@author{{#2}{}}%
+}%
+\def\@author@join@#1#2#3{%
+  \def\@author{{#1}{\@join{\@separator}{#2}{#3}}}%
+}%
+\def\@author@join{\expandafter\@author@join@\@author}%
+\def\move@AU{%
+ \@authorclear@sw{}{%
+  \collaboration@sw{%
+   \advance\c@collab\@ne
+   \@argswap{\CO@grp\CO@opr}%
+  }{%
+   \@argswap{\AU@grp\AU@opr}%
+  }%
+   {%
+    \expandafter\@argswap@val
+    \expandafter{\@author}%
+     {\expandafter\@argswap@val\expandafter{\the\c@collab}{\add@AUCO@grp}}%
+   }%
+ }%
+ \@author@init
+}%
+\def\add@AUCO@grp#1#2#3#4{%
+ \appdef#3{#4{#1}#2}%
+ \frontmatterverbose@sw{\say#3}{}%
+}%
+\def\@author@finish{%
+ \frontmatterverbose@sw{\typeout{\string\@author@finish}}{}%
+ \move@AU\move@AF
+ \@ifx{\AU@grp\@empty}{%
+  \@ifx{\CO@grp\@empty}%
+ }{%
+  \false@sw
+ }%
+ {}{%
+  \@ifx{\AF@grp\@empty}{%
+   \begingroup
+    \let\href\@secondoftwo
+    \let\AU@opr\@secondofthree
+    \let\CO@opr\@secondofthree
+    \let\footnote\@gobble
+    \@ifx{\CO@grp\@empty}{%
+     \class@warn{Assuming \string\noaffiliation\space for authors}%
+     \frontmatterverbose@sw{\say\AU@grp}%
+    }{%
+     \class@warn{Assuming \string\noaffiliation\space for collaboration}%
+     \frontmatterverbose@sw{\say\CO@grp}{}%
+    }%
+   \endgroup
+   \@affil@none\move@AF
+  }{}%
+ }%
+ \move@AUAF
+}%
+\def\@secondofthree#1#2#3{#2}%
+\def\@join#1#2#3{%
+  \@if@empty{#2}{#3}{#2#1#3}%
+}%
+\def\@separator{;\space}%
+\let\surname\@firstofone
+\let\firstname\@firstofone
+\newcommand\frontmatter@and{\class@err{\protect\and\space is not supported}}
+\def\cat@comma@active{\catcode`\,\active}%
+{\cat@comma@active\gdef,{\active@comma}}%
+\def\active@comma{,\penalty-300\relax}%
+\newcommand\affiliation{%
+ \frontmatterverbose@sw{\typeout{\string\affiliation}}{}%
+ \move@AU\move@AF
+ \begingroup
+  \cat@comma@active
+  \@affiliation
+}%
+\def\@affiliation#1{%
+ \endgroup
+ \let\@AF@join\@affil@join
+ \@affil@def{#1}%
+}%
+\newcommand\frontmatter@noaffiliation{%
+ \frontmatterverbose@sw{\typeout{\string\noaffiliation}}{}%
+ \move@AU\move@AF
+ \@affil@none\move@AF
+ \move@AUAF
+}%
+\def\blankaffiliation{{}}%
+\def\@affil@cleared{{{}}{}}%
+\def\@affil@nil{{\relax}{}}%
+\appdef\frontmatter@init{%
+ \@affil@init
+}%
+\def\@affil@none{%
+ \let\@affil\@affil@nil
+}%
+\def\@affil@init{%
+ \let\@affil\@affil@cleared
+}%
+\def\@affilclear@sw{\@ifx{\@affil\@affil@cleared}}%
+\def\@affil@def#1{%
+ \def\@affil{{#1}{}}%
+}%
+\def\@affil@join@#1#2#3{%
+  \def\@affil{{#1}{\@join{\@separator}{#2}{#3}}}%
+}%
+\def\@affil@join{\expandafter\@affil@join@\@affil}%
+\def\@affil@addr@def#1#2#3{%
+ \def#1{#2}%
+}%
+\def\@affil@aux@def#1#2#3{%
+ \def#1{#3}%
+}%
+\def\add@list@val@val@val#1#2#3#4#5{%
+ \appdef#1{#2{#5}{#4}#3}%
+ \frontmatterverbose@sw{\say#1}{}%
+}%
+\def\@affil@match#1#2#3#4#5{%
+ \temp@sw{}{%
+  \def\@tempifx{#4}%
+  \@ifx{\@tempifx#1}{%
+   \groupauthors@sw{%
+    \@ifnum{#3=\c@collab}{%
+     \true@sw
+    }{%
+     \false@sw
+    }%
+   }{%
+    \true@sw
+   }%
+  }{%
+   \false@sw
+  }%
+  {%
+   \@booleantrue\temp@sw
+   \def\@tempc{#2}%
+   \def\@tempd{#5}%
+  }{%
+  }%
+ }%
+}%
+\def\move@AF{%
+ \@affilclear@sw{}{%
+  \@booleanfalse\temp@sw
+  \let\@tempd\@empty
+  \@affils@sw{%
+    \expandafter\@affil@addr@def\expandafter\@tempa\@affil
+    \def\AFF@opr{\@affil@match\@tempa}%
+    \@AFF@list
+  }{}\temp@sw
+  {%
+   \expandafter\@affil@aux@def\expandafter\@tempb\@affil
+   \@ifx{\@tempb\@empty}{}{%
+    \@ifx{\@tempb\@tempd}{}{%
+     \class@warn{%
+      Ancillary information for \@tempa\space must not be different!
+      Please put all of it on the first instance%
+     }%
+    }%
+   }%
+  }%
+  {%
+   \@ifx{\@affil\@affil@nil}{%
+    \def\@tempc{0}%
+    \@argswap@val{0}%
+   }{%
+    \advance\c@affil\@ne
+    \expandafter\def\expandafter\@tempc\expandafter{\the\c@affil}%
+    \expandafter\@argswap@val\expandafter{\the\c@affil}%
+   }%
+   {%
+    \expandafter\@argswap@val\expandafter{\the\c@collab}{%
+     \expandafter\@argswap@val\expandafter{\@affil}{%
+      \add@list@val@val@val\@AFF@list\AFF@opr
+     }%
+    }%
+   }%
+  }%
+  \appdef@eval\AF@grp\@tempc
+  \frontmatterverbose@sw{\say\AF@grp}{}%
+  \@affil@init
+ }%
+}%
+\def\move@AUAF{%
+ \frontmatterverbose@sw{\say\AU@grp\say\AF@grp\say\CO@grp}{}%
+ \@ifx{\AF@grp\@empty}{%
+    \@ifx{\@empty\CO@grp}{%
+    }{%
+     \appdef     \@AAC@list{\AF@opr{{0}}}%
+     \appdef@e   \@AAC@list{\CO@grp}%
+     \appdef@e   \@AFG@list{\CO@grp}%
+     \let\CO@grp\@empty
+    }%
+ }{%
+      \appdef     \@AAC@list{\AF@opr}%
+      \appdef@eval\@AAC@list{\AF@grp}%
+      \appdef@e   \@AAC@list{\AU@grp}%
+    \@ifx{\@empty\AU@grp}{%
+     \@ifx{\@empty\CO@grp}%
+    }{%
+     \false@sw
+    }%
+    {%
+    }{%
+      \@booleanfalse\temp@sw
+      \def\AFG@opr{\x@match\AF@grp}%
+      \let\CO@opr\@author@gobble
+      \@AFG@list
+      \temp@sw{}{%
+        \appdef     \@AFG@list{\AFG@opr}%
+        \appdef@eval\@AFG@list{\AF@grp}%
+      }%
+     \@ifx{\@empty\CO@grp}{}{%
+       \appdef@e   \@AAC@list{\CO@grp}%
+       \appdef@e   \@AFG@list{\CO@grp}%
+       \let\CO@grp\@empty
+     }%
+    }%
+    \let\CO@grp\@empty
+    \let\AU@grp\@empty
+    \let\AF@grp\@empty
+ }%
+ \frontmatterverbose@sw{\say\@AAC@list\say\@AFG@list}{}%
+}%
+\appdef\frontmatter@init{%
+ \let\AU@grp\@empty
+ \let\CO@grp\@empty
+ \let\AF@grp\@empty
+ \let\@AAC@list\@empty
+ \let\@AFG@list\@empty
+ \let\@AFF@list\@empty
+}%
+\appdef\frontmatter@init{%
+ \let\@AF@join\@AF@join@error
+}%
+\def\@AF@join@error#1{%
+ \class@warn{%
+  \string\email, \string\homepage, \string\thanks, or \string\altaffiliation\space
+  appears in wrong context.
+ }%
+}%
+\def\sanitize@url{%
+ \@makeother\%%
+ \@makeother\~%
+ \@makeother\_%
+}%
+\newcommand*\email[1][]{\begingroup\sanitize@url\@email{#1}}%
+\def\@email#1#2{%
+ \endgroup
+ \@AF@join{#1\href{mailto:#2}{#2}}%
+}%
+\newcommand*\homepage[1][]{\begingroup\sanitize@url\@homepage{#1}}%
+\def\@homepage#1#2{%
+ \endgroup
+ \@AF@join{#1\href{#2}{#2}}%
+}%
+\appdef\class@documenthook{%
+ \providecommand\href[1]{}%
+}%
+\def\frontmatter@thanks{% implicit #1
+  \@AF@join
+}%
+\newcommand*\altaffiliation[2][]{%
+  \@AF@join{#1#2}%
+}%
+\def\set@listcomma@list#1{%
+  \expandafter\@reset@ac\expandafter#1#1{0}\@reset@ac{%
+   \let\@listcomma\relax
+  }{%
+   \let\@listcomma\@listcomma@comma
+  }%
+}%
+\def\set@listcomma@count#1{%
+  \@ifnum{#1=\tw@}{%
+    \let\@listcomma\relax
+  }{%
+    \let\@listcomma\@listcomma@comma
+  }%
+}%
+\def\@reset@ac#1#2#3\@reset@ac{%
+  \def#1{#3}%
+  \@tempcnta#2\relax
+  \@ifnum{#2=\tw@}%
+}%
+\def\@listand{\@ifnum{\@tempcnta=\tw@}{\andname\space}{}}%
+\def\@listcomma@comma{\@ifnum{\@tempcnta>\@ne}{,}{}}%
+\def\@listcomma@comma@UK{\@ifnum{\@tempcnta>\tw@}{,}{}}%
+\def\@collaboration@gobble#1#2#3{}%
+\def\doauthor#1#2#3{%
+  \ignorespaces#1\unskip\@listcomma
+  \begingroup
+   #3%
+  \@if@empty{#2}{\endgroup{}{}}{\endgroup{\comma@space}{}\frontmatter@footnote{#2}}%
+  \space \@listand
+}%
+\def\x@match#1#2{%
+ \temp@sw{}{%
+  \def\@tempifx{#2}%
+  \@ifx{\@tempifx#1}{%
+    \@booleantrue\temp@sw
+  }{%
+  }%
+ }%
+}%
+\def\frontmatter@footnote#1{%
+ \begingroup
+  \@booleanfalse\temp@sw
+  \def\@tempa{#1}%
+  \let\@tempb\@empty
+  \def\@TBN@opr{\y@match\@tempa}%
+  \@FMN@list
+  \temp@sw{%
+   \expandafter\frontmatter@footnotemark
+   \expandafter{\@tempb}%
+  }{%
+   \stepcounter\@mpfn
+   \expandafter\expandafter
+   \expandafter\frontmatter@foot@mark
+   \expandafter\expandafter
+   \expandafter{%
+   \expandafter \the\csname c@\@mpfn\endcsname
+               }{#1}%
+  }%
+ \endgroup
+}%
+\def\frontmatter@foot@mark#1#2{%
+ \frontmatter@footnotemark{#1}%
+ \g@addto@macro\@FMN@list{\@TBN@opr{#1}{#2}}%
+}%
+\appdef\frontmatter@init{%
+ \global\let\@FMN@list\@empty
+}%
+\def\frontmatter@footnotemark#1{%
+ \leavevmode
+ \ifhmode\edef\@x@sf{\the\spacefactor}\nobreak\fi
+  \begingroup
+   \hyper@linkstart {link}{frontmatter.#1}%
+    \csname c@\@mpfn\endcsname#1\relax
+    \def\@thefnmark{\frontmatter@thefootnote}%
+    \@makefnmark
+   \hyper@linkend
+  \endgroup
+ \ifhmode\spacefactor\@x@sf\fi
+ \relax
+}%
+\def\frontmatter@footnote@produce@footnote{%
+ \let\@TBN@opr\present@FM@footnote
+ \@FMN@list
+ \global\let\@FMN@list\@empty
+}%
+\def\present@FM@footnote#1#2{%
+ \begingroup
+  \csname c@\@mpfn\endcsname#1\relax
+  \def\@thefnmark{\frontmatter@thefootnote}%
+  \frontmatter@footnotetext{#2}%
+ \endgroup
+}%
+
+
+\appdef\frontmatter@init{%
+  \let\author \frontmatter@author 
+}%
+
+
+\def\printauthorlist{%
+  \@author@finish
+  \typeout{Finished}
+%   \title@column\titleblock@produce
+  \frontmatter@author@produce@script % Replacing line above
+  \suppressfloats[t]%
+  \let\and\relax
+  \let\affiliation\@gobble
+  \let\author\@gobble
+  \let\@AAC@list\@empty
+  \let\@AFF@list\@empty
+  \let\@AFG@list\@empty
+  \let\@AF@join\@AF@join@error
+  \let\email\@gobble
+  \let\@address\@empty
+  \let\maketitle\relax
+  \let\thanks\@gobble
+%   \let\abstract\@undefined\let\endabstract\@undefined
+%   \titlepage@sw{%
+%    \vfil
+%    \clearpage
+%   }{}%
+}%
+
+\def\@author@present@script#1#2#3{%
+ \begingroup
+  \gdef\comma@space{\textsuperscript{,\,}}%
+  \doauthor{#2}{#3}{\@affil@present@script}%
+ \endgroup
+ \advance\@tempcnta\m@ne
+}%
+\def\@affilcomma#1#2{%
+ \@ifx{\z@#1}{%
+  \@ifx{\relax#2}{}{%
+   \@affilcomma{#2}%
+  }%
+ }{%
+  #1%
+  \@ifx{\relax#2}{}{%
+   \@ifx{\z@#2}{%
+    \@affilcomma
+   }{%
+    ,\,\@affilcomma{#2}%
+   }%
+  }%
+ }%
+}%
+\def\@affil@present@script{%
+ \let\@tempa\@empty
+ \expandafter\@affil@present@script@\@affilID@temp\relax
+}%
+\def\@affil@present@script@#1{%
+ \@ifx{\relax#1}{%
+  \@ifx{\@tempa\@empty}{%
+   \aftergroup\false@sw
+  }{%
+   \textsuperscript{\expandafter\@affilcomma\@tempa\relax\relax}%
+   \aftergroup\true@sw
+  }%
+ }{%
+  \@ifnum{#1=\z@}{}{\appdef\@tempa{{#1}}}%
+  \@affil@present@script@
+ }%
+}%
+\def\@affil@iop#1#2#3#4{%
+  \begingroup
+  ${}^{#1}$\ignorespaces#3{}{}{}
+  \endgroup
+  \par
+}%
+\def\frontmatter@author@produce@script{%
+  \begingroup
+    \let\@author@present\@author@present@script
+    \frontmatterverbose@sw{\typeout{\string\frontmatter@author@produce@script:}\say\@AAC@list\say\@AFF@list\say\@AFG@list}{}%
+    \let\AU@temp\@empty
+    \@tempcnta\z@
+    \let\AF@opr \@gobble
+    \def\AU@opr{\@author@count\@tempcnta}%
+    \def\CO@opr{\@collaboration@count\AU@temp\@tempcnta}%
+    \@AAC@list
+    \expandafter\CO@opr\@author@cleared
+    \begingroup
+     \frontmatter@authorformat
+     \let\AF@opr \@affilID@def
+     \let\AU@opr \@author@present
+     %\def\CO@opr{\@collaboration@present\AU@temp}%
+     \set@listcomma@list\AU@temp
+     \expandafter\iopauthor{\@AAC@list}\relax\relax
+     \unskip\unskip
+     \par
+    \endgroup
+    \begingroup
+     \frontmatter@above@affiliation@script
+     \let\AFF@opr \@affil@iop
+     \expandafter\address{\@AFF@list}\relax\relax
+     \unskip\unskip
+     \par
+    \endgroup
+  \endgroup
+}%
+% \def\frontmatter@author@produce@script{%
+%   \begingroup
+%     \let\@author@present\@author@present@script
+%     \frontmatterverbose@sw{\typeout{\string\frontmatter@author@produce@script:}\say\@AAC@list\say\@AFF@list\say\@AFG@list}{}%
+%     \let\AU@temp\@empty
+%     \@tempcnta\z@
+%     \let\AF@opr \@gobble
+%     \def\AU@opr{\@author@count\@tempcnta}%
+%     \def\CO@opr{\@collaboration@count\AU@temp\@tempcnta}%
+%     \@AAC@list
+%     \expandafter\CO@opr\@author@cleared
+%     \begingroup
+%      \frontmatter@authorformat
+%      \let\AF@opr \@affilID@def
+%      \let\AU@opr \@author@present
+%      \def\CO@opr{\@collaboration@present\AU@temp}%
+%      \set@listcomma@list\AU@temp
+%      \@AAC@list
+%      \unskip\unskip
+%      \par
+%     \endgroup
+%     \begingroup
+%      \frontmatter@above@affiliation@script
+%      \let\AFF@opr \@affil@script
+%      \@AFF@list
+%      \frontmatter@footnote@produce
+%      \par
+%     \endgroup
+%   \endgroup
+% }%
+\def\affil@script#1#2#3{%
+ \def\@tempifx{#1}\@ifx{\@tempifx\@tempa}{%
+  \@if@empty{#2}{}{%
+   \par
+   \begingroup
+    \def\@thefnmark{#1}\@makefnmark\ignorespaces
+    #2%
+    \@if@empty{#3}{}{\frontmatter@footnote{#3}}%
+    \par
+   \endgroup
+  }%
+ }{}%
+}%
+\def\@affil@script#1#2#3#4{%
+ \@ifnum{#1=\z@}{}{%
+  \par
+  \begingroup
+   \frontmatter@affiliationfont
+   \@ifnum{\c@affil<\affil@cutoff}{}{%
+    \def\@thefnmark{#1}\@makefnmark
+   }%
+   \ignorespaces#3%
+   \@if@empty{#4}{}{\frontmatter@footnote{#4}}%
+   \par
+  \endgroup
+ }%
+}%
+\let\affil@cutoff\@ne
+\def\@author@count#1{%
+ \advance#1\@ne
+ \@author@gobble
+}%
+\def\@collaboration@count#1#2{%
+ \appdef@eval#1{\the#2}#2\z@
+ \@author@gobble
+}%
+\def\@affilID@def{\def\@affilID@temp}%
+\let\@affilID@temp\@empty
+\def\frontmatter@authorformat{\bfseries\selectfont}%
+\def\frontmatter@above@affilgroup{}%
+\def\frontmatter@above@affiliation{}%
+\def\frontmatter@above@affiliation@script{}%
+\def\frontmatter@affiliationfont{\small\selectfont}%
+
+\let\frontmatter@footnote@produce\frontmatter@footnote@produce@footnote
+
+\makeatother
