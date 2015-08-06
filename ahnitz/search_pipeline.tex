@@ -1,7 +1,6 @@
-Coalescing binaries containing compact objects~\cite{Cutler:1992tc} are likely
-candidates for detection by the ground-based gravitational-wave observatories
-LIGO \cite{Abbott:2007kv}, VIRGO \cite{Accadia:2012zzb}, and KAGRA
-\cite{Akutsu:2015hua}. Searches for gravitational waves from compact object
+\section{Introduction}
+
+Searches for gravitational waves from compact object
 binaries containing neutron stars and stellar-mass black holes have been
 performed using the first-generation LIGO and Virgo detectors in LIGO's six
 science runs (S1--S6) and three Virgo science runs
@@ -52,9 +51,7 @@ noise transients~\cite{Allen:2004gu}; these are often called \emph{signal-based 
 matched-filter signal-to-noise ratio and the additional statistical tests are used to
 create a numerical detection statistic for candidate signals. To assign a
 statistical significance to these detection candidates, the network's false-alarm rate is computed as a function of the detection statistic for the
-noise background.  To determine the performance of the search, simulated
-signals are added to the detector data and we record the search's ability to
-identify and measure the significance of these simulated gravitational waves.
+noise background.
 
 Executing the steps described above is the task of the \emph{search pipeline.}
 While the basic steps remain the same, different choices can be made to
@@ -106,8 +103,8 @@ To search for gravitational waves from compact binaries, the search pipeline
 first locates the data from the detectors, which is stored on disk. Analysis
 of the week of data can be parallelized over time and over detector allowing
 the search to execute multiple search programs simultaneously that process
-small blocks of data for each detector. In this analysis, the
-analysis block size is set to $2048$ seconds, as in the S6/VSR2,3 search.
+small blocks of data for each detector. In the S6/VSR2,3 search, the 
+analysis block size is set to $2048$ seconds.
 The data is first used to construct the
 template bank that will be used to matched filter the
 data~\cite{Sathyaprakash:1991mt,Dhurandhar:1992mw,Owen:1995tm,Owen:1998dk,Babak:2006ty}.
@@ -164,8 +161,7 @@ For a sufficiently loud event, several nearby templates in the
 bank may also produce triggers associated with the same signal and so
 clustering over the template bank can also be used to limit the number of
 triggers produced by the search. The S6/VSR2,3 search used a 30~ms time window
-to cluster over the bank; we investigate this, as well as methods that use no
-template bank clustering, as described in Sec.~\ref{s:coinc}.
+to cluster over the bank.
 
 Since non-Gaussian noise transients in the data can also produce excursions in
 the signal-to-noise ratio, an additional signal-based veto is then constructed
@@ -257,4 +253,63 @@ the search computes different maps between $\hat{\rho}^c$ and
 false-alarm rate for different regions of the mass parameter space
 independently. 
 
+\section{Measuring Search Performance}
+\label{s:volume}
+
+As the primary metric of search sensitivity, we measure the sensitivity of a 
+pipeline by finding the \emph{sensitive
+volume}, which is proportional to the number of detections a pipeline will
+make per unit time at a given false-alarm rate. This is given by:
+\begin{equation}
+V(F) = \int \epsilon(F; r, \Omega, \mathbf{\Lambda}) p(r, \Omega, \mathbf{\Lambda}) r^2 \mathrm{d}r \mathrm{d}\Omega \mathrm{d}\mathbf{\Lambda}.
+\end{equation}
+Here, $\mathbf{\Lambda}$ are the physical parameters of a signal (in this
+study, $\{m_1, m_2\}$), $p(r, \Omega, \mathbf{\Lambda})$ is the distribution of
+signals in the universe, and $\epsilon$ is the efficiency of the pipeline at
+detecting signals at a distance $r$, sky location $\Omega$, and false-alarm
+rate $F$.
+
+We estimate the sensitive volume by adding to the data a large number of
+simulated signals (\emph{injections}) that are randomly drawn from a
+distribution $q(r, \Omega, \mathbf{\Lambda})$. 
+
+We re-analyze the data with these simulated signals added and,
+for each injection, determine if a coincident trigger is present within 1
+second of the time of the injection. If a trigger is present, we use the
+combined reweighted signal-to-noise ratio to compute its false-alarm rate. 
+If no trigger is present, the injection is
+\emph{missed}, i.e., the signal cannot be distinguished from noise at any
+false-alarm rate
+threshold. At some distance $r_{\max}$ we expect that any signal with $r >
+r_{\max}$ will be missed.  Likewise, within some distance $r_{\min}$ we expect
+that nearly every signal will be
+found, even at an extremely small ($\lesssim 10^{-4} / \mathrm{yr}$)
+false-alarm rate
+threshold. These bounds depend on the physical parameters of a signal.
+Gravitational waves from more massive systems have larger amplitudes, and thus
+can be detected at greater distances than less massive systems. To first order,
+if a binary with a reference \emph{chirp mass} $\mathcal{M}_0 = (m_1
+m_2)^{3/5}/(m_1 + m_2)^{1/5}$ is detected at a distance $r_0$, then a binary
+with arbitrary chirp mass $\mathcal{M}$ will be detected with approximately the
+same reweighted signal-to-noise ratio at a distance:
+\begin{equation}
+r = r_{0}(\mathcal{M}/\mathcal{M}_{0})^{5/6}.
+\label{eqn:chirp_distance}
+\end{equation}
+
+For each injection, we scale these bounds using Eq. \eqref{eqn:chirp_distance},
+then draw the distance uniformly between them. The sensitive volume
+is then simply an average over the total number of injections $N$:
+\begin{equation}
+V(F) \approx \frac{1}{N} \sum_{i=1}^N g_i(F) \equiv \left<g(F)\right>,
+\end{equation}
+where:
+\begin{equation}
+g_i(F) = \frac{4\pi}{3} \left[ r_{\min,i}^3 + 3r_i^2(r_{\max,i}-r_{\min,i})\hat{\epsilon}(F; F_i, r_i, \Omega_i, \mathbf{\Lambda}_i)\right].
+\end{equation}
+Here, $\hat{\epsilon} = 1$ if $F_i \leq F$, and
+$0$ otherwise. The error in the estimate is:% \cite{ref:num_methods}:
+\begin{equation}
+\delta V = \sqrt{\frac{\left<g^2\right> - \left<g\right>^2}{N}}.
+\end{equation}
 
