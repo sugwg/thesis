@@ -137,7 +137,7 @@ To assess the performance of a given set of tunings, we evalute VT for 3 one-wee
 
 Because the overall sensitivity of a detector along with the shape of its power spectral density (PSD) changes over time, the spectral density used to calculated the SNR of candidate events is periodically recalculated. The S6/VSR2,3 analysis recomputed the PSD using every 1920 seconds. However, due to the additional padding required for filtering, 2048s of data was used for each PSD estimate. Each 2048s chunk of data is subdivided into 15 segments, each with 256s duration and overlapped by 50$\%$. The PSD each chunk is calculated by first taking the median average of the Fourier transform of each segment. Finally, we truncate the inverse of the PSD in the time domain to restrict the filter corruption to a fixed length of time. In addition, this has the effect of smoothing out lines within the spectrum. An inverse truncation value of 16 seconds was used throughout S6/VSR2,3. 
 
-We investigate a straightforward improvement to this algorithm. Instead of calculating the PSD using 256 second segments and applying a 16 second inverse spectrum truncation, we propose calculating the PSD using 16 second segments directly, interpolating for the intended use case, and finally applying the same 16s inverse spectrum truncation. The results of this investigation are shown in figure Fig.~\ref{fig:psd}, where the sensitive volume-time is compared for the initial reference configuration and for the proposed configuration as a function of the inverse false alarm rate. The proposed PSD estimation shows clear improvement over the initial method, resulting in an average $\approx 18\%$ increase in sensitivity between inverse false alarm rates of $10^3$ and $10^4$ years.
+We investigate a straightforward improvement to this algorithm. Instead of calculating the PSD using 256 second segments and applying a 16 second inverse spectrum truncation, we propose calculating the PSD using 16 second segments directly, interpolating for the intended use case, and finally applying the same 16s inverse spectrum truncation. The results of this investigation are shown in figure Fig.~\ref{fig:psd}, where the sensitive volume-time is compared for the initial reference configuration and for the proposed configuration as a function of the inverse false alarm rate. The proposed PSD estimation shows clear improvement over the initial method, resulting in an average $\approx 12\%$ increase in sensitivity between inverse false alarm rates of $10^3$ and $10^4$ years.
 
 %In this section, we investigate a straightforward improvement to the estimation of PSDs %within the search pipeline.
 
@@ -149,7 +149,7 @@ We investigate a straightforward improvement to this algorithm. Instead of calcu
 \centering
 \includegraphics[width=0.5\textwidth]{papers/bns_o1_dev/figures/psd_combined.png}
 \caption{\label{fig:psd} 
-The combined VT as a function of inverse false alarm rate, for the combined three weeks of analysis, and for an injection population that uniformly covers the parameter space of the non-spinning BNS region, with component masses between $1- 3M_\odot$. Darker colored lines indicate the inclusive IFAR value, while lighter lines show the exclusive IFAR. The reference (red) PSD estimation uses 15, 256s segments. The proposed (purple) tuning which uses 252, 16s segments. Both truncate the inverse spectrum in the time domain to 16 seconds. The proposed configuration improves the search sensitivity by $\approx 18\% $ at a false alarm rate of 1 per 1000 years.
+The combined VT as a function of inverse false alarm rate, for the combined three weeks of analysis, and for an injection population that uniformly covers the parameter space of the non-spinning BNS region, with component masses between $1- 3M_\odot$. Darker colored lines indicate the inclusive IFAR value, while lighter lines show the exclusive IFAR. The reference (red) PSD estimation uses 15, 256s segments. The proposed (purple) tuning which uses 252, 16s segments. Both truncate the inverse spectrum in the time domain to 16 seconds. The proposed configuration improves the search sensitivity by $\approx 12\% $ at a false alarm rate of 1 per 1000 years.
 }
 \end{figure}
 
@@ -181,6 +181,7 @@ The distribution of Exclusive IFAR as a function of the minumum single detector 
 
 
 \subsection{Signal-consistency Test and Ranking Statistic}
+\label{sec:chisq}
 
 As detailed in sec.~\ref{sec:pipeline}, the single-detector ranking statistic, $\rho_{new}$, is the SNR weighted by the time-frequency consistency test. The time-frequency signal consistancy test breaks a template into $p$ bins of each power. Although the boundaries of the bins are defined in the frequency domain, as the template is a monotonic function of time and frequency, we can outline the rough time-frequency boundaries of each bin as demonstrated in fig~\ref{fig:chisqbins}, for the 16 bins used in the S6/VSR2,3 analysis. Since the response of the time-frequency chisq is dependent on the morphology of the non-guassian noise present in the data, we investigate if increasing the number of time-frequency bins for a BNS focused search, where the average template duration is significantly longer than for searches that include higher mass templates, has an effect on the search sensitivity.
 
@@ -298,9 +299,10 @@ the spin angles are isotropically distributed, and the spin magnitude $|\chi| < 
 }
 \end{figure}
 
-
-
 % comment on the high alinged spin case, where we can place templates
 
 \section{Conclusions}
+
+We have presented a new pipeline specifically targeted for the detection of gravitational-waves from binary neutron star sources in LIGO data. Using the single stage search pipeline we investigated the configuration choices used for PSD estimation, SNR thresholds, low frequency cutoff, and $\chi^2$ bins used within the ranking statistic. To assess the sensitivity, we develop a method to measure the false alarm rate of possible signals, and introduce the concept of both the inclusive and exclusive FAR measures. We find that for S6 data, the choices for low frequency cutoff at 40Hz, and the SNR threshold at 5.5, as used in prior S6/VSR2,3 searches for BNS sources, were appropriate. Additionally, we find that for a two detector search conducted using the Hanford and Livingston overvatories decreasing the SNR threshold below 5.3 will have no increase in search sensitivity using the conservative inclusive IFAR. In sec~\ref{sec:psd} and sec~\ref{sec:chisq} we should significant improvements in search sensitivity for BNS sources by retuning the number of PSD samples per estimate, and the number of bins used in the signal consistance test, respectively. We find a total $25\%$ increase in the detection rate of BNS systems when using the retuned BNS search over a BNS search that uses the configuration used in S6/VSR2,3. As these tuning significantly differe than those used in the wider lowmass search performed in S6/VSR2,3, we propose that a focused, non-spinning search for binary neutron stars be conducted for aLIGO and AdV.
+
 \label{sec:conclusions}
