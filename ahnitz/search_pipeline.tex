@@ -1,0 +1,260 @@
+Coalescing binaries containing compact objects~\cite{Cutler:1992tc} are likely
+candidates for detection by the ground-based gravitational-wave observatories
+LIGO \cite{Abbott:2007kv}, VIRGO \cite{Accadia:2012zzb}, and KAGRA
+\cite{Akutsu:2015hua}. Searches for gravitational waves from compact object
+binaries containing neutron stars and stellar-mass black holes have been
+performed using the first-generation LIGO and Virgo detectors in LIGO's six
+science runs (S1--S6) and three Virgo science runs
+(VSR1--VSR3)~\cite{Abbott:2003pj,Abbott:2005pe,Abbott:2005kq,Abbott:2007xi,Abbott:2007ai,Abbott:2009tt,Abbott:2009qj,Abadie:2010yba,Abadie:2011nz}.
+Construction of the Advanced LIGO (aLIGO) detectors~\cite{TheLIGOScientific:2014jea} is now complete and the
+first aLIGO observing runs are scheduled for autumn 2015~\cite{Aasi:2013wya}.
+The Advanced Virgo (AdV) detector~\cite{Acernese:2015gua} is scheduled to join this network in 2016.
+When these second-generation detectors reach design sensitivity, it is
+predicted that they will observe on the order of $10$ coalescence events per
+year~\cite{Abadie:2010cf}. Binaries containing neutron stars and stellar-mass
+black holes are likely to be the first sources observed by aLIGO and AdV. 
+
+Gravitational waves from compact binary coalescence have three distinct
+phases: an \emph{inspiral} consisting of a wave of slowly increasing amplitude
+and frequency, a \emph{merger} which can be calculated using numerical
+simulations, and a \emph{post-merger} signal as the binary stabilizes into a final
+state. If the total mass of the binary is lower than $M \lesssim 12\,
+M_\odot$~\cite{Buonanno:2009zt,Brown:2012nn}
+and the angular momenta of the compact objects (their \emph{spin}) is
+small~\cite{Nitz:2013mxa,Kumar:2015tha}
+(as is the case for binary neutron stars), then the inspiral phase can be 
+well modeled using the post-Newtonian approximations (see e.g.
+Ref.~\cite{Blanchet:2013haa} for a review).  For higher mass and higher-spin
+binaries, analytic models tuned to numerical relativity can provide accurate
+predictions for the gravitational waves from compact 
+binaries~\cite{Buonanno:1998gg,Pan:2009wj,Damour:2012ky,Taracchini:2013rva,Damour:2014sva}. 
+
+Ground-based gravitational-wave detectors produce a calibrated strain signal
+$s(t)$, which is sensitive to gravitational waves incident on the detector's
+arms~\cite{Abadie:2010px}. In addition to possible signals, the strain data contain two classes of
+noise: (i) a primarily stationary, Gaussian noise component from fundamental
+processes such as thermal noise, quantum noise, and seismic noise coupling
+into the detector; and (ii) non-Gaussian noise transients of instrumental and
+environmental origin. Since the gravitational-wave signal from compact
+binaries is well-modeled and the expected amplitude of astrophysical signals is
+comparable to the amplitude of the noise,
+matched filtering is used to search for signals in the detector data~\cite{Allen:2005fk}.  Since
+we do not \emph{a priori} know the parameters of the compact
+binaries we may detect, a \emph{bank} of template waveforms is constructed that spans the astrophysical
+signal space~\cite{Sathyaprakash:1991mt,Dhurandhar:1992mw,Owen:1995tm,Owen:1998dk,Babak:2006ty,Cokelaer:2007kx,Brown:2012qf,Keppel:2013yia,Keppel:2013uma}. These banks are designed so that the loss in event rate caused by
+their discrete nature is typically no more than 10\%. The exact placement of the
+templates depends on the noise power spectral density of the detector data. To
+mitigate the effect of the non-Gaussian noise transients in the search, we
+require that any signal be seen with consistent parameters (compact objects'
+spins and masses and the signal's time of arrival) in the detector network. Additional
+statistical tests are applied to mitigate the effect of non-Gaussian
+noise transients~\cite{Allen:2004gu}; these are often called \emph{signal-based vetoes}. The 
+matched-filter signal-to-noise ratio and the additional statistical tests are used to
+create a numerical detection statistic for candidate signals. To assign a
+statistical significance to these detection candidates, the network's false-alarm rate is computed as a function of the detection statistic for the
+noise background.  To determine the performance of the search, simulated
+signals are added to the detector data and we record the search's ability to
+identify and measure the significance of these simulated gravitational waves.
+
+Executing the steps described above is the task of the \emph{search pipeline.}
+While the basic steps remain the same, different choices can be made to
+create various configurations and topologies for a search pipeline. The search
+pipelines used in the last joint LIGO-Virgo science run (S6/VSR2,3) used the
+\texttt{ihope} search pipeline to search for compact
+binaries~\cite{Babak:2012zx}. The \texttt{ihope} pipeline, as well as the
+pipelines used in previous LIGO-Virgo
+searches~\cite{Brown:2004pv,Brown:2005zs}, are \emph{offline} search
+pipelines. These pipelines analyze the data in a batch mode, processing
+of the order of one week of data from the network. Offline batch
+processing allows the pipeline to incorporate additional information about the
+quality of the detector data or search tuning that is not available in real
+time~\cite{Aasi:2012wd,Aasi:2014mqd}, and to produces a systematic false-alarm rate
+estimation of candidates by using large samples of the noise background before
+and after the time of a signal. Batch processing also allows the pipeline to
+take advantage of the computationally efficient Fast Fourier Transform (FFT)
+when implementing matched filtering~\cite{Allen:2005fk}, and allows
+computational tasks to be parallelized over time and binary parameters for
+efficient implementation on large computing clusters~\cite{Brown:workflow}.
+
+\section{Coincident Matched-Filter Search for Compact Binaries}
+\label{s:search}
+
+To search for coalescing compact binaries with LIGO and Virgo, the offline search
+pipeline implements a coincident matched-filter search.  If the detector noise
+was stationary and Gaussian, matched filtering alone would be sufficient to
+determine the statistical significance of a signal. For such stationary noise, 
+demanding that the signal is present in two or more detectors in the network 
+(coincidence) would provide a sufficiently low false-alarm rate to claim a 
+detection at a matched-filter network signal-to-noise ratio of 8; the signal 
+strength used to estimate aLIGO's event rate in Ref.~\cite{Abadie:2010cf}.
+However, the presence of non-stationary and non-Gaussian noise
+transients (\emph{glitches})
+in the detector noise increases the false-alarm rate at a given
+signal-to-noise ratio and additional statistical tests must be used to separate
+signals from noise. The output of the matched filter is combined with these
+additional tests to create a new detection statistic for coincident detection
+candidates. To determine the significance of these candidates, the noise
+background must be estimated to create a map between the numeric value of the
+detection statistic and the false-alarm rate (or, equivalently, false-alarm
+probability). Background noise is estimated by performing coincidence tests on
+detector data which has been time-shifted such that coincident candidates no
+longer represents a coincident detection. The search pipeline consists of
+several stages which are applied to the data to construct coincident detection
+candidates and measure their significance. 
+
+To search for gravitational waves from compact binaries, the search pipeline
+first locates the data from the detectors, which is stored on disk. Analysis
+of the week of data can be parallelized over time and over detector allowing
+the search to execute multiple search programs simultaneously that process
+small blocks of data for each detector. In this analysis, the
+analysis block size is set to $2048$ seconds, as in the S6/VSR2,3 search.
+The data is first used to construct the
+template bank that will be used to matched filter the
+data~\cite{Sathyaprakash:1991mt,Dhurandhar:1992mw,Owen:1995tm,Owen:1998dk,Babak:2006ty}.
+The bank is constructed by specifying the boundaries of the target
+astrophysical space and the desired \emph{minimal match}, the fractional loss in
+matched-filter signal-to-noise ratio caused by the discrete nature of the bank.
+The minimal match is chosen so that the bank is dense enough that any
+gravitational wave in the target space can be recovered with a loss of
+signal-to-noise ratio no greater than a chosen maximum, usually set to 3\%~\cite{Abbott:2011ys}. 
+A metric is constructed on the signal space that
+locally measures the fractional loss in signal-to-noise ratio for varying mass
+parameters of the templates~\cite{Owen:1998dk}.  This metric (and hence
+the template placement) depends on the power spectral density of the
+detector noise. Since inspiral signals have more cycles at lower frequencies,
+a detector with better low-frequency sensitivity relative to high frequencies
+will have more discriminating power and thus require a denser bank to maintain
+the desired minimal match.
+
+The pipeline then matched filters the template waveforms against the data.
+The matched filter consists of a weighted inner product in the frequency
+domain used to construct the (squared) signal-to-noise ratio, given by
+%
+\begin{equation}
+\rho^2(t) = \frac{(s|h_c)^2 + (s|h_s)^2}{(h_c|h_c)} \, ,
+\label{eq:snr}
+\end{equation}
+%
+where $h_c$ and $h_s$ are the two orthogonal phases of the 
+%
+\begin{equation}
+(s|h)(t) = 4\int_{f_{low}}^{f_{high}} \frac{\tilde{s}(f)\tilde{h}^*(f)}{S_n (f)}e^{2\pi i f t}\, \mathrm{d}f.
+\label{eq:ip}
+\end{equation}
+%
+Here $\tilde{s}$ denotes the Fourier-transformed detector data and $\tilde{h}$
+denotes the Fourier-transformed template waveform. As in the S6/VSR2,3 search,
+each 2048 second block of data is sub-divided into fifteen $256$ second
+segments, each overlapped by $128$ seconds. The noise power spectral
+density $S_n(f)$ is computed by taking the bin-by-bin median of each of the power
+spectral density of each of the fifteen segments. The fifteen segments are then each
+matched filtered, with the first and last $64$ seconds of each segment
+ignored, due to corruption of the filter by FFT
+wrap-around~\cite{Allen:2005fk}
+
+Times when the signal-to-noise ratio exceeds a pre-defined threshold are
+considered gravitational-wave candidates, called
+\emph{triggers}\cite{Allen:2005fk}. This threshold is set to a
+signal-to-noise ratio of 5.5.  Since the signal-to-noise ratio can exceed
+this threshold for many sample points around the time of a signal, clustering
+is performed on these triggers in time, so that one trigger can be associated
+with a signal. Template-length based clustering of 
+Ref.~\cite{Allen:2005fk} was used in the S6/VSR2,3 search. 
+For a sufficiently loud event, several nearby templates in the
+bank may also produce triggers associated with the same signal and so
+clustering over the template bank can also be used to limit the number of
+triggers produced by the search. The S6/VSR2,3 search used a 30~ms time window
+to cluster over the bank; we investigate this, as well as methods that use no
+template bank clustering, as described in Sec.~\ref{s:coinc}.
+
+Since non-Gaussian noise transients in the data can also produce excursions in
+the signal-to-noise ratio, an additional signal-based veto is then constructed
+to ensure that the matched filter signal-to-noise ratio is
+consistent with an inspiral signal. To construct this test, the
+template is split into $p$ bins of equal power, and a matched filter $\rho_l$
+constructed for each of these bins. Triggers are then subject to the
+$\chi^2$ test, given by
+%
+\begin{equation}
+\chi^2 = p\displaystyle\sum_{l=1}^{p}\left[\left(\frac{\rho_c}{p}-\rho_c^l\right)^2 + \left(\frac{\rho_s}{p}-\rho_s^l\right)^2 \right] \, ,
+\label{eq:chisqr}
+\end{equation}
+%
+where $\rho_c$ and $\rho_s$ are the two orthogonal filter phases.
+Real gravitational-wave signals would return a low number for the $\chi^2$
+test, while candidates caused by noise transients will
+return a high number for the $\chi^2$ test~\cite{Allen:2004gu}. As in the 
+S6/VSR2,3 analysis, we set $p = 16$. The value of the $\chi^2$ test is used to 
+calculate a new detection statistic, called the \emph{reweighted
+signal-to-noise ratio}, given by 
+%
+\begin{equation}
+\hat{\rho} =
+  \begin{cases}
+    \rho &\textrm{for } \chi^2 \leq n_\mathrm{dof}\\
+    \rho[\frac{1}{2}(1+(\frac{\chi^2}{n_{dof}})^3)]^{-\frac{1}{6}} &\textrm{for } \chi^2 > n_\mathrm{dof} ,
+  \end{cases}
+\label{eq:newSNR}
+\end{equation}
+where $n_\mathrm{dof} = 2p-2$ is the number of degrees of freedom in the
+$\chi^2$ test~\cite{Babak:2012zx}.
+%
+Since candidates caused by noise transients generally return a high $\chi^2$
+statistic, the new detection statistic down weights the signal-to-noise ratio
+of candidates by dividing with the $\chi^2$ statistic~\cite{Abadie:2011nz}.
+
+The quality of the data generated by the LIGO and Virgo detectors is
+scrutinized to mitigate noise and to improve the reach of the 
+detectors~\cite{Aasi:2012wd,Aasi:2014mqd}. Data
+quality investigations characterize times of poor detector performance
+according to three broad classifications: (i) the data quality is sufficiently
+poor that the data should be discarded; (ii) an instrumental artifact with a
+known physical coupling to the recorded strain is observed by monitoring
+environmental or auxillary control channels; (iii) a statistical correlation
+is observed between a high trigger rate from the search and excess noise power
+in environmental or auxillary control channels. The first class of data is
+removed before searching for signals. For the second two classes, a \emph{data
+quality veto} is created. Vetoes are time intervals during
+which the pipeline removes all candidate events from the search.
+Improved methods for tuning and applying vetoes in compact object binary
+searches have been investigated~\cite{Canton:2013joa}, however these methods
+were not used in S6/VSR2,3. Investigation of these new approaches is outside
+the scope of this work and we apply the same data-quality vetoes as
+they were tuned for the S6 search.
+
+A true gravitational-wave signal would be incident on all detectors in the network at
+approximately the same time. The maximum time-of-arrival difference between
+detectors is given by the light-travel time between observatories. Noise,
+however, will be independent between detectors since the interferometers
+are far apart. For this reason, we require the candidates to be coincident
+between detectors: they must arrive within the light-travel time between detectors,
+approximately 11 milliseconds for the two LIGO detectors, with
+a few milliseconds of padding to account for timing errors. The pipeline also
+requires that the mass parameters of the signal are consistent between all
+detectors, as would be expected for a true gravitational wave. 
+
+To claim a detection of gravitational waves, it is necessary to calculate the
+false-alarm rate of the candidate and demonstrate that it is very unlikely to
+occur due to noise in the detectors. To measure the noise background in the
+search, the pipeline shifts the triggers generated by filtering each
+detector's strain data by an amount greater than the light-travel time between
+detectors, and applies the coincidence test again.  Coincident triggers that
+occur in the shifted data cannot be due to gravitational waves and thus represent
+background noise. By repeating this test with many different time lags, we can
+obtain a good estimate of the rate of background triggers as a function of the
+combined reweighted signal-to-noise ratio detection statistic. For the 
+two-detector network considered here, the combined statistic is given by
+%
+\begin{equation}
+\hat{\rho}^c = \sqrt{\hat{\rho}_\mathrm{L1}^2 + \hat{\rho}_\mathrm{H1}^2},
+\end{equation}
+%
+where H1 is the LIGO Hanford detector and L1 is the LIGO Livingston detector. 
+The map between $\hat{\rho}^c$ and false-alarm rate allows us to estimate the
+significance of gravitational-wave candidates in the search. Since the rate of
+background triggers can depend strongly on the mass of the template,
+the search computes different maps between $\hat{\rho}^c$ and
+false-alarm rate for different regions of the mass parameter space
+independently. 
+
+
