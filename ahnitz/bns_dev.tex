@@ -12,121 +12,78 @@
 \section{Introduction}
 \label{sec:introduction}
 
-In this paper we present an offline search pipeline tuned for the detection of BNS sources, and show that this targeted search yields significant improvements in sensitivity to BNS sources. Whereas in prior searches for BNS systems, such as the last one conducted in S6/VSR2,3, a nonspinning template bank was constructed that contained masses up to $25M_\odot$ \cite{s6paper} and was tuned to be sensitive in all regions, we focus on soly on BNS systems with a mass range from $1-3 M_\odot$. To approximate the conditions of the first observing run with Advanced LIGO, we focus on a two-detector network composed of the Hanford (LHO) and Livingston (LLO) observatories.
+We present an offline search pipeline tuned for the detection of gravitational-waves from binary neutron start sources, and show that this targeted search yields significant improvements in sensitivity to BNS sources. Whereas in prior searches for BNS systems, such as the last one conducted in S6/VSR2,3, a non-spinning template bank was constructed that contained masses up to $25M_\odot$ ~\cite{Abadie:2011nz} and was tuned to maxize the overall sensitivity, in this work we focus solely on BNS systems with a mass range from $1-3 M_\odot$. We consider two banks of templates, a \emph{non-spinning template bank} designed to be sensitive to mergers where the components have neglible intrinsic angular moment, and an \emph{aligned spin template bank} which is designed to be sensitive to BNS mergers where the intrinsic angular momentum of the components can be as large as $\chi=0.4$. To approximate the conditions of the first observing run with Advanced LIGO, we focus on a two-detector network composed of the Hanford (LHO) and Livingston (LLO) observatories. To assess proposed improvements to the search pipeline we have selected three weeks of LIGO data from S6.
 
-This paper is organized as follows. In sec.~\ref{sec:pipeline} we describe the methodology of the search pipeline, and we present a method for estimating the significance of candidate events. In sec.~\ref{sec:tuning}, starting with the configuration suggested by \ref{samantha}, which improved upon the S6/VSR2,3 by requiring exact-match coincidence, we present a procedure for further improving the search sensitivity of the pipeline by optimizing key parameters of the search, namely the configuration of the power spectral estimation, the signal-consistency tests, the single detector SNR thresholds, and the lower frequency cutoff. 
+This paper is organized as follows. In sec.~\ref{sec:pipeline} we describe the methodology of the search pipeline, and we present a method for estimating the significance of candidate events. In sec.~\ref{sec:tuning}, starting with the configuration suggested in chapter~\ref{ch:single_stage}, which improved upon the S6/VSR2,3 by requiring exact-match coincidence, we present a procedure for further improving the search sensitivity of the pipeline by optimizing key parameters of the search, namely the configuration of the power spectral estimation, the signal-consistency tests, the single detector SNR thresholds, and the lower frequency cutoff. 
 
-\section{Coincident Analysis}
+\section{Significance of Candidate Events}
 \label{sec:pipeline}
 
-To search for gravitational-waves from coalescing binaries, the search pipeline implements the coincident matched-filtering algorithm proposed in \cite{samanta} A bank of post-Newtonian TaylorF2 3.5 PN order templates, generated using the metric based placement algorithm proposed in \cite{brown}, is created to span the extended binary neutron star mass range from $1-3 M\odot$. Each template, $h$, is filtered against the gravitationl-wave strain data of a detector, $s$, resulting in the matched filtering signal-to-noise ratio,
+The focused BNS search pipeline implements the single stage analysis pipeline proposed in chapter~\ref{ch:single_stage}. A bank of post-Newtonian TaylorF2 3.5 PN order templates, generated using the metric based placement algorithm proposed in chapter~\ref{ch:bns_spin}, is created to span the extended binary neutron star mass range from $1-3 M\odot$. A template bank is generated separately for each of the three S6/VSR2,3 analysis weeks, using the harmonic mean of the detector data during that week. Each template is match-filtered against the data to calculate a signal-to-noise time series. Excursions in the SNR time series from each detector are recorded if they exceed a fixed SNR threshold, which was 5.5 in S6/VSR2,3, and it is the loudest within one second. To cope with the large number of transient non-Gaussian events, we apply a signal consistency test, and calculate a reweighted signal-to-noise ratio, defined in \ref{eq:newSNR}.
 
-\begin{equation}
-\rho (t) = \frac{(s|h)}{\sqrt{(h|h)}}.
-\end{equation}
+We additionally require that a candidate is seen by both the Hanford and Livingston observatories. In keeping with the findings of ch.~\ref{ch:single_stage} we require that the trigger in each detector be found by the same template, and within the light-travel time between the detectors. A combination of single detector events that passes this test is a \emph{coincident event}, whose combined statistic is given by \ref{eq:cnewsnr}.
 
-We make use of the noise-weighted inner product
+In order to claim a candidate signal as the detection of a gravitational-wave, we need to determine the probability that it could have been a chance happening. We estimate the false alarm rate by forming coincidences between single detector triggers that are outside of the standard coincident time window. 
 
-\begin{equation}
-(a|b) = 4 \int^{f_{nyquist}}_{f_{low}} \frac{\tilde{a}(f) \tilde{b}^*(f)} {S_n(f)} e^{2\pi i ft} df,
-\end{equation}
-
-where $\tilde{s}$ is the Fourier transform of the data, $\tilde{h}$ is the Fourier tranform of the template waveform, and $S_n(f)$ is the power spectral density (PSD).
-
-Excursions in the SNR timeseries are recorded as single-detector triggers if they exceed a fixed SNR threshold, and are the loudest within a fixed time window of 1 second. To cope with large number of high SNR triggers caused non-Gaussian transient events, we construct a signal-based consistency test. It is a time-frequency test, constructed by splitting the template waveform in the frequency domain amoung $p$ bins that each contribute an equal amount of power. Each bin is filtered against the data to construct the matched filter output $\rho_l$. The full time-frequency $\chi^2$ is finally constructed as
-
-\begin{equation}
-\chi^2 = p \sum^p_{l=1} \left( \frac{\rho}{p} - \rho_l \right)^2.
-\end{equation}
-
-True Gravitational-wave signals, along with Gaussian-noise, return a low number for this statistic, while a noise transient, which strongly weights a limited number of bins, would return a large $\chi^2$ value. The value of this signal-consistency test along with the matched-filter SNR is used to construct the single detector detection statistic, $new SNR$, which is defined as
-
-\begin{equation}
-\rho_{new} =
-  \begin{cases}
-    \rho &\textrm{for } \chi^2_r \leq 1\\
-    \rho[\frac{1}{2}(1+(\chi^2_r)]^{-\frac{1}{6}} &\textrm{for } \chi^2_r > 1,
-  \end{cases}
-\label{eq:newSNR}
-\end{equation}
-
-where $\chi^2_r$ is the reduced $\chi^2$ statistic, $\chi^2_r=\chi^2 / (2p - 2)$.
-
-This statistic has the convenient property that for relatively quiet injections within Gaussian noise, the value is close to the simple matched-filter SNR, while also downweighting triggers caused by non-Gaussian noise.
-
-We require that a candidate signal be present in more than one detector. In accordance with the recommendation of \cite{samantha}, we define a coincident event as a  pair of single detector triggers have the same mass and spin parameters, and are within a fixed time window of each other. This window is determined by the light-travel time between detectors, which for two-detector network of LIGO detectors we are considering is $\approx 11 ms$. The single detector new $\rho_{new}$ from the Hanford and Livingston detector, $\rho^H_{new}$ and $\rho^L_{new}$, respectively are combined into a single coincident statistic given by
-
-\begin{equation}
-\rho^c_{new} = \sqrt{(\rho^L_{new})^2 + (\rho^H_{new})^2}
-\end{equation}
-
-\subsection{Significance of Candidate Events}
-
-In order to claim a candidate signal as a detection of a gravitational-wave, we need to determine the probability that it could have been a chance happening. We estimate the false alarm rate by forming coincidences between single detector triggers that are outside of the standard coincident time window. 
-
-For both computational efficiency and simplicity, we choose to form background coincidences by applying a time shift to one detector. The triggers from one detector are offset by all possible non-zero integer multiples of the a fixed interval, $T_s$, for which there is coincident livetime. For this analysis we choose $T_s$ to .2 s. From all of these time slides, we collect a set of coincident triggers. As this set was formed from all of the original single detector triggers, we will refer to it as the \textit{inclusive background}, $B_{inc}$. Note, that if there is a loud gravitational-wave signal its component single detector triggers will also form coincidences that will be included within the background. The inclusive set of background triggers can be expanded as
+For both computational efficiency and simplicity, we choose to form background coincidences by applying a time shift to one detector. The triggers from one detector are offset by all possible non-zero integer multiples of a fixed interval, $T_s$, known as the \emph{timeslide interval}. For this analysis, we haven chosen $T_s$ to be .2 s. From all of these time slides, we collect a set of coincident triggers. As this set was formed from all of the original single detector triggers, we will refer to it as the \textit{inclusive background}, $B_{inc}$. Note, that if there is a loud gravitational-wave signal its component single detector triggers will also form coincidences that will be contained in this background set. The inclusive set of background triggers can be expanded as
 
 \begin{equation}
 B_{inc} = \{N_H * N_L\} \cup \{ N_H * S_L \} \cup \{S_H * N_L\},
 \end{equation}
 
-where $N_{H/L}$ are single detector noise triggers, $S_{H/L}$ are single detector triggers from gravitational-wave signals, and $\{A * B\}$ represents the set of coincidences between the single detector triggers A and B. We can define a set of background triggers that excludes coincidences, $B_{exc}$ , by excising single detector time surrounding each of the foreground coincident triggers, with components $F_H$ and $F_L$. This can be expressed as,
+where $N_{H/L}$ are single detector noise triggers, $S_{H/L}$ are single detector triggers from gravitational-wave signals, and $\{A * B\}$ represents the set of coincidences between the single detector triggers A and B. We can define a set of background triggers that excludes coincidences, $B_{exc}$, by excising single detector time surrounding each of the foreground coincident triggers, with components $F_H$ and $F_L$. This can be expressed as,
 
 \begin{equation}
 B_{exc} = B_{inc} - \{S_H * T_L\} - \{R_H * S_L\} - \{S_H * R_L\},
 \end{equation}
 
-where $R_{L/H} \in N_{L/H}$, and the time difference between any element in $R_{L/H}$ and any element of $F_{H/L}$ is greater than the blinding window $T_{blind}$, which in this analysis we have chosen to be 100 ms. Although the exclusive background is likely to exclude true signals, along with a set of random coincidences due to noise, a priori it cannot be determined if any given trigger belongs to the set of signal triggers or noise triggers. As such, both backgrounds are valid for different types of questions. The inclusive background admits the possibility that all triggers could be noise generated, while the exclusive background presumes that they are signal.
+where $R_{L/H} \in N_{L/H}$, and the time difference between any element in $R_{L/H}$ and any element of $F_{H/L}$ is greater than the blinding window $T_{blind}$, which in this analysis we have chosen to be 100 ms. This is chosen as a balance between the amount of triggers removed and the influence that a gravitational-wave signal may have on the template. 
 
-Given an event wih a $\rho^c_{new}=x$, we can express the false alarm rate (FAR) as
+Although the exclusive background is likely to exclude true signals, along with a set of random coincidences due to noise, a priori it cannot be determined if any given trigger belongs to the set of signal triggers or noise triggers. As such, both backgrounds are valid for different types of questions. The inclusive background admits the possibility that all triggers could be noise generated, including the triggers of a candidate signal. The exclusive background presumes that a given candidate is a signal while testing it against the remainder of the background. Estimating the significance of a candidate by comparing against the inclusive background will result in a more conservative value.
+
+We use the false alarm rate as our principle measure of the significance of a candidate event. Given an event wih a $\rho^c_{new}=x$, we can express the false alarm rate (FAR), when comparing to both the inclusive and exclusive background sets as
 
 \begin{equation}
 FAR_{inc/exc} (x) = N_{inc/exc} (x) / {T_B},
 \end{equation}
 
-where $N_{bkg}(x)$ is the number of coincident events in the estimated background with a $\rho^c_{new} > x$. $T_F$ is the coincident livetime, the cumulative amount of time in which both detectors of the two-detector network is active. $T_B$ refers to the effective background time, which can be accurately estimated from the single-detector livetimes $T_H$ and $T_L$ for the Hanford and Livingston detectors, respectively, as
+where $N_{bkg}(x)$ is the number of coincident events in the estimated background set with a $\rho^c_{new} > x$. $T_B$ is the effective background time, which can be accurately estimated from the single-detector livetimes $T_H$ and $T_L$ for the Hanford and Livingston detectors, respectively, as
 
 \begin{eqnarray}
 T_B =  T_H * T_H / T_s
 \end{eqnarray}
 
-Note, that this is not an exact calculation of the background livetime, which can be obtained by explicitly calculating the amount of overlapping time between the two ifos for each time slide and taking the sum. Notice, that the estimate is equivelant to the exact calculation, when the start and end of chunck of analyzed data lies on multiple of the timslide interval. As such, we can calculate the upper bound on the difference between the true and estimated value of the background livetime as
+Note, that this is not an exact calculation of the background livetime, which could be obtained by explicitly calculating the amount of overlapping time between the two ifos for each time slide and taking the sum. The estimate is equivelant to the exact calculation in the case that the start and end of every chunck of analyzed data lies on multiple of the timeslide interval. As such, we can calculate the upper bound on the difference between the true and estimated value of the background livetime as
 
 \begin{eqnarray}
-ERROR < 2 * N_{chunks} * T_s,
+|T_{b, estimate} - T_{b, exact} |< 2 * N_{chunks} * T_s,
 \end{eqnarray}
 
 where $N_{chunks}$ is the number of non-contigious analysis chunks.
 
 As our analysis discards chunks of data that are less than 2048 seconds in length, and  $T_s=200$ ms, the relative error is strictly less than $.02\%$, and so can safely be considered negligible.
 
-
-
 \section{Optimizing Search Sensitivity}
 \label{sec:tuning}
 
-In this section, we retune several parameters of a CBC search, with the aim of creating a sensitive search for Binary Neutron star sources. The potential parameter space of tuning choices is quite large, so we have started with the settings that mimic the lowmass CBC search performed in S6/VSR23. 
+In this section, we retune several parameters of a CBC search, with the aim of creating a search optimized for the detection of binary neutron star mergers. The potential parameter space of tuning choices is quite large, so we have started with the filtering settings used in the lowmass CBC search performed in S6/VSR23, and include the proposed changes from ch. \ref{ch:single_stage}. 
 
-In this section, we describe the procedure for evaluating the search perfornance of a particular set of tuning parameters. The metric we will use for evaluation is sensitvity volume of the search integrated over the coincident livetime, $VT$, which can be expressed as,
+In the following sections, we test proposed changes to the analysis pipeline using a template bank which is designed to have a $97\%$ minimal match with non-spinning BNS signals with component masses between $1-3 \M_\odot$. We evalutate the search perfornance of a particular set of tuning parameters, by using the  sensitive volume of the search integrated over the coincident livetime of each of our three sample weeks of S6 data. The sensitive volume is estimated by simulating a population of sources, inserting them into real detector data, and recovering them using the search pipeline. In this work, we choose the test injection set to consist of non-spinning BNS sources distributed uniformly between $1-3 \M_\odot$.
+
+The product of the sensitive volume and the coincident ananlysis time, $VT$, can be expressed as,
 
 \begin{eqnarray}
-VT (F) = \int \epsilon(F;r,\Omega,\Lambda, t)p(r,\Omega,\Lambda)r^2 dr d\Omega dt
+VT (F) = \sum_{w=0}^2 V(w, F) T_{coinc}(w)
 \end{eqnarray}
 
-The quanitity VT is directly proportional to the expected number of detected gravitaional-wave signals.
-
-In the subsequent sections, we will use this metric to evaluate potential options for tuning the PSD estimation, and chisq binning.
-
-To assess the performance of a given set of tunings, we evalute VT for 3 one-week time spans of S6 data. 
-
-% Heavily reference account of method as in cbc_ahope_paper (in preparation)
+where V(w, F) is the sensitive volume as given by eq.~\ref{eq:sensitive_volume} for a given week, w, of the sample analysis. The total amount of analysis time for a given week is given by $T_{coinc}(w)$. The quanitity VT is directly proportional to the expected number of detected gravitaional-wave signals from the simulated population. 
 
 \subsection{Power Spectrum Estimation}
 \label{sec:psd}
 
-Because the overall sensitivity of a detector along with the shape of its power spectral density (PSD) changes over time, the spectral density used to calculated the SNR of candidate events is periodically recalculated. The S6/VSR2,3 analysis recomputed the PSD using every 1920 seconds. However, due to the additional padding required for filtering, 2048s of data was used for each PSD estimate. Each 2048s chunk of data is subdivided into 15 segments, each with 256s duration and overlapped by 50$\%$. The PSD each chunk is calculated by first taking the median average of the Fourier transform of each segment. Finally, we truncate the inverse of the PSD in the time domain to restrict the filter corruption to a fixed length of time. In addition, this has the effect of smoothing out lines within the spectrum. An inverse truncation value of 16 seconds was used throughout S6/VSR2,3. 
+Because the overall sensitivity of a detector, along with the shape of its power spectral density (PSD) changes over time, the spectral density used to calculated the matched-filtering SNR of candidate events is periodically recalculated. The S6/VSR2,3 analysis recomputed the PSD using every 1920 seconds, an interval known as the \emph{analysis chunk}. However, due to the additional padding required for filtering, 2048s of data was used for each PSD estimate. Every 2048s chunk of data was subdivided into 15 segments, each with 256s duration and overlapped by 50$\%$. The PSD of each analysis chunk is calculated by first taking the median average of the Fourier transform of each segment. Finally, we truncate the inverse of the PSD in the time domain to restrict the filter corruption to a fixed length of time. In addition, this has the effect of smoothing out lines within the spectrum. An inverse truncation value of 16 seconds was used throughout S6/VSR2,3. 
 
-We investigate a straightforward improvement to this algorithm. Instead of calculating the PSD using 256 second segments and applying a 16 second inverse spectrum truncation, we propose calculating the PSD using 16 second segments directly, interpolating for the intended use case, and finally applying the same 16s inverse spectrum truncation. The results of this investigation are shown in figure Fig.~\ref{fig:psd}, where the sensitive volume-time is compared for the initial reference configuration and for the proposed configuration as a function of the inverse false alarm rate. The proposed PSD estimation shows clear improvement over the initial method, resulting in an average $\approx 12\%$ increase in sensitivity between inverse false alarm rates of $10^3$ and $10^4$ years.
+We investigate a straightforward improvement to this algorithm. Instead of calculating the PSD using 256 second segments and applying a 16 second inverse spectrum truncation, we propose calculating the PSD using 16 second segments directly, interpolating for the intended use case, and finally applying the same 16s inverse spectrum truncation. The results of this investigation are shown in figure Fig.~\ref{fig:psd}, where the sensitive volume-time is compared for the initial reference configuration and for the proposed configuration as a function of the inverse false alarm rate. The proposed PSD estimation shows clear improvement over the method used in S6/VSR2,3, resulting in an average $\approx 12\%$ increase in sensitivity between inverse false alarm rates of $10^3$ and $10^4$ years.
 
 %In this section, we investigate a straightforward improvement to the estimation of PSDs %within the search pipeline.
 
