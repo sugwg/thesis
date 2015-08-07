@@ -73,6 +73,104 @@ when implementing matched filtering~\cite{Allen:2005fk}, and allows
 computational tasks to be parallelized over time and binary parameters for
 efficient implementation on large computing clusters~\cite{Brown:workflow}.
 
+\section{Method for assessing the performance of NSBH searches}
+\label{sec:analytic_vol}
+
+In the absense of non-Gaussian noise, we can create analytic measures of the
+faithfulness and effectiveness of the waveform models and template banks that 
+will be used to search for gravitational waves. In this section we describe 
+the methods we and the terminology that we will use in the rest of this work.
+
+The ``overlap'' between two waveforms $h_1$ and $h_2$ is defined as
+%
+\begin{equation}
+ \mathcal{O}(h_1,h_2) = (\hat{h}_1|\hat{h}_2) =
+\dfrac{(h_1|h_2)}{\sqrt{(h_1|h_1)(h_2|h_2)}},
+\end{equation}
+%
+where $(h_1,h_2)$ denotes the noise-weighted inner product
+%
+\begin{equation}
+(h_1|h_2) = 4 \, \mathrm{Re}
+\int^{\infty}_{f_{\mathrm{min}}}\dfrac{\tilde{h}_1(f)\tilde{h}_2^*(f)}{S_n(f)} 
+df.
+\end{equation}
+%
+Here, $S_n(f)$ denotes the one sided \ac{PSD} of the noise in the
+interferometer. In this work, we model $S_n(f)$ with the \ac{aLIGO}
+zero-detuned, high-power design sensitivity curve~\cite{Harry:2010zz} and use a
+lower frequency cutoff, $f_{\mathrm{min}}$, of 15Hz.
+
+As gravitational wave searches for binary mergers analytically maximize over an
+overall phase and time shift, we define the ``match'' between two waveforms
+to be the overlap maximized over a phase and time shift
+%
+\begin{equation}
+\mathcal{M}(h_1,h_2) =
+\underset{\phi_c,t_c}{\max}(\hat{h}_1|\hat{h}_2(\phi_c,t_c)).
+\end{equation}
+%
+One can understand this match as the fraction of the optimal \ac{SNR} that would
+be recovered if a template $h_1$ was used to search for a signal $h_2$.
+
+We define the ``fitting-factor'' between a waveform $h_s$ with unknown
+parameters
+and a bank of templates $h_b$ to be the maximum match between $h_s$ and all the
+waveforms in the template bank~\cite{Apostolatos:1995pj},
+%
+\begin{equation}
+\mathrm{FF}(h_s) = \max_{h \in \{h_b\}} \mathcal{M}(h_s,h).
+\end{equation}
+%
+The ``mismatch''
+%
+\begin{equation}
+\mathrm{MM} = 1 - \mathrm{FF}(h_s)
+\end{equation}
+%
+describes the fraction of \ac{SNR} that is lost due to the fact that the
+template in the bank that best matches $h_s$ will not match it exactly due to
+the discreteness of the bank and due to any disagreement between the waveform 
+families used to model the templates and the signals. In previous searches of 
+LIGO and Virgo data using
+non-spinning template banks, the banks of signals were constructed so that the
+fitting factor would be greater than 0.97 for any non-spinning signal within
+the parameter space \cite{Babak:2012zx}. This was chosen as a balance between
+detection efficiency and computational cost. We also construct our 
+aligned-spinning banks with this criterion.
+
+When a set of fitting factors have been calculated one can quote an ``average 
+fitting factor'' by taking the mean over all the values
+%
+\begin{equation}
+ \textrm{FF}_{\textrm{av}} =  \left\langle \textrm{FF}
+\right\rangle,
+\end{equation}
+%
+where $\left\langle X \right\rangle$ denotes the mean average of $X$.
+However, this measure can often be misleading.
+The \ac{aLIGO} detectors have a direction-dependent and
+orientation-dependent sensitivity. Systems that are poorly aligned with respect
+to the detector may not have sufficient \ac{SNR} to be detected, regardless of
+the fitting factor.
+To account for this we make use of the ``effective fitting factor'',
+first defined in \cite{Buonanno:2002fy} as
+%
+\begin{equation}
+ \textrm{FF}_{\textrm{eff}} = \left( 
+ \frac{ \left\langle \textrm{FF}^3 \sigma_i^3 \right\rangle }{\left\langle
+\sigma_i^3 \right\rangle} \right)^{1/3}.
+\end{equation}
+%
+Here $\sigma_i = \sqrt{(h_i|h_i)}$, which describes the optimal \ac{SNR}
+of $h_i$. The cube of the effective fitting factor gives, above an
+arbitrary \ac{SNR} threshold, the ratio between the fraction of \ac{NSBH}
+signals that would be recovered with the discrete template bank that was used
+and a theoretical continuous template bank that would recover 100\% of signal
+power for \emph{any} \ac{NSBH} waveform. We therefore define the ``signal
+recovery fraction'' as $\textrm{FF}_{\textrm{eff}}^3$.
+
+
 \section{Coincident Matched-Filter Search for Compact Binaries}
 \label{s:search}
 
@@ -312,4 +410,5 @@ $0$ otherwise. The error in the estimate is:% \cite{ref:num_methods}:
 \begin{equation}
 \delta V = \sqrt{\frac{\left<g^2\right> - \left<g\right>^2}{N}}.
 \end{equation}
+
 
