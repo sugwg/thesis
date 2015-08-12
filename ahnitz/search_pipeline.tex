@@ -1,61 +1,8 @@
 \section{Introduction}
 
-Searches for gravitational waves from compact object
-binaries containing neutron stars and stellar-mass black holes have been
-performed using the first-generation LIGO and Virgo detectors in LIGO's six
-science runs (S1--S6) and three Virgo science runs
-(VSR1--VSR3)~\cite{Abbott:2003pj,Abbott:2005pe,Abbott:2005kq,Abbott:2007xi,Abbott:2007ai,Abbott:2009tt,Abbott:2009qj,Abadie:2010yba,Abadie:2011nz}.
-Construction of the Advanced LIGO (aLIGO) detectors~\cite{TheLIGOScientific:2014jea} is now complete and the
-first aLIGO observing runs are scheduled for autumn 2015~\cite{Aasi:2013wya}.
-The Advanced Virgo (AdV) detector~\cite{Acernese:2015gua} is scheduled to join this network in 2016.
-When these second-generation detectors reach design sensitivity, it is
-predicted that they will observe on the order of $10$ coalescence events per
-year~\cite{Abadie:2010cf}. Binaries containing neutron stars and stellar-mass
-black holes are likely to be the first sources observed by aLIGO and AdV. 
-
-Gravitational waves from compact binary coalescence have three distinct
-phases: an \emph{inspiral} consisting of a wave of slowly increasing amplitude
-and frequency, a \emph{merger} which can be calculated using numerical
-simulations, and a \emph{post-merger} signal as the binary stabilizes into a final
-state. If the total mass of the binary is lower than $M \lesssim 12\,
-M_\odot$~\cite{Buonanno:2009zt,Brown:2012nn}
-and the angular momenta of the compact objects (their \emph{spin}) is
-small~\cite{Nitz:2013mxa,Kumar:2015tha}
-(as is the case for binary neutron stars), then the inspiral phase can be 
-well modeled using the post-Newtonian approximations (see e.g.
-Ref.~\cite{Blanchet:2013haa} for a review).  For higher mass and higher-spin
-binaries, analytic models tuned to numerical relativity can provide accurate
-predictions for the gravitational waves from compact 
-binaries~\cite{Buonanno:1998gg,Pan:2009wj,Damour:2012ky,Taracchini:2013rva,Damour:2014sva}. 
-
-Ground-based gravitational-wave detectors produce a calibrated strain signal
-$s(t)$, which is sensitive to gravitational waves incident on the detector's
-arms~\cite{Abadie:2010px}. In addition to possible signals, the strain data contain two classes of
-noise: (i) a primarily stationary, Gaussian noise component from fundamental
-processes such as thermal noise, quantum noise, and seismic noise coupling
-into the detector; and (ii) non-Gaussian noise transients of instrumental and
-environmental origin. Since the gravitational-wave signal from compact
-binaries is well-modeled and the expected amplitude of astrophysical signals is
-comparable to the amplitude of the noise,
-matched filtering is used to search for signals in the detector data~\cite{Allen:2005fk}.  Since
-we do not \emph{a priori} know the parameters of the compact
-binaries we may detect, a \emph{bank} of template waveforms is constructed that spans the astrophysical
-signal space~\cite{Sathyaprakash:1991mt,Dhurandhar:1992mw,Owen:1995tm,Owen:1998dk,Babak:2006ty,Cokelaer:2007kx,Brown:2012qf,Keppel:2013yia,Keppel:2013uma}. These banks are designed so that the loss in event rate caused by
-their discrete nature is typically no more than 10\%. The exact placement of the
-templates depends on the noise power spectral density of the detector data. To
-mitigate the effect of the non-Gaussian noise transients in the search, we
-require that any signal be seen with consistent parameters (compact objects'
-spins and masses and the signal's time of arrival) in the detector network. Additional
-statistical tests are applied to mitigate the effect of non-Gaussian
-noise transients~\cite{Allen:2004gu}; these are often called \emph{signal-based vetoes}. The 
-matched-filter signal-to-noise ratio and the additional statistical tests are used to
-create a numerical detection statistic for candidate signals. To assign a
-statistical significance to these detection candidates, the network's false-alarm rate is computed as a function of the detection statistic for the
-noise background.
-
-Executing the steps described above is the task of the \emph{search pipeline.}
-While the basic steps remain the same, different choices can be made to
-create various configurations and topologies for a search pipeline. The search
+While the basic steps of a gravitational-wave search pipeline remain the same, 
+different choices can be made to
+create various configurations and topologies. The search
 pipelines used in the last joint LIGO-Virgo science run (S6/VSR2,3) used the
 \texttt{ihope} search pipeline to search for compact
 binaries~\cite{Babak:2012zx}. The \texttt{ihope} pipeline, as well as the
@@ -81,7 +28,7 @@ faithfulness and effectiveness of the waveform models and template banks that
 will be used to search for gravitational waves. In this section we describe 
 the methods and the terminology that we will use in the rest of this work.
 
-The ``overlap'' between two waveforms $h_1$ and $h_2$ is defined as
+The ``overlap'' between two gravitational waveforms $h_1$ and $h_2$ is defined as
 %
 \begin{equation}
  \mathcal{O}(h_1,h_2) = (\hat{h}_1|\hat{h}_2) =
@@ -97,11 +44,12 @@ df.
 \end{equation}
 %
 Here, $S_n(f)$ denotes the one sided \ac{PSD} of the noise in the
-interferometer.
+interferometer, and $f_min$ is a lower frequency cutoff determined by the
+characteristics of the noise.
 
-As gravitational wave searches for binary mergers analytically maximize over an
+Gravitational wave searches for binary mergers maximize over an
 overall phase and time shift, we define the ``match'' between two waveforms
-to be the overlap maximized over a phase and time shift
+to be the overlap maximized over the phase and time shift
 %
 \begin{equation}
 \mathcal{M}(h_1,h_2) =
@@ -190,10 +138,10 @@ domain used to construct the (squared) signal-to-noise ratio, given by
 \label{eq:snr}
 \end{equation}
 %
-where $h_c$ and $h_s$ are the two orthogonal phases of the 
+where $h_c$ and $h_s$ are the two orthogonal phases of the template.
 %
 \begin{equation}
-(s|h)(t) = 4\int_{f_{low}}^{f_{high}} \frac{\tilde{s}(f)\tilde{h}^*(f)}{S_n (f)}e^{2\pi i f t}\, \mathrm{d}f.
+(s|h)(t) = 4\int_{f_{min}}^{f_{nyquist}} \frac{\tilde{s}(f)\tilde{h}^*(f)}{S_n (f)}e^{2\pi i f t}\, \mathrm{d}f.
 \label{eq:ip}
 \end{equation}
 %
@@ -324,7 +272,7 @@ make per unit time at a given false-alarm rate. This is given by:
 V(F) = \int \epsilon(F; r, \Omega, \mathbf{\Lambda}) p(r, \Omega, \mathbf{\Lambda}) r^2 \mathrm{d}r \mathrm{d}\Omega \mathrm{d}\mathbf{\Lambda}.
 \end{equation}
 Here, $\mathbf{\Lambda}$ are the physical parameters of a signal (in this
-study, $\{m_1, m_2\}$), $p(r, \Omega, \mathbf{\Lambda})$ is the distribution of
+study, $\{m_1, m_2, \vec{s_1}, \vec{s_2}\}$), $p(r, \Omega, \mathbf{\Lambda})$ is the distribution of
 signals in the universe, and $\epsilon$ is the efficiency of the pipeline at
 detecting signals at a distance $r$, sky location $\Omega$, and false-alarm
 rate $F$.
