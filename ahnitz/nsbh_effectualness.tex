@@ -286,7 +286,7 @@ and a theoretical continuous template bank that would recover 100\% of signal
 power for \emph{any} \ac{NSBH} waveform. We therefore define the ``signal
 recovery fraction'' as $\textrm{FF}_{\textrm{eff}}^3$.
 
-\section{A new algorithm for constructing template banks of aligned-spin NSBH 
+\section{Algorithm for constructing template banks of aligned-spin NSBH 
 waveforms}
 \label{sec:bank_method}
 
@@ -297,90 +297,6 @@ era. In this section we adapt the methods presented in that work to the case of
 \ac{NSBH} systems and describe how to generate template banks that can recover
 aligned-spin \ac{NSBH} waveforms. These banks are applicable for waveforms
 modelled using either the TaylorT2 approximant or the TaylorT4 approximant.
-
-A bank of templates should be placed such that any putative signal
-within the parameter space of interest would be recovered with a loss in SNR
-that is always
-less than some predefined value, usually taken to be 3\%
-\cite{Poisson:1995ef,Owen:1995tm,Owen:1998dk,Babak:2006ty,
-Cokelaer:2007kx,Babak:2012zx}.
-To determine the maximum spacing between templates that meets this criterion,
-the parameter space metric is used. This approximates the distance between any
-two points that are close in the parameter space \cite{Owen:1995tm}
-%
-\begin{equation}
-\label{eq:cbc_metric2}
-\mathcal{O}(h(\bm{\theta}),h(\bm{\theta}+\delta\bm{\theta})) =
-  1 - \sum_{ij} g_{ij}(\bm{\theta}) \,\delta\theta^i \,\delta\theta^j,
-\end{equation}
-%
-with the metric given by
-\begin{equation}
-\label{eq:cbc_metric}
-g_{ij}(\boldsymbol{\theta}) = - \frac{1}{2} \frac{\partial^2
-\mathcal{O}}{\partial \delta\theta^i \partial
-\delta\theta^j} = \left(\frac{\partial h(\boldsymbol{\theta})}{\partial
-\theta^i} \bigg|
-\frac{\partial h(\boldsymbol{\theta})}{\partial \theta^j}\right).
-\end{equation}
-Here $\bm{\theta}$ describes the parameters of the signal, in this case the
-masses and the spins. This is also commonly referred to as the Fisher metric. 
-
-Obtaining an analytic solution for Eq. \ref{eq:cbc_metric} is much simpler in 
-the frequency domain and therefore frequency-domain waveform models are 
-commonly used when placing a bank of 
-templates~\cite{Owen:1995tm,Owen:1998dk,Babak:2012zx}. We follow that approach 
-and consider only frequency-domain metrics here. It is important to carefully 
-consider which
-coordinates to use as parameters when using this metric as an approximation to
-the parameter space distance. If one were to naively use the masses and spins
-directly as coordinates it
-would result in a parameter space metric with a large amount of extrinsic
-curvature, and Eq.~(\ref{eq:cbc_metric2})
-would only be valid for small ranges of $\delta\theta^i$. In previous searches
-for non-spinning systems,
-the ``chirp times'' were used \cite{Owen:1998dk}, defined as,
-%
-\begin{subequations}
-\begin{align}
- \tau_0 &= \frac{5}{128} \left(\pi M \right)^{-5/3} \eta^{-1} \\
- \tau_3 &= \frac{\pi}{4} \left(\pi M \right)^{-2/3} \eta^{-1},
-\end{align}
-\end{subequations}
-%
-as these are the two combinations of the masses that minimize extrinsic
-curvature.
-
-When the template waveforms include spin it is difficult to identify a
-parameterization of the waveform for which the metric is locally flat.
-Instead, in~\cite{Brown:2012qf} we constructed a metric
-that uses the various coefficients of the expansion of the orbital
-phase, given by the various $\lambda_i$ terms in Eq.~(\ref{eq:phase_exp}),
-directly as coordinates. Using these coordinates, the parameter space is
-globally flat. However, for the TaylorF2 metric including terms up to
-3.5\ac{PN} order, the parameter space is 8-dimensional. The physical 
-sub-space forms a 4-dimensional manifold within this parameter 
-space.
-
-To deal with the increased dimensionality of the space we perform two
-coordinate transformations~\cite{Brown:2012qf,Ohme:2013nsa}. These two 
-coordinate
-transformations map points from the $\lambda_i$ coordinates into a
-Cartesian coordinate system where the principal directions are mapped using
-coordinates denoted by $\xi_i$. Specifically, the first coordinate 
-transformation uses the eigenvectors and
-eigenvalues of the $\lambda_i$ metric to transform to a Cartesian
-coordinate system. A Principal Component Analysis is then performed to rotate
-into the frame given by the principal directions of the parameter space. In 
-this Cartesian coordinate system of principal directions we can
-assess the ``effective dimension'' of the parameter space; i.e., the number of
-directions in which templates actually need to be placed in order to achieve the
-desired coverage. For the case of the \ac{BNS} parameter space with the 
-\ac{aLIGO} \ac{PSD} we found that many of the directions had an extremely small 
-extent and
-could be neglected entirely. We found that a 2-dimensional lattice could
-efficiently cover the entire space of aligned-spin \ac{BNS}
-waveforms~\cite{Brown:2012qf}.
 
 Our geometrical placement method is not specific to the \ac{BNS} area of the
 parameter space. However, some modifications to the method were necessary when
@@ -397,36 +313,9 @@ find a physical point that has the corresponding values of $\xi_1$ and $\xi_2$
 and \emph{any} value of the other $\xi_i$ values that correspond to a waveform 
 within the physically allowed manifold. For some cases where a 2-dimensional 
 lattice is not sufficient to cover the space we will also specify values of 
-$\xi_3$ and $\xi_4$. We attempt to find a 
+$\xi_3$ and $\xi_4$. We use a brute force method to find a 
 physical solution that is sufficiently close to the desired point using a
-numerical solution. We generate a large set of points in
-the mass and spin space and map these points to the $\xi_i$ parameters. For 
-each template we then find the closest point from our large 
-set of physical points.
-We then proceed to iteratively test physical points in the vicinity to find a
-match of at least 0.9999 with the intended position.
-If the template is within the physically allowed parameter space we can 
-generally find a physical point that has the desired match with the intended 
-$\xi_i$ point.
-Templates on the boundaries of the space, might have an
-overlap as low as $\sim 0.97$ with the edge of the physical parameter space.
-Our method pushes such points back into
-the desired physical space thereby providing a slight \emph{improvement} in the
-bank coverage. This method also provides an easy method to determine the extent 
-of the physical space: if \emph{no} physical point is found with 0.97 or higher 
-match with the $\xi_i$ position then that point is not within the physical 
-extent of the parameter space and no template needs to be placed there.
-
-The downside to our brute-force numerical method is that it is currently not
-computationally efficient; generating a bank with this numerical technique can 
-take $O(10)$ hours when running on $\sim 500$
-CPU cores. The cost of placing a bank using this method, however, is negligible
-when compared to the cost of filtering data against a bank of templates if a 
-single bank is used to filter O(days) of data. If the bank is regenerated every 
-hour, as in previous searches of LIGO and Virgo data~\cite{Babak:2012zx}, this 
-cost would not be negligible.
-We note that it should be possible to optimize our implementation to obtain a 
-significant speed increase over what we quote above.
+numerical solution, which has the downside of being computationally inefficient. 
 
 The TaylorF2 metric can be used to place a bank of waveforms modelled with the
 TaylorT2 approximant. However, we also require that our template placement
@@ -443,41 +332,7 @@ result in a reduction of sensitivity. We therefore make use of
 a metric that models the TaylorT4 waveform well. To do this we use the
 TaylorR2F4 waveform model. We have found that restricting the TaylorR2F4 model
 to terms no larger than 4.5\ac{PN} and placing a bank of templates using the
-ensuing metric is sufficient to cover the TaylorT4 parameter space. This is
-a 12-dimensional metric. We then perform the same rotations as for the TaylorF2
-metric to identify the $\xi_i$ directions for our TaylorR2F4 parameter
-space and proceed in the same manner as described above.
-
-In contrast to \ac{BNS} mergers, \ac{NSBH} systems can merge in
-the sensitive band of the advanced detectors. Existing non-spinning
-template placement algorithms
-\cite{Poisson:1995ef,Owen:1995tm,Owen:1998dk,Babak:2006ty,
-Cokelaer:2007kx}, as well as our aligned-spin algorithm must use the same 
-termination frequency when modelling waveforms across the parameter space. 
-The standard approach is to assume that the waveforms will follow the TaylorF2, 
-or TaylorR2F4, evolution up to the Nyquist frequency, usually 2048Hz. For 
-\ac{BNS} systems, the merger generally occurs above 1000Hz where the 
-sensitivity of
-gravitational wave interferometers falls off and therefore little power is
-incurred between 1000Hz and Nyquist. Even a $(3 + 3)M_{\odot}$ \ac{BNS}
-has an \ac{ISCO} with a frequency of 730Hz. In contrast, a $(15 + 3)M_{\odot}$
-\ac{NSBH} system has an \ac{ISCO} frequency at 240Hz. We must therefore
-consider what frequency cutoff is most appropriate to use when placing a bank
-of \ac{NSBH} waveforms.
-
-We found that using an upper frequency cutoff that is higher than the waveform's
-termination frequency results in overcoverage in the parameter space. This 
-result is expected as the sub-dominant \ac{PN} terms can have a
-significant effect in the late part of the evolution, causing
-systems with the same chirp masses but different spins and mass ratio to diverge
-faster. Therefore we use an upper frequency cutoff of 1000Hz for all waveforms
-within the \ac{NSBH} parameter space to generate a template bank that will cover
-to the desired minimal match. However, as this template bank will overcover
-at least the high mass end of the parameter space we also investigate the
-efficiency of banks placed with smaller upper frequency cutoffs in section
-\ref{ssec:stoch_fup_compare}. This choice will be an important consideration
-in the advanced detector era given limits on computational power for conducting
-\ac{NSBH} searches.
+ensuing metric is sufficient to cover the TaylorT4 parameter space.
 
 \section{Constructing template banks of aligned-spin NSBH waveforms with our 
 new algorithm}
@@ -516,56 +371,8 @@ zero-detuned, high-power noise curve is used with a lower frequency cutoff of
 \end{minipage}
 \end{table*}
 
-\begin{figure*}
-    \centering
-    \begin{minipage}[l]{\columnwidth}
-    \centering
-\includegraphics[width=1.0\textwidth]
-{papers/nsbh_effectualness/figure1A.png}
-\includegraphics[width=1.0\textwidth]
-{papers/nsbh_effectualness/figure1B.png}
-\caption{\label{fig:bankF2depths}
-The depth of the physically possible range of $\xi_3$ (left) and $\xi_4$ (right)
-values as a function of
-$\xi_1$ and $\xi_2$ shown for the TaylorF2 \ac{NSBH} parameter space.
-The $\xi_i$ coordinates have been scaled
-such that one unit corresponds to the coverage diameter of a template
-at 0.97 mismatch. Shown using the zero-detuned, high-power advanced LIGO
-sensitivity curve with a 15Hz lower frequency cut off
-and a 1000Hz upper frequency cut off.}
-\end{minipage}
-\end{figure*}
-
 We begin by creating a template bank using the TaylorF2 parameter space metric.
-We first explore the space to assess the effective dimensionality and to
-determine whether the 2-dimensional placement used to cover the \ac{BNS}
-space in~\cite{Brown:2012qf} is applicable to the \ac{NSBH}
-space. We do this by creating a set of $10^7$ points drawn uniformly from the
-chosen range of \ac{NSBH} masses and spins. We then transform these points
-into the $\xi_i$ coordinates. In Fig.~\ref{fig:bankF2depths} we show the
-extent of the dominant two directions ($\xi_1$ and $\xi_2$). The color shows,
-respectively, the depth of the third direction ($\xi_3$) and the fourth
-direction ($\xi_4$). The fifth and subsequent directions are, as in the \ac{BNS}
-space, small enough to be ignored completely.
-
-From these plots we can see that the extent of the space in all but the $\xi_1$
-and $\xi_2$ directions is small in most regions. In these areas a
-2-dimensional lattice of template points would suffice to cover the parameter
-space. However, there is a
-small region in the center of the parameter space where the depth of the third
-direction is not negligible. Therefore, to cover this space we
-follow~\cite{Brown:2012qf} and initially place a 2-dimensional lattice in the
-$\xi_1$, $\xi_2$ coordinates. Then, where necessary, templates are stacked in
-the $\xi_3$ direction. The density of this stacking is chosen such that the loss
-in match due to the depth of the third direction can never be larger than 0.01.
-As the 2-dimensional lattice is placed to ensure that matches will not be less
-than 0.97 in a 2-dimensional plane, and as each direction in our Euclidean 
-parameter space is orthogonal, there are therefore regions of the parameter
-space where the fitting factor can be as low as 0.96. However, these regions are
-small and the mean fitting factor, as we will show, is still much larger than
-0.97. This bank, constructed using the TaylorF2 parameter space metric, contains
-801,183 templates, of which 134,807 were added by the stacking process. For
-ease of comparison Table \ref{tab:banksizes} gives the sizes and properties of
+This bank contains 801,183 templates, of which 134,807 were added by the stacking process. For ease of comparison Table \ref{tab:banksizes} gives the sizes and properties of
 all the banks that are used in this work.
 
 \begin{figure*}
