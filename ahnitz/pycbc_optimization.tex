@@ -2,7 +2,7 @@
 
 We consider the compuatational optimizations that we have made to the implementation
 of matched-filtering used in searches for compact binary coalescences.
-The dominant computational cost of the ihope pipeline is the \texttt{lalapps\_inspiral}
+In S6/VSR2,3 the dominant computational cost of the ihope pipeline was the \texttt{lalapps\_inspiral}
 filtering engine. Over the last two years, the ihope pipeline has been
 re-written for Advanced LIGO. The new framework, known as PyCBC is more modular,
 flexible, and scalable than the LALApps framework used previously. PyCBC has
@@ -29,7 +29,7 @@ independent of the architecture used (CPU or GPU). The improved algorithms
 generate \emph{exactly the same output} as used in previous LIGO searches. 
 
 \vspace*{-10pt}
-\subsection{Optimization of thresholding and time clustering}
+\section{Optimization of thresholding and time clustering}
 \vspace*{-05pt}
 \label{sec:opt-thresh}
 
@@ -45,7 +45,7 @@ is chosen based on the impulse response of the filter and the character of the
 data, so that triggers produced come from independent events (noise or signal).
 
 In \texttt{lalapps\_inspiral} these two steps (thresholding and clustering) were
-implemented as separate kernels; this optimization fuses them into one.  The
+implemented as separate kernels. We optimize this by fusing the two kernels. The
 primary motivation for this fusion is the thresholding step.  Searching through
 an array for points above threshold is trivial to implement in serial,
 un-vectorized code.  Vectorization or
@@ -75,19 +75,13 @@ particularly when multi-threaded FFTs are used to compute the matched filter.
 
 %~~~~~~~~~~~
 \vspace*{-10pt}
-\subsection{CPU implementation and optimization}\label{sec:cpu-opt}
+\section{CPU implementation and optimization}\label{sec:cpu-opt}
 \vspace*{-05pt}
 %~~~~~~~~~~~
 
 We now turn to the specific optimizations and implementation choices necessary
 for CPU architectures.  For concreteness, we focus on the
-Intel\textsuperscript{\textregistered}~E5-2670 (Sandy Bridge) product, which is
-nearly identical (except for slightly lower clock speed) to the cores on
-Stampede. 
-Our testing included standardized performance tests, employed for all the
-LSC optimization characterization, with \texttt{perf-stat} results given in
-Section~\ref{sec:measured}, both below.
-Similar to Stampede, our reference system
+Intel\textsuperscript{\textregistered}~E5-2670 (Sandy Bridge) product.Our reference system
 has two sockets of eight cores each, running at 2.6~GHz clock speed. 
 All performance results presented here, whether single or multi-threaded, were
 tested with the CPU affinity of the process set to bind it to a number of cores
@@ -102,11 +96,7 @@ SIMD registers that can hold either eight single-precision or four
 double-precision floating point numbers. Potentially one add and one multiply
 instruction can be retired each clock cycle, so the maximum theoretical peak
 single precision performance of each socket is $2.6\times 8\times 8\times 2 =
-332.8~\mathrm{GFLOPS}$. We have tested our code on other CPU architectures as
-reported in the trade study in Section~\ref{sec:offline-trade-study}; in the following subsections we focus only on the
-E5-2670. Similar considerations, though with potentially different details,
-would apply to other CPU architectures that are or might be available to the
-LSC.
+332.8~\mathrm{GFLOPS}$. 
 
 Standard profiling tools can reveal where \texttt{pycbc\_inspiral} spends most of
 its time, and timing tests can reveal whether we are in fact able to utilize the
