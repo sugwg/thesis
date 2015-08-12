@@ -28,9 +28,7 @@ scientific methods. We have made performance improvements that can be realized
 independent of the architecture used (CPU or GPU). The improved algorithms
 generate \emph{exactly the same output} as used in previous LIGO searches. 
 
-\vspace*{-10pt}
 \section{Optimization of thresholding and time clustering}
-\vspace*{-05pt}
 \label{sec:opt-thresh}
 
 After the matched filter SNR is computed for a given template, 
@@ -74,9 +72,7 @@ improves the performance of both CPU and GPU implementations, and the CPU
 particularly when multi-threaded FFTs are used to compute the matched filter. 
 
 %~~~~~~~~~~~
-\vspace*{-10pt}
 \section{CPU implementation and optimization}\label{sec:cpu-opt}
-\vspace*{-05pt}
 %~~~~~~~~~~~
 
 We now turn to the specific optimizations and implementation choices necessary
@@ -129,9 +125,7 @@ autocorrelation $\chi^2$ veto is also
 shown to be necessary, we
 will also implement an optimized kernel for the algorithm. 
 
-\vspace*{-10pt}
 \subsection{Parallelization of expensive kernels}
-\vspace*{-05pt}
 \label{sec:parall-expens-kern}
 
 Both the correlation of the frequency-domain data segment with the frequency
@@ -169,9 +163,7 @@ execution time of the optimal FFT. As described below, other cache effects
 dominate over this, but when this becomes a bottleneck we will again investigate
 improving it further.
 
-\vspace*{-10pt}
 \subsection{Vectorization of expensive kernels}
-\vspace*{-05pt}
 \label{sec:vect-expens-kern}
 
 The C implementation of the correlation and thresholding has also been vectorized to
@@ -288,17 +280,13 @@ outperforms this because its memory accesses are not purely loads. Thus, we
 conclude that these kernels are bandwidth limited, but achieve essentially the
 peak bandwidth feasible.
 
-\enlargethispage*{1000pt}
 For the two kernels that we have vectorized and parallelized, we
 find that the parallelization is reasonably good but the performance of
 vectorization much lower than one might expect. However, this is directly
 attributable to bandwidth limitation of the kernels, which do achieve close to
-the peak bandwidth for the architecture.
-\vspace*{15pt}
+fthe peak bandwidth for the architecture.
 
-\vspace*{-40pt}
 \subsection{Performance relative to theoretical peak}
-\vspace*{-05pt}
 \label{sec:perf-relat-theor}
 
 We have designed our overall algorithm to be dominated by
@@ -347,9 +335,7 @@ next priorities for further optimization.
 %\todo{Josh working on this section based on 5316 templates/core throughput for
 %fftw 2 x 1 x 8 thread on E5-2670}
 
-\vspace*{-10pt}
 \subsection{Comparison of measured numbers with theoretical FFT throughput}
-\vspace*{-05pt}
 \label{sec:measured}
 
 Finally we assess the overall performance of \texttt{pycbc\_inspiral} through
@@ -428,9 +414,7 @@ in the next subsection on future optimizations. Alternatively, it is not yet
 decided on what hardware the various PyCBC searches will run, and should they do
 so on hardware with sufficiently large cache the issue could be moot.
 
-\vspace*{-10pt}
 \subsubsection{Future CPU optimizations}
-\vspace*{-05pt}
 
 We are investigating a number of performance optimizations to more efficiently
 implement the existing computational methods: vectorization and parallelization
@@ -445,9 +429,7 @@ scientific methods (such as hierarchical searches and pruned FFTs) that if
 verified through simulations do not degrade sensitivity can provide potentially
 large computational savings.
 
-\vspace*{-10pt}
 \subsection{PyCBC on Graphics Processing Units}
-\vspace*{-05pt}
 \label{sec:gpu-trade}
 
 New compute architectures such as GPUs have recently become widely available and
@@ -494,9 +476,7 @@ implemented our time-frequency signal consistency test as a set of GPU kernels
 where each is designed to handle a different number of triggers. This is
 implemented using a standard parallel reduction sum operation. 
 
-\vspace*{-10pt}
-\subsubsection{Optimization of the GPU Implementation}
-\vspace*{-05pt}
+\subsection{Optimization of the GPU Implementation}
 
 Similar to the CPU implementation, the 3 kernels that dominate the inner loop
 of the matched-filter (correlate, FFT, and thresholding) are all memory
