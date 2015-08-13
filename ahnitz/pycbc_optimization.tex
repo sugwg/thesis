@@ -7,7 +7,7 @@ filtering engine. Over the last two years, the ihope pipeline has been
 re-written for Advanced LIGO. The new framework, known as PyCBC is more modular,
 flexible, and scalable than the LALApps framework used previously. PyCBC has
 been developed to accommodate longer templates and larger template banks
-necessitated by the improved detector noise profile.
+necessitated by the improved detector noise profile~\cite{Canton:2014ena}.
 
 The PyCBC architecture implements the high-level program control in Python,
 however computations are performed using C code compiled just-in-time by the
@@ -106,7 +106,7 @@ slow in their original implementation that not only did we not achieve close to
 the matched filter performance expected based on the FFT alone, we did not
 achieve the highest throughput by running in a multi-threaded
 configuration. We therefore began our CPU optimization by both vectorizing and
-parallelizing these kernels, and in the next subsections we report in some
+parallelizing these kernels, and in the next sections we report in some
 detail on those changes, and the resulting performance improvements.
 
 One expensive kernel remains that has not yet received a thorough optimization
@@ -131,7 +131,7 @@ will also implement an optimized kernel for the algorithm.
 Both the correlation of the frequency-domain data segment with the frequency
 domain template (to produce the input to the inverse FFT) and the combined
 thresholding and clustering algorithm (described in
-subsection~\ref{sec:opt-thresh} above, and acting on the output of the inverse
+Sec.~\ref{sec:opt-thresh} above, and acting on the output of the inverse
 FFT) are implemented in the pipeline as C-code kernels.  These are parallelized
 with OpenMP and will dynamically adjust to run on all cores made available to
 the kernel. The optimal performance was achieved not by a straightforward
@@ -178,7 +178,7 @@ line. Wherever possible memory loads and stores are performed with the
 allocated with 32-byte aligned memory, as they are for the FFT call. Much as for
 parallelization, for the fused threshold-and-cluster kernel, an efficient
 vectorization is only possible because of the algorithmic change summarized in
-section~\ref{sec:opt-thresh}. 
+Sec.~\ref{sec:opt-thresh}. 
 
 As a first estimate of the quality of vectorization, we can benchmark this
 kernel in isolation and see how many of their instructions are indeed packed
@@ -329,7 +329,7 @@ Measurement of the floating point performance of \texttt{pycbc\_inspiral} showed
 (clean)
 data.  These correspond to fractions of peak theoretical performance of 9.3\%,
 12.2\%, and 13.3\%. We therefore still have room for improvement, and discuss in
-the next subsection profiling results and their implications that identify the
+the next section profiling results and their implications that identify the
 next priorities for further optimization.
 
 %\todo{Josh working on this section based on 5316 templates/core throughput for
@@ -410,7 +410,7 @@ filters.
 \end{table}
 
 We are investigating ways to alleviate this penalty, and discuss some of these
-in the next subsection on future optimizations. Alternatively, it is not yet
+in the next section on future optimizations. Alternatively, it is not yet
 decided on what hardware the various PyCBC searches will run, and should they do
 so on hardware with sufficiently large cache the issue could be moot.
 
@@ -549,7 +549,7 @@ elements, it may be possible to merge a portion of the peak finding algorithm
 into the store callback, vastly decreasing the memory writes at the end of the
 fused kernel.
 
-\begin{figure}[][!t]
+\begin{figure}[]
 \centering
 \includegraphics[width=1.0\textwidth]{papers/optimization/figures/callback.png}
 \caption{\label{fig:callback} 
