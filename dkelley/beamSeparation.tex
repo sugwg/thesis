@@ -1,0 +1,67 @@
+%\documentclass[12pt]{article}
+%\usepackage{fullpage,graphicx}
+%\title{Beam seperation}
+%\author{David Kelley}
+%\begin{document}
+%\maketitle
+
+\section{Definitions}
+\begin{itemize}
+\item $P_m$ Input power of the main beam 
+\item $P_s$ Input power of the side beam
+\item $f_m$ Main cavity finesse
+\item $f_s$ Side cavity finesse
+\item $R_c$ Radius of curvature of payload mirror (5 cm)
+\item $\theta_m$ Main beam angle from optical axis.  Origin is at center of curvature.
+\item $\theta_s$ Side beam angle from optical axis.  Origin is at center of curvature.
+\item $c$ Speed of light
+\item $R$ Payload mirror radius
+\item $h$ Payload mirror thickness
+\item $m$ Payload mirror mass
+\item $I = \frac{m}{12}(3R^2+h^2)$ Payload mirror moment of inertia
+\item $G = \frac{P_mf_m}{P_sf_s}$ Handy constant
+\item $d = \theta_mR_c - \theta_sR_c$ Beam spot seperation
+\end{itemize}
+
+
+\newpage
+\section{Balancing torques}
+We want the mirror to be stationary, so the net torque on the mirror should be zero.
+
+Force on payload mirror due to radiation pressure of the two beams:
+
+$$ F_m = \frac{2P_mf_m}{c} \hspace{20 pt} F_s = \frac{2P_sf_s}{c}$$
+
+$$\tau = F_m\theta_mR_c+F_s\theta_sR_c = 0$$
+
+substituting in $d$,
+
+$$\theta_m = \frac{d}{R_c(1+G)}$$
+
+\section{Eliminating beam coupling}
+
+We propose that there is a spot somewhere on the surface of the payload mirror where the sum of torque and force due to one beam makes the net force zero.  We place one beam spot at $r_1$.  We'd like to put the other beam in the null spot $r_2$ so that there is no force coupling between the two.  
+
+$$Fs=\frac{2P_sf_s}{c} = m\omega^2x \hspace{20pt} x = \frac{F_s}{m\omega^2}$$ 
+$$\tau_s = F_sr_1=I\omega^2\phi \hspace{20pt} \phi = \frac{F_s r_1}{I\omega^2}$$
+
+Let's find a point these effects cancel:
+
+$$r_2\phi-x=0 \hspace{20 pt} r_2=\frac{x}{\phi}=\frac{I}{mr_1}$$
+
+It should be noted that the previously used $d$ can also be expressed as $d =r_2-r_1$.
+
+$$r_2 = \theta_2R_c = \theta_mR_c$$
+
+$$r_2 = \frac{d}{1+G}$$
+
+$$\frac{I}{m} = \frac{(r_2-r_1)r_1}{1+G} = \frac{\left(\frac{I}{mr_1}+r_1\right)r_1}{1+G}$$
+
+$$r_1 = \sqrt{\frac{I}{mG}} \hspace{20pt} r_2 = \sqrt{\frac{IG}{m}}$$
+
+These radii are the ideal horizontal distances from the payload mirror optical axis to the beam spots.
+%A MATLAB script that computes this seperation is included in this directory, named cavityAngles.m. 
+
+
+
+%\end{document}
