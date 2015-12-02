@@ -396,6 +396,7 @@ acceptable looking results, but it may be omitted to get smaller print.
 % \def\papertype#1{\gdef\@papertype{#1}}
 \def\program#1{\gdef\@program{#1}}
 \long\def\Abstract#1{\gdef\@AbstractText{#1}}
+\long\def\Acknowledgments#1{\gdef\@AcknowledgmentsText{#1}}
 \def\birthplacedate#1{\gdef\@birthplacedate{#1}}
 \def\collegewherewhen#1{\gdef\@collegewherewhen{#1}}
 \def\majordept#1{\gdef\@majordept{#1}}
@@ -475,8 +476,8 @@ Metaphysics}
 \else
     \def\@copyrightyear{\number\the\year}
 \fi
-\newif\ifcopyright \newif\iffigurespage \newif\iftablespage
-\copyrighttrue \figurespagetrue \tablespagetrue
+\newif\ifcopyright \newif\iffigurespage \newif\iftablespage \newif\ifelectronicsubmit
+\copyrighttrue \figurespagetrue \tablespagetrue \electronicsubmittrue
 \def\@dedication{to\\ None in Particular}
 
 %
@@ -607,6 +608,27 @@ Date : \hrulefill
 	\vfill
 }
 
+\def\acknowledgments{%
+	\null\vskip1in%
+  \thispagestyle{empty}
+	%\begin{center}
+		%{\Large\bf\uppercase\expandafter{\@title}}\\
+		%\rm By\\
+		%\@author
+	%\end{center}
+	%\vskip 4em
+	%\begin{center}
+		%\rm Syracuse University, \number\year\\
+		%Under the Supervision of Professor \@majorprof
+	%\end{center}
+	%\vskip 3em
+	\noindent \bf ACKNOWLEDGEMENTS \rm
+	{\samepage 
+		\nopagebreak\paragraph{}\ \@AcknowledgmentsText\nopagebreak
+	}
+	\vfill
+}
+
 \def\copyrightpage{%
 	\null\vfill
 	\thispagestyle{empty}
@@ -631,16 +653,19 @@ Date : \hrulefill
 	\fi
 	\pagenumbering{roman}
 	\pagestyle{plain}
-% A the manuscript title page
-	\manuscriptp
-% B the Official Approval page
-	\officialaprovp
-% C the Abstract page
-	\abstract \endabstract \newpage
-% D the OPTIONAL copy right page
+% A & B the title page and the abstract
+	\ifelectronicsubmit
+		\abstract \endabstract \newpage
+		\manuscriptp	
+	\else
+		\officialaprovp
+		\abstract \endabstract \newpage
+	\fi
+% C the OPTIONAL copy right page
 	\ifcopyright\copyrightpage\fi
-
-% F the Table of Contents
+% E Acknowledgments
+	\acknowledgments
+% D the Table of Contents
   \newpage
 	\tableofcontents
 	\newpage
