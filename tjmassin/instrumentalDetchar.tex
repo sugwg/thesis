@@ -170,7 +170,101 @@ Used this to generate flags for veto definer, ETMY driver and OMC DCPD saturatio
 
 \section{Suspension DAC calibration glitches}
 
-We see glitches when suspensions cross values of zero or $2^{16}$.
+A common glitch mechanism throughout ER6 was due to calibration errors in 
+digital-to-analog converters (DACs) responsible for providing analog signals 
+to the aLIGO suspensions. The aLIGO suspension subsystem uses 18-bit DACs 
+to interact with the optics in the interferometer. These 18-bit DACs are 
+created by combining a 16-bit DAC with a 2-bit DAC inside of the same 
+electronics box. The 2-bit DAC is responsible for the two highest order 
+bits of the output, while the 16-bit DAC is responsible for the 16 lowest 
+order bits of the output. If the 16-bit DAC and 2-bit DAC have not had 
+their output voltages carefully calibrated, there will be a voltage discontinuity 
+at the output of the DAC when engaging the 2 highest order bits. 
+
+Since these DACs use the two's complement 
+representation for signed binary numbers, there are two critical points 
+where the two highest order bits of the DAC become necessary. The highest 
+order bit is used to indicate negative numbers, so an output discontinuity 
+is expected when transitioning from a positive number to a negative number, 
+that is, crossing through a value of zero.  
+The other bit from the 2-bit DAC is used to represent large output values and 
+engages when the DAC needs to express a value which is unable to be 
+represented by a 16-bit DAC alone. As such, we also 
+expect to see discontinuities when the DAC output crosses $\pm2^16$. 
+
+This fact that this discontinuity existed in suspension subsystem was 
+particularly problematic, as the suspension DACs are used to directly 
+actuate on mirror positions and optical cavity lengths. Any time a 
+suspension DAC crossed one of these problematic output values, it would 
+actuate on the optics with a step function and cause a glitch in the 
+optical cavity length. Figure \ref{fig:DAC-glitch} shows an example of 
+this issue where the DAC providing actuation signals to the power recycling 
+mirror (PRM) is crossing through zero and there are associated glitches 
+visible in the length readout of the power recycling cavity.
+
+\begin{figure}[ht!]%
+\includegraphics[width=\textwidth]{figures/detchar/PRCL-DAC-glitch}
+\caption[DAC glitches in PRCL]{A timeseries plot showing the effects of %
+         DAC calibration glitches. The red trace shows the digital drive %
+         signal being sent to the digital-to-analog converter. The blue %
+         shows the resulting power recycling cavity motion rescaled by a %
+         factor of 100. When the drive signal crosses %
+         through a value of zero, the output of the DAC experiences a %
+         discontinuity, leading to a glitch in the power recycling cavity %
+         length.}
+\end{figure}\label{fig:DAC-glitch}
+
+The effects of this issue were visible in the $h(t)$ channel during ER6. 
+The most problematic culprit was the DAC that applied actuation directly 
+to the optics of the ETMs, effectively pushing directly on the DARM degree 
+of freedom and causing glitches in $h(t)$. These calibration errors manifested 
+themselves as a population of glitches in $h(t)$ recovered by Omicron in the 
+20-100 Hz range. This is a very damaging frequency range for CBC searches, 
+which hope to accumulate significant SNR in the region from 30-500 Hz.  
+
+\begin{figure}[ht!]%
+\includegraphics[width=\textwidth]{figures/detchar/vetoed-DAC-glitches}
+\caption[Vetoed DARM triggers from DAC calibration]{A time-frequency %
+         visualization of Omicron triggers in the H1 $h(t)$ channel. % 
+         The black circles indicate glitches in the DARM degree of freedom, %
+         each with a central time and central frequency. The red crosses %
+         indicate that a given trigger was vetoed by an auxiliary channel %
+         trigger which was found to be statistically significant using Hveto. The %
+         auxiliary channel triggers in this case indicate that the drive signal %
+         on the bottom stage of ETMY has crossed a value of $2^{16}$. The %
+         population of glitches between 20 - 100 Hz is highly coincident %
+         with these crossings of $2^{16}$, indicating that they are caused %
+         by DAC calibration errors on this optic.}
+\end{figure}
+
+To fully understand the scope of this problem, the Detector Characterization 
+group developed software that searched through the output of all suspension 
+DAC digital output signals and marked times when they crossed 0 or $\pm2^{16}$. 
+These marked times were converted into trigger files and sent through Hveto 
+to look for correlations between crossings of critical values and glitches 
+in DARM as identified by Omicron. Through this method, we were able to identify 
+which optics were experiencing DAC calibration glitches that had a coupling 
+mechanism into DARM.
+
+There were two approaches taken in an effort to mitigate these DAC glitches. The 
+first was to introduce offsets into the suspension drive signals so that they 
+did not cross through a value of zero. This did solve the problem temporarily, 
+but at the cost of a significant portion of the dynamic range of the output 
+actuation. The more permanent fix was to run a calibration routine 
+that resolved the issue between the 16-bit and 2-bit DACs. This was 
+successful, though it had to be run on a weekly basis during site maintenance 
+because the calibration tended to drift away from its nominal point after 
+2-3 weeks of operation.
+
+During the first observing run, the systematic check of all suspension DAC 
+digital output signals was performed again and the resulting triggers were 
+sent through Hveto. This study revealed that the calibration process was 
+successful; there was no evidence of residual DAC calibration glitches that 
+had any noticeable coupling into $h(t)$. The only signal that had any 
+significant correlation with glitches in $h(t)$ was not causally sensible. 
+Large glitches $h(t)$ were driving the ETMX actuation signal through a value of 
+$2^{16}$, which resulted in crossings of $2^{16}$ that were coincident in time 
+with glitches in $h(t)$, but weren't representative of calibration errors.
 
 \textcolor{red}{Discuss Hveto results}
 
@@ -196,6 +290,27 @@ into DARM.
          at LHO.
          }
 \end{figure}\label{fig:whistle-spectrograms}
+
+Hveto shows that a witness channel for RF whistles vetoes approximately 90\% 
+of DARM triggers in this time period.
+
+\begin{figure}[ht!]%
+\includegraphics[width=\textwidth]{figures/detchar/Hveto_whistles_time_frequency}
+\caption{Black dots are DARM triggers. Red crosses indicate that a trigger was %
+         coincident with an RF whistle and vetoed.}
+\end{figure}\label{fig:hveto-whistles}
+
+How do we know that the frequency offset worked? Look at a signal that is a proxy 
+for the drifting oscillator and histogram all of the Omicron DARM triggers during 
+that time. If there's no coupling, the answer should be fairly Gaussian; the 
+IFO is just as likely to glitch at any value of the channel. If there are 
+channel values that correspond strongly to glitches in DARM, we should see peaks.
+
+\begin{figure}[ht!]%
+\includegraphics[width=\textwidth]{figures/detchar/Rate_Histogram_Whistles_LLO}
+\caption[DARM glitch histograms with and without RF whistles]{Red curve is nice %
+         and Gaussian. Blue curve has peaks that indicate problematic frequencies.}
+\end{figure}\label{fig:darm-whistle-hist}
 
 \section{Seismic CPS comb}
 
