@@ -124,47 +124,81 @@ This range is often centered around zero, giving the ADC the capability
 to handle a range of $\pm32768$.  An incoming analog signal is mapped 
 onto this range and converted into a digital signal.
 
-For example, if I was sampling an analog signal with a range of $\pm100V$, 
-100V would be mapped to 32768 and -100V would be mapped to -32768 with all 
+For example, in sampling an analog signal with a range of $\pm100V$, 
+10V would be mapped to 32768 digital counts and -10V would be mapped 
+to -32768 digital counts with all 
 of the intermediate voltage values being linearly mapped to the range. This 
 means our digital system would recognize a discrete step size of 
-$100/32768 \approx 3.05 mV$.
+10V/32768 counts $\approx 305 \mu $V/count.
 
 Looking at the system described above, we must be aware of how our system 
 is going to react when our analog input signal exceeds the intended maximum 
-value of 100V (e.g., a 110V input). The ADC has already assigned its maximum 
-digital value to 100V. This is called range saturation. In this case the ADC 
-will continuously output its maximum value as it has no way to map 110V into 
+value of 10V (e.g., an 11V input). The ADC has already assigned its maximum 
+digital value to 10V. This is called a digital overflow. In this case the ADC 
+will continuously output its maximum value as it has no way to map 11V into 
 a discrete value. The same process can occur in a DAC when a digital signal 
-is sent out at the maximum allowed digital value.
+is sent out at the maximum allowed digital value. The resulting analog signal 
+will be railed at the maximum output value of the DAC, creating a sharp corner 
+in the output signal as it flattens out. 
 
 If the digital system is not able to correctly sample and understand an analog 
 error signal, it is easy to imagine a scenario where the reponse of the digital 
 system and the output control signal are not able to complete the control loop 
-as designed. This may cause glitches or misalignments.
+as designed. This may cause glitches or misalignments in the interferometer.
 
 We must also consider the fact that many ADCs are calibrated to reflect the 
 intended dynamic range of an optic.  If a saturation is occurring, there is 
 a good chance that an optic has moved beyond this intended dynamic range, which 
 also may cause glitches or misalignments.
 
-The ADCs and DACs are monitored by a series of auxiliary channels. 
-The most useful channels are of the form:
+The ADCs and DACs are monitored by a series of auxiliary channels, which are 
+automatically generated in the front-end system. These auxiliary channels 
+monitor each ADC and DAC channel and note when any of the channels has reached 
+its digital limit. These channels can be used to generate flags that mark 
+ADC and DAC overflows, which can be compared with glitches in $h(t)$ to 
+search for glitch mechanisms driven by overflows. These channels can also 
+be used to flag any large glitches that cause digital overflows so that they 
+can be removed from astrophysical searches. 
 
-\begin{verbatim}
-L1:FEC-21_DAC_OVERFLOW_0_0
-\end{verbatim}
+Figure \ref{fig:dac-overflow} shows an example of a large glitch that caused 
+a digital overflow and was removed from gravitational wave analyses. Figures 
+\ref{subfig:strain-dac-overflow} and \ref{subfig:esd-dac-overflow} show a 
+large glitch in $h(t)$ and the response of a drive signal that controls 
+the motion of ETMY respectively. The signal in \ref{subfig:esd-dac-overflow}, 
+which is supposed to be controlling the motion of ETMY, hits its digital 
+limit during this glitch. Figure \ref{subfig:etmy-dac-overflow} shows the 
+auxiliary channel that monitors this digital overflow incrementing as 
+it witnesses the digital overflow. This channel is used to generate 
+data quality vetoes that remove times when the ETMY actuation signal has 
+hit its digital limit.
 
-Parsing this channel name:
+\begin{figure}[ht!]%
+\centering
+\subfloat[]{
+  \includegraphics[width=0.495\textwidth]{figures/detchar/strain-dac-overflow}
+  \label{subfig:strain-dac-overflow}
+  }
+\subfloat[]{
+  \includegraphics[width=0.495\textwidth]{figures/detchar/esd-dac-overflow}
+  \label{subfig:esd-dac-overflow}
+  }
 
-\begin{verbatim}
-L1:FEC-{model number}_{ADC/DAC}_OVERFLOW_{ADC/DAC number}_{channel number}
-\end{verbatim}
-
-These overflow monitor channels are cumulative. If the channel has no saturation 
-at the time of sampling, the overflow channel's reported value will not increase. 
-If the channel was saturated during the last sample, the value of the channel will 
-increase in discrete steps equal in size to the maximum value of the channel.
+\subfloat[]{
+  \includegraphics[width=0.495\textwidth]{figures/detchar/etmy-dac-overflow}
+  \label{subfig:etmy-dac-overflow}
+  }
+\caption[ETMY saturation]{Timeseries of an ETMY drive signal saturation in the 
+         H1 detector. Figure \ref{subfig:strain-dac-overflow} shows a glitch in 
+         the calibrated $h(t)$ channel. Figure \ref{subfig:esd-dac-overflow} shows 
+         the response to this glitch in the drive signal used to control the bottom 
+         stage of ETMY and actuate on the DARM degree of freedom. This signal hits 
+         its digital overflow point at its peak and has no more dynamic range. 
+         Figure \ref{subfig:etmy-dac-overflow} shows the front end channel responsible 
+         for monitoring digital overflows of this particular ETMY drive signal. 
+         Since the witness channel is cumulative, overflows can be identified by 
+         flagging any time in which this witness channel is increasing. }
+\label{fig:dac-overflow}
+\end{figure}
 
 Used this to generate flags for veto definer, ETMY driver and OMC DCPD saturations.
 
@@ -190,9 +224,9 @@ that is, crossing through a value of zero.
 The other bit from the 2-bit DAC is used to represent large output values and 
 engages when the DAC needs to express a value which is unable to be 
 represented by a 16-bit DAC alone. As such, we also 
-expect to see discontinuities when the DAC output crosses $\pm2^16$. 
+expect to see discontinuities when the DAC output crosses $\pm2^{16}$. 
 
-This fact that this discontinuity existed in suspension subsystem was 
+The fact that this discontinuity existed in suspension subsystem was 
 particularly problematic, as the suspension DACs are used to directly 
 actuate on mirror positions and optical cavity lengths. Any time a 
 suspension DAC crossed one of these problematic output values, it would 
