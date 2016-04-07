@@ -8,11 +8,11 @@ I did a whole lot of instrumental DetChar.
 
 We use a sine-Gaussian basis to search for excess power
 
-\subsection{Hveto}
+\subsection{Hierarchichal Veto}
 
 One tool that we have often used in Detector Characterization to look 
 for time coincidence between glitches (noise transients) in different 
-channels is Hveto (Hierarchical Veto). Glitches in each channel are 
+channels is Hierarchical Veto (Hveto). Glitches in each channel are 
 identified by external algorithms that have been tuned to search for 
 specific patterns in the time series. Any glitch that is reported in 
 the output of an external algorithm is referred to as a trigger. 
@@ -28,31 +28,25 @@ after comparison to $h(t)$ is called \textit{significance}.
 Significance answers the following question: how unlikely is it that 
 the coincident triggers in these two channels were the result of 
 two arbitrary Poisson processes occurring in each channel? 
-
 More specifically, given two arbitrary Poisson processes, how 
 unlikely is it that we measure $n$ or more coincident triggers 
 given that expected number of coincidences from random chance is $\mu$?
 
 Significance is calculated as (ref Hveto),
-
 \begin{equation}
 S = -\log_{10} (\sum\limits_{k = n}^{\infty} P(\mu,k)),
 \end{equation}
-
 where $n$ is the number of coincidences found between the two channels 
 during the total analysis time and $P(\mu,k)$ is the Poisson probability 
 distribution function,
 \begin{equation}
-P(\mu,k) = \frac{\mu^{k}e^{-\mu}}{k!}.
+P(\mu,k) = \frac{\mu^{k}e^{-\mu}}{k!},
 \end{equation}
-
-Here $\mu$ is the expected number of coincidences between triggers in 
+where $\mu$ is the expected number of coincidences between triggers in 
 $h(t)$ and the auxiliary channel based solely on chance, which is estimated as,
-
 \begin{equation}
 \mu = \frac{N_{h}N_{aux}T_{win}}{T_{tot}},
 \end{equation}
-
 where $N_{h}$ and $N_{aux}$ are the number of triggers in $h(t)$ and a 
 given auxiliary channel respectively during the total analysis time, 
 $T_{tot}$, and $T_{win}$ is the length of the coincidence window used.
@@ -168,9 +162,7 @@ the motion of ETMY respectively. The signal in \ref{subfig:esd-dac-overflow},
 which is supposed to be controlling the motion of ETMY, hits its digital 
 limit during this glitch. Figure \ref{subfig:etmy-dac-overflow} shows the 
 auxiliary channel that monitors this digital overflow incrementing as 
-it witnesses the digital overflow. This channel is used to generate 
-data quality vetoes that remove times when the ETMY actuation signal has 
-hit its digital limit.
+it witnesses the digital overflow. 
 
 \begin{figure}[ht!]%
 \centering
@@ -200,7 +192,13 @@ hit its digital limit.
 \label{fig:dac-overflow}
 \end{figure}
 
-Used this to generate flags for veto definer, ETMY driver and OMC DCPD saturations.
+This method was used throughout O1 to generate data quality vetoes that 
+were distributed to the Burst and CBC searches. The first veto that was 
+generated this way was used to flag DAC overflows of the ETMY drive signal, 
+as demonstrated 
+in Figure \ref{fig:dac-overflow}. The other veto generated in this framework 
+was used to flag ADC overflows in the OMC DC photodiode used as the error 
+point of the DARM control loop. 
 
 \section{Suspension DAC calibration glitches}
 
@@ -246,7 +244,8 @@ visible in the length readout of the power recycling cavity.
          through a value of zero, the output of the DAC experiences a %
          discontinuity, leading to a glitch in the power recycling cavity %
          length.}
-\end{figure}\label{fig:DAC-glitch}
+\label{fig:DAC-glitch}
+\end{figure}
 
 The effects of this issue were visible in the $h(t)$ channel during ER6. 
 The most problematic culprit was the DAC that applied actuation directly 
@@ -255,6 +254,23 @@ of freedom and causing glitches in $h(t)$. These calibration errors manifested
 themselves as a population of glitches in $h(t)$ recovered by Omicron in the 
 20-100 Hz range. This is a very damaging frequency range for CBC searches, 
 which hope to accumulate significant SNR in the region from 30-500 Hz.  
+This population of low frequency glitches was obvious in an Omicron 
+time-frequency scatter plot and was considered a significant noise source 
+throughout the sixth engineering run.
+
+Figure \ref{fig:vetoed-DAC} shows the result of an Hveto run that looked 
+for time correlations between Omicron triggers in $h(t)$ and times when 
+the ETMY drive signal crossed through a value of $2^{16}$. The blue dots 
+represent all Omicron triggers in $h(t)$. The red crosses indicate those 
+that were coincident with the ETMY drive signal crossing $2^16$. The 
+population of low frequency glitches with SNR $>$ 8 was shown to be 
+coincident with the drive signal transitions. This veto 
+was very statistically significant, as shown in Table \ref{table:etmy-dac-hveto}. 
+The significance 
+of 192.5 indicates that the probability of these coincidences being due 
+to noise alone is negligible. The effiency:deadtime ratio of 27 indicates 
+that these glitches were removed with very small time windows (0.2s) 
+and very little instrument uptime was removed in the process.
 
 \begin{figure}[ht!]%
 \includegraphics[width=\textwidth]{figures/detchar/vetoed-DAC-glitches}
@@ -269,7 +285,26 @@ which hope to accumulate significant SNR in the region from 30-500 Hz.
          population of glitches between 20 - 100 Hz is highly coincident %
          with these crossings of $2^{16}$, indicating that they are caused %
          by DAC calibration errors on this optic.}
+\label{fig:vetoed-DAC}
 \end{figure}
+
+\begin{table}[ht!]%
+ \footnotesize 
+ \begin{center}
+  \begin{tabular}{cccccc}
+  \hline
+  Channel & \begin{tabular}{@{}c@{}} Time \\ window (s) \end{tabular} & 
+            \begin{tabular}{@{}c@{}}SNR \\threshold \end{tabular} & 
+            Significance & Efficiency \% & Deadtime \% \\ 
+  \hline
+  \begin{tabular}{@{}c@{}}ETMY drive signal \\ crosses $2^{16}$ \end{tabular} & 
+  0.2 & 8 & 192.5 & 18.3 &  0.674 \\
+  \hline
+  \end{tabular}
+  \end{center}
+  \caption[HVeto results for ETMY DAC glitches]{Hveto results for ETMY DAC glitches}
+  \label{table:etmy-dac-hveto}
+\end{table}
 
 To fully understand the scope of this problem, the Detector Characterization 
 group developed software that searched through the output of all suspension 
@@ -318,11 +353,13 @@ into DARM.
   \includegraphics[width=\textwidth]{figures/detchar/Spectrogram_Whistle_LHO}
   \label{subfig:lho-whistle}
   }
-\caption[Spectrograms of RF whistles]{Spectrograms of RF whistles at %
+\caption[Spectrograms of RF whistles]{Time-frequency spectrograms of RF whistles at %
          both LLO and LHO. Figure \ref{subfig:llo-whistle} shows a %
-         whistle at LLO. Figure \ref{subfig:lho-whistle} shows a whistle %
-         at LHO.
-         }
+         whistle at LLO sweeping down from the kHz range and into the detection band %
+         where it interferes with searches for gravitational waves. Figure %
+         \ref{subfig:lho-whistle} shows a double whistle whistle at LHO where the %
+         two oscillators drifted back and forth across one another and caused two %
+         glitches in the detection band.}
 \end{figure}\label{fig:whistle-spectrograms}
 
 Hveto shows that a witness channel for RF whistles vetoes approximately 90\% 
@@ -330,8 +367,12 @@ of DARM triggers in this time period.
 
 \begin{figure}[ht!]%
 \includegraphics[width=\textwidth]{figures/detchar/Hveto_whistles_time_frequency}
-\caption{Black dots are DARM triggers. Red crosses indicate that a trigger was %
-         coincident with an RF whistle and vetoed.}
+\caption[Vetoed whistles from Hveto]{A time-frequency scatter plot of $h(t)$ Omicron %
+         triggers. The blue dots represent all triggers found for the $h(t)$ channel. %
+         Red crosses indicate that a trigger was determined to be coincident with an %
+         RF whistle and vetoed. This veto is responsible for removing 90\% of the %
+         glitches in this time period. The majority of the high frequency glitches %
+         were due to RF beatnote whistles}
 \end{figure}\label{fig:hveto-whistles}
 
 How do we know that the frequency offset worked? Look at a signal that is a proxy 
