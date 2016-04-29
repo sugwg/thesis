@@ -125,22 +125,84 @@ in the control loop and compared to user-set threshold values to determine
 whether or not they are in their nominal range. 
 Figure \ref{fig:lsc-odc-model} shows the implementation of an LSC ODC 
 model in SIMULINK. The numbered ovals on the left of the image are test point 
-signals extracted from the higher level model that is used to control the 
-lengths of the optical cavities.
+signals that are being read in from the higher level model that is used to control the 
+lengths of the optical cavities. The signals are carried along the wires connecting 
+each box. The green boxes are where the user set thresholds are saved. The white 
+boxes perform operations on input signals.
+
+As an example, we'll follow the path of inputs 46 and 47, which are signals from 
+the photodiode that measures the reflected light at the input to the power recycling 
+cavity. The signals are read in at the ovals labelled 46 and 47, their absolute values 
+are calculated at the boxes labeled 'Abs19' and 'Abs20'. The absolute values of these 
+signals are then fed into boolean comparison boxes, 'Operator39' and 'Operator40'. 
+These boolean operator boxes are also connected to the green box which defines a 
+threshold for the signals to be compared to. If the input signals are less than the 
+designated threshold, the boolean operator passes a value of True. If they have 
+exceeded the intended threshold, the boolean operator passes a value of False. 
+The outputs of the two boolean operators are fed into one last check, which performs 
+an AND operation. If both signals have passed their tests and reported True, the AND 
+block reports a True and this photodiode signal is considered to be in a good state. 
+If one or both of the signals has failed their test, the AND block reports a False 
+and the photodiode signal is considered to be in a bad state. This answer is stored 
+as a bit in the ODC state vector for the LSC subsystem. 
+
+Some of the checks implemented in the ODC models are more complicated. For 
+example, when 
+the states of multiple control loops are stored in a vector they can be compared to a 
+series of state masks that select which degrees of freedom to check. 
+In this way, the same vector of information used to perform hierarchical 
+checks on the state of the instrument. 
+One test can check that the core optics are performing nominally, a more broad 
+test can include checks on both the core optics and recycling cavities, and 
+then the overall test can be done to check that feedback loops are performing as intended. 
+Each of these tests will report its own answer that is stored in the ODC state vector.
 
 \begin{figure}[ht!]
 \includegraphics[width=\textwidth]{figures/ODC/LSC-ODC-model}
-\caption[LSC ODC SIMULINK Model Example]{Example of LSC ODC bits implemented in SIMULINK}
+\caption[LSC ODC SIMULINK Model Example]{LSC ODC checks implemented in SIMULINK. %
+         The numbered ovals on the left indicate signals used in real-time control %
+         of the interferometer. The green boxes represent user-defined threshold %
+         values to be used in boolean comparisons. The white boxes represent operations %
+         such as computing the absolute value of a signal or performing boolean %
+         comparisons (less than, greater than, AND, OR, etc.)}
 \end{figure}\label{fig:lsc-odc-model}
 
+Once the ODC model has performed all of its checks and reported a True or False 
+answer, the information is stored in an overall state vector that can be parsed to 
+learn the state of the LSC subsystem at any time. 
+Figure \ref{fig:lsc-odc-bits} shows a visual representation of the state of the 
+length degrees of freedom in the H1 interferometer over the course of a day.
+Each horizontal bar represents the state of a length degree of freedom as 
+reported by ODC. In this particular day, the control signals for the Michelson 
+(MICH) and signal recycling cavity (SRCL) degrees of freedom exceeded their 
+nominal range while the interferometer was in its nominal operating state. 
+This is indicated by the color of the bars switching between 6:00 - 8:00 UTC 
+and between 14:00 - 16:00 UTC. All of the times when the state changes are 
+recorded as time segments which can be used to correlate excursions in the 
+cavity control signals with transients in the output of the interferometer. 
+
+\begin{figure}[ht!]
+\includegraphics[width=\textwidth]{figures/ODC/LSC-bit-example}
+\caption[LSC ODC bits example]{ODC bits representing states of length degrees of %
+         freedom. Each horizontal bar represents a length degree of freedom that %
+         is controlled in the LSC subsystem. When the bar is green, the control %
+         signal for that degree of freedom is in its nominal range. When the %
+         bar is not green, the control signal for that particular length degree %
+         of freedom has exceeded the threshold set in the ODC model and is reported %
+         as out of range.}
+\label{fig:lsc-odc-bits}
+\end{figure}
+
 \subsection{MEDM screens}
+
 
 Figure \ref{fig:lsc-odc} shows the LSC ODC overview screen in MEDM.
 
 \begin{figure}[ht!]
 \includegraphics[width=\textwidth]{figures/ODC/LSC_screen}
 \caption[LSC ODC Overview Screen]{MEDM screen used to control LSC ODC}
-\end{figure}\label{fig:lsc-odc}
+\label{fig:lsc-odc}
+\end{figure}
 
 \subsection{Summary pages}
 I made them
@@ -162,14 +224,16 @@ Figure \ref{fig:asc-odc} shows the ASC ODC overview screen in MEDM.
 \begin{figure}[ht!]
 \includegraphics[width=\textwidth]{figures/ODC/ASC_screen}
 \caption[ASC ODC Overview Screen]{MEDM screen used to control ASC ODC}
-\end{figure}\label{fig:asc-odc}
+\label{fig:asc-odc}
+\end{figure}
 
 Figure \ref{fig:odc-pd-screen} shows a photodiode monitor screen in the ASC ODC. 
 
 \begin{figure}[ht!]
 \includegraphics[width=\textwidth]{figures/ODC/PD_screen}
 \caption[ASC ODC Photodiode Monitor in MEDM]{ODC monitor for ASC photodiode in MEDM}
-\end{figure}\label{fig:odc-pd-screen}
+\label{fig:odc-pd-screen}
+\end{figure}
 
 \subsection{Summary pages}
 I made them
