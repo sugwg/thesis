@@ -1,28 +1,88 @@
 \section{Methods of Detector Characterization}
 
 The Detector Characterization (DetChar) group works at the interface 
-between the instrument science and data analysis groups.  
+between the instrument science and data analysis groups. The goal of 
+the group is to understand the effects of instrumental noise sources on 
+the output of astrophysical searches and mitigate them if possible.
 
+The first step in a detector characterization study is identifying 
+noisy or problematic data. These studies can be initiated in a number of ways. 
+The three most common are the appearance of 
+loud background events in an astrophysical search pipeline, a message from 
+the commissioning team regarding instrument performance, or excess noise 
+flagged by data quality monitoring software. Section \ref{sec:tools} discusses 
+the data quality monitoring software further.
 
+There are a large number of recorded signals used to monitor and control the
+interferometers that are not used in astrophysical searches. These auxiliary
+channels are considered safe to use for noise characterization because they are
+not sensitive to gravitational wave signals. Analyses of auxiliary channels
+allow for the identification of systematic noise sources \cite{Smith:2011,Isogai:2010},
+such as environmental
+disturbances \cite{Effler:2014zpa} or excess motion of auxiliary optics in the
+interferometer \cite{GW150914-DETECTORS,InstrumentNoisePaper}. 
 
+Once data with excess noise have been identified, they must be characterized 
+in order to track down the source of the noise. A number of questions can 
+be asked to characterize the noise. Is the noise transient or a slow 
+drift? What is the typical frequency and bandwidth of the noise? Does the 
+noise follow a power law in frequency? Does the 
+noise have a characteristic shape in the time-frequency plane? Are the 
+noisy frequecies of the signal coherent with other signals in the instrument 
+such as environmental monitors and optical control signals? 
+Is the noise source localized to a specific chamber or does it exist at 
+multiple physical locations in the interferometer? Does the characteristic 
+frequency match any of the known mechanical resonances in the interferometer? 
+If the noise is a slow drift, does it correlate with the slow drift of 
+other signals in the interferometer? Does the noise seem highly digital 
+or discretized? After gathering all available information about the 
+character of the noise and its coupling mechanisms, efforts shift 
+toward attempting to mitigate the effects of the noise on search 
+pipelines. 
 
-\section{Tools and algorithms}
+There are two primary ways to mitigate the effects of instrumental noise on 
+the output of a search pipeline. The first option, which is highly preferred, 
+is to track down the source of the noise in the interferometer and fix the 
+problem at its origin. If investigations provided enough information that 
+a problem can be traced back to a specific piece of electronics or a 
+specific control loop, the problem can be fixed at the source. However, 
+this is not always possible since instrument noise can be difficult to 
+pin down and hardware repairs are often too invasive to perform during 
+an observing run.
 
-In the process of 
+If the problem cannot be fixed at the source, the second option is to 
+remove the problematic data from the astrophysical analyses. 
+When a significant noise source has
+been identified using auxiliary channels and cannot be repaired immediately, 
+a data quality flag can be generated
+to indicate times when the output data from the interferometer is not nominal
+\cite{Nuttall:2015dqa,S6DetChar,GW150914-DETCHAR,Amaldi}.
+Data quality vetoes are discussed further in section (??).  
+If possible, it is always preferable to fix a problem at the source. 
+
+\section{Tools and algorithms}\label{sec:tools}
+
+Identifying and characterizing instrument noise is facilitated by a 
+suite of software tools and algorithms designed to flag data with 
+excess noise and help correlate this noise with other signals in the 
+interferometer. The major tools required for understanding the data 
+quality investigations in this thesis are discussed below. 
 
 \subsection{Omicron}
 
-We use a sine-Gaussian basis to search for excess power
+We use a sine-Gaussian (Tukey) basis to search for excess power
+
+\begin{figure}[ht!]
+\includegraphics[width=\textwidth]{figures/detchar/Omicron-Dec19}
+\caption[Omicron time-frequency-SNR plot]{Time-frequency-SNR plot of Omicron triggers.}
+\label{fig:glitchgram}
+\end{figure}
 
 \subsection{Hierarchichal Veto}
 
 One tool that we have often used in Detector Characterization to look 
-for time coincidence between glitches (noise transients) in different 
-channels is Hierarchical Veto (Hveto). Glitches in each channel are 
-identified by external algorithms that have been tuned to search for 
-specific patterns in the time series. Any glitch that is reported in 
-the output of an external algorithm is referred to as a trigger. 
-
+for time coincidence between noise transients, or 'glitches', in auxilary 
+channels and the output of the interferometer is Hierarchical Veto (Hveto). 
 Typically, Hveto is used to compare a channel that potentially contains 
 gravitational wave signals, denoted $h(t)$, and an auxiliary channel 
 that does not have direct astrophysical implications. Hveto counts 
