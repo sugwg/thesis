@@ -70,13 +70,74 @@ quality investigations in this thesis are discussed below.
 
 \subsection{Omicron}
 
-We use a sine-Gaussian (Tukey) basis to search for excess power
+One way to quantify the amount of excess noise in $h(t)$ is to look 
+for times where the signal contains excess power using 
+Omicron, a burst algorithm. 
+
+Omicron applies a whitening filter to $h(t)$ and projects it into 
+a sine-Gaussian basis. Each sine-Gaussian basis function is defined 
+by a central time, $t_0$, a central frequency, $f_0$, and a Q-factor, 
+which is defined as 
+\begin{equation}
+Q = \frac{f_0}{\Delta f} = 4\pi f_0 \Delta t,
+\end{equation} 
+where $\Delta t$ is the time duration of the sine-Gaussian and 
+$\Delta f$ is the bandwidth of the sine-Gaussian. Using these parameters, 
+each sine-Gaussian basis function can be represented as a tile in the 
+time-frequency plane centered around $t_0$ and $f_0$, where the width of 
+the tile is determined by the time duration 
+and height of the tile is determined by the frequency bandwidth. 
+
+For each 
+of these tiles, the energy is measured and compared to the median tile 
+energy. If there is an excess of energy in a given tile relative to the 
+median tile energy, a signal-to-noise ratio (SNR) is calculated and a trigger 
+is generated to annotate the event. For each trigger, the SNR, central time, 
+central frequency, duration, bandwidth, and Q of the tile are recorded. 
+
+Once the data have been decomposed into the full set of basis functions, the 
+resulting set of triggers is sent through a clustering algorithm. This is 
+necessary because the set of sine-Gaussians is an overcomplete, 
+non-orthogonal basis and a single event in the data can generate multiple 
+triggers corresponding to different values of $t_0$, $f_0$, and Q. The 
+resulting clustered triggers define the peak time, peak frequency, and 
+SNR of a cluster as the central time, central frequency, and SNR of the 
+most significant tile in the cluster. 
+
+The most useful way to visualize the output of Omicron is in the 
+time-frequency-SNR plane, sometimes referred to as a 'glitchgram', 
+where each trigger is represented as a point 
+in a scatterplot. Figure \ref{fig:glitchgram} shows an example set of 
+Omicron triggers in the time-frequency-SNR plane. Each dot represents 
+a trigger at a certain peak time and peak frequency. The color of each 
+dot represents the SNR of that trigger. 
+
+In Gaussian noise, the SNR of a 
+given trigger is not expected to exceed 8. In this example, there are a number 
+of triggers with SNR $> 8$, some with noticeable structure and some that seem 
+more randomly scattered, that represent noise in the output of the interferometer. 
+For example, there are numerous triggers between 10-20 Hz that represent excess noise at 
+these frequencies, likely due to scattered light in the 
+interferometer. There is a line of triggers at just above 2kHz that indicates 
+a noise source with a constant peak frequency whose amplitude is being modulated 
+and a high SNR is being reported. There is also a scattering of points with high 
+SNR that are not as structured as the previous two examples, each one likely due 
+to an individual loud glitch rather than a constant, systematic noise source.
 
 \begin{figure}[ht!]
 \includegraphics[width=\textwidth]{figures/detchar/Omicron-Dec19}
 \caption[Omicron time-frequency-SNR plot]{Time-frequency-SNR plot of Omicron triggers.}
 \label{fig:glitchgram}
 \end{figure}
+
+The results of Omicron are a commonly used and extremely valuable tool 
+for characterizing the noise in the instrument. A cursory glance at 
+Figure \ref{fig:glitchgram} identifies 3 populations of noise in 
+the instrument, each of which can be followed up on individually 
+to discover both the source of the noise and its effect on astrophysical 
+searches. Omicron triggers can also be used in statistical analyses to 
+find correlated noise between auxilary channels and $h(t)$. An often used 
+example of this, Hierarchichal Veto, is discussed below. 
 
 \subsection{Hierarchichal Veto}
 
