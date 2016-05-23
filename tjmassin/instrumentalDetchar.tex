@@ -73,11 +73,12 @@ quality investigations in this thesis are discussed below.
 One way to quantify the amount of excess noise in $h(t)$ is to look 
 for times where the signal contains excess power using 
 Omicron, a burst algorithm. 
-
-Omicron applies a whitening filter to $h(t)$ and projects it into 
+The first stage of the Omicron pipeline applies a set of signal conditioning 
+processes, including a whitening filter, a high pass filter, and a downsampling 
+process to $h(t)$. Once the data have been whitened they are projected into 
 a sine-Gaussian basis. Each sine-Gaussian basis function is defined 
 by a central time, $t_0$, a central frequency, $f_0$, and a Q-factor, 
-which is defined as 
+which is defined as \cite{McIverThesis}  
 \begin{equation}
 Q = \frac{f_0}{\Delta f} = 4\pi f_0 \Delta t,
 \end{equation} 
@@ -126,7 +127,15 @@ to an individual loud glitch rather than a constant, systematic noise source.
 
 \begin{figure}[ht!]
 \includegraphics[width=\textwidth]{figures/detchar/Omicron-Dec19}
-\caption[Omicron time-frequency-SNR plot]{Time-frequency-SNR plot of Omicron triggers.}
+\caption[Omicron time-frequency-SNR plot]{Time-frequency-SNR plot of Omicron triggers, %
+         often referred to as a 'glitchgram'. Each dot on this plot represents an %
+         event in $h(t)$ that was recorded with a peak time, peak frequency, and SNR. %. 
+         In Gaussian noise, all triggers on %
+         this plot would have an SNR $< 8$. Since this plot is generated using real %
+         detector data from O1, there are structures of loud triggers that indicate %
+         populations of noise transients. For example, the clusters of triggers %
+         between 10-20 Hz that likely represent scattered light in the interferometer. %
+         }
 \label{fig:glitchgram}
 \end{figure}
 
@@ -143,15 +152,36 @@ example of this, Hierarchichal Veto, is discussed below.
 
 One tool that we have often used in Detector Characterization to look 
 for time coincidence between noise transients, or 'glitches', in auxilary 
-channels and the output of the interferometer is Hierarchical Veto (Hveto). 
+channels and the output of the interferometer is Hierarchical Veto (Hveto) 
+\cite{Smith:2011}. 
 Typically, Hveto is used to compare a channel that potentially contains 
 gravitational wave signals, denoted $h(t)$, and an auxiliary channel 
 that does not have direct astrophysical implications. Hveto counts 
 the number of coincident triggers between two time series using a 
 user-defined time window centered around each trigger in the auxiliary 
-channel. The figure of merit returned by Hveto for each auxiliary channel 
-after comparison to $h(t)$ is called \textit{significance}.
+channel. 
+Figure \ref{fig:hveto-aux} shows an illustration of auxiliary channels 
+with noise transients that are coincident with noise in $h(t)$. Hveto 
+iterates over all auxiliary channels to search for noise that is coincident 
+with noise in $h(t)$ in a statistically significant way.
 
+\begin{figure}[ht!]
+\includegraphics[width=\textwidth]{figures/detchar/hveto_example}
+\caption[Example of coincident noise]{A time-series illustrating coincident noise %
+         between auxiliary channels and $h(t)$. The top panel is $h(t)$, which contains %
+         multiple noise artifacts of varying duration. The middle panel is a readout of %
+         wind speed on site, which shows an elevated period coincident with a longer duration %
+         burst of noise in $h(t)$. The third panel is a readout of a microphone on site, %
+         which shows two glitches that are coincident with bursts in $h(t)$. If noise in %
+         these auxiliary channels are coincident with noise in $h(t)$ in a statistically %
+         significant way, the noisy data in $h(t)$ can be removed. Figure reproduced from %
+         \cite{Smith:2011}.
+         }
+\label{fig:hveto-aux}
+\end{figure}
+
+The figure of merit returned by Hveto for each auxiliary channel 
+after comparison to $h(t)$ is called significance.
 Significance answers the following question: how unlikely is it that 
 the coincident triggers in these two channels were the result of 
 two arbitrary Poisson processes occurring in each channel? 
@@ -159,7 +189,7 @@ More specifically, given two arbitrary Poisson processes, how
 unlikely is it that we measure $n$ or more coincident triggers 
 given that expected number of coincidences from random chance is $\mu$?
 
-Significance is calculated as (ref Hveto),
+Significance is calculated as \cite{Smith:2011},
 \begin{equation}
 S = -\log_{10} (\sum\limits_{k = n}^{\infty} P(\mu,k)),
 \end{equation}
@@ -184,7 +214,7 @@ were very often coincident in time and that there is a very small probability
 that their intersection is a product of random chance. This is a very useful 
 measure when we are searching for auxiliary channels that might have some 
 noise coupling into our output channel. A significance value of up to 5 is 
-often observed in channels with no causal relationship to $h(t)$ (ref Hveto), 
+often observed in channels with no causal relationship to $h(t)$ \cite{Smith:2011}, 
 which is a useful threshold for identifying effective vetoes.
 
 Another interesting figure of merit used for a given comparison Hveto is 
@@ -474,8 +504,25 @@ with glitches in $h(t)$, but weren't representative of calibration errors.
 
 \subsection{RF beatnote whistles}
 
-Two RF oscillators beating against one another creates a kHz beatnote that couples 
-into DARM.
+During Advanced LIGO's commissioning,
+a population of glitches appeared in both the L1 and H1 interferometers which 
+came to be known as 'whistles' or 'RF whistles'. These glitches were the 
+intermodulation products of two RF oscillators; a nonlinear mixing between two 
+RF oscillators produced a beatnote signal whose frequency was equal to the 
+difference in frequency between the two oscillator signals. Whistle glitches 
+occur when two oscillator signals drift and cross each other in frequency. 
+If one oscillator 
+is drifting in frequency and another oscillator is at a fixed frequency, 
+the beatnote generated between them will decrease in frequency as the 
+oscillator signals become closer in frequency and then increase in frequency 
+as they cross each other and drift away. 
+As such, these glitches 
+had a characteristic shape, beginning at high frequency and sweeping down 
+in frequency through the detection band before turning around and 
+sweeping back up to high frequencies. Figure \ref{fig:whistle-spectrograms} 
+shows a time-frequency representation of whistle glitches in both the L1 and H1 
+interferometers ?? . These show the characteristic 'V' or 'W' shape produced 
+when two oscillators drift past one another and have nonlinear mixing.
 
 \begin{figure}[ht!]%
 \centering
@@ -495,32 +542,96 @@ into DARM.
          \ref{subfig:lho-whistle} shows a double whistle whistle at LHO where the %
          two oscillators drifted back and forth across one another and caused two %
          glitches in the detection band.}
-\end{figure}\label{fig:whistle-spectrograms}
+\label{fig:whistle-spectrograms}
+\end{figure}
 
-Hveto shows that a witness channel for RF whistles vetoes approximately 90\% 
-of DARM triggers in this time period.
+Voltage controlled oscillators (VCOs) are oscillators whose frequency can 
+be tuned using an input voltage. These oscillators are used in control 
+loops throughout the aLIGO interferometers. One particular example of this 
+is the control loop which locks the frequency of the input laser to the 
+length of the input mode cleaner to guarantee a resonant optical cavity and 
+effective mode cleaning. A signal representing the changing length 
+of the input mode cleaner is read out using the Pound-Drever-Hall (PDH) technique ?? . 
+This signal is used as the input to a VCO, which produces a 
+signal whose frequency is a proxy for the length of the input mode cleaner. 
+This signal is used as the set point in the frequency stabilization loop that 
+controls the frequency of the input laser light. Through this path, the length 
+of the input mode cleaner is used to set the frequency of the input laser light. 
+
+The signal that represents the length of the input mode cleaner was found to 
+be a good witness for RF whistle glitches. Figure \ref{fig:darm-whistle-hist} 
+shows the rate of Omicron triggers, which represent generic transient noise in 
+$h(t)$, as a function of the length of the input mode cleaner. The length of 
+the input mode cleaner is in kHz as it is an error signal used to set the 
+frequency detuning of the VCO. The red curve represents the distribution in 
+the absence of whistle glitches. There is no value for which noise transients in 
+$h(t)$ seem more likely to occur; the rate of glitches seems Gaussian distributed 
+as the length of the input mode cleaner fluctuates about the set point of the 
+control loop. The blue curve represents the rate of transients 
+when RF whistle glitches are occurring. In this case, there are three preferred 
+frequencies where it seems that noise transients in $h(t)$ have a tendency to 
+occur. This indicates that there is a relationship between specific values of 
+the length of the input mode cleaner and the presence of whistle glitches in the 
+interferometer. 
+
+\begin{figure}[ht!]%
+\includegraphics[width=\textwidth]{figures/detchar/Rate_Histogram_Whistles_LLO}
+\caption[DARM glitch histograms with and without RF whistles]{The red distribution %
+         shows the rate of Omicron in triggers in $h(t)$ when RF whistles are not % 
+         present. The blue distribution shows the rate of Omicron triggers in $h(t)$ % 
+         when RF whistles are occurring. The x-axis is the value of a channel that %
+         represents the length of the input mode cleaner. When there are no whistle %
+         glitches, there is no channel value for which Omicron triggers are more %
+         likely to occur. When there are whistle glitches in $h(t)$, specific %
+         values of the input mode cleaner length seem more likely to be coincident %
+         with Omicron triggers in $h(t)$.}
+\label{fig:darm-whistle-hist}
+\end{figure}
+
+The VCO that acts as a proxy to the length of the input mode cleaner is 
+nominally set to 80 MHz. As the length of the input mode cleaner drifts, the 
+oscillator frequency can be tuned by $\pm$ 1 MHz to track the length, resulting 
+in a signal with a frequency of 79 - 81 MHz. It was found that these whistle 
+glitches occurred when the VCO frequency swept through 79.2 MHz, which is the 
+same frequency as an oscillator used to drive an acousto-optic modulator. 
+The variable oscillator that was tracking the length of the input mode cleaner 
+was drifting past the static oscillator at 79.2 MHz and creating whistle glitches 
+that were visible in $h(t)$.  
+To reduce the number of whistle glitches in $h(t)$, the oscillator frequencies 
+were moved away from one another so that the static oscillator was outside 
+of the range of the tunable oscillator.
+
+Figure \ref{fig:hveto-whistles} demonstrates how prevalent whistle glitches were 
+before the oscillator frequencies were shifted to avoid them. Figure 
+\ref{fig:hveto-whistles} is a time-frequency scatter plot of Omicron triggers in 
+$h(t)$. The blue dots represent all Omicron triggers generated for $h(t)$ over 
+this stretch of time. The red crosses indicate that a given Omicron trigger was found 
+to be coincident with an Omicron trigger generated for an auxiliary channel that 
+was a capable witness for whistle glitches. Approximately 90\% of the glitches in 
+$h(t)$ are vetoed by the witness channel, indicating that whistles were the dominant 
+source of transient noise in $h(t)$ in this time period. 
+
 
 \begin{figure}[ht!]%
 \includegraphics[width=\textwidth]{figures/detchar/Hveto_whistles_time_frequency}
-\caption[Vetoed whistles from Hveto]{A time-frequency scatter plot of $h(t)$ Omicron %
+\caption[Vetoed whistles from Hveto]{A time-frequency scatter plot of Omicron %
          triggers. The blue dots represent all triggers found for the $h(t)$ channel. %
          Red crosses indicate that a trigger was determined to be coincident with an %
          RF whistle and vetoed. This veto is responsible for removing 90\% of the %
          glitches in this time period. The majority of the high frequency glitches %
          were due to RF beatnote whistles}
-\end{figure}\label{fig:hveto-whistles}
+\label{fig:hveto-whistles}
+\end{figure}
 
-How do we know that the frequency offset worked? Look at a signal that is a proxy 
-for the drifting oscillator and histogram all of the Omicron DARM triggers during 
-that time. If there's no coupling, the answer should be fairly Gaussian; the 
-IFO is just as likely to glitch at any value of the channel. If there are 
-channel values that correspond strongly to glitches in DARM, we should see peaks.
-
-\begin{figure}[ht!]%
-\includegraphics[width=\textwidth]{figures/detchar/Rate_Histogram_Whistles_LLO}
-\caption[DARM glitch histograms with and without RF whistles]{Red curve is nice %
-         and Gaussian. Blue curve has peaks that indicate problematic frequencies.}
-\end{figure}\label{fig:darm-whistle-hist}
+The shape of the whistle 
+glitches was also very problematic for CBC searches since the second half of a 
+whistle is a sinusoid with a monotonically increasing frequency, not unlike the 
+characteristic 'chirp' signal produced by a CBC event. Certain CBC waveforms 
+matched the shape of the whistle glitches well enough to fool the $\chi^2$ signal 
+consistency test and produced loud background triggers in early CBC searches. 
+The whistle glitches 
+were fixed before the first observing run, so they were not a limiting noise source 
+to CBC searches during observation.
 
 \subsection{Seismic CPS comb}
 
@@ -546,5 +657,6 @@ Characterization of noise and analysis after repair
 \subsection{Data quality shifts}
 Performed and mentored data quality shifts.
 
+\section{Validation of Gravitational Wave Signals}\label{sec:GW150914-validation}
 
-
+We promise GW150914 is real!

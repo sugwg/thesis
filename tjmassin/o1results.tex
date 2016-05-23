@@ -3,11 +3,13 @@
 Advanced LIGO's first observing run (O1) lasted from September 12, 2015 - 
 January 19, 2016. In this observing run, the first direct detection of 
 gravitational waves was achieved with the discovery of two binary black 
-hole mergers, GW150914 and GW151226. 
+hole mergers, GW150914 and GW151226 \cite{GW150914-DETECTION,GW151226}. 
 In total, 51.5 days of coincident analysis data were recorded in O1. 
-After category 1 vetoes were applied, the total coincident analysis 
-time was reduced to 50.3 days. After category 2 vetoes were applied, 
-the total coincident analysis time was reduced to 49.8 days. (??) 
+After data with excess noise were removed from the analysis, the 
+total amount of coincident data was 49.8 days.
+%After category 1 vetoes were applied, the total coincident analysis 
+%time was reduced to 50.3 days. After category 2 vetoes were applied, 
+%the total coincident analysis time was reduced to 49.8 days. (??) 
 
 Along with the publication detailing the first direct detection of 
 gravitational waves, 12 companion papers were released 
@@ -22,6 +24,10 @@ overall state of the interferometers \cite{GW150914-DETECTORS}.
 
 \section{Foreground Events}
 
+\subsection{GW150914}
+
+The first signal discovered in O1, GW150914, marked the first 
+direct detection of gravitational waves.
 Figure \ref{fig:GW150914} shows a 
 filtered time domain representation of the first detection, 
 GW150914, with the best estimated 
@@ -56,8 +62,12 @@ signal was also tremendously loud due to its total mass and relatively
 close distance. 
 As a result, the power in the signal is highly localized in time, 
 producing a short, loud waveform that is readily visualized.
+A discussion of the data validation process relevant to GW150914 is 
+found in Section \ref{sec:GW150914-validation}.
 
-The other binary black hole signal, GW151226, has a rather different 
+\subsection{GW151226}
+
+The other binary black hole signal discovered in O1, GW151226, has a rather different 
 morphology. The system that produced GW151226 was roughly three times 
 less massive than that of GW150914 and was estimated to have merged 
 at a similar distance (see Table \ref{table:foreground}). Due to the 
@@ -72,6 +82,8 @@ reported by a matched-filter search is an
 integral in the frequency domain that is designed to identify modeled 
 signals regardless of their duration.
 
+\subsection{LVT151012}
+
 The third loudest foreground event in the analysis, LVT151012, stands out 
 from the background distribution but is not statistically significant 
 enough to be labeled as a gravitational wave detection. Its statistical 
@@ -81,6 +93,41 @@ reason to believe that it is a noise artifact based on detector
 performance. It is possible that LVT151012 is part of a larger 
 population of gravitational waves that is expected to contain 
 quiet, threshold signals as well as clear detections.
+
+\begin{table}[ht!]%
+  \begin{center}
+    \footnotesize
+    \begin{tabular}{ccccccc}
+    \hline
+    Event & Time(UTC) & FAR ($yr^{-1}$) & $m_1$ ($M_{\odot}$) & $m_2$ ($M_{\odot}$) & 
+    $\chi_{eff}$ & $D_L$ (Mpc) \\
+    \hline
+    GW150914 & \begin{tabular}{@{}c@{}}14 September \\ 2015 \\ 09:50:45 \end{tabular} & 
+    $< 5.8\times10^{-7}$ & $36_{-4}^{+5}$ & $29_{-4}^{+4}$ & $-0.06_{-0.18}^{+0.17}$ & 
+    $410_{-180}^{+160}$ \\
+    GW151226 & \begin{tabular}{@{}c@{}}26 December \\  2015 \\ 03:38:53 \end{tabular} & 
+    $< 5.8\times10^{-7}$ & $14_{-3}^{+9}$ & $8_{-3}^{+2}$ & $0.20_{-0.10}^{+0.21}$ & 
+    $490_{-210}^{+180}$ \\
+    LVT151012 & \begin{tabular}{@{}c@{}}12 October \\ 2015 \\ 09:54:43 \end{tabular} & 
+    0.44 & $23_{-5}^{+18}$ & $13_{-5}^{+4}$ & $0.0_{-0.2}^{+0.3}$ & 
+    $1100_{-500}^{+500}$ \\
+    \hline
+    \end{tabular}
+  \end{center}
+  \caption[Table of foreground events]{Table of foreground events found in the first %
+           observing run. %
+           The quoted false alarm rates are calculated by the PyCBC search pipeline. %
+           The GstLAL search pipeline reported similar results. % 
+           Two binary black hole systems, GW150914 and GW151226, were %
+           discovered with a false alarm rate $< 5.8\times10^{-7}$, which is the upper %
+           limit on false alarm rate set by the amount of time used in the analysis. %
+           This corresponds to a statistical significance $> 5.3\sigma$. %
+           A third event, LVT151012, was an interesting foreground event that was not %
+           statistically significant to be claimed as a detection, but could be part %
+           of a larger gravitational wave population that includes weaker signals.
+           } 
+  \label{table:foreground}
+\end{table}
 
 \section{Background Noise}
 
@@ -165,7 +212,7 @@ $\geq 8$, which represents the rate of loud, non-Gaussian triggers in the
 analysis. The overall rate of triggers was consistent throughout the 
 observing run, typically reported between 0.1 - 1.0 Hz. The rate of triggers 
 with a re-weighted SNR $\geq 8$ was typically $< 0.01$ Hz. The dashed 
-and dash-dotted lines indicate GW150914 and LVT151012 respectively 
+and dash-dotted lines indicate the times of GW150914 and LVT151012 respectively 
 \cite{GW150914-DETCHAR}. 
 
 \begin{figure}[ht!]%
@@ -197,9 +244,10 @@ over the whole of the first observing run. The black curve shows the
 number of expected foreground events at a given $\hat{\rho_c}$ based on 
 background noise alone for the analysis. For this curve, GW150914 is 
 allowed to remain in the data when generating a background from timeslides. 
-This answers an interesting question: could a combination of signal in 
-one detector and noise in the other detector generate a signal as loud is 
-GW150914?
+This answers an interesting question: if GW150914 is considered to be a 
+chance coincidence due to noise, could a combination of GW150914 in 
+one detector and background noise in the other detector generate a 
+signal as loud is GW150914?
 
 The orange squares indicate the 
 number of foreground events that were actually recovered by the search 
@@ -300,39 +348,4 @@ respective background distributions, resulting in a false alarm rate
 $< 5.8\times10^{-7} yr^{-1}$, which corresponds to a statistical significance of 
 $> 5.3\sigma$. LVT151012 has a false alarm rate of $0.44 yr^{-1}$, which 
 corresponds to a statistical significance of just under $2\sigma$.
-
-\begin{table}[ht!]%
-  \begin{center}
-    \footnotesize
-    \begin{tabular}{ccccccc}
-    \hline
-    Event & Time(UTC) & FAR ($yr^{-1}$) & $m_1$ ($M_{\odot}$) & $m_2$ ($M_{\odot}$) & 
-    $\chi_{eff}$ & $D_L$ (Mpc) \\
-    \hline
-    GW150914 & \begin{tabular}{@{}c@{}}14 September \\ 2015 \\ 09:50:45 \end{tabular} & 
-    $< 5.8\times10^{-7}$ & $36_{-4}^{+5}$ & $29_{-4}^{+4}$ & $-0.06_{-0.18}^{+0.17}$ & 
-    $410_{-180}^{+160}$ \\
-    GW151226 & \begin{tabular}{@{}c@{}}26 December \\  2015 \\ 03:38:53 \end{tabular} & 
-    $< 5.8\times10^{-7}$ & $14_{-3}^{+9}$ & $8_{-3}^{+2}$ & $0.20_{-0.10}^{+0.21}$ & 
-    $490_{-210}^{+180}$ \\
-    LVT151012 & \begin{tabular}{@{}c@{}}12 October \\ 2015 \\ 09:54:43 \end{tabular} & 
-    0.44 & $23_{-5}^{+18}$ & $13_{-5}^{+4}$ & $0.0_{-0.2}^{+0.3}$ & 
-    $1100_{-500}^{+500}$ \\
-    \hline
-    \end{tabular}
-  \end{center}
-  \caption[Table of foreground events]{Table of foreground events found in the first %
-           observing run. %
-           The quoted false alarm rates are calculated by the PyCBC search pipeline. %
-           The GstLAL search pipeline reported similar results. % 
-           Two binary black hole systems, GW150914 and GW151226, were %
-           discovered with a false alarm rate $< 5.8\times10^{-7}$, which is the upper %
-           limit on false alarm rate set by the amount of time used in the analysis. %
-           This corresponds to a statistical significance $> 5.3\sigma$. %
-           A third event, LVT151012, was an interesting foreground event that was not %
-           statistically significant to be claimed as a detection, but could be part %
-           of a larger gravitational wave population that includes weaker signals.
-           } 
-  \label{table:foreground}
-\end{table}
 

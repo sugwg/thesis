@@ -15,7 +15,7 @@ G_{\mu\nu} = 8\pi T_{\mu\nu}
 \end{equation}
 where $G_{\mu\nu}$ is the Einstein tensor, which describes the 
 curvature of spacetime, $T_{\mu\nu}$ is the 
-stres-energy tensor, which describes the energy and momentum in 
+stress-energy tensor, which describes the energy and momentum in 
 spacetime, and  $G=c=1$. The Einstein tensor is defined as,
 \begin{equation}
 G_{\mu\nu} = R_{\mu\nu} - \frac{1}{2}Rg_{\mu\nu}
@@ -24,7 +24,8 @@ where $R_{\mu\nu}$ is the Ricci curvature tensor and $g_{\mu\nu}$ is
 the metric tensor for the manifold.
 
 An interesting result that arises from this formalism is the 
-existence of gravitational waves, which are perturbations in 
+existence of gravitational waves \cite{Einstein:1916,Einstein:1918}, 
+which are perturbations in 
 spacetime caused by certain types of time-varying mass distributions. 
 To describe gravitational waves, we consider 
 a Minkowski metric with a small perturbation. The Minkowski metric 
@@ -73,8 +74,8 @@ the resulting form of $h_{\mu\nu}$ is
 h_{\mu\nu} = 
   \begin{pmatrix}
     0 & 0 & 0 & 0 \\
-    0 & h_+ & h_x & 0 \\
-    0 & h_x & -h_+ & 0 \\
+    0 & h_+ & h_\times & 0 \\
+    0 & h_\times & -h_+ & 0 \\
     0 & 0 & 0 & 0
   \end{pmatrix}
 \end{equation}
@@ -126,16 +127,20 @@ This shows that a gravitational wave propogating along the $\hat{z}$-axis
 will differentially stretch and squeeze spacetime in the transverse 
 axes. The exact form of $h_+$ will depend on the source of the 
 gravitational waves. A visualization of this stretching and squeezing 
-is shown in Figure \ref{fig:polarizations}\cite{Polarization}. The cross polarization  
+is shown in Figure \ref{fig:polarizations} \cite{Polarization}. The cross polarization  
 stretches and squeezes at a 45 degree angle relative to the plus 
 polarization. The strain, $h_+$, imparted by a gravitational wave is 
 typically extremely small by the time it reaches Earth, producing 
-differential length changes on the order of $10^{-22}$m. 
+relative length changes on the order of $10^{-22}$. 
 
 \begin{figure}[ht!]
 \includegraphics[width=\textwidth]{figures/introduction/polarisations2}
 \caption[Plus and cross polarizations]{Plus and cross polarizations %
-         of a gravitational wave.}
+         of a gravitational wave. As a gravitational wave propagates through spacetime, %
+         there is a stretching and squeezing effect that changes the relative length between %
+         points in spacetime. The strain produced by the cross polarization %
+         is at a 45 degree angle relative to the strain produced by the plus %
+         polarization. }
 \label{fig:polarizations}
 \end{figure}
 
@@ -214,13 +219,74 @@ arm differentially, it will be transmitted through the signal recycling cavity
 and into the output mode cleaner (OMC). The OMC behaves similarly to the IMC, 
 stripping away higher order optical modes and isolating the TEM00 mode of the 
 beam. The transmitted, mode cleaned signal is then read out using a homodyne 
-detection scheme on a DC photodiode. 
+detection scheme on a DC photodiode.
+
+\subsection{DC Readout}
+
+When a gravitational wave modulates the length of an arm cavity, the light 
+traveling in that arm experiences a phase modulation. This phase modulation 
+can be visualized by picturing the beam in frequency space. In Figure 
+\ref{fig:omc-freq}, the carrier beam frequency is designated as $f_0$. 
+The phase modulation due to 
+a gravitational wave signal introduces a frequency sideband at the 
+gravitational wave frequency, which is in the 30-2000 Hz range. 
+The 
+RF sidebands used for auxiliary optical cavity control are offset from the 
+carrier frequency by 9, 24, and 45 MHz. 
+In a heterodyne detection scheme, the interferometer would operate at the 
+'dark fringe', meaning that the output port would not transmit light until 
+there was differential arm motion. In this scheme, the RF sidebands would be 
+detected on the same photodetector as the gravitational wave sidebands. The 
+RF sidebands would be used to demodulate the photodetector signal, leaving 
+behind a gravitational wave signal. This is the method that was used in 
+initial LIGO.
+
+In Advanced LIGO, a homodyne detection, or 'DC Readout', scheme is employed 
+\cite{DCReadout}. 
+In a homodyne detection scheme, the RF sidebands are not used to extract the 
+gravitational wave signal. Instead, the carrier beam itself is used. Instead of 
+aligning the instrument on the dark fringe, an differential offset is introduced 
+to the arm cavities to allow a small amount of light into the output port. 
+The RF sidebands, which if not used for demodulation would only contribute 
+noise to the output signal, 
+are rejected by the output mode cleaner (OMC). 
+The gravitational wave sidebands, however, are at a 
+low enough frequency offset that they are within the cavity pole of the OMC 
+and are allowed to transmit through the cavity.
+
+Since the OMC DC photodiode measures power, it measures the square of the 
+incident optical field and witnesses beat frequencies between different 
+components of the light. If the RF sidebands have been filtered out by 
+the OMC, the only remaining beat note will be that of the carrier beam ($f_0$) 
+beating against the gravitational wave sideband ($f_0 + f_{GW}$). This beat note will 
+appear as the difference in frequency between the two optical fields, 
+leaving behind a signal in the 30-2000 Hz range ($f_{GW}$) and providing a 
+natural demodulation inherent to the measurement process. 
+The process of recovering the gravitational wave sideband using the 
+carrier field as a reference is known as homodyne detection. The 
+advantage in this method lies in the fact that the carrier beam 
+has been passed through the arm cavities. The cavities act as a low 
+pass filter and remove high frequency noise relative to the carrier 
+beam frequency. The RF sidebands are quite noisy in comparison and this 
+noise is propagated forward when they are used for demodulation. 
+
+\begin{figure}[ht!]
+\includegraphics[width=\textwidth]{figures/introduction/omc-freq}
+\caption[Sidebands and OMC cavity pole]{Frequency domain visualization of beam %
+         at OMC. Grey dotted lines indicate the cavity pole. The gravitational %
+         wave sidebands are within the cavity pole and are transmitted through %
+         the OMC. The RF sidebands are in the MHz range and are rejected by the %
+         OMC.}
+\label{fig:omc-freq}
+\end{figure}
+
 
 \subsection{The aLIGO Noise Curve}
 
 The aLIGO interferometers are among the most precise measuring devices 
 that have ever been constructed, sensitive to a differential displacement 
-on the order of $10^{-18}$m. When operating at such small length scales, 
+on the order of $10^{-19}$ m$/\sqrt{Hz}$ at their most sensitive frequencies. 
+When operating at such small length scales, 
 the interferometers are susceptible to a number of very subtle noise sources. 
 Figure \ref{fig:noise-budget} shows the limiting noise sources for the 
 aLIGO interferometers \cite{GW150914-DETECTORS}. Each curve represents 
@@ -278,69 +344,10 @@ coatings.
 Figure \ref{fig:noise-budget} shows that the interferometer noise is 
 limited by the combination of thermal noise and quantum noise from 100 Hz 
 onward. 
-\subsection{DC Readout}
-
-When a gravitational wave modulates the length of an arm cavity, the light 
-traveling in that arm experiences a phase modulation. This phase modulation 
-can be visualized by picturing the beam in frequency space. In figure 
-\ref{fig:omc-freq}, the carrier beam frequency is designated as $f_0$. 
-The phase modulation due to 
-a gravitational wave signal introduces a frequency sideband at the 
-gravitational wave frequency, which is in the 30-2000 Hz range. 
-The 
-RF sidebands used for auxiliary optical cavity control are offset from the 
-carrier frequency by 9, 24, and 45 MHz. 
-In a heterodyne detection scheme, the interferometer would operate at the 
-'dark fringe', meaning that the output port would not transmit light until 
-there was differential arm motion. In this scheme, the RF sidebands would be 
-detected on the same photodetector as the gravitational wave sidebands. The 
-RF sidebands would be used to demodulate the photodetector signal, leaving 
-behind a gravitational wave signal. This is the method that was used in 
-initial LIGO.
-
-In Advanced LIGO, a homodyne detection scheme, or 'DC Readout' scheme, is employed 
-\cite{DCReadout}. 
-In a homodyne detection scheme, the RF sidebands are not used to extract the 
-gravitational wave signal. Instead, the carrier beam itself is used. Instead of 
-aligning the instrument on the dark fringe, an differential offset is introduced 
-to the arm cavities to allow a small amount of light into the output port. 
-The RF sidebands, which if not used for demodulation would only contribute 
-noise to the output signal, 
-are rejected by the output mode cleaner (OMC). 
-The gravitational wave sidebands, however, are at a 
-low enough frequency offset that they are within the cavity pole of the OMC 
-and are allowed to transmit through the cavity.
-
-Since the OMC DC photodiode measures power, it measures the square of the 
-incident optical field and witnesses beat frequencies between different 
-components of the light. If the RF sidebands have been filtered out by 
-the OMC, the only remaining beat note will be that of the carrier beam ($f_0$) 
-beating against the gravitational wave sideband ($f_0 + f_{GW}$). This beat note will 
-appear as the difference in frequency between the two optical fields, 
-leaving behind a signal in the 30-2000 Hz range ($f_{GW}$) and providing a 
-natural demodulation inherent to the measurement process. 
-The process of recovering the gravitational wave sideband using the 
-carrier field as a reference is known as homodyne detection. The 
-advantage in this method lies in the fact that the carrier beam 
-has been passed through the arm cavities. The cavities act as a low 
-pass filter and remove high frequency noise relative to the carrier 
-beam frequency. The RF sidebands are quite noisy in comparison and this 
-noise is propagated forward when they are used for demodulation. 
-
-\begin{figure}[ht!]
-\includegraphics[width=\textwidth]{figures/introduction/omc-freq}
-\caption[Sidebands and OMC cavity pole]{Frequency domain visualization of beam %
-         at OMC. Grey dotted lines indicate the cavity pole. The gravitational %
-         wave sidebands are within the cavity pole and are transmitted through %
-         the OMC. The RF sidebands are in the MHz range and are rejected by the %
-         OMC.}
-\label{fig:omc-freq}
-\end{figure}
 
 \section{Sources of Gravitational Waves}
 
-The data at the output of the interferometer must be carefully searched 
-for evidence of gravitational wave signals. These signals have highly 
+Gravitational wave signals have highly 
 varying characteristics depending on the source of the gravitational 
 waves. The gravitational wave strain produced depends on the distribution 
 of energy at the source and is given as
@@ -443,7 +450,7 @@ time \cite{CW-all-sky,EinsteinHome}.
 If there is a constant, periodic gravitational wave signal in the data, it 
 will manifest as a peak in the frequency spectrum of the data. This peak will 
 accumulate signal and grow over the integration period relative to the 
-incoherent noise floor. 
+noise floor. 
 
 \subsection{Stochastic background}
 
@@ -465,23 +472,20 @@ interferometers.
 
 \section{The Advanced Detector Network}
 
-The Advanced Laser Interferometer Gravitational-Wave Observatory (aLIGO) is 
+The Advanced Laser Interferometer Gravitational-Wave Observatory is 
 part of a worldwide effort to detect gravitational waves from astrophysical 
 sources. The two aLIGO interferometers, one in Hanford, WA and one in 
 Livingston, LA, are part of a growing network of ground-based interferometric 
-gravitational wave detectors. Each aLIGO interferometer has 4km long arms 
-arranged in an L-shaped configuration. A gravitational wave passing through 
-an aLIGO interferometer will cause the arms to expand and contract, 
-creating an interferometric signal at the output of the instrument. 
-Section \ref{sec:aligo} contains a more detailed description of the aLIGO 
-interferometers. 
+gravitational wave detectors. The aLIGO detectors are currently the largest 
+and most sensitive interferometric gravitational wave detectors in the 
+network.
 
 There are a number of other interferometric gravitational wave detectors 
 being built and commissioned for future use in collaboration with aLIGO.
 The Advanced VIRGO detector is being built and commissioned in Cascina, Italy. 
 When it is fully commissioned, VIRGO will be joining LIGO in observing runs. 
-The VIRGO interferometer has 3km arms, which should provide enough 
-sensitivity to allow for triangulation of astrophysical sources.
+The VIRGO interferometer has 3km arms, which will provide enough 
+sensitivity to allow for detection and triangulation of astrophysical sources.
 
 The GEO600 detector, located in Hanover, Germany is an interferometer built in 
 collaboration between Germany and the United Kingdom. 
@@ -495,12 +499,11 @@ unlike other gravitational wave interferometers, employs cryogenics to
 reduce thermal noise in its optics. When complete, KAGRA should be 
 sensitive enough to contribute to the worldwide detector network.
 
-Include that cool picture of the advanced detector network.
-
 \section{Searching for Compact Binary Coalescences}\label{sec:cbc-search}
 
-Since the focus of this thesis is the performance of searches for Compact 
-Binary Coalescences, a more thorough discussion of how a CBC search 
+Since a signficant portion of this thesis uses the performance of 
+CBC searches as a metric for the quality of the 
+data, a more thorough discussion of how a CBC search 
 works is necessary before moving on. 
 
 \subsection{The PyCBC Search Pipeline}
@@ -531,7 +534,7 @@ is defined as
 \end{equation}
 where $\tilde{s}$ is the Fourier transformed detector data, $\tilde{h}$ is the Fourier 
 transformed gravitational waveform, and $S_n (f)$ is the power spectral 
-density of the detector data averaged over a stretch of 2048 seconds.
+density of the detector data averaged over 2048 seconds.
 
 The SNR of each trigger is weighted based on a signal consistency test \cite{Allen:2004gu},
 resulting in a refined ranking statistic called re-weighted SNR.
@@ -568,9 +571,9 @@ object's spin into one parameter called effective spin, $\chi_{eff}$,
 which is the
 mass-weighted spin of the system \cite{Privitera:2013xza}. $\chi_{eff}$ is defined as
 \begin{equation}
-\chi_{eff} = \frac{\boldsymbol{\chi_{1}}m_{1} + \boldsymbol{\chi_{2}}m_{2}}{m_{1} + m_{2}}
+\chi_{eff} = \frac{\chi_{1}m_{1} + \chi_{2}m_{2}}{m_{1} + m_{2}}
 \end{equation}
-where $\boldsymbol{\chi_{i}}$ is the dimensionless spin parameter \cite{Kidder:1995zr}
+where $\chi_{i}$ is the dimensionless spin parameter \cite{Kidder:1995zr}
 and $m_{i}$ is the
 mass for each compact object in the binary system. It is also convenient to combine
 the component masses into a new variable, chirp mass, which is used to
