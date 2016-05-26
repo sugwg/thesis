@@ -110,12 +110,7 @@ This is a critical subsystem, as it is used to control
 not only the auxiliary optical cavities, but the DARM degree of freedom which
 is sensitive to gravitational wave signals.
 These optical cavities are controlled using the Pound-Drever-Hall (PDH) 
-technique.
-
-\subsection{Length locking basics}
-
-This is how a basic PDH loop works and where the error signals are picked 
-off from.
+technique described in Section ?? .
 
 \subsection{Online Detector Characterization}
 
@@ -195,42 +190,137 @@ cavity control signals with transients in the output of the interferometer.
 
 \subsection{MEDM screens}
 
-
-Figure \ref{fig:lsc-odc} shows the LSC ODC overview screen in MEDM.
+For real-time use of these monitors, a software package called MEDM is used to 
+display and interact with the ODC models. MEDM can be used to update the thresholds 
+and state masks used to determine the status of a given photodiode or degree of 
+freedom. 
+Figure \ref{fig:lsc-odc} shows the LSC ODC overview screen in MEDM. 
+The top panel summarizes the overall state of the subsystem, showing the state of 
+each ODC bit and a bitmask that indicates whether or not a given bit is used in 
+determining the overall state of the subsystem. 
+The leftmost 
+panel is used to monitor the state of each length degree of freedom in the interferometer. 
+The rest of the panels are used to monitor the states of the various photodiodes used 
+for sensing length degrees of freedom. These include DC power monitors and the values 
+of RF demodulated photodiode signals. The grey boxes containing numerical values indicate 
+user-set thresholds that can be updated from this screen.
 
 \begin{figure}[ht!]
 \includegraphics[width=\textwidth]{figures/ODC/LSC_screen}
-\caption[LSC ODC Overview Screen]{MEDM screen used to control LSC ODC}
+\caption[LSC ODC Overview Screen]{MEDM screen used to interact with the LSC ODC model. %
+         This screen contains information regarding the overall state of the LSC subsystem, %
+         the state of control loops pertaining to specific length degrees of freedom in the %
+         interferometer, and the state of photodiodes used to sense length degrees of freedom %
+         in the interferometer.}
 \label{fig:lsc-odc}
 \end{figure}
 
 \subsection{Summary pages}
-I made them
+
+While the MEDM screens are useful for real-time readout of the ODC models, they do not 
+have an easily accessible history. For this reason, summary pages were built that 
+contain the most important information from each ODC model. The summary pages are 
+built multiple times per day and are accessible through a web browser, which allows 
+easy, organized access to past interferometer data when performing a data 
+quality investigation. 
+
+Figure \ref{fig:lsc-odc-bits}, which shows the status of the length degrees of freedom 
+of the interferomter over the course of a day, was taken from the summary pages. In this 
+figure, the MICH degree of freedom was seen to move into a bad state during a locked state. 
+As an example, we can look at the summary page visualization of the MICH degree of freedom 
+during this time. 
+Figure \ref{fig:mich-summary-pages} shows the control signal for the MICH degree of freedom 
+with the ODC threshold 
+overlaid as a dashed red line. The solid blue line indicates the median value of this signal 
+over the course of 1 minute and the shaded regions indiate the maximum and minimum over 
+this same stretch of time. When the control signal exceeds the ODC threshold, such as at 
+about 14:35 UTC, the corresponding bit in Figure \ref{fig:lsc-odc-bits} flashes red to 
+indicate the excess noise in this channel. 
+
+\begin{figure}[ht!]
+\includegraphics[width=\textwidth]{figures/ODC/H1-MICH-SUMMARY-PAGES}
+\caption[MICH control signal on summary pages]{Readout of the MICH degree of freedom as %
+         displayed on the summary pages. The dark blue curve indicates the median value of %
+         the MICH control signal over the course of 1 minute. The shaded regions indicate %
+         the maximum and minimum values of the control signal over the same stretch of time. %
+         The dashed red line indicates the ODC threshold set to monitor this control signal.}
+\label{fig:mich-summary-pages}
+\end{figure}
 
 \section{Alignment Sensing and Control}
 
-\subsection{Alignment locking basics}
+The alignment sensing and control subsystem is used to control the alignment of 
+optical cavities as well as the input pointing of light into those cavities. 
+The control loops work in a similar way as the length sensing and control subsystem, 
+using the reflected light from optical cavities to control the optics in a PDH 
+scheme. The same set of RF sidebands that are used for length control are also used 
+for alignment control. The detail that allows length fluctuations to be decoupled from 
+alignment fluctuations is that alignment fluctuations generate higher order 
+modes in the optical field, which are used in the demodulation stage to 
+generate an error signal.
 
-Describe what I did
+A length control loop compares the TEM00 mode of the carrier beam to the TEM00 
+mode of the RF sidebands. 
+An alignment control loop will compare the TEM00 mode of the carrier 
+beam with the TEM10 and TEM01 modes of its sidebands, which are generated by 
+angular misalignments of optical cavities. 
+Since each optic has two alignment degrees of freedom that are directly 
+controlled, pitch and yaw, and each cavity is comprised of multiple optics, 
+the reflected light from each cavity is read out on a 
+pair of quadrant photodiodes. This is visualized in Figure \ref{fig:odc-pd-screen}. 
+The four quadrants allow the pitch and yaw error 
+signals to be decoupled. Since higher order optical modes have a different Gouy 
+phase as they propagate through space, a pair of photodiodes separated by a Gouy 
+phase telescope are used to determine the origin of the misalignment 
+(cite Nergis' thesis).
 
 \subsection{Online Detector Characterization}
 
-Also made an ASC ODC
+Given that the alignment sensing control subsystem is designed similarly 
+to the length sensing and control subsystem, the general layout of the ODC 
+model is very similar. The photodiodes signals used to generate alignment 
+error signals are checked against a saturation threshold. The control 
+signals that are sent to the optics are checked to ensure that they aren't 
+exceeding their nominal range. Each degree of freedom is represented as one 
+bit in a state vector, which can be compared to a series of state masks to 
+check for a series of valid states. 
 
 \subsection{MEDM screens}
 
-Figure \ref{fig:asc-odc} shows the ASC ODC overview screen in MEDM.
+The MEDM screens for the ASC subsystem are similar to those built to monitor 
+the LSC subsystem. 
+Figure \ref{fig:asc-odc} shows the ASC ODC overview screen in MEDM. 
+The top panel once again describes the overall state of the subsystem and 
+shows which ODC bits are used to determine that state. The left panel shows 
+the status of the control signals used for each of the alignment degrees of 
+freedom in both pitch and yaw. The bottom right panel, labeled 'QPD Saturations', 
+checks for saturations in each of the quadrant photodiodes used in the ASC subsystem. 
+Since there are many more checks that need to be made for the quadrant photodiodes, 
+each one has a dedicated subscreen.
 
 \begin{figure}[ht!]
 \includegraphics[width=\textwidth]{figures/ODC/ASC_screen}
-\caption[ASC ODC Overview Screen]{MEDM screen used to control ASC ODC}
+\caption[ASC ODC Overview Screen]{MEDM screen used to interact with the ASC ODC model. %
+         This screen shows the overall state of the ASC subsystem, the state of each %
+         alignment degree of freedom in the interferometer, and the state of each %
+         quadrant photodiode used to sense misalignments in the interferometer.}
 \label{fig:asc-odc}
 \end{figure}
 
+Since the ASC subsystem uses quadrant photodiodes, each quadrant must be checked 
+for saturation. 
 Figure \ref{fig:odc-pd-screen} shows a photodiode monitor screen in the ASC ODC. 
+The first and second panels show the readouts of each quadrant of a quadrant 
+photodiode in I and Q phase respectively. The absolute value of each signal is 
+calculated and compared to a threshold value to see if any quadrants are approaching 
+a saturation limit. The third and fourth panels perform checks on the associated 
+pitch and yaw readouts from these photodiodes to check for excursions beyond the 
+nominal threshold. The nominal values for the pitch and yaw degrees of freedom 
+are determined by trending these values over long durations of good interferometer 
+performance.
 
 \begin{figure}[ht!]
-\includegraphics[width=\textwidth]{figures/ODC/PD_screen}
+\includegraphics[width=0.7\textwidth]{figures/ODC/PD_screen}
 \caption[ASC ODC Photodiode Monitor in MEDM]{ODC monitor for ASC photodiode in MEDM}
 \label{fig:odc-pd-screen}
 \end{figure}
