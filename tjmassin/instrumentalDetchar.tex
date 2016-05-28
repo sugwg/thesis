@@ -262,17 +262,29 @@ which in turn increases the confidence of eventual detections.
 
 \section{Instrumental Detector Characterization Studies}
 
-\subsection{Analog-to-Digital Conversion}
+\subsection{Analog-to-Digital Conversion Overflows}
 
 Advanced LIGO interferometers are controlled in real-time using a digital 
 control system installed on a series of computers referred to as front end 
 computers.  This system overall is referred to as the Front End Control 
-(FEC) subsection of the more expansive Control and Data System (CDS).  
-In a control loop, the FE computers must be capable of reading in an 
+(FEC) subsection of the more expansive Control and Data System (CDS). This 
+system oversees the operation of a series of feedbacks loop used to control 
+various systems in the interferometers.  
+Figure \ref{fig:control-loop} shows a basic example of a feedback loop 
+used to control the alignment of an optic. 
+In an aLIGO feedback loop, the front end computers must be capable of reading in an 
 analog signal from the interferometer (position measurements, error signals, 
-coil currents, etc), digitally sampling that analog signal, using these now 
-digital values in a series of control algorithms, and outputting an analog 
-control signal to send back into the interferometer.
+coil currents, etc), which is digitally sampled using an 
+analog-to-digital converter, using these now 
+digital values in a series of control filters, and outputting an analog 
+control signal to send back into the interferometer. 
+
+\begin{figure}[ht!]
+\includegraphics[width=\textwidth]{figures/detchar/control-loop}
+\caption[Example of a feedback loop]{A simplified visualization of a feedback %
+         loop designed to control the alignment of an optic.}
+\label{fig:control-loop}
+\end{figure}
 
 The process of digital sampling is handled by an analog-to-digital 
 converter (ADC) and the process of analog output is handled by a 
@@ -283,15 +295,14 @@ representing $2^{16}$ discrete values, or a range from zero to 65536.
 This range is often centered around zero, giving the ADC the capability 
 to handle a range of $\pm32768$.  An incoming analog signal is mapped 
 onto this range and converted into a digital signal.
-
-For example, in sampling an analog signal with a range of $\pm20V$, 
+For an analog signal with a range of $\pm20V$, 
 10V would be mapped to 32768 digital counts and -10V would be mapped 
 to -32768 digital counts with all 
 of the intermediate voltage values being linearly mapped to the range. This 
 means our digital system would recognize a discrete step size of 
 10V/32768 counts $\approx 305 \mu $V/count.
 
-Looking at the system described above, we must be aware of how our system 
+Looking at the digital sampling described above, we must be aware of how our system 
 is going to react when our analog input signal exceeds the intended maximum 
 value of 10V (e.g., an 11V input). The ADC has already assigned its maximum 
 digital value to 10V. This is called a digital overflow. In this case the ADC 
