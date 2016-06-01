@@ -291,24 +291,31 @@ computers.  This system overall is referred to as the Front End Control
 system oversees the operation of a series of feedbacks loop used to control 
 various systems in the interferometers.  
 Figure \ref{fig:control-loop} shows a basic example of a feedback loop 
-used to control the alignment of an optic. 
+used to control the alignment of an optic. When the optic is misaligned, 
+the position of the laser on the sensor shifts, generating an error signal. 
 In an aLIGO feedback loop, the front end computers must be capable of reading in an 
-analog signal from the interferometer (position measurements, error signals, 
-coil currents, etc), which is digitally sampled using an 
-analog-to-digital converter, using these now 
+analog signal from the interferometer (position measurements, photodiode currents, etc), 
+which is digitally sampled using an 
+analog-to-digital converter (ADC), using these now 
 digital values in a series of control filters, and outputting an analog 
-control signal to send back into the interferometer. 
+control signal to send back into the interferometer via a digital-to-analog 
+converter (DAC). This control signal is sent back into the interferometer 
+to actuate on the alignment of the optic and complete the feedback loop.
 
 \begin{figure}[ht!]
 \includegraphics[width=\textwidth]{figures/detchar/control-loop}
 \caption[Example of a feedback loop]{A simplified visualization of a feedback %
-         loop designed to control the alignment of an optic.}
+         loop designed to control the alignment of an optic. Misalignment of %
+         the optic causes the beam to move on the face of the sensor. The %
+         output of the sensor is used as an error signal, which is digitally %
+         sampled, filtered, and converted back into an analog signal to correct %
+         the alignment of the optic.}
 \label{fig:control-loop}
 \end{figure}
 
 The process of digital sampling is handled by an analog-to-digital 
-converter (ADC) and the process of analog output is handled by a 
-digital-to-analog converter (DAC).  Since these converters are linearly 
+converter and the process of analog output is handled by a 
+digital-to-analog converter.  Since these converters are linearly 
 mapping a continuous signal onto a discrete range, they are limited by 
 their digital bit depth.  For example, a 16 bit ADC is only capable of 
 representing $2^{16}$ discrete values, or a range from zero to 65536.  

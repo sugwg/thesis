@@ -1,1 +1,178 @@
-Paste in the TeX from DCC document T1600011
+This document describes all the data quality (DQ) vetoes which were applied to
+the analysis of GW150914. For each DQ flag the definition of the veto is given,
+the interferometer this veto is applicable to, the category the veto was
+applied to the Burst and Compact Binary Coalescence (CBC) searches and the
+total amount of deadtime associated to each DQ veto. This document has been
+created as a supplement to LIGO-P1500238.
+
+\section{Data Quality Vetoes}
+
+\textbf{Missing Data Veto} \\
+\textbf{Purpose}: This veto captures any data dropouts at either interferometer.\\
+\textbf{Definition}: Customized software indicate when the recalibrated data
+frames were unable to be produced either due to missing raw interferometer data
+or data in the raw data frames that are marked as invalid.\\
+\textbf{Veto Category}: Burst - 1, CBC - 1\\
+\textbf{Deadtime:} LIGO-Hanford - 0\%, LIGO-Livingston - 0\%
+\\
+
+\textbf{Burst Hardware Injection Veto} \\
+\textbf{Purpose}: This veto indicates whenever a burst hardware injection has
+been performed.\\
+\textbf{Defintion}: The times of transient hardware injections labelled as
+burst type are recorded by the online detector characterization (ODC) system by
+monitoring the state of the calibration injection model. Deadtime quoted
+includes the padding used in the analyses ($\pm$4 seconds).\\
+\textbf{Veto Category}: Burst - 4\footnote{Burst veto category 4 is reserved
+for transient hardware injections only.}, CBC - 2\\
+\textbf{Deadtime:} LIGO-Hanford - 0.003\%, LIGO-Livingston - 0\%
+\\
+
+\textbf{CBC Hardware Injection Veto} \\
+\textbf{Purpose}: This veto indicates whenever a CBC hardware injection has
+been performed.\\
+\textbf{Defintion}: The times of transient hardware injections labelled as CBC
+type are recorded by the ODC system by monitoring the state of the
+calibration injection model. Deadtime quoted includes the padding used in the
+analyses ($\pm$8 seconds).\\
+\textbf{Veto Category}: Burst - 4, CBC - 3\footnote{CBC veto category 3 is
+reserved for CBC hardware injections only.}\\
+\textbf{Deadtime:} LIGO-Hanford - 0.052\%, LIGO-Livingston - 0.072\%
+\\
+
+\textbf{DetChar Hardware Injection Veto} \\
+\textbf{Purpose}: This veto indicates whenever a DetChar hardware injection has
+been performed.\\
+\textbf{Defintion}: The times of transient hardware injections labelled as
+DetChar type are recorded by the ODC system by monitoring the state of the
+calibration injection model. Deadtime quoted includes the padding used in the
+analyses ($\pm$16 seconds).\\
+\textbf{Veto Category}: Burst - 4, CBC - 2\\
+\textbf{Deadtime:} LIGO-Hanford - 0\%, LIGO-Livingston - 0\%
+\\
+
+\textbf{Stochastic Hardware Injection Veto} \\
+\textbf{Purpose}: This veto indicates whenever a stochastic hardware injection
+has been performed.\\
+\textbf{Defintion}: The times of hardware injections labelled as
+stochastic type are recorded by the ODC system by monitoring the state of the
+calibration injection model.\\
+\textbf{Veto Category}: Burst - 1, CBC - 1\\
+\textbf{Deadtime:} LIGO-Hanford - 0\%, LIGO-Livingston - 0\%
+\\
+
+\textbf{Beckhoff Hardware Problems} \\
+\textbf{Purpose}: To capture times when the Beckhoff system (a slow control
+system which is used to control a subset of hardware in the interferometer)
+suffered a hardware failure at the LIGO-Hanford Y-end. \\
+\textbf{Defintion}: The veto was created by hand, where the start time was
+recorded as 4 seconds before excess non-stationary data started due to the
+hardware failure and finished 3 seconds after the interferometer dropped out of
+observing mode.\\
+\textbf{Veto Category}: Burst - 1, CBC - 1\\
+\textbf{Deadtime:} LIGO-Hanford - 1.50\%
+\\
+
+\textbf{45 MHz Sideband Fluctuations} \\
+\textbf{Purpose}: This veto identifies times when the amplitude of the 45 MHz
+optical sideband, which is used to generate error signals for optical cavities,
+has excess noise. If the amplitude of the 45 MHz optical sideband fluctuates,
+excess noise will be injected in to the associated optical cavities which has
+been seen to couple to the gravitational wave channel.\\
+\textbf{Defintion}: An auxiliary channel which monitors amplitude fluctuations
+in the signal used to generate the 45 MHz optical sideband was found to be the
+optimum witness of non-stationary behaviour seen in the gravitational wave
+channel data. This veto was designed to capture long duration (on the order of
+one minute) non-stationary behaviour. Various thresholds on the band limited
+root-mean-square of this
+witness channel were investigated to see which threshold proved most effective
+(in terms of efficiency and deadtime) at removing non-stationary data.
+Custom software was implemented to automatically capture this behaviour over
+the analysis period (and throughout the first observing run).\\
+\textbf{Veto Category}: Burst - 1, CBC - 1\\
+\textbf{Deadtime:} LIGO-Hanford - 2.95\%
+\\
+
+\textbf{Less severe 45 MHz Sideband Fluctuations} \\
+\textbf{Purpose}: See above veto, 45 MHz sideband fluctuations, for
+description.\\
+\textbf{Defintion}: This veto was designed to capture less severe, short time
+scale (on the order of 1 second), non-stationary data. This veto was created
+in a similar manner as the previous veto - a study of different thresholds
+on the band limited root-mean-square of the witness channel were investigated
+to give the optimal efficiency and deadtime. Custom software was implemented to
+automatically capture this behaviour over the analysis period (and throughout
+the first observing run).\\
+\textbf{Veto Category}: Burst - not applied, CBC - 2\\
+\textbf{Deadtime:} LIGO-Hanford - 0.014\%
+\\
+
+\textbf{Saturations in the SUSETMY model channels} \\
+\textbf{Purpose}: This veto captures time when the Y-end test mass actuator
+saturates. This is due to a relatively fast transient that is on the main
+carrier beam, and therefore directly on/at the readout, which gets amplified
+by the differential-arm digital filters sufficiently to cross the
+digital-to-analog converter limits.\\
+\textbf{Defintion}: This veto was created automatically by monitoring the
+interface between the computers and the analog electronics that they control on
+the Y-end test mass.\\
+\textbf{Veto Category}: Burst - 2, CBC - 2\\
+\textbf{Deadtime:} LIGO-Hanford - 0.067\%, LIGO-Livingston - 0.021\%
+\\
+
+\textbf{Saturations in the SUSETMY model channels with an SNR $>$ 200} \\
+\textbf{Purpose}: See veto above - saturations in the SUSETMY model channels.
+This veto however is aimed specifically to identify very loud saturations.\\
+\textbf{Defintion}: This veto was created automatically by monitoring the
+interface between the computers and the analog electronics that they control on
+the Y-end test mass. A subset of these saturations is kept based on their
+severity as determined by an algorithm that is designed to witness transient
+power in a given signal. This veto is specific to the Burst search where
+$\pm$3 seconds of padding is applied.\\
+\textbf{Veto Category}: Burst - 2, CBC - not applied\\
+\textbf{Deadtime:} LIGO-Hanford - 0.146\%, LIGO-Livingston - 0.047\%
+\\
+
+\textbf{Output Mode Cleaner (OMC) Photodiodes Analog to Digital Overflows} \\
+\textbf{Purpose}: This veto captures times when the signal on the OMC
+photodiodes exceeds the limit of the analog-to-digital converter at the
+interface to the computers that control the instrument.\\
+\textbf{Defintion}: This veto was created automatically by monitoring the
+interface between the OMC photodiodes analog signal and the computers.\\
+\textbf{Veto Category}: Burst - 2, CBC - 2\\
+\textbf{Deadtime:} LIGO-Hanford - 0.002\%, LIGO-Livingston - 0.003\%
+\\
+
+\textbf{Non-Stationary Data prior to Loss of Resonant Power in the Optical Cavities} \\
+\textbf{Purpose}: To veto times when the data became non-stationary before the
+state of the interferometer reported the end of an observation segment.\\
+\textbf{Defintion}: These times were found by hand by monitoring an algorithm,
+run over the gravitational wave channel, that is designed to witness transient
+power. \\
+\textbf{Veto Category}: Burst - 1, CBC - 1\\
+\textbf{Deadtime:} LIGO-Hanford - 0.0004\%, LIGO-Livingston 0.001\%
+\\
+
+\textbf{Glitches due to DC Power Fluctuations of the Photon Calibrator Laser} \\
+\textbf{Purpose}: This veto captures times when the photon calibrator has
+power fluctuations which exceed 20\% of the nominal level.\\
+\textbf{Defintion}: A threshold placed on a witness channel which monitors the
+power levels of the photon calibrator laser was used to flag
+times when the power fluctuated beyond the 20\% level. These times were then
+padded by -10 and +20 seconds to capture the full behaviour.\\
+\textbf{Veto Category}: Burst - 1, CBC -1\\
+\textbf{Deadtime:} LIGO-Livingston - 0.058\%
+\\
+
+\textbf{Seismic Glitches} \\
+\textbf{Purpose}: This veto was created to identify times of strong excess
+seismic noise that coupled in to the output of the interferometer.\\
+\textbf{Defintion}: The 10-30 Hz band limited root-mean-
+square of the ground seismometer, located at the input test mass on the Y-arm, in the vertical degree of freedom was found to correlate with excess noise in
+the output of the interferometer. Different thresholds on this witness channel
+were tested to find the optimal efficiency and deadtime that captured these
+effects.\\
+\textbf{Veto Category}: Burst - not applied, CBC - 2\\
+\textbf{Deadtime:} LIGO-Hanford - 0.431\%
+
+

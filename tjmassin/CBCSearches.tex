@@ -281,33 +281,13 @@ detailed in Chapter \ref{ch:instrumentalDetchar}
 
 \subsection{Gating}\label{sec:gating}
 
-The PyCBC search includes a data conditioning stage that effectively applies preventative data quality
-cuts on the input data stream. This is done in a process called gating \cite{Usman:2015kfa}, which uses a
+The PyCBC search includes a data conditioning stage that applies preventative  
+cuts to remove large transients from the input data stream. 
+This is done in a process called gating \cite{Usman:2015kfa}, which uses a
 window function to remove times containing large transients from the input data stream. This is done
-by applying a smooth windowing function to the problematic section of data,
-excising the large transient.
+by applying a smooth windowing function to the problematic section of data, excising the large transient.
 The gating process is tuned by modifying the selection criteria for transients to be removed and
 by adjusting the time window to remove around each transient.
-
-For the first analysis block, from September 12 - October 20, 2015, an external transient
-identification algorithm called Omicron \cite{Robinet:2015om}
-was used to build the list of gating windows. A conservative threshold was set at Omicron SNR $>$ 300
-to indicate a transient that should be gated. At each of these times a 1 second time window was constructed,
-centered around the time of the transient, that indicated the stretch of data to be removed from the analysis.
-This is the gating strategy that was employed in the analysis that included GW150914.
-GW150914, which is considered to be a strong gravitational wave signal, was recovered by Omicron with an SNR
-of 13 and 9 at Hanford and Livingston respectively, well beneath the gating threshold.
-
-In the analysis containing GW151226, a different method was used to remove data at the
-input to the search. Instead of relying on an external process to identify large transients,
-an internal test is used to find large excursions in the input data \cite{Usman:2015kfa}.
-The time domain input
-data are Fourier transformed into the frequency domain and whitened using the
-measured power spectral density. The data are then inverse Fourier transformed back into
-the time domain and compared to a threshold value set to perform comparably to the
-Omicron gating process.
-If the whitened data have excursions that exceed this threshold, a gating window is
-constructed to remove these data from the input to the search.
-Tests were done to ensure that loud signals would not be
-removed by the auto-gating process.
+Chapters \ref{ch:GW150914-DQ} and \ref{ch:GW151226-DQ} contain details about the 
+gating thresholds used for the analyses containing GW150914 and GW151226 respectively. 
 
