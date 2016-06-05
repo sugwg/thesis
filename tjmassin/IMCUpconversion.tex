@@ -7,15 +7,14 @@ specific range. This study examines the specific case of the triangular ring cav
 uses in LIGO interferometers for input mode cleaning. When the length of the cavity 
 approaches the boundaries of the PDH error signal linear range, our model of the 
 input mode cleaner PDH response shows that the resulting error signal contains 
-non-linear spectral artifacts. This model and understanding of the non-linear 
-cavity responses will be useful in the commissioning phase of the Advanced LIGO 
-project for more precisely locating and eliminating systematic noise sources in 
-the interfereometers
+non-linear spectral artifacts. This study is done in an attempt to understand noise 
+found in LIGO input mode cleaner during engineering runs in the commissioning phase 
+of Advanced LIGO. 
 
 \section{PDH locking}
 
 Resonance in an optical cavity is achieved when the round-trip length of the 
-cavity is equal to an integer number of wavelengths of the input beam,
+cavity is equal to an integer number of wavelengths of the input beam, that is, 
 \begin{equation}
 L = N\lambda = \frac{Nc}{\nu}
 \end{equation}
@@ -44,8 +43,6 @@ overlap perfectly within the cavity
 and the incident light will be reflected. If the length of the optical cavity 
 changes but the frequency is stable, the geometry of the cavity and the optical 
 field will once again be mismatched and resonance will be lost. 
-This can be thought of as the free spectral range of the cavity varying with L 
-while the carrier beam frequency is constant. 
 To solve this problem, LIGO 
 employs feedback loops that use a PDH error signal to maintain the resonance 
 condition. We will use the LIGO input mode cleaner as an example of PDH locking.
@@ -125,8 +122,14 @@ signal is
 \begin{equation}
 \epsilon(\omega) = -2\sqrt{P_{c}P_{s}}\operatorname{Im}\{F(\omega)F^*(\omega + \Omega) - F^*(\omega)F(\omega - \Omega)\},
 \end{equation}
-where $P_{c}$ is the the carrier beam power and $P_{s}$ is the sideband power 
-\cite{Black01}.
+where $\omega$ is the carrier beam frequency, $\Omega$ is the sideband 
+frequency, $P_{c}$ is the the carrier beam power and $P_{s}$ is the 
+sideband power \cite{Black01}.
+The PDH response of the cavity was modeled using measured values of optical 
+reflectivity and free spectral range of the Livingston input mode cleaner. 
+The input beam was the nominal LIGO carrier beam with a frequency of 
+$\omega = 281.8$ THz ($\lambda = 1064$ nm) and modulation sidebands of 
+$\Omega = \pm24$ MHz.
 Figure \ref{fig:pdh} shows the resulting PDH error signal as a function of 
 the free spectral range with an overlaid straight line as a reference for 
 linearity. Looking at a zoomed in view of the error signal around the the linear 
@@ -164,11 +167,6 @@ To explore this non-linearity, we injected a sinusoidal cavity motion into our
 model and observed the resulting error signal.
 The frequency of the sine wave was selected in an attempt to model 
 noise seen in the output of the interferometers.  
-The PDH response of the cavity was modeled using measured values of optical 
-reflectivity and free spectral range of the Livingston input mode cleaner. 
-The input beam was the nominal LIGO carrier beam with a frequency of 
-$\omega = 281.8$ THz ($\lambda = 1064$ nm) and modulation sidebands of 
-$\Omega = \pm24$ MHz.
 
 We explored two specific cases. Figure \ref{fig:asymmetric-pdh} shows the 
 power spectral density of the injected sinusoidal 
@@ -213,8 +211,10 @@ Livingston, we see highly structured noise in the IMC control signal in the 10-1
 band. This physical mechanism is consistent with the model of a non-linear PDH error 
 signal. If excess seismic motion reaches the suspension and the optics begin swinging 
 around, it's feasible that they could start to saturate the linear range of the PDH loop.
-
-The noise takes a form very similar in structure to the non-linear PDH signal, displaying 
+Figure \ref{fig:imc-harmonics} shows the IMC length control signal during a time 
+with excess seismic noise. 
+The noise in the IMC control signal 
+takes a form very similar in structure to the non-linear PDH signal, displaying 
 strong odd harmonics and weaker even harmonics. The IMC control signal has an associated 
 noise floor that obscures parts of these peaks. The theoretical model uses sinusoids with 
 a highly specified frequency and thus displays very sharp peaks in its spectrum. 
@@ -224,6 +224,7 @@ a physical process, not digitally generated, and have some natural width to them
 \begin{figure}[h!]
 \includegraphics[height=0.6\textwidth]{figures/IMCUpconversion/upconversion_comb.png}
 \caption[Spectral comb in IMC control signal]{Spectral comb with a fundamental frequncy of 2.78 Hz in the IMC control signal. Red arrows indicate odd harmonics, green arrows indicate even harmonics. }
+\label{fig:imc-harmonics}
 \end{figure}
 
 While we have demonstrated that this mechanism is consistent with IMC upconversion noise, 

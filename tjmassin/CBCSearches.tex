@@ -1,15 +1,18 @@
 Since a signficant portion of this thesis uses the performance of 
 CBC searches as a metric for the quality of the 
 data, a more thorough discussion of how a CBC search 
-works is necessary.
+works is necessary. This thesis will focus on the output of the PyCBC 
+pipeline, which is a Python-based software packaged used to search for 
+gravitational waves \cite{Usman:2015kfa,pycbc-github}
 
 CBC search pipelines are designed to search for gravitational wave transients 
-from compact binarycoalescences \cite{Usman:2015kfa}. 
+from compact binary coalescences \cite{Usman:2015kfa}. 
 The signals expected to be measured in the LIGO interferometers are extremely quiet, 
 with gravitational wave strains on the order of $10^{-22}$. On these scales, most 
 signals will not be able to be extracted from the background noise with simple filtering. 
 Figure \ref{fig:quiet-BNS} shows the gravitational wave strain from a 1.4-1.4$M_{\odot}$ 
-binary neutron star system at 20 Mpc overlaid on real detector noise from the Livingston 
+binary neutron star system at a distance of 20 Mpc overlaid on real detector noise from 
+the Livingston 
 interferometer. The signal has a peak strain roughly two orders of magnitude lower than 
 the peak strain of the detector noise. 
 For this reason, the CBC searches employ a matched filter algorithm, which correlates 
@@ -23,7 +26,7 @@ The matched filter calculates the correlation of the detector data with expected
 waveforms in the frequency domain. The detector data and expected waveform are 
 multiplied together and their product is divided by the background noise in the detector. 
 The fundamental operation of the matched filter is defined as an inner product of the 
-detector data and the CBC waveform,
+detector data and the CBC waveform \cite{Usman2015:kfa},
 \begin{equation}
 (s|h)(t) = 4\mathrm{Re}\int_{f_\mathrm{low}}^{f_\mathrm{high}} \frac{\tilde{s}(f)\tilde{h}^*(f)}{S_n (f)}e^{2\pi i f t}\, \mathrm{d}f,
 \label{eq:inner-product}
@@ -40,7 +43,7 @@ polarizations, ``h-plus" and ``h-cross". When the data are searched for a CBC
 signal, a waveform is generated for each polarization and the matched filter is 
 computed separately for each polarization. 
 The SNR of a CBC waveform at any given time is defined as the weighted quadrature sum 
-of the SNR measured for each polarization, 
+of the SNR measured for each polarization \cite{Usman:kfa}, 
 \begin{equation}
 \rho^2(t) = \frac{(s|h_\mathrm{p})^2 + (s|h_\mathrm{c})^2}{(h_\mathrm{p}|h_\mathrm{p})},
 \label{eq:snr}
@@ -56,7 +59,8 @@ and are used to generate populations of potential gravitational wave events for 
 \includegraphics[width=\textwidth]{figures/introduction/quiet_BNS}
 \caption[BNS signal in detector noise]{A simulated gravitational wave signal from a %
          binary neutron star system overlaid on real detector noise from L1. %
-         The blue curve represents the detector data. The red curve represents %
+         The blue curve, labeled $h(t)$, represents the detector data. %
+         The red curve represents %
          the gravitational wave strain expected from a 1.4-1.4$M_{\odot}$ %
          binary neutron star system %
          at 20 Mpc. The peak strain of the binary neturon star waveform is %
@@ -75,7 +79,7 @@ and are used to generate populations of potential gravitational wave events for 
 
 To perform a search, the matched filter algorithm needs to know what to search for.
 A collection of expected CBC waveforms is generated using
-the formalism of general relativity before the analysis.
+the formalism of general relativity before the analysis \cite{Pan:2009wj,Purrer:2015tud}.
 Each of the expected waveforms is called a template and
 the full collection of waveforms is referred to as the template bank. This template bank
 is constructed to span the astrophysical parameter space included in the search
@@ -83,9 +87,13 @@ is constructed to span the astrophysical parameter space included in the search
 the interferometers. As shown in Figure \ref{fig:noise-budget}, the LIGO 
 interferometers are sensitive enough to detect gravitational waves in the 
 region from roughly 30 - 2000 Hz. This rules out detection of sources that are expected to 
-coalesce at very low frequencies, such as supermassive black hole binaries and 
-binary white dwarf systems. The template bank used in Advanced LIGO's first observing 
-run consisted waveforms representing binary neutron stars, binary black holes, and neutron star-black hole binary systems. The total masses of these systems ranged from 
+coalesce at very low frequencies, such as supermassive black hole binaries 
+\cite{Merloni:2008tj} and 
+binary white dwarf systems \cite{PostnovYungelson:2006}. 
+The template bank used in Advanced LIGO's first observing 
+run consisted waveforms representing binary neutron stars, binary black holes, 
+and neutron star-black hole binary systems \cite{GW150914-CBc}. 
+The total masses of these systems ranged from 
 2-100$M_{\odot}$. This reflects the set of systems that will have merger frequencies 
 above 30 Hz and will have detectable power in LIGO's sensitive bandwidth.
 
@@ -115,10 +123,11 @@ and the $m_{i}$ are the masses for each compact object in the binary system.
 If the data produced by the interferometers were Gaussian, the matched filter would 
 be sufficient for running a search pipeline and recovering gravitational wave signals. 
 Unfortunately, the data are non-Gaussian, containing noise transients of varying 
-durations. These noise transients, or ``glitches", can have significant amplitude 
+durations \cite{Nuttall:2015dqa,GW150914-DETCHAR}. These noise transients, 
+or ``glitches", can have significant amplitude 
 and, when multiplied with a waveform template in the matched filter, can cause 
 loud triggers to be generated. 
-However, a significant advantage to performaing a modeled search for gravitational 
+However, a significant advantage of performaing a modeled search for gravitational 
 waves is that 
 we know we're looking for. With this information, the SNR can be refined into a more 
 robust ranking statistic for significant events in the data. This is done using the 
@@ -264,14 +273,16 @@ two sets of triggers are astrophysically uncorrelated and do not contain any gra
 wave signals. The coincidence test is then performed again with the time shifted triggers,
 resulting in a coincident trigger set which represents background noise. 
 A full distribution of background triggers is generated by performing this timeslide
-technique every 0.1 seconds and iterating over all of the data used in the search. This 
+technique every 0.1 seconds and iterating over all of the data used in the search 
+\cite{Usman2015:kfa}. This 
 distribution tells us how often we should expect to see coincident triggers with the 
 same waveform parameters at a given value of SNR.
 
 The statistical significance of any candidate gravitational wave is
 evaluated by calculating the rate of background events from detector noise 
 that are at least as
-loud as the candidate event. The results of the first observing run and details on 
+loud as the candidate event \cite{GW150914-CBC}. 
+The results of the first observing run and details on 
 the significance of foreground events is presented in Chapter \ref{ch:o1results}. 
 Any loud triggers that appear as the result of instrumental
 transients will contribute to the tail of the background distribution and

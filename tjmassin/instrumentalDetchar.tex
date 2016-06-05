@@ -13,7 +13,7 @@ by them. This is demonstrated in Figure \ref{subfig:l1-newsnr-hist}, which shows
 tail of loud events in the re-weighted SNR distribution from the PyCBC 
 search pipeline. In Gaussian noise, this distribution does not extend beyond 
 a re-weighted SNR of 8. (For more discussion on the output of the PyCBC search 
-pipeline using Gaussian noise, see Section XX ).
+pipeline using Gaussian noise, see Section \ref{sec:methodology}).
 
 Detector Characterization studies are focused on ensuring that the
 astrophysical searches are using nominal, stationary
@@ -74,10 +74,10 @@ If the problem cannot be fixed at the source, the second option is to
 remove the problematic data from the astrophysical analyses. 
 When a significant noise source has
 been identified using auxiliary channels and cannot be repaired immediately, 
-a data quality flag can be generated
-to indicate times when the output data from the interferometer is not nominal
+a data quality veto can be generated
+to indicate times when the output data from the interferometer are not nominal
 \cite{Nuttall:2015dqa,S6DetChar,GW150914-DETCHAR,Amaldi}.
-Data quality vetoes are discussed further in section (??).  
+Data quality vetoes are discussed further in Chapter \ref{ch:Vetoes}.  
 If possible, it is always preferable to fix a problem at the source. 
 
 \section{Tools and algorithms}\label{sec:tools}
@@ -92,7 +92,7 @@ quality investigations in this thesis are discussed below.
 
 One way to quantify the amount of excess noise in $h(t)$ is to look 
 for times where the signal contains excess power using 
-Omicron, a burst algorithm. 
+Omicron, a burst algorithm \cite{Robinet:2015om}. 
 The first stage of the Omicron pipeline applies a set of signal conditioning 
 processes, including a whitening filter, a high pass filter, and a downsampling 
 process to $h(t)$. Once the data have been whitened they are projected into 
@@ -123,7 +123,7 @@ non-orthogonal basis and a single event in the data can generate multiple
 triggers corresponding to different values of $t_0$, $f_0$, and Q. The 
 resulting clustered triggers define the peak time, peak frequency, and 
 SNR of a cluster as the central time, central frequency, and SNR of the 
-most significant tile in the cluster. 
+most significant tile in the cluster \cite{McIverThesis}. 
 
 The most useful way to visualize the output of Omicron is in the 
 time-frequency-SNR plane, sometimes referred to as a 'glitchgram', 
@@ -136,7 +136,7 @@ dot represents the SNR of that trigger.
 In Gaussian noise, the SNR of a 
 given trigger is not expected to exceed 8. In this example, there are a number 
 of triggers with SNR $> 8$, some with noticeable structure and some that seem 
-more randomly scattered, that represent noise in the output of the interferometer. 
+more randomly scattered. These represent noise in the output of the interferometer. 
 For example, there are numerous triggers between 10-20 Hz that represent excess noise at 
 these frequencies, likely due to scattered light in the 
 interferometer. There is a line of triggers at just above 2kHz that indicates 
@@ -149,7 +149,8 @@ to an individual loud glitch rather than a constant, systematic noise source.
 \includegraphics[width=\textwidth]{figures/detchar/Omicron-Dec19}
 \caption[Omicron time-frequency-SNR plot]{Time-frequency-SNR plot of Omicron triggers, %
          often referred to as a 'glitchgram'. Each dot on this plot represents an %
-         event in $h(t)$ that was recorded with a peak time, peak frequency, and SNR. %. 
+         event in the interferometer output, denoted $h(t)$, that was recorded %
+         with a peak time, peak frequency, and SNR. %. 
          In Gaussian noise, all triggers on %
          this plot would have an SNR $< 8$. Since this plot is generated using real %
          detector data from O1, there are structures of loud triggers that indicate %
@@ -165,13 +166,14 @@ Figure \ref{fig:glitchgram} identifies 3 populations of noise in
 the instrument, each of which can be followed up on individually 
 to discover both the source of the noise and its effect on astrophysical 
 searches. Omicron triggers can also be used in statistical analyses to 
-find correlated noise between auxilary channels and $h(t)$. An often used 
+find correlated noise between auxilary channels and the output of the 
+interferometers. An often used 
 example of this, Hierarchichal Veto, is discussed below. 
 
 \subsection{Hierarchichal Veto}
 
-One tool that we have often used in Detector Characterization to look 
-for time coincidence between noise transients, or 'glitches', in auxilary 
+One tool that is often used to look 
+for time coincidence between noise transients in auxilary 
 channels and the output of the interferometer is Hierarchical Veto (Hveto) 
 \cite{Smith:2011}. 
 Typically, Hveto is used to compare a channel that potentially contains 
@@ -215,12 +217,13 @@ S = -\log_{10} (\sum\limits_{k = n}^{\infty} P(\mu,k)),
 \end{equation}
 where $n$ is the number of coincidences found between the two channels 
 during the total analysis time and $P(\mu,k)$ is the Poisson probability 
-distribution function,
+distribution function. The Poisson probability of witnessing $k$ 
+coincidences when the expected average number of coincidences is $\mu$ is 
 \begin{equation}
-P(\mu,k) = \frac{\mu^{k}e^{-\mu}}{k!},
+P(\mu,k) = \frac{\mu^{k}e^{-\mu}}{k!}.
 \end{equation}
-where $\mu$ is the expected number of coincidences between triggers in 
-$h(t)$ and the auxiliary channel based solely on chance, which is estimated as,
+The expected number of coincidences between triggers in 
+$h(t)$ and the auxiliary channel based solely on chance, $\mu$, is estimated as,
 \begin{equation}
 \mu = \frac{N_{h}N_{aux}T_{win}}{T_{tot}},
 \end{equation}
@@ -233,7 +236,7 @@ A high value of significance indicates that the triggers in the channels
 were very often coincident in time and that there is a very small probability 
 that their intersection is a product of random chance. This is a very useful 
 measure when we are searching for auxiliary channels that might have some 
-noise coupling into our output channel. A significance value of up to 5 is 
+noise coupling into $h(t)$. A significance value of up to 5 is 
 often observed in channels with no causal relationship to $h(t)$ \cite{Smith:2011}, 
 which is a useful threshold for identifying effective vetoes.
 
@@ -276,19 +279,24 @@ in $h(t)$ that would otherwise pollute a gravitational-wave analysis. Removing
 these glitches serves multiple purposes for the search pipelines. Removing 
 high SNR glitches cleans up search backgrounds and allows the search 
 pipelines to claim a lower SNR threshold for potential detections. A lower 
-SNR threshold implies a larger volume for astrophysical analysis. Removing 
+SNR threshold implies a larger search volume for astrophysical analysis. Removing 
 glitches reduces the potential for false alarms in the search pipelines, 
 which in turn increases the confidence of eventual detections.
 
 \section{Instrumental Detector Characterization Studies}
 
-\subsection{Analog-to-Digital Conversion Overflows}
+The tools described above have been used in numerous studies to characterize 
+and understand the transient noise in the LIGO interferometers. This section 
+provides an overview of some of the more critical data quality investigations 
+that occurred leading up to and during the first observing run.
+
+\subsection{Analog-to-Digital Conversion Overflows}\label{sec:adc-overflow}
 
 Advanced LIGO interferometers are controlled in real-time using a digital 
 control system installed on a series of computers referred to as front end 
 computers.  This system overall is referred to as the Front End Control 
-(FEC) subsection of the more expansive Control and Data System (CDS). This 
-system oversees the operation of a series of feedbacks loop used to control 
+(FEC) subsystem. This 
+subsystem oversees the operation of a series of feedbacks loop used to control 
 various systems in the interferometers.  
 Figure \ref{fig:control-loop} shows a basic example of a feedback loop 
 used to control the alignment of an optic. When the optic is misaligned, 
@@ -322,7 +330,7 @@ representing $2^{16}$ discrete values, or a range from zero to 65536.
 This range is often centered around zero, giving the ADC the capability 
 to handle a range of $\pm32768$.  An incoming analog signal is mapped 
 onto this range and converted into a digital signal.
-For an analog signal with a range of $\pm20V$, 
+For an analog signal with a range of $\pm10V$, 
 10V would be mapped to 32768 digital counts and -10V would be mapped 
 to -32768 digital counts with all 
 of the intermediate voltage values being linearly mapped to the range. This 
@@ -332,9 +340,10 @@ means our digital system would recognize a discrete step size of
 Looking at the digital sampling described above, we must be aware of how our system 
 is going to react when our analog input signal exceeds the intended maximum 
 value of 10V (e.g., an 11V input). The ADC has already assigned its maximum 
-digital value to 10V. This is called a digital overflow. In this case the ADC 
+digital value to 10V. In this case, the ADC 
 will continuously output its maximum value as it has no way to map 11V into 
-a discrete value. The same process can occur in a DAC when a digital signal 
+a discrete value. This is called a digital overflow.  
+The same process can occur in a DAC when a digital signal 
 is sent out at the maximum allowed digital value. The resulting analog signal 
 will be railed at the maximum output value of the DAC, creating a sharp corner 
 in the output signal as it flattens out. 
@@ -360,7 +369,7 @@ can be removed from astrophysical searches.
 Figure \ref{fig:dac-overflow} shows an example of a large glitch that caused 
 a digital overflow and was removed from gravitational wave analyses. Figures 
 \ref{subfig:strain-dac-overflow} and \ref{subfig:esd-dac-overflow} show a 
-large glitch in $h(t)$ and the response of a drive signal that controls 
+large glitch in $h(t)$ and the response of a control signal that corrects  
 the motion of ETMY respectively. The signal in \ref{subfig:esd-dac-overflow}, 
 which is supposed to be controlling the motion of ETMY, hits its digital 
 limit during this glitch. Figure \ref{subfig:etmy-dac-overflow} shows the 
@@ -382,14 +391,14 @@ it witnesses the digital overflow.
   \includegraphics[width=0.495\textwidth]{figures/detchar/etmy-dac-overflow}
   \label{subfig:etmy-dac-overflow}
   }
-\caption[ETMY saturation]{Timeseries of an ETMY drive signal saturation in the 
+\caption[ETMY saturation]{Time-series of an ETMY control signal saturation in the 
          H1 detector. Figure \ref{subfig:strain-dac-overflow} shows a glitch in 
          the calibrated $h(t)$ channel. Figure \ref{subfig:esd-dac-overflow} shows 
-         the response to this glitch in the drive signal used to control the bottom 
+         the response to this glitch in the control signal used to control the bottom 
          stage of ETMY and actuate on the DARM degree of freedom. This signal hits 
          its digital overflow point at its peak and has no more dynamic range. 
          Figure \ref{subfig:etmy-dac-overflow} shows the front end channel responsible 
-         for monitoring digital overflows of this particular ETMY drive signal. 
+         for monitoring digital overflows of this particular ETMY control signal. 
          Since the witness channel is cumulative, overflows can be identified by 
          flagging any time in which this witness channel is increasing. }
 \label{fig:dac-overflow}
@@ -397,15 +406,16 @@ it witnesses the digital overflow.
 
 This method was used throughout O1 to generate data quality vetoes that 
 were distributed to the Burst and CBC searches. The first veto that was 
-generated this way was used to flag DAC overflows of the ETMY drive signal, 
+generated this way was used to flag DAC overflows of the ETMY control signal, 
 as demonstrated 
 in Figure \ref{fig:dac-overflow}. The other veto generated in this framework 
 was used to flag ADC overflows in the OMC DC photodiode used as the error 
 point of the DARM control loop. 
 
-\subsection{Suspension DAC calibration glitches}
+\subsection{Suspension DAC calibration glitches}\label{sec:DAC-calibration}
 
-A common glitch mechanism throughout ER6 was due to calibration errors in 
+A common glitch mechanism leading up to the first observing run 
+was due to calibration errors in 
 digital-to-analog converters (DACs) responsible for providing analog signals 
 to the aLIGO suspensions. The aLIGO suspension subsystem uses 18-bit DACs 
 to interact with the optics in the interferometer. These 18-bit DACs are 
@@ -435,22 +445,23 @@ actuate on the optics with a step function and cause a glitch in the
 optical cavity length. Figure \ref{fig:DAC-glitch} shows an example of 
 this issue where the DAC providing actuation signals to the power recycling 
 mirror (PRM) is crossing through zero and there are associated glitches 
-visible in the length readout of the power recycling cavity.
+visible in the length readout of the power recycling cavity \cite{Nuttall:2015dqa}.
 
 \begin{figure}[ht!]%
 \includegraphics[width=\textwidth]{figures/detchar/PRCL-DAC-glitch}
 \caption[DAC glitches in PRCL]{A timeseries plot showing the effects of %
-         DAC calibration glitches. The red trace shows the digital drive %
+         DAC calibration glitches. The red trace shows the digital control%
          signal being sent to the digital-to-analog converter. The blue %
          shows the resulting power recycling cavity motion rescaled by a %
-         factor of 100. When the drive signal crosses %
+         factor of 100. When the control signal crosses %
          through a value of zero, the output of the DAC experiences a %
          discontinuity, leading to a glitch in the power recycling cavity %
          length.}
 \label{fig:DAC-glitch}
 \end{figure}
 
-The effects of this issue were visible in the $h(t)$ channel during ER6. 
+The effects of this issue were visible in the $h(t)$ channel in engineering 
+runs leading up to the first observing run. 
 The most problematic culprit was the DAC that applied actuation directly 
 to the optics of the ETMs, effectively pushing directly on the DARM degree 
 of freedom and causing glitches in $h(t)$. These calibration errors manifested 
@@ -463,15 +474,15 @@ throughout the sixth engineering run.
 
 Figure \ref{fig:vetoed-DAC} shows the result of an Hveto run that looked 
 for time correlations between Omicron triggers in $h(t)$ and times when 
-the ETMY drive signal crossed through a value of $2^{16}$. The blue dots 
+the ETMY control signal crossed through a value of $2^{16}$. The blue dots 
 represent all Omicron triggers in $h(t)$. The red crosses indicate those 
-that were coincident with the ETMY drive signal crossing $2^16$. The 
+that were coincident with the ETMY control signal crossing $2^{16}$. The 
 population of low frequency glitches with SNR $>$ 8 was shown to be 
-coincident with the drive signal transitions. This veto 
+coincident with the control signal transitions. This veto 
 was very statistically significant, as shown in Table \ref{table:etmy-dac-hveto}. 
 The significance 
 of 192.5 indicates that the probability of these coincidences being due 
-to noise alone is negligible. The effiency:deadtime ratio of 27 indicates 
+to chance is negligible. The efficiency:deadtime ratio of 27 indicates 
 that these glitches were removed with very small time windows (0.2s) 
 and very little instrument uptime was removed in the process.
 
@@ -483,7 +494,7 @@ and very little instrument uptime was removed in the process.
          each with a central time and central frequency. The red crosses %
          indicate that a given trigger was vetoed by an auxiliary channel %
          trigger which was found to be statistically significant using Hveto. The %
-         auxiliary channel triggers in this case indicate that the drive signal %
+         auxiliary channel triggers in this case indicate that the control signal %
          on the bottom stage of ETMY has crossed a value of $2^{16}$. The %
          population of glitches between 20 - 100 Hz is highly coincident %
          with these crossings of $2^{16}$, indicating that they are caused %
@@ -500,7 +511,7 @@ and very little instrument uptime was removed in the process.
             \begin{tabular}{@{}c@{}}SNR \\threshold \end{tabular} & 
             Significance & Efficiency \% & Deadtime \% \\ 
   \hline
-  \begin{tabular}{@{}c@{}}ETMY drive signal \\ crosses $2^{16}$ \end{tabular} & 
+  \begin{tabular}{@{}c@{}}ETMY control signal \\ crosses $2^{16}$ \end{tabular} & 
   0.2 & 8 & 192.5 & 18.3 &  0.674 \\
   \hline
   \end{tabular}
@@ -509,8 +520,8 @@ and very little instrument uptime was removed in the process.
   \label{table:etmy-dac-hveto}
 \end{table}
 
-To fully understand the scope of this problem, the Detector Characterization 
-group developed software that searched through the output of all suspension 
+To fully understand the scope of this problem, 
+software was developed that searched through the output of all suspension 
 DAC digital output signals and marked times when they crossed 0 or $\pm2^{16}$. 
 These marked times were converted into trigger files and sent through Hveto 
 to look for correlations between crossings of critical values and glitches 
@@ -519,7 +530,7 @@ which optics were experiencing DAC calibration glitches that had a coupling
 mechanism into DARM.
 
 There were two approaches taken in an effort to mitigate these DAC glitches. The 
-first was to introduce offsets into the suspension drive signals so that they 
+first was to introduce offsets into the suspension control signals so that they 
 did not cross through a value of zero. This did solve the problem temporarily, 
 but at the cost of a significant portion of the dynamic range of the output 
 actuation. The more permanent fix was to run a calibration routine 
@@ -534,18 +545,17 @@ sent through Hveto. This study revealed that the calibration process was
 successful; there was no evidence of residual DAC calibration glitches that 
 had any noticeable coupling into $h(t)$. The only signal that had any 
 significant correlation with glitches in $h(t)$ was not causally sensible. 
-Large glitches $h(t)$ were driving the ETMX actuation signal through a value of 
+Large glitches $h(t)$ were driving the X-arm ETM control signal through a value of 
 $2^{16}$, which resulted in crossings of $2^{16}$ that were coincident in time 
 with glitches in $h(t)$, but weren't representative of calibration errors.
-
-\textcolor{red}{Discuss Hveto results}
 
 \subsection{RF beatnote whistles}
 
 During Advanced LIGO's commissioning,
 a population of glitches appeared in both the L1 and H1 interferometers which 
 came to be known as 'whistles' or 'RF whistles'. These glitches were the 
-intermodulation products of two RF oscillators; a nonlinear mixing between two 
+intermodulation products of two radio frequency oscillators, which 
+produce sine waves at radio frequencies.  A nonlinear mixing between two 
 RF oscillators produced a beatnote signal whose frequency was equal to the 
 difference in frequency between the two oscillator signals. Whistle glitches 
 occur when two oscillator signals drift and cross each other in frequency. 
@@ -559,7 +569,8 @@ had a characteristic shape, beginning at high frequency and sweeping down
 in frequency through the detection band before turning around and 
 sweeping back up to high frequencies. Figure \ref{fig:whistle-spectrograms} 
 shows a time-frequency representation of whistle glitches in both the L1 and H1 
-interferometers ?? . These show the characteristic 'V' or 'W' shape produced 
+interferometers \cite{Nuttall:2015dqa}. 
+These show the characteristic 'V' or 'W' shape produced 
 when two oscillators drift past one another and have nonlinear mixing.
 
 \begin{figure}[ht!]%
@@ -574,10 +585,10 @@ when two oscillators drift past one another and have nonlinear mixing.
   \label{subfig:lho-whistle}
   }
 \caption[Spectrograms of RF whistles]{Time-frequency spectrograms of RF whistles at %
-         both LLO and LHO. Figure \ref{subfig:llo-whistle} shows a %
-         whistle at LLO sweeping down from the kHz range and into the detection band %
+         both the L1 and H1 interferometers. Figure \ref{subfig:llo-whistle} shows a %
+         whistle at L1 sweeping down from the kHz range and into the detection band %
          where it interferes with searches for gravitational waves. Figure %
-         \ref{subfig:lho-whistle} shows a double whistle whistle at LHO where the %
+         \ref{subfig:lho-whistle} shows a double whistle whistle at H1 where the %
          two oscillators drifted back and forth across one another and caused two %
          glitches in the detection band.}
 \label{fig:whistle-spectrograms}
@@ -585,11 +596,12 @@ when two oscillators drift past one another and have nonlinear mixing.
 
 Voltage controlled oscillators (VCOs) are oscillators whose frequency can 
 be tuned using an input voltage. These oscillators are used in control 
-loops throughout the aLIGO interferometers. One particular example of this 
+loops throughout the LIGO interferometers. One particular example of this 
 is the control loop which locks the frequency of the input laser to the 
 length of the input mode cleaner to guarantee a resonant optical cavity and 
 effective mode cleaning. A signal representing the changing length 
-of the input mode cleaner is read out using the Pound-Drever-Hall (PDH) technique ?? . 
+of the input mode cleaner is read out using the Pound-Drever-Hall technique, 
+which is discussed in depth in Chapter \ref{ch:IMCUpconversion}. 
 This signal is used as the input to a VCO, which produces a 
 signal whose frequency is a proxy for the length of the input mode cleaner. 
 This signal is used as the set point in the frequency stabilization loop that 
@@ -599,7 +611,8 @@ of the input mode cleaner is used to set the frequency of the input laser light.
 The signal that represents the length of the input mode cleaner was found to 
 be a good witness for RF whistle glitches. Figure \ref{fig:darm-whistle-hist} 
 shows the rate of Omicron triggers, which represent generic transient noise in 
-$h(t)$, as a function of the length of the input mode cleaner. The length of 
+$h(t)$, as a function of the length of the input mode cleaner \cite{Nuttal:2015dqa}. 
+The length of 
 the input mode cleaner is in kHz as it is an error signal used to set the 
 frequency detuning of the VCO. The red curve represents the distribution in 
 the absence of whistle glitches. There is no value for which noise transients in 
@@ -640,7 +653,8 @@ were moved away from one another so that the static oscillator was outside
 of the range of the tunable oscillator.
 
 Figure \ref{fig:hveto-whistles} demonstrates how prevalent whistle glitches were 
-before the oscillator frequencies were shifted to avoid them. Figure 
+before the oscillator frequencies were shifted to avoid them \cite{Nuttall:2015dqa}. 
+Figure 
 \ref{fig:hveto-whistles} is a time-frequency scatter plot of Omicron triggers in 
 $h(t)$. The blue dots represent all Omicron triggers generated for $h(t)$ over 
 this stretch of time. The red crosses indicate that a given Omicron trigger was found 
@@ -716,7 +730,8 @@ visualization of background noise stationarity is the amplitude
 spectral density (ASD) of $h(t)$. Figure \ref{fig:median-asd}
 shows the
 median ASD of the detector data from each interferometer over this
-time period as a function of frequency. The shaded regions indicate
+time period as a function of frequency \cite{GW150914-DETCHAR}. 
+The shaded regions indicate
 the 5th and 95th percentile in that particular frequency bin.
 The most noticeable feature is the variance in the low frequency
 noise at L1, which was still not fully understood at the end of the run.
@@ -724,7 +739,8 @@ Most of this variance is below 30 Hz, which is the
 low frequency cutoff used in the matched filter search, and would
 not have an effect on the output of the CBC search. The L1 data
 also had a higher variance in the 60-200 Hz region, which was a
-limiting noise in the PyCBC analysis (??). Other than these two regions,
+limiting noise in the PyCBC analysis (see Chapter \ref{ch:CBCDetCharLimits}). 
+Other than these two regions,
 the spectra appear to be consistent and have reasonable variance
 at all frequencies \cite{GW150914-DETCHAR}.
 
@@ -752,7 +768,8 @@ centerpiece of the analysis, the inspiral range was calculated using
 its parameters as the gravitational wave source. Figure \ref{fig:inspiral-range}
 shows
 the inspiral range over the time used for an extended background
-analysis of GW150914. The inspiral horizon distance was between 1500-2000 Mpc
+analysis of GW150914 \cite{GW150914-DETCHAR}. 
+The inspiral horizon distance was between 1500-2000 Mpc
 for both instruments throughout the run. The L1 data, which were noisier overall,
 were slightly less sensitive to
 gravitational wave signals throughout the run. The two vertical lines
@@ -782,7 +799,8 @@ is reasonable to combine the background of the PyCBC search over many weeks.
 Figure \ref{fig:pycbc-rate} shows
 the rate of single
 interferometer triggers produced by PyCBC for both H1 and L1 in this time
-span. The circles indicate the rate of triggers with a re-weighted SNR
+span \cite{GW150914-DETCHAR}. 
+The circles indicate the rate of triggers with a re-weighted SNR
 $\geq 6.5$. The crosses indicate the rate of triggers with a re-weighted SNR
 $\geq 8$, which represents the rate of loud, non-Gaussian triggers in the
 analysis. The overall rate of triggers was consistent throughout the
@@ -809,7 +827,8 @@ and dash-dotted lines indicate the times of GW150914 and LVT151012 respectively
 
 The Detector Characterization group was responsible for characterizing the 
 noise in the interferometers in order to validate the gravitational 
-wave signals GW150914 and GW151226. The first part of this analysis, which studied the 
+wave signals GW150914 and GW151226 \cite{GW150914-DETCHAR}. 
+The first part of this analysis, which studied the 
 stationarity of the background noise, is discussed in Section \ref{sec:o1-data}. 
 As a further 
 check, the transient noise in the interferometer was also studied so that a 
@@ -819,8 +838,10 @@ In the engineering runs leading up to the first observing run, a great deal of
 work was done to understand as much as possible about the noise coupling mechanisms 
 from auxiliary channels into $h(t)$. Among the most important of these was a set 
 of signal injections to test the sensitivity of the physical and environmental 
-monitoring (PEM) subsystem. The PEM subsystem is comprised of a series of sensors 
-that measure the ambient environmental noise at the interferometers. This 
+monitoring (PEM) subsystem \cite{GW150914-DETCHAR}. 
+The PEM subsystem is comprised of a series of sensors 
+that measure the ambient environmental noise at the interferometers 
+\cite{Effler:2014zpa}. This 
 subsystem is comprised of seismometers, accelerometers, magnetometers, radio 
 antennae, microphones, temperature sensors, and voltage monitors for the power 
 lines supplying the building. While the aLIGO detectors are extremely sensitive 
@@ -841,8 +862,9 @@ checks were done to ensure nominal performance in the interferometers. These
 checks are organized in a detection checklist, which gathers all of the 
 relevant questions about interferometer performance that may influence 
 gravitational wave detection. This list includes checks 
-for the DAC calibration glitches mentioned in Section ??, the ADC and DAC 
-digital saturation glitches mentioned in Section ??, coincidence with 
+for the DAC calibration glitches mentioned in Section \ref{sec:DAC-calibration}, 
+the ADC and DAC 
+digital saturation glitches mentioned in Section \ref{sec:adc-overflow}, coincidence with 
 generic transients 
 as reported by Omicron, time-frequency scans of all auxiliary channels to be 
 investigated by DetChar subsystem leads, injections and test signals, and 
@@ -858,7 +880,7 @@ necessary amplitude and frequency to generate an event similar to a CBC
 signal. An example of one such auxiliary channel is shown in Figure \ref{fig:compressor}, 
 which 
 is a time-frequency spectrogram of the H1 Y-end seismometer signal that showed 
-excess noise at the time of GW150914. The excess 
+excess noise at the time of GW150914 \cite{GW150914-DETCHAR}. The excess 
 noise is due to an air compressor turning on roughly 75 seconds before GW150914. 
 The noise is a 14 Hz line with 28, 42, and 56 Hz harmonics visible. This level of 
 ground motion with a 175 second duration and a static frequency distribution was 
