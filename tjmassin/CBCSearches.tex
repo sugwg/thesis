@@ -3,7 +3,7 @@ CBC searches as a metric for the quality of the
 data, a more thorough discussion of how a CBC search 
 works is necessary. This thesis will focus on the output of the PyCBC 
 pipeline, which is a Python-based software packaged used to search for 
-gravitational waves \cite{Usman:2015kfa,pycbc-github}
+gravitational waves from compact binary coalescences \cite{Usman:2015kfa,pycbc-github}.
 
 CBC search pipelines are designed to search for gravitational wave transients 
 from compact binary coalescences \cite{Usman:2015kfa}. 
@@ -127,7 +127,7 @@ durations \cite{Nuttall:2015dqa,GW150914-DETCHAR}. These noise transients,
 or ``glitches", can have significant amplitude 
 and, when multiplied with a waveform template in the matched filter, can cause 
 loud triggers to be generated. 
-However, a significant advantage of performaing a modeled search for gravitational 
+However, a significant advantage of performing a modeled search for gravitational 
 waves is that 
 we know we're looking for. With this information, the SNR can be refined into a more 
 robust ranking statistic for significant events in the data. This is done using the 
@@ -139,7 +139,24 @@ significant amplitude, it can generate a high SNR trigger by overlapping with th
 waveform template in the matched filter. However, these noise 
 transients typically have a duration on the order of 0.1s. This type of transient 
 is easily distinguished from a chirp signal that increases monotonically in frequency 
-over the span of many seconds. 
+over the span of many seconds. Figure \ref{fig:bbh-with-blip} shows an example of such 
+a noise transient with the waveform of a binary black hole system overlaid on top of it. 
+Although the peaks of each time-series are aligned, the noise transient clearly has a more 
+localized power distribution that does not match that of the CBC waveform.
+
+\begin{figure}[ht!]
+\includegraphics[width=\textwidth]{figures/introduction/bbh-with-blip}
+\caption[Transient with BBH waveform]{A time domain representation of a noise transient in the %
+         L1 detector with a binary black hole waveform overlaid on top of it. Both %
+         time-series have been filtered to isolate the frequencies where the glitch % 
+         and the waveform have significant power. The peak amplitude of the binary %
+         black hole waveform lines up with the peak amplitude of the noise transient %
+         in the detector data, $h(t)$. However, the binary black hole waveform contains %
+         many more cycles than the noise transient. It is clear that this transient does %
+         not have the same distribution of power in time and frequency as the CBC signal.}
+\label{fig:bbh-with-blip}
+\end{figure}
+
 The $\chi^{2}$ test divides each CBC waveform into
 frequency bins of equal power, checking that the SNR is distributed as a 
 function of frequency
@@ -295,8 +312,8 @@ detailed in Chapter \ref{ch:instrumentalDetchar}
 The PyCBC search includes a data conditioning stage that applies preventative  
 cuts to remove large transients from the input data stream. 
 This is done in a process called gating \cite{Usman:2015kfa}, which uses a
-window function to remove times containing large transients from the input data stream. This is done
-by applying a smooth windowing function to the problematic section of data, excising the large transient.
+window function to remove times containing large transients from the input data stream. 
+This windowing function smoothly rolls the problematic section of data to zero, excising the large transient.
 The gating process is tuned by modifying the selection criteria for transients to be removed and
 by adjusting the time window to remove around each transient.
 Chapters \ref{ch:GW150914-DQ} and \ref{ch:GW151226-DQ} contain details about the 
