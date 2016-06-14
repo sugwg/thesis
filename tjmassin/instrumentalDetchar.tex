@@ -84,7 +84,7 @@ If possible, it is always preferable to fix a problem at the source.
 
 Identifying and characterizing instrument noise is facilitated by a 
 suite of software tools and algorithms designed to flag data with 
-excess noise and help correlate this noise with other signals in the 
+excess noise and to help correlate this noise with other signals in the 
 interferometer. The major tools required for understanding the data 
 quality investigations in this thesis are discussed below. 
 
@@ -94,8 +94,8 @@ One way to quantify the amount of excess noise in $h(t)$ is to look
 for times where the signal contains excess power using 
 Omicron, a burst algorithm \cite{Robinet:2015om}. 
 The first stage of the Omicron pipeline applies a set of signal conditioning 
-processes, including a whitening filter, a high pass filter, and a downsampling 
-process to $h(t)$. Once the data have been whitened they are projected into 
+processes to $h(t)$, including a whitening filter, a high pass filter, and a downsampling 
+process. Once the data have been whitened, they are projected into 
 a sine-Gaussian basis. Each sine-Gaussian basis function is defined 
 by a central time, $t_0$, a central frequency, $f_0$, and a Q-factor, 
 which is defined as \cite{McIverThesis}  
@@ -371,7 +371,7 @@ a digital overflow and was removed from gravitational wave analyses. Figures
 \ref{subfig:strain-dac-overflow} and \ref{subfig:esd-dac-overflow} show a 
 large glitch in $h(t)$ and the response of a control signal that corrects  
 the motion of ETMY respectively. The signal in \ref{subfig:esd-dac-overflow}, 
-which is supposed to be controlling the motion of ETMY, hits its digital 
+which is supposed to be controlling the motion of ETMY, exceeds the digital 
 limit during this glitch. Figure \ref{subfig:etmy-dac-overflow} shows the 
 auxiliary channel that monitors this digital overflow incrementing as 
 it witnesses the digital overflow. 
@@ -395,8 +395,10 @@ it witnesses the digital overflow.
          H1 detector. Figure \ref{subfig:strain-dac-overflow} shows a glitch in 
          the calibrated $h(t)$ channel. Figure \ref{subfig:esd-dac-overflow} shows 
          the response to this glitch in the control signal used to control the bottom 
-         stage of ETMY and actuate on the DARM degree of freedom. This signal hits 
-         its digital overflow point at its peak and has no more dynamic range. 
+         stage of ETMY and actuate on the DARM degree of freedom. This signal 
+         exceeds  
+         its digital overflow point at its peak, reaching a value on the order of 
+         $10^6$ when the DAC can only handle digital values up to 65536.  
          Figure \ref{subfig:etmy-dac-overflow} shows the front end channel responsible 
          for monitoring digital overflows of this particular ETMY control signal. 
          Since the witness channel is cumulative, overflows can be identified by 
@@ -450,8 +452,8 @@ visible in the length readout of the power recycling cavity \cite{Nuttall:2015dq
 \begin{figure}[ht!]%
 \includegraphics[width=\textwidth]{figures/detchar/PRCL-DAC-glitch}
 \caption[DAC glitches in PRCL]{A timeseries plot showing the effects of %
-         DAC calibration glitches. The red trace shows the digital control%
-         signal being sent to the digital-to-analog converter. The blue %
+         DAC calibration glitches. The blue trace shows the digital control%
+         signal being sent to the digital-to-analog converter. The red %
          shows the resulting power recycling cavity motion rescaled by a %
          factor of 100. When the control signal crosses %
          through a value of zero, the output of the DAC experiences a %
@@ -490,7 +492,7 @@ and very little instrument uptime was removed in the process.
 \includegraphics[width=\textwidth]{figures/detchar/vetoed-DAC-glitches}
 \caption[Vetoed DARM triggers from DAC calibration]{A time-frequency %
          visualization of Omicron triggers in the H1 $h(t)$ channel. % 
-         The black circles indicate glitches in the DARM degree of freedom, %
+         The blue dots indicate glitches in the DARM degree of freedom, %
          each with a central time and central frequency. The red crosses %
          indicate that a given trigger was vetoed by an auxiliary channel %
          trigger which was found to be statistically significant using Hveto. The %
@@ -545,9 +547,6 @@ sent through Hveto. This study revealed that the calibration process was
 successful; there was no evidence of residual DAC calibration glitches that 
 had any noticeable coupling into $h(t)$. The only signal that had any 
 significant correlation with glitches in $h(t)$ was not causally sensible. 
-Large glitches $h(t)$ were driving the X-arm ETM control signal through a value of 
-$2^{16}$, which resulted in crossings of $2^{16}$ that were coincident in time 
-with glitches in $h(t)$, but weren't representative of calibration errors.
 
 \subsection{RF beatnote whistles}
 
@@ -614,11 +613,11 @@ shows the rate of Omicron triggers, which represent generic transient noise in
 $h(t)$, as a function of the length of the input mode cleaner \cite{Nuttall:2015dqa}. 
 The length of 
 the input mode cleaner is in kHz as it is an error signal used to set the 
-frequency detuning of the VCO. The red curve represents the distribution in 
+frequency detuning of the VCO. The red bars represent the distribution in 
 the absence of whistle glitches. There is no value for which noise transients in 
 $h(t)$ seem more likely to occur; the rate of glitches seems Gaussian distributed 
 as the length of the input mode cleaner fluctuates about the set point of the 
-control loop. The blue curve represents the rate of transients 
+control loop. The blue bars represent the rate of transients 
 when RF whistle glitches are occurring. In this case, there are three preferred 
 frequencies where it seems that noise transients in $h(t)$ have a tendency to 
 occur. This indicates that there is a relationship between specific values of 
@@ -884,13 +883,16 @@ excess noise at the time of GW150914 \cite{GW150914-DETCHAR}. The excess
 noise is due to an air compressor turning on roughly 75 seconds before GW150914. 
 The noise is a 14 Hz line with 28, 42, and 56 Hz harmonics visible. This level of 
 ground motion with a 175 second duration and a static frequency distribution was 
-not capable of producing a 0.2s chirp signal with the amplitude of GW150914 in 
+not capable of producing a 0.2~s chirp signal with the amplitude of GW150914 in 
 the interferometer output.
 
 \begin{figure}
 \includegraphics[width=\textwidth]{figures/detchar/H1_AIR_COMPRESSOR_GW150914}
 \caption[H1 Y-end air compressor]{A time-frequency spectrogram of the H1 %
          Y-end seismometer signal near the time of GW150914. An air compressor %
-         turns on at -75 seconds and off at +100 seconds, creating ground motion.}
+         turns on at -75 seconds and off at +100 seconds, creating ground motion. %
+         This level of ground motion with a 175 second duration and a static frequency %
+         distribution was not capable of producing a 0.2~s chirp signal with the %
+         amplitude of GW150914 in the interferometer output.}
 \label{fig:compressor}
 \end{figure}
