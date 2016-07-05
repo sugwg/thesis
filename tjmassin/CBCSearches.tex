@@ -26,7 +26,7 @@ The matched filter calculates the correlation of the detector data with expected
 waveforms in the frequency domain. The detector data and expected waveform are 
 multiplied together and their product is divided by the background noise in the detector. 
 The fundamental operation of the matched filter is defined as an inner product of the 
-detector data and the CBC waveform \cite{Usman:2015kfa},
+detector data and the CBC waveform \cite{Allen:2005fk},
 \begin{equation}
 (s|h)(t) = 4\mathrm{Re}\int_{f_\mathrm{low}}^{f_\mathrm{high}} \frac{\tilde{s}(f)\tilde{h}^*(f)}{S_n (f)}e^{2\pi i f t}\, \mathrm{d}f,
 \label{eq:inner-product}
@@ -34,16 +34,18 @@ detector data and the CBC waveform \cite{Usman:2015kfa},
 where $\tilde{s}$ is the Fourier transformed detector data, $\tilde{h}$ is the Fourier
 transformed gravitational waveform, and $S_n (f)$ is the power spectral
 density of the detector data averaged over 2048 seconds, which represents the average 
-noise in the detector. The bounds of the integral are set to span the frequency space 
+noise in the detector. The maximum bounds of the integral are set to span the frequency space 
 for which the interferometers are sensitive enough to detect gravitational waves, 
-typically 30 - 2000 Hz. 
+typically 30 - 2000 Hz. However, if a waveform merges at a lower frequency, the upper bound 
+on the integral can be set to capture the frequencies where the signal has power and 
+nothing higher.
 
 As described in Equation \ref{eq:strain}, a gravitational wave is comprised of two 
 polarizations, ``h-plus" and ``h-cross". When the data are searched for a CBC  
 signal, a waveform is generated for each polarization and the matched filter is 
 computed separately for each polarization. 
 The SNR of a CBC waveform at any given time is defined as the weighted quadrature sum 
-of the SNR measured for each polarization \cite{Usman:2015kfa}, 
+of the SNR measured for each polarization \cite{Allen:2005fk}, 
 \begin{equation}
 \rho^2(t) = \frac{(s|h_\mathrm{p})^2 + (s|h_\mathrm{c})^2}{(h_\mathrm{p}|h_\mathrm{p})},
 \label{eq:snr}
@@ -102,13 +104,20 @@ object in the binary system.
 It is convenient to combine
 the component masses into a new variable, chirp mass, which is used to
 parameterize gravitational wave signals in general relativity. Chirp mass is defined
-as
+as \cite{PhysRev.131.435}
 \begin{equation}
 M_{chirp} = \frac{(m_1m_2)^{3/5}}{(m_1 + m_2)^{1/5}}
 \end{equation}
 where the $m_{i}$ are the component masses of the compact objects in the
 binary system. 
-It is also convenient to combine the effects of each
+Each compact object in the binary system has its rotation represented by a 
+dimensionless spin parameter,
+\begin{equation}
+\chi_i = \frac{cS_i}{Gm_i^2},
+\end{equation}
+where $S_i$ is the spin angular momentum of the compact object, $m_i$ is the mass 
+of the compact object, c is the speed of light, and G is the gravitational constant. 
+It is convenient to combine the effects of each
 object's spin into one parameter called effective spin, $\chi_{eff}$,
 which is the
 mass-weighted spin of the system \cite{Privitera:2013xza}. $\chi_{eff}$ is defined as
@@ -117,6 +126,7 @@ mass-weighted spin of the system \cite{Privitera:2013xza}. $\chi_{eff}$ is defin
 \end{equation}
 where the $\chi_{i}$ are the dimensionless spin parameters \cite{Kidder:1995zr}
 and the $m_{i}$ are the masses for each compact object in the binary system. 
+
 
 \subsection{$\chi^{2}$ signal consistency test}\label{sec:chisq}
 
@@ -247,7 +257,8 @@ same bank
 of template waveforms. The output of the matched filter, the SNR time-series, is scanned 
 for peaks and a set of single interferometer 
 triggers is generated. The two sets of single interferometer triggers are then compared to
-search for any events that were recorded within 15ms of each other.
+search for any events that were recorded within 15ms of each other with the same mass and 
+spin parameters. 
 Gravitational waves are predicted by general relativity to travel
 at the speed of light. The light travel time between the two interferometers is 10 ms
 and 5ms is added to the coincidence window due to uncertainty in signal arrival time
@@ -256,7 +267,7 @@ As such, any triggers that are found within 15 ms of each other and
 are recovered with the same source parameters are considered to be coincident between 
 the two
 interferometers. These coincident triggers represent potential gravitational wave signals
-and are referred to as ``foreground events". 
+and are referred to as candidate events. 
 
 The ranking statistic for coincident events in the PyCBC search is the network
 re-weighted SNR, $\hat{\rho}_{c}$, which is the quadrature sum of the re-weighted
@@ -271,9 +282,11 @@ Most of these foreground events will be
 chance coincidences between noise in each interferometer, which is expected given
 the number of events in each data set. A large number of foreground events will be 
 generated due to the detector noise, but ideally the distribution of foreground events 
-will fall of sharply in $\hat{\rho}_{c}$, allowing for genuine signals to be 
+will fall of sharply in $\hat{\rho}_{c}$ as shown in Figure \ref{fig:pycbc-hist-gw150914}, 
+allowing for genuine signals to be 
 recognized. To understand how stastically significant a foreground event is, a background 
-distribution must be generated.
+distribution must be generated to calculate how often such a signal will be produced based 
+on instrumental noise.
 
 To generate the background distribution, we return to the set of single interferometer 
 triggers that were generated when the matched filter was initially run. Since we want 

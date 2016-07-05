@@ -12,7 +12,8 @@ certain types of transients in the data that are not fully suppressed
 by them. This is demonstrated in Figure \ref{subfig:l1-newsnr-hist}, which shows a 
 tail of loud events in the re-weighted SNR distribution from the PyCBC 
 search pipeline. In Gaussian noise, this distribution does not extend beyond 
-a re-weighted SNR of 8. (For more discussion on the output of the PyCBC search 
+a re-weighted SNR of 8 in the time scales used for the O1 analysis. 
+(For more discussion on the output of the PyCBC search 
 pipeline using Gaussian noise, see Section \ref{sec:methodology}).
 
 Detector Characterization studies are focused on ensuring that the
@@ -48,7 +49,7 @@ be asked to characterize the noise. Is the noise transient or a slow
 drift? What is the typical frequency and bandwidth of the noise? Does the 
 noise follow a power law in frequency? Does the 
 noise have a characteristic shape in the time-frequency plane? Are the 
-noisy frequecies of the signal coherent with other signals in the instrument 
+noisy frequencies of the signal coherent with other signals in the instrument 
 such as environmental monitors and optical control signals? 
 Is the noise source localized to a specific chamber or does it exist at 
 multiple physical locations in the interferometer? Does the characteristic 
@@ -126,7 +127,7 @@ SNR of a cluster as the central time, central frequency, and SNR of the
 most significant tile in the cluster \cite{McIverThesis}. 
 
 The most useful way to visualize the output of Omicron is in the 
-time-frequency-SNR plane, sometimes referred to as a 'glitchgram', 
+time-frequency-SNR plane, sometimes referred to as a `glitchgram', 
 where each trigger is represented as a point 
 in a scatterplot. Figure \ref{fig:glitchgram} shows an example set of 
 Omicron triggers in the time-frequency-SNR plane. Each dot represents 
@@ -148,7 +149,7 @@ to an individual loud glitch rather than a constant, systematic noise source.
 \begin{figure}[ht!]
 \includegraphics[width=\textwidth]{figures/detchar/Omicron-Dec19}
 \caption[Omicron time-frequency-SNR plot]{Time-frequency-SNR plot of Omicron triggers, %
-         often referred to as a 'glitchgram'. Each dot on this plot represents an %
+         often referred to as a `glitchgram'. Each dot on this plot represents an %
          event in the interferometer output, denoted $h(t)$, that was recorded %
          with a peak time, peak frequency, and SNR. %. 
          In Gaussian noise, all triggers on %
@@ -223,7 +224,7 @@ coincidences when the expected average number of coincidences is $\mu$ is
 P(\mu,k) = \frac{\mu^{k}e^{-\mu}}{k!}.
 \end{equation}
 The expected number of coincidences between triggers in 
-$h(t)$ and the auxiliary channel based solely on chance, $\mu$, is estimated as,
+$h(t)$ and the auxiliary channel based solely on chance, $\mu$, is estimated as \cite{Smith:2011},
 \begin{equation}
 \mu = \frac{N_{h}N_{aux}T_{win}}{T_{tot}},
 \end{equation}
@@ -317,7 +318,8 @@ to actuate on the alignment of the optic and complete the feedback loop.
          the optic causes the beam to move on the face of the sensor. The %
          output of the sensor is used as an error signal, which is digitally %
          sampled, filtered, and converted back into an analog signal to correct %
-         the alignment of the optic.}
+         the alignment of the optic. The analog signal is sent through an analog actuator %
+         that physically interects with the optic to correct its motion.}
 \label{fig:control-loop}
 \end{figure}
 
@@ -552,7 +554,7 @@ significant correlation with glitches in $h(t)$ was not causally sensible.
 
 During Advanced LIGO's commissioning,
 a population of glitches appeared in both the L1 and H1 interferometers which 
-came to be known as 'whistles' or 'RF whistles'. These glitches were the 
+came to be known as `whistles' or `RF whistles'. These glitches were the 
 intermodulation products of two radio frequency oscillators, which 
 produce sine waves at radio frequencies.  A nonlinear mixing between two 
 RF oscillators produced a beatnote signal whose frequency was equal to the 
@@ -569,7 +571,7 @@ in frequency through the detection band before turning around and
 sweeping back up to high frequencies. Figure \ref{fig:whistle-spectrograms} 
 shows a time-frequency representation of whistle glitches in both the L1 and H1 
 interferometers \cite{Nuttall:2015dqa}. 
-These show the characteristic 'V' or 'W' shape produced 
+These show the characteristic `V' or `W' shape produced 
 when two oscillators drift past one another and have nonlinear mixing.
 
 \begin{figure}[ht!]%
@@ -677,7 +679,7 @@ source of transient noise in $h(t)$ in this time period.
 The shape of the whistle 
 glitches was also very problematic for CBC searches since the second half of a 
 whistle is a sinusoid with a monotonically increasing frequency, not unlike the 
-characteristic 'chirp' signal produced by a CBC event. Certain CBC waveforms 
+characteristic `chirp' signal produced by a CBC event. Certain CBC waveforms 
 matched the shape of the whistle glitches well enough to fool the $\chi^2$ signal 
 consistency test and produced loud background triggers in early CBC searches. 
 The whistle glitches 
@@ -745,7 +747,7 @@ at all frequencies \cite{GW150914-DETCHAR}.
 
 \begin{figure}[ht!]%
 \includegraphics[width=0.85\textwidth]{figures/O1/H1L1-OBSERVING_GW150914_PERCENTILE_SPECTRUM-1126073342-3309798}
-\caption[Median noise ASD in O1]{Median noise amplitude spectral density %
+\caption[Median noise ASD in O1]{Median noise amplitude spectral density (ASD) %
          in the first analysis period of O1. The shaded regions indicate %
          the 5th and 95th percentile in a given frequency bin. The background %
          for H1 was very stable throughout the run, which very few high %
@@ -753,7 +755,10 @@ at all frequencies \cite{GW150914-DETCHAR}.
          median behavior in two regions: below 30 Hz and between 50-200 Hz. %
          The strong lines in the noise spectrum are due to injected calibration %
          lines, environmental sources such as the 60 Hz power line harmonics, %
-         and mechanical resonances.
+         and mechanical resonances. This plot is constructed by taking the %
+         Fourier transform of $h(t)$ and averaging several measurements of the %
+         power spectral density (PSD). The average PSD is then square rooted %
+         to calculate the ASD. 
          }
 \label{fig:median-asd}
 \end{figure}
@@ -778,8 +783,10 @@ represent GW150914 (dashed) and LVT151012 (dash-dotted) \cite{GW150914-DETCHAR}.
 \includegraphics[width=0.85\textwidth]{figures/O1/inspiral-range}
 \caption[Inspiral horizon distance in O1]{Inspiral horizon distance for sources with %
          the same parameters as GW150914. This is the distance at %
-         which a signal could be recovered at SNR 8 given optimal %
-         orientation and sky position. The inspiral horizon distance for %
+         which a signal could be recovered at SNR 8 if the binary system %
+         was at the optimal sky location, which is directly above the detector, % 
+         and optimal orientation, which means that the orbital plane of the binary system %
+         was parallel with the plane of the detector. The inspiral horizon distance for %
          GW150914-like sources was stable through the first analysis %
          period of O1. The inspiral %
          range for H1 was typically higher due to excess noise %
@@ -792,7 +799,7 @@ represent GW150914 (dashed) and LVT151012 (dash-dotted) \cite{GW150914-DETCHAR}.
 \end{figure}
 
 The final figure of merit for establishing that the detector noise was
-stationary is to look at the rate of events, or 'triggers', produced by the PyCBC pipeline
+stationary is to look at the rate of events, or `triggers', produced by the PyCBC pipeline
 between September 12 - October 20, 2015. This test tells us whether or not it
 is reasonable to combine the background of the PyCBC search over many weeks.
 Figure \ref{fig:pycbc-rate} shows
