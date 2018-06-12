@@ -1,0 +1,62 @@
+\def\filename{tensor.sty}
+\def\fileversion{1.00}
+\def\filedate{03 Jun 1996 14:57:09 BST}
+%%           
+%% Copyright (C) 1996 Mike Piff
+%%
+%%M.Piff@sheffield.ac.uk
+%%                   
+%%Defines the command \tensor with two parameters.
+%%  #1 = The name of the tensor
+%%  #2 = The superscript/subscript sequence.
+%%  
+%%  eg
+%%  
+%%  \tensor{A}{^{i}_{j}^{kl}}
+%%  
+%%  Don't forget the enclosing braces round the indices!!
+%%  
+%
+\typeout{\filename\space v\fileversion, (C) Copyright Mike Piff, \filedate}
+\NeedsTeXFormat{LaTeX2e}[1995/12/01]
+
+\ProvidesPackage{tensor}
+\ProcessOptions
+
+\newtoks\tensor@sup \newtoks\tensor@sub
+\newcommand\tensor[2]{\tensor@sup={}\tensor@sub={}%
+   #1\tensor@process#2\tensor@endprocess%
+}                                              
+
+\newcommand\tensor@process[1]{%
+   \ifx #1\tensor@endprocess
+      \let\next\tensor@finish
+   \else
+      \ifx#1^%
+         \let\next\tensor@absorbsup
+      \else
+         \ifx#1_%
+            \let\next\tensor@absorbsub
+         \else
+            \PackageError{tensor}{Sub/Superscript token missing}%
+         \fi
+      \fi
+   \fi
+   \next
+}                    
+
+\newcommand\tensor@absorbsup[1]{%
+   \tensor@sup=\expandafter{\the\tensor@sup#1}%
+   \tensor@sub=\expandafter{\the\tensor@sub\phantom{#1}}%
+   \tensor@process
+}
+
+\newcommand\tensor@absorbsub[1]{%
+   \tensor@sub=\expandafter{\the\tensor@sub#1}%
+   \tensor@sup=\expandafter{\the\tensor@sup\phantom{#1}}%
+   \tensor@process
+}
+
+\def\tensor@finish{_{\the\tensor@sub}^{\the\tensor@sup}}
+\endinput
+
