@@ -1,0 +1,214 @@
+\section{Introduction}
+\subsection{General Relativity and Gravitational Waves}
+
+The early 20th century brought about a large change to scientists' understanding of physics in many different ways. In 1914, Albert Einstein developed a general theory of relativity that changed the way that scientists think about space, time, energy, and mass. This theory was a new, geometric theory of gravity that improved up on Newton's theory of gravitation. The new theory was able to successfully predict the bending of light due to gravitation in a 1919 experiment. One immediate theoretical prediction of Einstein's new general theory of relativity is that plane wave gravitational wave radiation should be possible. Below we will go through a simplified overview of the theory of general relativity and gravitational waves. It is not intended to be an exhaustive nor comprehensive explanation of much of the theory as that extends far beyond the scope of this work. Useful introductions to the theory of general relativity and to gravitational waves can be found in (insert texts).
+
+Einstein's theory of general relativity requires us to consider the following set of differential equations expressed in tensor notation as,
+\begin{equation} \label{eqn:EinstEqn}
+    G_{\mu \nu} = \frac{8 \pi G}{c^4} T_{\mu \nu}.
+\end{equation}
+Here the Greek indices $\mu$ and $\nu$ are indices of a rank-2 tensor where $\mu$ and $\nu$ are permitted to be integer values between $0$ and $3$. From here on out we will use this convention for all other Greek indices as well. This means that Eqn.~\ref{eqn:EinstEqn} represents a set of 16 equations for every index value that $\mu$ and $\nu$ can take on. To better illustrate this, we can write Eqn.~\ref{eqn:EinstEqn} as:
+\begin{gather} \label{eqn:matrixEinstEqn}
+ \begin{pmatrix}
+ G_{00} & G_{01} & G_{02} & G_{03} \\
+ G_{10} & G_{11} & G_{12} & G_{13} \\
+ G_{20} & G_{21} & G_{22} & G_{23} \\
+ G_{30} & G_{31} & G_{32} & G_{33}
+ \end{pmatrix}
+ =
+ \frac{8 \pi G}{c^4} 
+  \begin{pmatrix}
+  T_{00} & T_{01} & T_{02} & T_{03} \\
+  T_{10} & T_{11} & T_{12} & T_{13} \\
+  T_{20} & T_{21} & T_{22} & T_{23} \\
+  T_{30} & T_{31} & T_{32} & T_{33}  
+   \end{pmatrix}
+\end{gather}
+The term $G_{\mu \nu}$, also known as the Einstein tensor, on the left-hand-side of Eqn.~\ref{eqn:EinstEqn} represents the geometric structure and curvature of spacetime. On the right hand side of Eqn.~\ref{eqn:EinstEqn} is the rank-2 tensor $T_{\mu \nu}$, which is the stress-energy tensor, representing the momentum flux through a surface of spacetime. The units of the stress-energy tensor in the International System of Units (SI units) are kilograms-meters-squared-per-second-squared ($\frac{kg \, m^2}{s^2}$), and the term $\frac{G}{c^4}$ provides the exact reciprocal units to provide a unitless right-hand-side. The unit $G$ is Newton's gravitational constant and $c$ is the speed of light. They will retain these definitions throughout the text. The $8 \pi$ in the right-hand-side of Eqn.~\ref{eqn:EinstEqn} provides an equality to Newtonian gravity in the weak-gravitational field limit.
+
+We now expand out the Einstein tensor, $G_{\mu \nu}$ of Eqn.~\ref{eqn:EinstEqn}, into the following expressions from differential geometry
+\begin{equation}\label{eqn:EinstTensor}
+    G_{\mu \nu} \equiv R_{\mu \nu} - \frac{1}{2} R \, g_{\mu \nu}.
+\end{equation}
+Here, $R_{\mu \nu}$ is the Ricci tensor, representing the curvature or differential derivatives of the spacetime. It is a \textit{contracted} form of the Riemann tensor ($R_{\mu \nu \gamma \delta}$) which describes the deviation of a vector under parallel transport through the manifold. Following this is, $R$ which is the Ricci scalar, which itself is a \textit{contraction} of the Ricci tensor over $\mu$ and $\nu$ at a particular point in spacetime. The last term $g_{\mu \nu}$ represents the spacetime metric tensor which describes the geometric relationships between coordinates in the spacetime. More explicitly the metric is used to measure distances in the spacetime (a spacetime interval, $ds^2$) using the following expression:
+\begin{equation}\label{eqn:metric}
+    ds^2 = g_{\mu \nu} \, dx^\mu \, dx^\nu.
+\end{equation}
+Repeated raised and lowered indices in Eqn.~\ref{eqn:metric} refer to an implied Einstein summation. Length scales can be calculated from Eqn.~\ref{eqn:metric} using the following expression:
+\begin{equation}\label{eqn:lengthchange}
+    L = \int_\lambda ds = \int \sqrt{g_{\mu \nu} \frac{dx^\mu}{d\tau} \frac{dx^\nu}{d\tau}} d\tau.
+\end{equation}
+The length L along the worldline of an observer can be described as the integral of the spacetime interval along an affine parametrization $\lambda$ describing the manner of traversing two points in the spacetime. This can be done by re-expressing Eqn.~\ref{eqn:metric} into an expression with four-velocity $\frac{dx^\mu}{d\tau}$, where $\tau$ represents the proper time of an observer traversing the worldline. The differential equation nature of Eqn.~\ref{eqn:EinstEqn} is made explicit by considering an expression for the Ricci tensor,
+\begin{equation}\label{eqn:RicciTensor}
+    R_{\mu \nu} = \partial_\rho \Gamma^{\rho\;\;}_{\;\mu \nu} - \partial_\beta \Gamma^{\rho\;\;}_{\; \rho \alpha} + \Gamma^{\rho\;\;}_{\;\rho \lambda} \Gamma^{\lambda\;\;}_{\; \mu \nu} - \Gamma^{\rho\;\;}_{\;\nu \lambda} \Gamma^{\lambda\;\;}_{\;\rho \mu},
+\end{equation}
+and the Christoffel symbol $\Gamma^{\rho\;\;}_{\;\mu \nu}$ is an expression of derivatives of the metric, defined as:
+\begin{equation}\label{eqn:christoffel}
+    \Gamma^{\rho\;\;}_{\;\mu \nu} = \frac{1}{2} g^{\rho \sigma} \left(\partial_\mu g_{\nu \rho}  + \partial_\nu g_{\mu \rho} - \partial_\rho g_{\mu \nu} \right)
+\end{equation}
+
+Now that we have all of the formalism, we move on to consider whether plane waves are possible in general relativity. We consider a spacetime represented by the Minkowski metric, $\eta_{\mu \nu}$, with a small perturbation $h_{\mu \nu}$:
+\begin{equation}\label{eqn:gw_perturb_derivation}
+    g_{\mu \nu} = \eta_{\mu \nu} + h_{\mu \nu} =
+                \begin{pmatrix}
+                  -c^2 & 0 & 0 & 0  \\
+                  0 & 1 & 0 & 0 \\
+                  0 & 0 & 1 & 0 \\
+                  0 & 0 & 0 & 1
+                 \end{pmatrix} +  h_{\mu \nu}.
+\end{equation}
+We consider the case of a vacuum universe where $T_{\mu \nu} = 0$. Also, since we consider very small $h_{\mu \nu}$ and only linear contributions of $h_{\mu \nu}$, we can use $\eta_{\mu \nu}$ to raise and lower indices of tensors. Plugging in Eqn.~\ref{eqn:gw_perturb_derivation} into the Einstein field equations, Eqn.~\ref{eqn:EinstEqn}, and only keeping linear (first-order terms) in $h$ yields the following expression:
+\begin{equation}\label{eqn:linearized_perturb_einst}
+    G_{\mu \nu} = \frac{1}{2}\left(\partial_\sigma \partial_\nu h^{\sigma\;}_{\mu\;}
+                                   + \partial_\sigma \partial_\mu h^{\sigma\;}_{\;\mu}
+                                   - \partial_\mu \partial_\nu h
+                                   - \eta_{\mu \nu} \partial_\rho \partial_\lambda h^{\rho \lambda}
+                                   + \eta_{\mu \nu} \partial_\alpha \partial^\alpha h
+                             \right) = 0
+\end{equation}
+Here, $h \equiv h^{\mu\;}_{\;\mu}$. If we then only consider $h_{\mu \nu}$ in the transverse-traceless (TT) gauge, Eqn.~\ref{eqn:linearized_perturb_einst} is simplified to:
+\begin{equation}\label{eqn:gw_planewave}
+    \partial_\alpha \partial^\alpha h^{TT}_{\mu \nu} = 0.
+\end{equation}
+Furthermore, under this choice of coordinates we have, $h^{TT}_{t \nu}$ = $h^{TT}$ = 0. Here $h^{TT}_{t \nu}$ refers to choosing $\mu = t$, the time component of the perturbation in the first index. Thus, Eqn.~\ref{eqn:gw_planewave} describes a differential equation whose solution is a plane wave in spacetime. If we choose standard Cartesian coordinates with the above conditions and consider that the wave propagates in the z-direction we can consider the wave as:
+\begin{equation}\label{eqn:hplushcross}
+    h^{TT}_{\mu \nu} = \begin{pmatrix}
+                       0 & 0 & 0 & 0 \\
+                       0 & h_+ & h_\times & 0 \\
+                       0 & h_\times & -h_+ & 0 \\
+                       0 & 0 & 0 & 0
+                       \end{pmatrix}
+                       cos\left[\omega \left(t - z/c \right)\right].
+\end{equation}
+The $h_+$ and $h_\times$ give the property of a traceless tensor, but they also describe the two degrees of polarization for the gravitational wave. Here $\omega$ describes the angular frequency of the wave. Thus, we can see that gravitational waves can induce changes in measured distances by combining Eqn.~\ref{eqn:hplushcross} with Eqn.~\ref{eqn:gw_perturb_derivation} and Eqn.~\ref{eqn:metric}. For a wave with purely plus polarized gravitational wave this gives the expression:
+\begin{equation}\label{eqn:h_plus_metric_change}
+    ds^2 = -c^2 dt^2 + \left \{1 + h_+ cos\left[\omega \left(t - z/c \right)\right]  \right\}dx^2 + \left \{ 1 - h_+  cos\left[\omega \left(t - z/c \right)\right]\right \} dy^2 + dz^2.
+\end{equation}
+While for a purely cross polarized wave this gives the expression:
+\begin{equation}\label{eqn:h_cross_metric_change}
+    ds^2 = -c^2 dt^2 + 2 \left\{ h_\times cos\left[\omega \left(t - z/c \right)\right] \right\} dx dy + dx^2 + dy^2 + dz^2.
+\end{equation}
+
+If we consider a plus-polarized gravitational wave we can combine equations Eqns. \ref{eqn:h_plus_metric_change} with the Eqn.~\ref{eqn:lengthchange} to describe relative length changes in the $x$ direction, which we place below:
+\begin{equation}\label{eqn:delta_x}
+    \Delta x = \int \sqrt{g_{\mu \nu} \left(\frac{dx}{d\tau} \right)^2} d\tau \approx \left(1 + \frac{h_+}{2} \right) cos(\omega t - z/c).
+\end{equation}
+And in the $y$ direction:
+\begin{equation}\label{eqn:delta_y}
+    \Delta y = \int \sqrt{g_{\mu \nu} \left(\frac{dy}{d\tau} \right)^2} d\tau \approx \left(1 - \frac{h_+}{2} \right) cos(\omega t - z/c).
+\end{equation}
+The approximation in Eqns. \ref{eqn:delta_x} and \ref{eqn:delta_y} comes from taking the first order term in a Taylor series expansion of the square root. A similar approach can be taken for a cross-polarized gravitational wave, where the result will be similar to the plus-polarized gravitational wave except that the relative change in lengths will be rotated by $45^\circ$ in the plane that is perpendicular to propagation (in this case, the propagation direction is in the $z$ coordinate). Fig. X displays the effect of changes to a ring of freely falling particles under the influence of purely plus and purely cross polarized gravitational waves.
+
+\subsection{The Possibility of Gravitational Wave Astronomy}
+
+The prospect of gravitational waves that impact measurable distances provide some hope for the plausibility of detecting them. It is useful to consider the analogy with electromagnetic waves in that plane wave electromagnetic waves can be generated by accelerating electric charges. In classical electromagnetic theory, dipole, quadrupole, octopole and higher order moments generate electromagnetic radiation. A similar examination of gravitational charges (matter-energy) might also yield similar sources of gravitational waves. Below we only consider radiation in the far-field regime, where the distance to the source is much larger than the wavelength of the radiation. The near-field regime for gravitational wave physics is outside of the scope of this work.
+
+The possibility of electromagnetic waves is covered extensively in [] and we only provide a brief recap here. Electromagnetic theory provides a similar wave solution as a linearized general relativity theory provided. In electromagnetic theory, the solution to the wave equation can be given in terms of an electromagnetic wave with scalar and vector potential fields:
+
+A quick consideration of matter provides an interesting analogy. The local conservation of energy provided in () prevents the amount of matter-energy from changing in a similar manner that conservation of charge prevents electromagnetic monopole radiation. This means that in general relativity there is no gravitational radiation from matter-monopoles. The next leading order in the power series expansion of the matter distribution is dipole matter distributions. However, here the conservation of momentum prevents gravitational radiation from dipole contributions. This similarly implies that when angular momentum is conserved, no gravitational waves will be emitted. However, there are no conservation laws that prevent the quadrupole moment of a matter distribution (or higher order moments) from generating gravitational waves.
+
+In the far field limit for a weak gravitational wave we can write the leading order strain tensor in terms of this quadrupole moment:
+\begin{equation}\label{eqn:quadrupole_strain}
+    h^{TT}_{i j} (t) = \frac{1}{r} \frac{2G}{c^4} \Lambda_{ij,kl}(\hat{n}) \, \ddot{\mathcal{I}}^{kl}(t - r/c).
+\end{equation}
+Here, $r$ represents the distance to the source in SI units. The term $\Lambda_{ij,kl}$ represents a projection operator that projects from the inertia tensor coordinate system into the coordinates that describe the plane wave as travelling in the unit direction $\hat{n}$. Colloquially, this is projecting from the source frame into the radiation frame. This term is expressed as:
+\begin{equation}\label{eqn:projection_operator}
+    \Lambda_{ij,kl}(\hat{n}) \equiv P_{ik} P_{jl} - \frac{1}{2}P_{ij}P_{kl} = \left(\delta_{ik} - \hat{n}_i \hat{n}_k \right) \left(\delta_{jl} - \hat{n}_j \hat{n}_l \right) - \frac{1}{2} \left(\delta_{ij} - \hat{n}_i \hat{n}_j \right) \left(\delta_{kl} - \hat{n}_k \hat{n}_l \right).
+\end{equation}
+Here $\delta_{ij}$ represents the Kronecker delta, and $\hat{n}_i$ represents the unit vector $x_i/r$. The term in Eqn.~\ref{eqn:quadrupole_strain}, $\ddot{\mathcal{I}}^{kl}(t - r/c)$, represents the second time derivative of the spatial components of the quadrupole moment tensor. The spatial quadrupole inertia moment tensor in this regime can be defined as:
+\begin{equation}\label{eqn:quadrupole_inertia_moment_tensor}
+    \mathcal{I}^{kl}(t) = \int c^2 \rho(t - r/c, \vec{x}) \left(x^k x^l - \frac{1}{3} r^2 \delta^{kl} \right) d^3 \vec{x}.
+\end{equation}
+In discrete form for $i$ particles with mass $m_i$ this can be given as:
+\begin{equation}\label{eqn:discrete_quad_inertia_moment_tensor}
+    \mathcal{I}^{kl}(t) = \sum_i^N m_i(t - r/c, \vec{x}) \left(x^k x^l - \frac{1}{3} r^2 \delta^{kl} \right).
+\end{equation}
+
+This is sufficient to describe the expected gravitational wave radiation from a non-zero time-varying quadrupole moment tensor in the far-field and weak-field regime.
+
+To gain some intuition regarding this gravitational wave from a time-varying quadrupole distribution of matter we consider a simplification of Eqn.~\ref{eqn:quadrupole_strain} as:
+\begin{equation}
+    h \sim \frac{G}{c^4} \frac{\ddot{\mathcal{I}}}{r}.
+\end{equation}
+We consider a body with mass $M \sim$ $10$ $M_\odot$ solar masses ($\approx \, 2 \times 10^{31}$ kilograms), at a distance of $300$ megaparsecs ($\approx \, 9.2 \times 10^{24}$ meters). If the moment of inertia of the body is roughly $M R^2$, where $R$ describes the moment arm about the motion of the body, then $\ddot{\mathcal{I}} \sim M v^2$ where $v$ is some non-spherically symmetric velocity. Now let $v$ to be approximately $10\%$ the speed of light ($\approx 3 \times 10^7$ meters per second). This would give a strain amplitude of $h \sim 1.6 \times 10^{-23}$. Note that the metric, and hence the change to measured distances, is quite small. We will explore possibilities from astronomy that could potentially create gravitational waves of this magnitude.
+
+\subsubsection{Compact Binary Coalescence}
+One possible source for generating large perturbations in spacetime would be gravitational waves from the mergers of astronomically massive binaries, hence forth called compact binary coalescence. In order to do so we consider two binary objects with masses $m_1$ and $m_2$ in Newtonian orbit about their center of mass such that in the frame of reference of the center of mass we can describe the coordinates of each binary as:
+\begin{equation}
+    \vec{r_1} = \frac{m_1 m_2}{m_1 \left(m_1+m_2\right)} a
+                \begin{pmatrix}
+                       cos\left(\omega t \right ) \\
+                         sin \left(\omega t \right) \\
+                         0
+                \end{pmatrix}
+\end{equation}
+\begin{equation}
+    \vec{r_2} = -\frac{m_1 m_2}{m_2 \left(m_1+m_2\right)} a
+                \begin{pmatrix}
+                       cos\left(\omega t \right )\\
+                       sin \left(\omega t \right) \\
+                       0
+                \end{pmatrix}
+\end{equation}
+Here the binaries orbit with orbital frequency $\omega$ and are separated by a distance $a$. The orbital frequency is given by Kepler's Law:
+\begin{equation}
+    \omega = \sqrt{\frac{G (m_1 + m_2)}{a^3}}.
+\end{equation}
+Computing the inertia tensor from Eqn.~\ref{eqn:discrete_quad_inertia_moment_tensor} gives us:
+\begin{equation}\label{eqn:cbc_inertia_tensor}
+    \mathcal{I}^{ij} = a^2 \frac{m_1 m_2}{m_1 + m_2}
+                       \begin{pmatrix}
+                       cos^2 \left(\omega t \right) & sin \left(2\omega t\right) & 0 \\
+                       sin \left(2 \omega t \right) & sin^2 \left(\omega t \right) & 0 \\
+                       0 & 0 & 0
+                       \end{pmatrix}
+\end{equation}
+Passing this expression through Eqn.~\ref{eqn:quadrupole_strain} then gives us the expression for the metric perturbation in the TT gauge:
+\begin{equation}\label{eqn:cbc_strain_rad_frame}
+    h^{TT}_{ij} \left(t, \iota, \psi \right) = 
+                    \frac{4}{r} \frac{a^2 \omega^2 G}{c^4}
+                     \frac{m_1 m_2}{m_1 + m_2}
+                     \begin{pmatrix}
+                       -cos \left(2 \omega t + 2\psi \right) \left(\frac{1 + cos^2 \iota}{2}\right) & 2 sin \left(2\omega t + 2 \psi \right) cos \left(\iota\right) & 0 \\
+                       -2 sin \left(2 \omega t + 2 \psi \right) cos \left(\iota\right) & cos \left(2 \omega t + 2\psi \right) \left(\frac{1 + cos^2 \iota}{2}\right) & 0 \\
+                       0 & 0 & 0
+                      \end{pmatrix}.
+\end{equation}
+The interesting result from this expression is that the gravitational wave frequency is twice the orbital frequency of the binary. Here the terms $\iota$ and $\psi$ represent the spatial angles of incidence from the source to the observer in the radiation frame from application of Eqn.~\ref{eqn:projection_operator}. And so $\iota$ represents the inclination angle of the binary's plane of orbit relative to a distant observer, and $\psi$ is the polarization angle. For the purposes of detection from we will later have to use the Euler angles to project from this reference frame into a detector reference frame. For now this suffices as an introduction to gravitational waves from compact binary coalescence.
+
+\subsubsection{Burst Signals, Continuous Waves, and the Stochastic Background}
+Compact binary coalescence are a promising source of gravitational waves but there are other possible sources of gravitational waves from astronomical sources. We will not describe these sources in depth in this work but we will briefly describe some possible sources of gravitational waves.
+
+\subsubsection{Gravitational Wave Interferometers and the Advanced LIGO Gravitational Wave Interferometer}
+
+Now that we have demonstrated that compact binary coalescence is a plausible source of gravitational waves as well as other possible sources of gravitational wave we will investigate a method for measuring these changes to the spacetime metric. To do so we introduce a means for projecting from the radiation frame of the gravitational wave into a detector reference frame.
+
+To do so, we apply the Euler angle projection angles on Eqn.~\ref{eqn:cbc_strain_rad_frame} to express the gravitational wave perturbation in the reference frame of a length-measuring detector. The Euler angle projection can be described using the expression:
+\begin{equation}\label{eqn:euler_angles}
+    \mathcal{R} \left(\theta, \phi\right) = \begin{pmatrix}
+                                             cos \left(\theta\right) cos \left(\phi\right) & sin \left(\phi\right) & cos \left(\phi\right)   sin \left(\theta\right) \\
+                                             -cos \left(\theta\right) sin \left(\phi\right) & cos \left(\phi\right) & -sin \left(\theta\right) sin \left(\phi\right) \\
+                                             -sin \left(\theta\right) & 0 & cos \left(\theta\right)
+                                             \end{pmatrix}.
+\end{equation}
+We get the gravitational wave strain in a detector frame then as $h'_{ij}(\iota, \psi, \theta, \phi) = \mathcal{R}^T h^{TT}_{ij} \mathcal{R}$, where $\mathcal{R}^T$ is the transpose of the matrix in Eqn.~\ref{eqn:euler_angles}. Recomposing the product we arrive at the following expression:
+\begin{equation}\label{eqn:proj_det_response}
+    h'(\iota, \psi, \theta, \phi) = F_+ \left(\theta, \phi\right) h_+\left(\iota, 
+                                         \psi\right) + F_\times \left(\theta, \phi\right) h_\times \left(\iota, \psi\right)
+\end{equation}
+For which $F_+$ and $F_\times$ can be interpreted as an antenna pattern or sensitivity of a length-measuring detector. We express them below as:
+\begin{equation}
+    F_+\left(\theta, \phi\right) \equiv \frac{1}{2} \left[ \right]
+\end{equation}
+\begin{equation}
+    F_\times\left(\theta, \phi\right) \equiv \frac{1}{2}
+\end{equation}
+A plot of the antenna patterns $F_+$ and $F_\times$ in Fig. X show that any length-measuring detector such as a gravitational wave interferometer will have blind-spots to incoming gravitational waves. The net sensitivity to gravitational waves in an idealized gravitational wave interferometer is then the quadrature sum, $\mathcal{F}$ = $F_+^2$ + $F_\times^2$. A network of N detectors, $N_\mathrm{detectors}$,can improve coverage over the entire sky and this sensitivity can be expressed as:
+\begin{equation}
+    \mathcal{F}_{\mathrm{network}}^2 = \sum_i^{N_\mathrm{detectors}} F_{+,i}^2 + F_{\times,i}^2
+\end{equation}
+In practical application the antenna patterns of a specific gravitational wave interferometer requires a precise coordinate location on Earth relative to conventional choices in astronomy such as right ascension, $\alpha$, and declination, $\delta$. These conventions can be found in LALsuite, etc.
+
+The current gravitational wave interferometer network known as aLIGO are located in Hanford, Washington and Livingston, Lousiana. In blank the Virgo interferometer joined the network of gravitational wave detectors. More about gravitational wave observatories in O1 and O2 and beyond.
+
+Elements of noise in the detector. Spectral Noise density. Limits to the strain sensitivity.
