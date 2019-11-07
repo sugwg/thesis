@@ -1,9 +1,7 @@
 \input{./ch3_bns_nsbh_macros.tex}
-\input{ch3_bns_nsbh_acronyms.tex}
+\input{./ch3_bns_nsbh_acronyms.tex}
 \section{Introduction}
-The content of this chapter are primarily taken from ``Upper Limits on the Rates of Binary Neutron Star and Neutron-Star–Black-Hole Mergers from Advanced LIGO’S First Observing Run" in 2016. The main focus is on the results from the PyCBC offline search analysis conducted in this study.
-
-Between \OoneSTART\ and \OoneEND\, the two advanced \ac{LIGO} detectors conducted their \ac{O1}.
+Between \OoneSTART\ and \OoneEND\, the two advanced \ac{LIGO} detectors conducted their first observing run (\ac{O1}).
 During \ac{O1}, two high-mass \ac{BBH} events
 were identified with high confidence ($> 5 \sigma$): GW150914~\citep{Abbott:2016blz} and
 GW151226~\citep{Abbott:2016nmj}. A third signal, LVT151012, was
@@ -204,17 +202,14 @@ masses up to $16 M_{\odot}$ and secondary masses up to $2.8 M_{\odot}$.
 The spin ranges are not shown here but are discussed in the text. }
 \end{figure}
 
-  \subsection{Offline Search}
+  \subsection{\pycbc{}\ Offline Search}
   \label{ssec:offline_searches}
   \input{ch3_bns_nsbh_offline_search.tex}
-
-%  \subsection{Online Search}
-%  \label{ssec:online_searches}
-%  \input{ch3_bns_nsbh_online_search.tex}
 
   \subsection{Dataset}
   \label{ssec:dataset}
   \input{ch3_bns_nsbh_dataset.tex}
+
 \section{Search Results}
 \label{sec:search_results}
 \input{ch3_bns_nsbh_non_detection.tex}
@@ -341,27 +336,49 @@ produced by higher-mass NSBH as progenitor systems.
 Future constraints could also come from \ac{GRB} and \ac{BNS} or \ac{NSBH} joint
 detections~\citep{Dietz:2010eh,Regimbau:2014nxa, Clark:2014jpa}.
 
-\section{Conclusion}
-\label{sec:conclusion}
+\newpage
 
-We report the non-detection of \ac{BNS} and \ac{NSBH} mergers in advanced \ac{LIGO}'s first observing run.
-Given the sensitive volume of Advanced \ac{LIGO} to such systems we are able to place 90\%
-confidence upper limits on the rates of \ac{BNS} and \ac{NSBH} mergers, improving upon limits
-obtained from Initial \ac{LIGO} and Initial Virgo by roughly an order of magnitude.
-Specifically we constrain the merger rate of \ac{BNS} systems with component masses of $1.35\pm0.13M_{\odot}$
-to be less than \MainBNSULPyCBCHighSpin~Gpc$^{-3}$~yr$^{-1}$. We also constrain
-the rate of \ac{NSBH} systems with NS masses of $1.4M_\odot$ and BH masses of at least $5M_{\odot}$ to be less than \MainNSBHULPyCBCFiveAligned~Gpc$^{-3}$~yr$^{-1}$ if
-one considers a population where the component spins are (anti-)aligned with
-the orbit, and less than \MainNSBHULPyCBCFiveIso~Gpc$^{-3}$~yr$^{-1}$ if one considers an isotropic distribution
-of component spin directions.
+\begin{table*}[t]
+\begin{adjustbox}{angle=90}
+  \centering
+  \begin{tabular}{c|c|c|c|c}
+   Injection & Range of spin  & $\langle VT \rangle$ (Gpc$^3$~yr) & Range (Mpc) & $R_{90\%}$ (Gpc$^{-3}$~yr$^{-1}$) \\
+   \hline \hline
+   Isotropic low spin & [0, 0.05] & \MainBNSVTPyCBCLowSpin & \MainBNSRangePyCBCLowSpin &  \MainBNSULPyCBCLowSpin \\
+   Isotropic high spin & [0, 0.4] & \MainBNSVTPyCBCHighSpin & \MainBNSRangePyCBCHighSpin & \MainBNSULPyCBCHighSpin \\
+  \end{tabular}
+  \caption{\label{tab:bns_ul_table} Sensitive space-time volume $\langle VT \rangle$ and 90\% confidence upper
+  limit $R_{90\%}$ for \ac{BNS} systems. Component
+  masses are sampled from a normal distribution $\mathcal{N}(1.35M_\odot, (0.13M_\odot)^2$) with samples outside the
+  range $[1, 3]M_{\odot}$ removed. Values are shown for the \texttt{pycbc}
+  pipeline. $\langle VT \rangle$ is calculated using a FAR threshold of 0.01~yr$^{-1}$. The
+  rate upper limit is calculated using a uniform prior on $\Lambda = R \langle
+VT \rangle$ and an 18\% uncertainty in $\langle VT \rangle$ from calibration errors.}
+\end{adjustbox}
+\end{table*}
 
-We compare these upper limits with existing astrophysical rate models and find that the
-current upper limits are in conflict with only the most optimistic models of the merger
-rate. However, we expect that during the next two observing runs, O2 and O3, we will
-either make observations of \ac{BNS} and \ac{NSBH} mergers or start placing significant constraints
-on current astrophysical rates. Finally, we have explored the implications of this non-detection on
-the beaming angle of short \acp{GRB}. We find that, if one assumes that all \acp{GRB}
-are produced by \ac{BNS} mergers, then the opening angle of gamma-ray radiation must be larger
-than \GRBBNSBeamingAngleConstraint; or larger than \GRBNSBHFiveBeamingAngleConstraint\ if
-one assumes all \acp{GRB} are produced by \ac{NSBH} mergers.
+\newpage
 
+\begin{table*}[t]
+\begin{adjustbox}{angle=90}
+  \centering
+  \begin{tabular}{c|c|c|c|c|c}
+   NS mass & BH mass & Spin & $\langle VT \rangle$ (Gpc$^3$~yr) & Range (Mpc) & $R_{90\%}$ (Gpc$^{-3}$~yr$^{-1}$) \\
+   ($M_\odot$) & ($M_\odot$) & distribution &  & &  \\
+   \hline \hline
+   1.4 & 5 & Isotropic & \MainNSBHVTPyCBCFiveIso & \MainNSBHRangePyCBCFiveIso & \MainNSBHULPyCBCFiveIso \\
+   1.4 & 5 & Aligned & \MainNSBHVTPyCBCFiveAligned & \MainNSBHRangePyCBCFiveAligned & \MainNSBHULPyCBCFiveAligned \\
+   1.4 & 10 & Isotropic & \MainNSBHVTPyCBCTenIso & \MainNSBHRangePyCBCTenIso & \MainNSBHULPyCBCTenIso \\
+   1.4 & 10 & Aligned & \MainNSBHVTPyCBCTenAligned & \MainNSBHRangePyCBCTenAligned & \MainNSBHULPyCBCTenAligned  \\
+   1.4 & 30 & Isotropic & \MainNSBHVTPyCBCThirtyIso & \MainNSBHRangePyCBCThirtyIso & \MainNSBHULPyCBCThirtyIso \\
+   1.4 & 30 & Aligned & \MainNSBHVTPyCBCThirtyAligned & \MainNSBHRangePyCBCThirtyAligned & \MainNSBHULPyCBCThirtyAligned \\
+  \end{tabular}
+  \caption{\label{tab:nsbh_ul_table} Sensitive space-time volume $\langle VT \rangle$ and 90\% confidence upper
+  limit $R_{90\%}$ for \ac{NSBH} systems with isotropic and aligned spin distributions. The NS spin magnitudes
+  are in the range $[0, 0.04]$ and the BH spin magnitudes are in the range $[0, 1]$. Values are shown for the \texttt{pycbc}
+  pipeline. $\langle VT \rangle$ is calculated using a FAR threshold of 0.01~yr$^{-1}$. The
+  rate upper limit is calculated using a uniform prior on $\Lambda = R \langle
+VT \rangle$ and an 18\% uncertainty
+  in $\langle VT \rangle$ from calibration errors.}
+\end{adjustbox}
+\end{table*}

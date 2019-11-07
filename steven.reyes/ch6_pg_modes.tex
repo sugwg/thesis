@@ -223,8 +223,102 @@ This changes the problem of inference from one-dimensional numerical integration
 
 \section{Results}
 \label{sec:results}
-Compared to the standard waveform mode, we find that the $p$-$g$ mode model with priors where $\delta \phi$ is unconstrained gives a Bayes factor of order unity. When we use $p$-$g$ mode priors where $\delta \phi$ $>$ $0.1$~radians we also find a Bayes factor of order unity. Following the Bayes factor interpretation of \cite{kass1995bayes, jeffreys1998theory}, these Bayes factors cannot be considered to be statistically significant. A Bayes factor of unity indicates that whatever prior beliefs we had about the plausibility of the $p$-$g$ mode instability prior to GW170817 is unchanged by the observation of GW170817. For the narrow range of $15 \le f_0 \le 100$~Hz where $\delta \phi > 0.1$~rad, we find that the Bayes factors are $\mathcal{B} \sim 0.7$. This is also true of the prior range $10 \le f_0 \le 100$~Hz with unconstrained $\delta \phi$. The broader range  $15 \le f_0 \le 800$~Hz, where $\delta \phi > 0.1$~rad, we find that $\mathcal{B} \sim 0.7$ as well. Our estimated statistical error on Bayes factors due to Monte Carlo error and convergence error is $\sim \pm 0.1$ at the $90$\% confidence level.
+Compared to the standard waveform mode, we find that the $p$-$g$ mode model with priors where $\delta \phi$ is unconstrained gives a Bayes factor of order unity. When we use $p$-$g$ mode priors where $\delta \phi$ $>$ $0.1$~radians we also find a Bayes factor of order unity. Following the Bayes factor interpretation of \cite{kass1995bayes, jeffreys1998theory}, these Bayes factors cannot be considered to be statistically significant. A Bayes factor of unity indicates that whatever prior beliefs we had about the plausibility of the $p$-$g$ mode instability prior to GW170817 is unchanged by the observation of GW170817. For the narrow range of $15 \le f_0 \le 100$~Hz where $\delta \phi > 0.1$~rad, we find that the Bayes factors are $\mathcal{B} \sim 0.7$. This is also true of the prior range $10 \le f_0 \le 100$~Hz with unconstrained $\delta \phi$. The broader range  $15 \le f_0 \le 800$~Hz, where $\delta \phi > 0.1$~rad, we find that $\mathcal{B} \sim 0.7$ as well. Our estimated statistical error on Bayes factors due to Monte Carlo error and convergence error is $\sim \pm 0.1$ at the $90$\% confidence level. We enumerate the specific results of the multi-tempered evidence estimators in subsection~\ref{sec:ti_ssa_performance} and for the unconstrained $\delta \phi$ prior distribution we verify the results of these multi-tempered estimates with the Savage-Dickey density ratio test in subsection~\ref{sec:prob_density_estimator_performance} 
 
+\subsection{Multi-Tempered Evidence Estimates}\label{sec:ti_ssa_performance}
+We model the logarithm of the evidence from multi-tempered methods for each astrophysical hypothesis as a Gaussian distribution in log-likelihood, with mean $\mu_{\widehat{\mathrm{ln} \, \mathcal{Z}}}$ given by the particular multi-tempered method's point-estimate, and with standard deviation $\sigma_{\widehat{\mathrm{ln} \, \mathcal{Z}}}$ given from Eq.(~\ref{eq:errorprop}). Thus we treat the logarithm of the evidence as a random variable described by a Gaussian distribution as follows:
+\begin{equation}\label{eqn:p_log_z}
+    p(\widehat{\mathrm{ln} \, \mathcal{Z}}) = \left(\frac{1}{\sqrt{2 \pi \sigma_{\widehat{\mathrm{ln} \, \mathcal{Z}}}}} \right) \mathrm{exp} \left \{-\frac{\left(\mathrm{ln} \, \mathcal{Z} - \mu_{\widehat{\mathrm{ln} \, \mathcal{Z}}}\right)^2} {2 \sigma_{\widehat{\mathrm{ln} \, \mathcal{Z}}}}  \right\}.
+\end{equation}
+We can see the distributions of the logarithm of the evidence for the astrophysical hypothesis on $p$-$g$ mode instability for the unconstrained $\delta \phi$ prior in Fig.~\ref{fig:lvc_sim_log_evidence_distr}.
+
+\begin{figure}[th]
+\centering
+\includegraphics[width=1.0\textwidth]{figs/chapter6/multi_temper_log_z_lsc_sim.png}
+\caption{The estimates of the logarithm of the evidence from multi-temper evidence integration methods. We model the logarithm of the evidence as a Gaussian in log-space. These data are for the logarithm of the evidence from the unconstrained $\delta \phi$ prior for the $p$-$g$ mode instability model. The trapezoidal rule estimates the lowest log evidence for this model, and the cubic rule has the smallest estimated statistical error uncertainty (the smallest confidence interval). The mean values of the higher order quadrature rules appear to be closer together to one another than they are to the trapezoidal rule.}
+\label{fig:lvc_sim_log_evidence_distr}
+\end{figure}
+
+The logarithm of the Bayes factor is the difference of the logarithm of the evidence for one hypothesis and the logarithm of the evidence for another hypothesis:
+\begin{equation}\label{eqn:log_bayes_factor}
+    \mathrm{ln} \, \mathcal{B}^A_B = \mathrm{ln} \, \mathcal{Z}_{\mathrm{A}} - \mathrm{ln} \, \mathcal{Z}_{\mathrm{B}}
+\end{equation}
+However, since we treat $\mathrm{ln} \, \mathcal{Z}_{\mathrm{A}}$ as a random variable who's true value is unknown and so we must deal with the uncertainty in $\widehat{\mathrm{ln} \, \mathcal{Z}_{\mathrm{A}}}$. The logarithm of the Bayes factor then becomes the difference between two probability distribution functions. This can be solved via convolution and has been solved for the Gaussian case~\citep{bromiley2003products}. Thus the resultant $\widehat{\mathrm{ln} \, \mathcal{B}^A_B}$ is itself a Gaussian distribution function with mean $\mu_{\widehat{\mathrm{ln} \, \mathcal{B}^A_B}} = \mu_{\widehat{\mathrm{ln} \, \mathcal{Z}_A}} - \mu_{\widehat{\mathrm{ln} \, \mathcal{Z}_B}}$ and standard deviation $\sigma_{\widehat{\mathrm{ln} \, \mathcal{B}^A_B}} = \sqrt{\sigma_{\widehat{\mathrm{ln} \, \mathcal{Z}_A}}^2 + \sigma_{\widehat{\mathrm{ln} \, \mathcal{Z}_B}}^2 }$~\citep{bromiley2003products}. This thus gives us the following expression for the distribution function that describes our uncertainty on the logarithm of the Bayes factor:
+\begin{equation}\label{eqn:p_log_b}
+    p(\widehat{\mathrm{ln} \, \mathcal{B}^A_B}) = \left(\frac{1}{\sqrt{2 \pi \sigma_{\widehat{\mathrm{ln} \, \mathcal{B}^A_B}}}} \right) \mathrm{exp} \left \{-\frac{\left(\widehat{\mathrm{ln} \, \mathcal{B}^A_B} - \mu_{\widehat{\mathrm{ln} \, \mathcal{B}^A_B})}\right)^2} {2 \sigma^2_{\widehat{\mathrm{ln} \, \mathcal{B}^A_B}}}  \right\}.
+\end{equation}
+
+The expression in Eq.~(\ref{eqn:p_log_b}) is a Gaussian distribution function in $\widehat{\mathrm{ln} \, \mathcal{B}^A_B}$, but we often prefer to know the estimate on $\mathcal{B}^A_B$ and so we must transform coordinates. This transformation of coordinates, fortunately, is a well-known distribution called the log-normal distribution and it is able to be described in terms of the coordinates used in Eq.~(\ref{eqn:p_log_b}). Below we write out our log-normal probability distribution function for $\widehat{\mathcal{B}^A_B}$:
+\begin{equation}
+    p(\widehat{\mathcal{B}^A_B}) = \frac{1}{\widehat{\mathcal{B}^A_B} \, \sigma_{\widehat{\mathrm{ln} \, \mathcal{B}^A_B}}} \frac{1}{2\pi} \mathrm{exp} \left \{-\frac{\left(\mathrm{ln} \, \widehat{\mathcal{B}^A_B} - \mu_{\widehat{\mathrm{ln} \, \mathcal{B}^A_B})}\right)^2} {2 \sigma^2_{\widehat{\mathrm{ln} \, \mathcal{B}^A_B}}}  \right\}.
+\end{equation}
+This is the implementation that we have used to represent that Bayes factor in this study. It is worth noting that for a sufficiently small standard deviation on the logarithm of the Bayes factor, the probability of the distribution function will look approximately Gaussian in shape. One useful property of the log-normal Bayes factor distribution is that the median of the log-normal Bayes factor distribution is identical to the point-estimate Bayes factor, $\mathcal{B}^A_B = \mathrm{exp} \left[\mathrm{ln} \, \mathcal{Z}_{\mathrm{A}} - \mathrm{ln} \, \mathcal{Z}_{\mathrm{B}} \right]$. Note, that the expectation value (mean) of $\mathcal{B}^A_B$ is always right-skewed of the median, while the mode of the distribution is left-skewed relative to the median. Large standard deviations on the logarithm of the evidence will create very long tails for the distribution of the Bayes factor, which can make decision-making on Bayes factors more risky. Future studies should consider limiting the error on the logarithm of the evidence to mitigate the larger error on the Bayes factor.
+
+Our Bayes factor estimation from $6$ multi-tempered estimators on the logarithm of the Bayes factor can be seen in Fig.~\ref{fig:lvc_sim_uni_ceos_bayes_distr} when comparing the hypothesis on $p$-$g$ mode instability for the unconstrained $\delta \phi$ prior to the hypothesis presented in~\cite{de2018tidal} for the uniform mass prior with a common equation of state constraint. The different methods appear to give similar probability distributions on the Bayes factor. Those estimators with large standard deviations in $\mathrm{log} \, \mathcal{B}$ have tails that skew towards a Bayes factor of unity.
+
+
+\begin{figure}[th]
+\centering
+\includegraphics[width=1.0\textwidth]{figs/chapter6/multi_temper_bayes_lsc_sim_uni_ceos.png}
+\caption{The distribution for the Bayes factor for nonlinear tides from $p$-$g$ mode instability from the unconstrained $\delta \phi$ prior relative to the uniform mass, common equation of state prior from~\cite{de2018tidal} under the assumption that the logarithm of the evidence for each model is well approximated by a Gaussian distribution.  but our method is sufficiently accurate in the high-sample limit. When the uncertainty on the logarithm of the evidences in the Bayes factor estimation are sufficiently small, the Bayes factor distribution is approximately normal in shape, but formally they are log-normal distributions.}
+\label{fig:lvc_sim_uni_ceos_bayes_distr}
+\end{figure}
+
+The Bayes factors for all hypotheses using all of the multi-tempered methods can be seen in Table~\ref{table:Bayes}. The median values of the Bayes factors range between roughly $0.63$ and $0.76$, with the $5^{\mathrm{th}}$ and $95^{\mathrm{th}}$ percentile interval being  around $\pm 0.1$ with a skew towards Bayes factors of $1$. Under a binary choice between the $p$-$g$ mode instability model and the corresponding model without $p$-$g$ mode instability we can calculate a posterior probability of one choice over the other choice. Without giving preference to either model, we can calculate a posterior probability as $p^{\mathrm{NL}}_{\mathrm{!NL}}$ = $\mathcal{B}^{\mathrm{NL}}_{\mathrm{!NL}} / ( 1 + \mathcal{B}^{\mathrm{NL}}_{\mathrm{!NL}})$. Thus, the Bayes factor of $0.63$ corresponds to a posterior probability of $39$ \%  and a Bayes factor of $0.76$ corresponds to a posterior probability of $43$ \%. If we consider the $\pm$ 0.1 ends of the Bayes factor estimation, a Bayes factor of $0.53$ can be interpreted as a posterior probability of $34$\% probability, while a Bayes factor of $0.86$ can be interpreted as the model having a $46$ \% posterior probability. If we consider all models collectively, the posterior probability on any one, particular model reduces significantly.
+
+\subsection{Savage-Dickey Density Ratio Bayes Factors}\label{sec:prob_density_estimator_performance}
+Below we report on the Savage-Dickey density test for finding the Bayes factor of the  on $p$-$g$ mode instability for the unconstrained $\delta \phi$ prior compared to a null-hypothesis, that is a hypothesis where $p$-$g$ mode instability is not modeled. Formally, this is the model presented in~\cite{de2018tidal} for the uniform mass prior with a common equation of state constraint however the Savage-Dickey density test makes no use of the data from~\cite{de2018tidal}. While this may sound somewhat outrageous, we will find that the results generally agree with those found using multi-tempered model selection techniques. The results of all of the Savage-Dickey density tests are collected and summarized in Table~\ref{table:Bayes_sddr}.
+
+\subsection{Histogram Method}
+An elementary method for estimating the probability density function is to histogram the samples and normalize the histogram to integrate to unity. Under this methodology the only relevant parameter to fitting the histogram to the data is the choice of bin-width, sometimes called bandwidth.
+
+Two methods that we have used to try to maximize the fit of the histogram to the data are through the choice of plug-in bin-width algorithms. The algorithms are designed to minimize the error to the histogram density fit to an underlying density function. The first is Scott's rule~\citep{scott1979optimal} and is considered optimal relative to a density function that is normally distributed. The bin-width $h$ for this rule is defined as:
+\begin{equation}
+    h = \frac{3.5 \, \sigma}{N^{1/3}}.
+\end{equation}
+Here $\sigma$ represents the sample standard deviation of the data, and $N$ represents the number of samples in the data.
+
+The second method is described in ~\cite{Freedman1981} and makes use of the interquartile range (IQR). The IQR is the difference between the $75^{\mathrm{th}}$ and $25^{\mathrm{th}}$ percentile of the data. The Freedman-Diaconis bin method ~\citep{Freedman1981}, where the bin-width $h$ is:
+\begin{equation}
+    h = \frac{2 \, \mathrm{IQR}}{N^{1/3}}
+\end{equation}
+Here $N$ represents the number of samples in the data.
+
+Since the marginal prior (posterior) distribution functions on $A$ are distributed logarithmically, it is convenient to do the density estimation in the variable $\tilde{X} \equiv \mathrm{log}_{10} \, A$. Under this change of variables the marginal prior distribution on $\tilde{X}$ is uniform between $\tilde{X}=-10$ and $\tilde{X}=-5.5$, hence the distribution function is constant over all values of $\tilde{X}$:
+\begin{equation}
+    \pi\left(\tilde{X}\right) = \frac{1}{\tilde{X}_{max} - \tilde{X}_{min}} = 0.2\overbar{2}, \qquad -10.0 \leq \tilde{X} \leq -5.5
+\end{equation}
+
+Using the histogram bin-width rules from above we estimate the marginal posterior probability density at $\tilde{X} = -10.0$. To estimate a confidence interval on the Bayes factor from this method, we resample the the marginal posterior probability density distribution of $\mathrm{log}_{10} \, A$ via bootstrap method \cite{efron1992bootstrap} $5,000$ times. This gives us $5,000$ estimates of the Bayes factor and thus a distribution of possible Bayes factor values from this method. We find a $\mathcal{B}^{\mathrm{NL}}_{!\mathrm{NL}} = 0.66^{+0.08}_{-0.07}$ at the $90\%$ confidence interval for Scott's Rule and a $\mathcal{B}^{\mathrm{NL}}_{!\mathrm{NL}} = 0.66^{+0.08}_{-0.06}$ at the $90\%$ confidence interval for the Freedman-Diaconis Rule. For a comparison of the density estimates for the marginal posterior probability density on $\mathrm{log}_{10} \, A$ see Fig.~\ref{fig:density_estimators}. The Bayes factor uncertainty distribution is shown, in comparison to the other density estimators and the thermodynamic integration method uner the higher-order trapezoidal rule, in Fig.~\ref{fig:sddr_bayes_factor_comparisons}.
+
+\subsection{Gaussian Kernel Density Estimator}
+We use a Gaussian kernel density estimator available in the Python package GetDist~\citep{lewis2015getdist}. GetDist is a Python package intended to accurately estimate the underlying one-dimensional and two-dimensional posterior probability distribution functions from a Bayesian MCMC analysis. A rough understanding of a Gaussian kernel density estimator is that it uses small truncated-Gaussian distributions centered at samples of the data and combines the sum of the distributions into a smooth probability distribution function.
+
+The advantage that GetDist offers over other Gaussian kernel density estimators is that it comes with robust linear-boundary bias correction to the standard Gaussian kernel density estimator. Sharp boundaries on the distribution function can cause bias to the probability distribution function estimation for Gaussian kernel density estimators~\citep{lewis2015getdist}, and the Savage-Dickey density ratio method in this application requires us to know the density of the posterior distribution at the boundary of the distribution. There are additional bias-correction and bandwidth optimization algorithms in the routine that help improve the accuracy of the density estimation. See~\cite{lewis2015getdist} for the full details.
+
+We follow the same procedure in estimating the posterior probability density of $A$ at $10^{-10}$ as in the histogram method. We resample the posterior distribution through the bootstrap method to generate $5,000$ estimates of $\mathcal{P}(A =10^{-10}|\mathbf{d})$. This then yields an estimate of the Bayes factor at the $90\%$ confidence level of $\mathcal{B}^{\mathrm{NL}}_{!\mathrm{NL}} = 0.66^{+0.13}_{-0.1}$. For a comparison of the density estimates for the marginal posterior probability density on $\mathrm{log}_{10} \, A$ see Fig.~\ref{fig:density_estimators}. The Bayes factor uncertainty distribution is shown, in comparison to the other density estimators and the thermodynamic integration method under the higher-order trapezoidal rule, in Fig.~\ref{fig:sddr_bayes_factor_comparisons}.
+
+\subsection{Logspline Density Estimator}
+In the logspline density estimator of~\cite{stone1997polynomial} a univariate log-probability density is modeled by a cubic spline. The algorithm places knots of a cubic spline in an algorithmic fashion and uses an internal likelihood function to find a maximum likelihood number of knots (and placement) to use. Internal to the software package is a Bayesian model-selection routine based on the Akaike Information Criterion (AIC)~\citep{akaike1981likelihood} and the Bayesian Information Criterion (BIC)~\citep{schwarz1978estimating} to both ensure goodness of fit and to avoid over-fitting to the data. The details of the procedure are sophisticated and beyond the scope of this study. We utilize the maximum likelihood fit to the probability distribution function from the packages' model selection routine. We note that using the maximum likelihood fit is not very risky as the likelihood for other values of knot and knot placement as given from the package's fit routine provide posterior density estimates that are almost identical to the maximum likelihood fit.
+
+We use the same bootstrap method outlined above to estimate the variability of the logspline algorithm relative to the variability of the data. We find an estimate of the Bayes factor at the $90\%$ confidence level of $\mathcal{B}^{\mathrm{NL}}_{!\mathrm{NL}} = 0.63^{+0.06}_{-0.05}$. For a comparison of the density estimates for the marginal posterior probability density on $\mathrm{log}_{10} \, A$ see Fig.~\ref{fig:density_estimators}. The Bayes factor uncertainty distribution is shown, in comparison to the other density estimators and the thermodynamic integration method under the higher-order trapezoidal rule, in Fig.~\ref{fig:sddr_bayes_factor_comparisons}.
+
+\begin{figure}[th]
+\centering
+\includegraphics[width=1.0\textwidth]{figs/chapter6/prior_posterior_sddr.png}
+\caption{The prior and posterior density estimations from different density estimators for the parameter $\mathrm{log}_{10} \, A$. The prior density is uniform in $\mathrm{log}_{10}$ and is $0.\overbar{2}$. Posterior Logspline is the density estimation under the logspline density estimator, and it is notable that it tends to estimate the posterior density at $\mathrm{log}_{10} \, A = -10$ more highly than the other estimators. If this is systematically true, then the Bayes factor from the logspline density estimator will be smaller than the other estimators. Posterior GetDist is the Gaussian kernel density estimator described in the Python GetDist package. Posterior FD and Scott are the histogram methods under the Freedman-Diaconis binning rule and Scott's binning rule, respectively. We can see here that there is some wasted prior space at large $\mathrm{log}_{10} A$. THe posterior density might more closely match the prior density if we restricted our prior density to smaller $\mathrm{log}_{10} A$.}
+\label{fig:density_estimators}
+\end{figure}
+
+\begin{figure}[th]
+\centering
+\includegraphics[width=1.0\textwidth]{figs/chapter6/sddr_bayes_factor.png}
+\caption{A comparison of the Bayes factor estimates for $p$-$g$ mode instability with the permissive prior on $\delta \phi$ vs no $p$-$g$ mode instability from different methods. Here, SDDR refers to the Savage Dickey density ratio test for each corresponding estimator technique. We compare these results to the higher order trapezoidal rule from thermodynamic integration. The other multi-tempered Bayes factors are comparable to the one shown here and so are not displayed. The estimates generally agree as can be seen from comparing values in \ref{table:Bayes} and \ref{table:Bayes_sddr}.}
+\label{fig:sddr_bayes_factor_comparisons}
+\end{figure}
+
+
+\section{Results}
 When we consider the way that the nonlinear tides enter the Fourier phase in Eq.~(\ref{eqn:fourier_phase_eq1}), we see that if $n = 4/3$ then the nonlinear tides enter the Fourier phase of the waveform with the same power law dependence on frequency $f$ as the chirp mass, that is $\Psi(f) \propto f^{-5/3}$. We also note that for the effect of nonlinear tides to be degenerate with chirp mass, they must turn on at a frequency $f_0$ that is close to the low-frequency limit of the detector's sensitive band. If the effect turns on at higher frequencies, then the phasing will change in the detector's sensitive band and it is more difficult to compensate for the nonlinear tide effect with a change in chirp mass. 
 
 The marginalized posterior distributions on parameters shown in Fig.~\ref{fig:uniform_f0_small} show a strong degeneracy between the source-frame chirp mass $\mathcal{M}^\textrm{src}$ and nonlinear tides that creates a tail in the chirp mass posterior skewed towards lower values of chirp mass than the value measured using the standard waveform model, $\mathcal{M}^\textrm{src} = 1.1867\pm0.0001\, M_\odot$~\citep{de2018tidal}. We see a peak in the posteriors of $n$ and $f_0$ at $n \lesssim 4/3$ and $f_0 \lesssim 35$~Hz. This parameter degeneracy is also correlated with large $A$, where $10^{-8} \lesssim A < 10^{-6}$. The samples with large posterior values of $\delta\phi$ seen in Fig.~\ref{fig:uniform_f0_small} are strongly correlated with source-frame chirp masses $\mathcal{M}^\textrm{src} \lesssim 1.1866.$ We have examined the change to the posterior distribution when changing the low-frequency cutoff of the likelihood integration from $20$~Hz to $25$~Hz, and to $30$~Hz. In these analyses, the peak in the posterior of $f_0$ tracks the low-frequency cutoff of the likelihood integration, confirming that this effect is due to the chirp-mass degeneracy with the low-frequency cutoff. The chirp mass degeneracy is also present in the analysis with the broader range of $f_0$, however it is not as pronounced in the posterior samples due to the larger prior space being explored. For the prior distributions discussed above, the observation of GW170817 does not provide strong statistical evidence either for or against the presence of nonlinear tides. 
@@ -244,14 +338,58 @@ In this paper, we have used the observation of GW170817 and the model of~\cite{E
 
 In principle, one could improve our analysis by separately parameterizing the amplitude, turn-on frequency, and frequency evolution for each star as in~\cite{abbott2019constraining}. However, we find our results to be broadly consistent with~\cite{abbott2019constraining}, and so we do not expect these to affect the main conclusion of our paper. Further improvements on the  parametric model of $p$-$g$ mode instability could include a higher order post-Newtonian expansion of the instability, or further understanding of the instability's interaction with neutron star magnetic fields~\citep{Weinberg:2015pxa}. Nonlinear tides are poorly understood and the contribution from other stellar oscillation modes may yet contribute to a more accurate picture of the interior dynamics of neutron stars~\citep{Andersson:2017iav}. Current models of the gravitational-wave phase shift caused by nonlinear tides from the $p$-$g$ mode instability  suffer from parameter degeneracies with the other intrinsic parameters of a neutron star binary. A measurement of the binary's chirp mass that is independent of gravitational-wave observations would break this degeneracy. However, for a system like GW170817, this would require measurement of the binary's chirp mass to a precision greater than $\sim 0.02 \%$ using an electromagnetic counterpart, which is implausible. Absent improved theoretical understanding of  nonlinear tides from $p$-$g$ mode coupling that can excludes degenerate regions of the parameter space \emph{a priori}, we do not expect this situation to improve with future detections.
 
+\newpage
+\begin{table}[ht]
+\begin{adjustbox}{angle=90}
+\begin{tabularx}{1.0\textwidth}{l c c c c c c}
+\hline\hline
+ Hypothesis Tested  & $\mathcal{B}^{\mathrm{NL}}_{\mathrm{!NL}}(A)$  & $\mathcal{B}^{\mathrm{NL}}_{\mathrm{!NL}}(B)$ & $\mathcal{B}^{\mathrm{NL}}_{\mathrm{!NL}}(C)$ & $\mathcal{B}^{\mathrm{NL}}_{\mathrm{!NL}}(D)$ & $\mathcal{B}^{\mathrm{NL}}_{\mathrm{!NL}}(E)$ & $\mathcal{B}^{\mathrm{NL}}_{\mathrm{!NL}}(F)$\\
+\hline\hline
+$H_1$ (Uniform Mass, $A$, $n$, $f_0$ $\in$ (15, 100) $Hz$), $\delta \phi > 0.1$ &
+$0.63^{+0.08}_{-0.07}$ & $0.63^{+0.08}_{-0.07}$ & $0.64^{+0.07}_{-0.06}$ & $0.64^{+0.05}_{-0.05}$ & $0.63^{+0.06}_{-0.06}$ & $0.63^{+0.06}_{-0.06}$ \\ 
+\hline
+$H_2$ (Gaussian Mass, $A$, $n$, $f_0$ $\in$ (15, 100) $Hz$), $\delta \phi > 0.1$ &
+$0.71^{+0.08}_{-0.07}$ & $0.71^{+0.08}_{-0.07}$ & $0.70^{+0.06}_{-0.06}$ & $0.70^{+0.04}_{-0.04}$ & $0.71^{+0.06}_{-0.06}$ & $0.73^{+0.07}_{-0.07}$ \\ 
+\hline
+$H_3$ (Uniform Mass, $A$, $n$, $f_0$ $\in$ (15, 800) $Hz$), $\delta \phi > 0.1$ &
+$0.64^{+0.09}_{-0.08}$ & $0.64^{+0.09}_{-0.08}$ & $0.64^{+0.08}_{-0.07}$ & $0.64^{+0.06}_{-0.06}$ & $0.64^{+0.06}_{-0.06}$ & $0.63^{+0.09}_{-0.07}$ \\ 
+\hline
+$H_4$ (Gaussian Mass, $A$, $n$, $f_0$ $\in$ (15, 800) $Hz$), $\delta \phi > 0.1$ &
+$0.76^{+0.08}_{-0.07}$ & $0.76^{+0.08}_{-0.07}$ & $0.75^{+0.06}_{-0.06}$ & $0.75^{+0.04}_{-0.04}$ & $0.75^{+0.05}_{-0.05}$ & $0.76^{+0.07}_{-0.06}$ \\ 
+\hline
+$H_5$ (Uniform Mass, $A$, $n$, $f_0$ $\in$ (10, 100) $Hz$) &
+$0.68^{+0.12}_{-0.11}$ & $0.68^{+0.13}_{-0.11}$ & $0.69^{+0.11}_{-0.1}$ & $0.69^{+0.1}_{-0.09}$ & $0.67^{+0.1}_{-0.08}$ & $0.65^{+0.13}_{-0.11}$ \\
+\hline\hline
+\end{tabularx}
+\end{adjustbox}
+\caption{The various Bayes factors under different multi-tempered integration methods. The column marked with $\mathcal{B}^{\mathrm{NL}}_{\mathrm{!NL}}(A)$ is the Bayes factor under the thermodynamic integration method using the trapezoid quadrature rule. The $(B)$ column is the Bayes factor from the thermodynamic integration method using the higher-order trapezoid quadrature rule. The $(C)$ column is the Bayes factor from the thermodynamic integration method using Simpson's quadrature rule. The $(D)$ column is the Bayes factor for the thermodynamic integration method using Simpson's higher-order quadrature rule. The $(E)$ column is the Bayes factor for the thermodynamic integration method using a cubic polynomial quadrature rule. And $(F)$ is the Bayes factor from the steppingstone method. The $50^{\mathrm{th}}$ percentile with the $5^{\mathrm{th}}$ and $95^{\mathrm{th}}$ percentiles in the plus and minus superscripts and subscripts, respectively, are shown above.}\label{table:Bayes}
+\end{table}
 
-\software{PyCBC Inference \citep{alex_nitz_2018_1208115,biwer2019pycbc},  
-          emcee \citep{emcee,vousden:2016}, 
-          LIGO Algorithm Library \citep{lal},
-          Matplotlib \citep{Hunter:2007},
-          Scipy \citep{scipy}
-          }
+%$0.631831831832^{+0.0774774774775}_{-0.0684684684685}$ & $0.631831831832^{+0.0774774774775}_{-0.0690690690691}$ & $0.637237237237^{+0.0678678678679}_{-0.0612612612613}$ & $0.637237237237^{+0.0528528528529}_{-0.0486486486486}$ & $0.633633633634^{+0.0600600600601}_{-0.0546546546547}$ & $0.633633633634^{+0.0600600600601}_{-0.0546546546547}$ \\ 
 
+%$0.708708708709^{+0.0786786786787}_{-0.0708708708709}$ & $0.709309309309^{+0.0786786786787}_{-0.0714714714715}$ & $0.702102102102^{+0.0630630630631}_{-0.0582582582583}$ & $0.701501501502^{+0.0432432432432}_{-0.0408408408408}$ & $0.710510510511^{+0.0606606606607}_{-0.0564564564565}$ & $0.726726726727^{+0.0744744744745}_{-0.0678678678679}$ \\ 
+
+%$0.637237237237^{+0.0864864864865}_{-0.0762762762763}$ & $0.637837837838^{+0.0870870870871}_{-0.0768768768769}$ & $0.640840840841^{+0.0756756756757}_{-0.0678678678679}$ & $0.640840840841^{+0.0624624624625}_{-0.0570570570571}$ & $0.64024024024^{+0.0642642642643}_{-0.0588588588589}$ & $0.631831831832^{+0.0846846846847}_{-0.0744744744745}$  \\ 
+
+%$0.756156156156^{+0.0780780780781}_{-0.0714714714715}$ & $0.756756756757^{+0.0786786786787}_{-0.0714714714715}$ & $0.753153153153^{+0.0636636636637}_{-0.0582582582583}$ & $0.753153153153^{+0.0402402402402}_{-0.0378378378378}$ & $0.74954954955^{+0.0516516516517}_{-0.0474474474474}$ & $0.75975975976^{+0.0672672672673}_{-0.0618618618619}$  \\ 
+
+%$0.678678678679^{+0.124924924925}_{-0.105705705706}$ & $0.677477477477^{+0.126726726727}_{-0.106306306306}$ & $0.688888888889^{+0.10990990991}_{-0.0948948948949}$ & $0.688288288288^{+0.0984984984985}_{-0.0858858858859}$ & $0.66966966967^{+0.0954954954955}_{-0.0834834834835}$ & $0.654654654655^{+0.126726726727}_{-0.106306306306}$ \\ 
+
+
+\newpage
+\begin{table}[ht]
+\begin{adjustbox}{angle=90}
+\begin{tabularx}{1.0\textwidth}{l c c c c}
+\hline\hline
+ Hypothesis Tested  & $\mathcal{B}^{\mathrm{NL}}_{\mathrm{!NL}}$(FD)  & $\mathcal{B}^{\mathrm{NL}}_{\mathrm{!NL}}$(Scott) & $\mathcal{B}^{\mathrm{NL}}_{\mathrm{!NL}}$(Gaussian KDE) & $\mathcal{B}^{\mathrm{NL}}_{\mathrm{!NL}}$(Logspline)\\
+\hline\hline
+$H_5$ (Uniform Mass, $A$, $n$, $f_0$ $\in$ (10, 100) $Hz$) &
+$0.66^{+0.08}_{-0.07}$ & $0.66^{+0.08}_{-0.07}$ & $0.66^{+0.13}_{-0.1}$ & $0.63^{+0.06}_{-0.05}$ \\
+\hline\hline
+\end{tabularx}
+\end{adjustbox}
+\caption{The various Bayes factors from the Savage-Dickey Density Ratio test under different density estimators. The column marked with $\mathcal{B}^{\mathrm{NL}}_{\mathrm{!NL}}$(FD) is the Bayes factor from the Freedman Diaconis histogram binning rule. The $\mathcal{B}^{\mathrm{NL}}_{\mathrm{!NL}}$(Scott) column is the Bayes factor estimate under Scott's histogram binning rule. The $\mathcal{B}^{\mathrm{NL}}_{\mathrm{!NL}}$(Gaussian KDE) column is the Bayes factor estimate when using the Gaussian kernel density estimator with linear boundary bias corrections as found in the GetDist Python package. The column denoted as  $\mathcal{B}^{\mathrm{NL}}_{\mathrm{!NL}}$(Logspline) is the Bayes factor estimate when using the logspline density estimator. The $50^{\mathrm{th}}$ percentile with the $5^{\mathrm{th}}$ and $95^{\mathrm{th}}$ percentiles in the plus and minus superscripts and subscripts, respectively.}\label{table:Bayes_sddr}
+\end{table}
 
 \begin{figure}[th]
 \includegraphics[width=\columnwidth]{figs/chapter6/combined_uni_dphi_cut_combined.png}
@@ -259,3 +397,4 @@ In principle, one could improve our analysis by separately parameterizing the am
 }
 \label{fig:uniform_f0_small}
 \end{figure}
+
