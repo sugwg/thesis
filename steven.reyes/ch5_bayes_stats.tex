@@ -15,36 +15,47 @@ Finally, we describe the notion of conditional probability. The probability of t
 \end{equation}
 This new term here $p(B|A)$ is to be interpreted as the probability that event B occurs given that A has occurred, and similarly, $p(A|B)$ means the probability that event A occurs given that B has occurred.
 
-\section{Bayes Theorem}
+\section{Bayesian Inference}
 Expression from Eq. \ref{eqn:probAandprobB} motivates the theorem known as Bayes Theorem, which we will express as follows:
 \begin{equation} \label{eqn:BayesTheorem_basic}
      p(H|D) = \frac{p(H) \, p(D|H)}{p(D)}.
 \end{equation}
 In this formulation we have written, the probability of the hypothesis given the data, $p(H|D)$, is sometimes called the posterior probability. The probability of the hypothesis being true is $p(H)$, and is often called the prior probability since it is what we believe prior to looking at the data. The probability of the data given the hypothesis, $p(D|H)$, which is called the likelihood. And finally we have the probability of obtaining the data, $p(D)$. We will devote a large amount of time in this work towards Bayes Theorem and its usefulness in conducting statistical inferences.
 
-\section{Bayesian Hypothesis Testing}
-\subsection{The Bayes Factor}
+\subsection{Bayesian Hypothesis Testing: Evidence, Bayes factors, and Odds Ratios}
 Another essential aspect of Bayesian inference is the evaluation of the statistical signficance of hypothesis choices. This occurs through evaluating the effectiveness of the choice in prior probability distribution. The marginal likelihood, $\mathcal{E}$, is the main driver behind establishing the level of evidence or support that the data has for a particular prior distribution choice. Simply put, the prior distribution that results in the largest evidence value is the model that has the most support.
 
+Finally, the term $P(D)$ is sometimes called the evidence or marginal likelihood. We will use the short hand, $\mathcal{Z}$ for evidence from now on. It is called the evidence because its value represents the level of credibility we should assign our inference relative to other prior hypothesis choices. In a similar vein, the term prior predictive gives us an idea of how well of a job we did in predicting the data with our choice of prior. Lastly, we can compute the evidence by computing the marginal likelihood. Formally, this is done via,
+\begin{equation}\label{eqn:marg_likelihood}
+    \mathcal{Z} = \int \pi(\vec{\theta}) \mathcal{L}(\vec{\theta}) d\vec{\theta},
+\end{equation}
+where we have used $\pi(\vec{\theta})$ for the prior distribution over all parameters $\vec{\theta}$, and likelihood $\mathcal{L}(\vec{\theta})$. We can gain intuition about the marginal likelihood by restating it as the average of the likelihood across the prior. We do this by dividing Eq.~\ref{eqn:marg_likelihood} by the integral of the prior distribution across the parameter space,
+\begin{equation}
+    \mathcal{Z} = \frac{\int \pi(\vec{\theta}) \mathcal{L}(\mathbf{d} \, | \, \vec{\theta}) d\vec{\theta}}
+                       {\int \pi(\vec{\theta}) d\vec{\theta}} = \langle \mathcal{L}(\mathbf{d} \, | \, \vec{\theta})_{\pi(\vec{\theta})}.
+\end{equation}
+Here $\langle \mathcal{L}(\mathbf{d} \, | \, \vec{\theta})_{\pi(\vec{\theta})}$ denotes taking the average of the likelihood with respect to the measure defined by the prior distribution. This is more simply put as the average likelihood when drawing samples from the prior distribution.
+
+Oftentimes the marginal likelihood is a difficult multi-dimensional integral to compute. If we are only interested in the marginal posterior probability distribution function for parameters, such as is often the case in parameter estimation, then we can use Markov-Chain Monte Carlo techniques that ignore computing the evidence. However, when comparing the outcome of two prior hypotheses calculating Eq.~\ref{eqn:marg_likelihood} is required.
+
+Formal comparison of hypotehes
 Calculation of the odds for support of one hypothesis, $H_1$, over another hypothesis, $H_2$, is encapsulated in the following expression for the posterior odds ratio:
 \begin{equation}\label{eqn:odds_ratio}
 \mathcal{O}^{H_1\;\;}_{\;\;H_2} = \mathcal{B}^{H_1\;\;}_{\;\;H_2} \times \frac{\pi(H_1)}{\pi(H_2)}.
 \end{equation}
-In this equation, $\mathcal{O}^{H_1\;\;}_{\;\;H_2}$ represents the posterior odds that hypothesis $1$ is preferred over hypothesis $2$. The ratio of the evidences, $\mathcal{B}^{H_1\;\;}_{\;\;H_2} \equiv \frac{\mathcal{E}_{H_1}}{\mathcal{E}_{H_2}}$, between the two models is known as the Bayes factor. The Bayes factor provides an intuition for the relative support of one hypothesis over the other. The ratio $\frac{\pi(H_1)}{\pi(H_2)}$ represents our prior odds ratio, that is, how much more did we believe that hypothesis $1$ was preferred over hypothesis $2$ prior to our analysis. Said in another way, the prior odds ratio gives us a statement of what level of Bayes factor we would require before we begin to change our minds about the odds of hypothesis $2$ being better supported in the data than hypothesis $1$. When testing new physics, one may set the prior odds ratio to unity if one is fundamentally unsure about what hypotheses the data may support.
+In this equation, $\mathcal{O}^{H_1\;\;}_{\;\;H_2}$ represents the posterior odds that hypothesis $1$ is preferred over hypothesis $2$. The ratio of the evidences, $\mathcal{B}^{H_1\;\;}_{\;\;H_2} \equiv \frac{\mathcal{E}_{H_1}}{\mathcal{E}_{H_2}}$, between the two models is known as the Bayes factor. The Bayes factor provides an intuition for the relative support of one hypothesis over the other. The ratio $\frac{\pi(H_1)}{\pi(H_2)}$ represents our prior odds ratio, that is, how much more did we believe that hypothesis $1$ was preferred over hypothesis $2$ prior to our analysis. Said in another way, the prior odds ratio gives us a statement of what level of Bayes factor we would require before we begin to change our minds about the odds of hypothesis $2$ being better supported in the data than hypothesis $1$.
 
-The posterior odds ratio then gives us a method for making a decision about whether to accept one hypothesis over the other hypothesis. One advantage to Bayesian hypothesis testing is that it gives us a straightforward method for testing hypotheses other than the null hypothesis that is commonly tested in Frequentist statistical inference. The downside however is that effectively and consistently computing Bayes factors remains an open area of research because of how difficult it can be to calculate the marginal likelihood. A conventional choice for hypothesis decision making is given to us by Jeffreys, and an alternative by Kass and Raftery 1995, see Fig. X.
-
-An odds ratio can be converted into a probability of one hypothesis over another hypothesis through the following expression:
+An odds ratio can be converted into a probability of a hypothesis over another hypothesis through the following expression:
 \begin{equation}\label{eqn:probability_odds_ratio}
-    p^{H_1 \;\;}_{\;\;H_2} = \frac{\mathcal{O}^{H_1\;\;}_{\;\;H_2}}{1 + \mathcal{O}^{H_1\;\;}_{\;\;H_2}}.
+    p(\mathrm{H_1)) = \frac{\mathcal{O}^{H_1\;\;}_{\;\;H_2}}{1 + \mathcal{O}^{H_1\;\;}_{\;\;H_2}}.
 \end{equation}
-As such, a plot of the $\mathrm{log}_{10} \; \mathcal{O}^{H_1\;\;}_{\;\;H_2}$ can be made to suggest decision rules for odds ratios similar to choices on p-values in Frequentist statistics. As we can see in the plot below, when the odds ratio is 1 ($\mathrm{log}_{10} \; \mathcal{O} = 0$) the probability of one hypothesis versus another is $0.5$. 
+In Fig.~\ref{fig:log10odds_v_probability} we compare the odds ratio with the posterior probability for a hypothesis. When the odds ratio is unity the probability of one hypothesis versus another is $0.5$. 
 \begin{figure}
   \includegraphics[width=\textwidth]{figs/chapter5/log10odds_probability.png}
   \caption{The probability of hypothesis 1 being favored over hypothesis 2 when considering the $\mathrm{log}_{10} \; \mathcal{O}$. When $\mathrm{log}_{10} \; \mathcal{O} = 0$, the probability for each hypothesis is $50\%$. At odds ratios close to 100 (0.01) the evidence becomes heavily stacked towards one hypothesis or another.}
   \label{fig:log10odds_v_probability}
 \end{figure}
-Furthermore, we can map this probability to a ranking statistic that is more familiar to Frequentists. That is the one-tailed z-score which states the integrated probability density from $-\infty$ to a particular multiple of the standard deviation of a Gaussian function. A z-score of $0 \sigma$ indicates a $50\%$ probability, while a z-score of $5 \sigma$ is $\sim$ $1-10^-7$ probability. We place a plot of this below for convenience.
+Furthermore, we can map this probability to single-tailed z-score of a Gaussian distribution. This is the familiar test statistic $\sigma$ used in physics. A z-score of $0$ ($0 \sigma$) indicates a $50\%$ probability, while a z-score of $5$ is $\sim$ $1-10^-7$ probability. Fig~\ref{fig:log10odds_v_z_score} shows how the z-score varies with odds ratio.
 \begin{figure}
   \includegraphics[width=\textwidth]{figs/chapter5/log10odds_z_score.png}
   \caption{The Frequentist z-score pertaining to the same level of probability for  hypothesis 1 being favored over hypothesis 2 when considering the $\mathrm{log}_{10} \; \mathcal{O}$. When $\mathrm{log}_{10} \; \mathcal{O} = 0$, the z-score is $0 \sigma$ and the probability for each hypothesis is $50\%$. A z-score of $>5 \sigma$ has the same probability value as an odds ratio of $> 10^7$.}
@@ -53,27 +64,28 @@ Furthermore, we can map this probability to a ranking statistic that is more fam
 
 One convenient property of odds ratios is that we can stack evidence from multiple events if we continue to measure new data with our same prior hypotheses. In this manner, it is possible to take low significant results from multiple experiments and gradually build evidence for a hypothesis over many experiments.
 
-\section{Practical matters concerning Bayes factor estimation}
-We model the logarithm of the evidence from multi-tempered methods for each astrophysical hypothesis as a Gaussian distribution in log-likelihood, with mean $\mu_{\widehat{\mathrm{ln} \, \mathcal{Z}}}$ given by the particular multi-tempered method's point-estimate, and with standard deviation $\sigma_{\widehat{\mathrm{ln} \, \mathcal{Z}}}$ given from Eq.(~\ref{eq:errorprop}). Thus we treat the logarithm of the evidence as a random variable described by a Gaussian distribution as follows:
+\section{Bayes factor estimation and uncertainty propagation}
+In this dissertation we model the logarithm of the evidence as a Gaussian distribution in log-likelihood, with mean $\mu_{\widehat{\mathrm{ln} \, \mathcal{Z}}}$ given by an Markov-Chain Monte Carlo method's point-estimate, and with standard deviation $\sigma_{\widehat{\mathrm{ln} \, \mathcal{Z}}}$ that represents systematic or statistical uncertainties in the Markov-Chain Monte Carlo method. Thus we treat the logarithm of the evidence as a random variable with a probability distribution function following a Gaussian distribution as follows:
 \begin{equation}\label{eqn:p_log_z}
     p(\widehat{\mathrm{ln} \, \mathcal{Z}}) = \left(\frac{1}{\sqrt{2 \pi \sigma_{\widehat{\mathrm{ln} \, \mathcal{Z}}}}} \right) \mathrm{exp} \left \{-\frac{\left(\mathrm{ln} \, \mathcal{Z} - \mu_{\widehat{\mathrm{ln} \, \mathcal{Z}}}\right)^2} {2 \sigma_{\widehat{\mathrm{ln} \, \mathcal{Z}}}}  \right\}.
 \end{equation}
-We can see the distributions of the logarithm of the evidence for the astrophysical hypothesis on $p$-$g$ mode instability for the unconstrained $\delta \phi$ prior in Fig.~\ref{fig:lvc_sim_log_evidence_distr}.
 
-The logarithm of the Bayes factor is the difference of the logarithm of the evidence for one hypothesis and the logarithm of the evidence for another hypothesis:
+Then the logarithm of the Bayes factor will be the difference of the logarithm of the evidence for one hypothesis and the logarithm of the evidence for another hypothesis
 \begin{equation}\label{eqn:log_bayes_factor}
-    \mathrm{ln} \, \mathcal{B}^A_B = \mathrm{ln} \, \mathcal{Z}_{\mathrm{A}} - \mathrm{ln} \, \mathcal{Z}_{\mathrm{B}}
+    \mathrm{ln} \, \mathcal{B}^A_B = \mathrm{ln} \, \mathcal{Z}_{\mathrm{A}} - \mathrm{ln} \, \mathcal{Z}_{\mathrm{B}}.
 \end{equation}
-However, since we treat $\mathrm{ln} \, \mathcal{Z}_{\mathrm{A}}$ as a random variable who's true value is unknown and so we must deal with the uncertainty in $\widehat{\mathrm{ln} \, \mathcal{Z}_{\mathrm{A}}}$. The logarithm of the Bayes factor then becomes the difference between two probability distribution functions. This can be solved via convolution and has been solved for the Gaussian case~\citep{bromiley2003products}. From \cite{bormily}, we can express $\widehat{\mathrm{ln} \, \mathcal{B}^A_B}$ as a Gaussian distribution function with mean $\mu_{\widehat{\mathrm{ln} \, \mathcal{B}^A_B}} = \mu_{\widehat{\mathrm{ln} \, \mathcal{Z}_A}} - \mu_{\widehat{\mathrm{ln} \, \mathcal{Z}_B}}$ and standard deviation $\sigma_{\widehat{\mathrm{ln} \, \mathcal{B}^A_B}} = \sqrt{\sigma_{\widehat{\mathrm{ln} \, \mathcal{Z}_A}}^2 + \sigma_{\widehat{\mathrm{ln} \, \mathcal{Z}_B}}^2 }$. This thus gives us the following expression for the distribution function that describes our uncertainty on the logarithm of the Bayes factor:
+However, since we treat $\mathrm{ln} \, \mathcal{Z}_{\mathrm{A}}$ as a random variable we must deal with the uncertainty in $\widehat{\mathrm{ln} \, \mathcal{Z}_{\mathrm{A}}}$. The logarithm of the Bayes factor then becomes the difference between two probability distribution functions. This can be solved via convolution and has been solved for the Gaussian case~\citep{bromiley2003products}. From \cite{bromiley2003products}, we can express $\widehat{\mathrm{ln} \, \mathcal{B}^A_B}$ as a Gaussian distribution function with mean $\mu_{\widehat{\mathrm{ln} \, \mathcal{B}^A_B}} = \mu_{\widehat{\mathrm{ln} \, \mathcal{Z}_A}} - \mu_{\widehat{\mathrm{ln} \, \mathcal{Z}_B}}$ and standard deviation $\sigma_{\widehat{\mathrm{ln} \, \mathcal{B}^A_B}} = \sqrt{\sigma_{\widehat{\mathrm{ln} \, \mathcal{Z}_A}}^2 + \sigma_{\widehat{\mathrm{ln} \, \mathcal{Z}_B}}^2 }$. This gives us the following expression for the distribution function on the logarithm of the Bayes factor:
 \begin{equation}\label{eqn:p_log_b}
     p(\widehat{\mathrm{ln} \, \mathcal{B}^A_B}) = \left(\frac{1}{\sqrt{2 \pi \sigma_{\widehat{\mathrm{ln} \, \mathcal{B}^A_B}}}} \right) \mathrm{exp} \left \{-\frac{\left(\widehat{\mathrm{ln} \, \mathcal{B}^A_B} - \mu_{\widehat{\mathrm{ln} \, \mathcal{B}^A_B})}\right)^2} {2 \sigma^2_{\widehat{\mathrm{ln} \, \mathcal{B}^A_B}}}  \right\}.
 \end{equation}
 
-The expression in Eq.~(\ref{eqn:p_log_b}) is a Gaussian distribution function in $\widehat{\mathrm{ln} \, \mathcal{B}^A_B}$, but we often prefer to know the estimate on $\mathcal{B}^A_B$ and so we must transform coordinates. This transformation of coordinates, fortunately, is a well-known distribution called the log-normal distribution and it is able to be described in terms of the coordinates used in Eq.~(\ref{eqn:p_log_b}). Below we write out our log-normal probability distribution function for $\widehat{\mathcal{B}^A_B}$:
+The expression in Eq.~(\ref{eqn:p_log_b}) is a Gaussian distribution function in $\widehat{\mathrm{ln} \, \mathcal{B}^A_B}$, but we often prefer to know the estimate on $\mathcal{B}^A_B$ and so we must transform coordinates. This transformation of coordinates, is a well-known distribution called the log-normal distribution. We write out our log-normal probability distribution function for $\widehat{\mathcal{B}^A_B}$ as
 \begin{equation}
     p(\widehat{\mathcal{B}^A_B}) = \frac{1}{\widehat{\mathcal{B}^A_B} \, \sigma_{\widehat{\mathrm{ln} \, \mathcal{B}^A_B}}} \frac{1}{2\pi} \mathrm{exp} \left \{-\frac{\left(\mathrm{ln} \, \widehat{\mathcal{B}^A_B} - \mu_{\widehat{\mathrm{ln} \, \mathcal{B}^A_B})}\right)^2} {2 \sigma^2_{\widehat{\mathrm{ln} \, \mathcal{B}^A_B}}}  \right\}.
 \end{equation}
-This is the implementation that we have used to represent that Bayes factor in chapter BLAH. It is worth noting that for a sufficiently small standard deviation on the logarithm of the Bayes factor, the probability of the distribution function will look approximately Gaussian in shape. For the log-normal Bayes factor distribution the median value of the distribution is identical to the point-estimate Bayes factor, $\mathcal{B}^A_B = \mathrm{exp} \left[\mathrm{ln} \, \mathcal{Z}_{\mathrm{A}} - \mathrm{ln} \, \mathcal{Z}_{\mathrm{B}} \right]$. The expectation value (mean) of this log-normal distribution is always right of the median, while the mode of the distribution is left of the median. Large standard deviations on the logarithm of the evidence will create very long tails for the distribution of the Bayes factor, which makes decision-making based on Bayes factors more risky. Studies that use this estimation of the Bayes factor should consider limiting the error on the logarithm of the evidence to mitigate propagating large error to the Bayes factor.
+It is worth noting that for a sufficiently small standard deviation on the logarithm of the Bayes factor, the probability of the distribution function will look approximately Gaussian in shape. For the log-normal Bayes factor distribution the median value of the distribution is identical to the point-estimate Bayes factor, $\mathcal{B}^A_B = \mathrm{exp} \left[\mathrm{ln} \, \mathcal{Z}_{\mathrm{A}} - \mathrm{ln} \, \mathcal{Z}_{\mathrm{B}} \right]$. The expectation value (mean) of this log-normal distribution is always right of the median, while the mode of the distribution is left of the median. Large standard deviations on the logarithm of the evidence will create very long tails for the distribution of the Bayes factor, which makes decision-making based on Bayes factors more risky. Studies that use this estimation of the Bayes factor should consider limiting the error on the logarithm of the evidence to mitigate propagating large error to the Bayes factor.
+
+We will now explore actual Markov-Chain Monte Carlo methods for estimating the Bayesian evidence with uncertainty estimates.
 
 \section{The Thermodynamic Integration Method for Estimating the Bayesian Evidence}
 From the Sec.~\ref{sec:methods} we learned about power-posteriors in Eq.~(\ref{eq:power_posterior}) and the thermodynamic integral given in Eq.~(\ref{eq:thermoint}). We follow resources \citep{annis2019thermodynamic} for the derivation and discussion here. Here we derive the thermodynamic integral by considering the following expression implied by the 2nd Fundamental theorem of Calculus:

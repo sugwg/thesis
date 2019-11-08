@@ -125,26 +125,28 @@ We generate the standard TaylorF2 waveform using the LIGO Algorithm Library~\cit
 \end{equation}
 The Fourier phase for the nonlinear tides is implemented as a patch to the version of the PyCBC software~\citep{alex_nitz_2018_1208115} used by~\cite{de2018tidal}. Both the standard and nonlinear tide waveform models are terminated when the gravitational-wave frequency reaches that of a test particle at the innermost stable circular orbit of a Schwarszchild black hole of mass $M = m_1 + m_2$. For the neutron star masses considered here, this frequency is between 1.4 kHz and 1.6 kHz.
 
-We also add the derivation for the first-order energy dissipation from $p$-$g$ modes in the frequency-domain. This can be solved via:
+We also derive the first-order energy dissipation from $p$-$g$ modes in the frequency-domain. This can be solved as, 
 \begin{equation}\label{eqn:e_nl_of_f}
     E_{\mathrm{NL}, i}\left(f'\right) = \int_0^{f'} \left(\frac{dE_{\mathrm{NL}, i}}{dt} \right) \left(\frac{dt}{df}\right) \, df.
 \end{equation}
-Moving forward we will simply use $E_{\mathrm{NL}, i}$ as a function of $f$ rather than $f'$ as was used here to avoid confusion in the integration bounds. In this derivation we only keep leading order in $A$ and so $\frac{dt}{df}$ can be taken from the point-particle terms in the approximation. Note that this can be taken from the first term in the reciprocal of Eq.~(\ref{eqn:f_dot}). An $A^2$ order contribution could be solved for by including the full reciprocal of Eq.~(\ref{eqn:f_dot}). Some care should be taken however, since the derivation in Eq.~(\ref{eqn:f_dot}) made use of the simplification that $m_1 = m_2$. We do not take this approach here and so we give $\frac{dt}{df}$ from the point-particle approximation ~\citep{maggiore2008gravitational}:
+In this derivation we only keep the leading order in $A$, so we take $\frac{dt}{df}$ from the point-particle term in the approximation and neglect terms in $A^2$. The derivation in Eq.~(\ref{eqn:f_dot}) made use of the simplification that $m_1 = m_2$, but we do not take this approach here. The point-particle form of $\frac{dt}{df}$ is~\citep{maggiore2008gravitational}:
 \begin{equation}\label{eqn:point_part_dtdf}
-    \frac{dt}{df} = \frac{5}{96} \frac{c^5}{G^{5/3}  \pi^{8/3} \mathcal{M}^{5/3} f^{11/3}}
+    \frac{dt}{df} = \frac{5}{96} \frac{c^5}{G^{5/3}  \pi^{8/3} \mathcal{M}^{5/3} f^{11/3}}.
 \end{equation}
-Plugging Eq.~(\ref{eqn:e_nl_decay}) and Eq.~(\ref{eqn:point_part_dtdf}) into Eq.~(\ref{eqn:e_nl_of_f}) gives:
+Placing this equation into Eq.~(\ref{eqn:e_nl_decay}) and then placing Eq.~(\ref{eqn:point_part_dtdf}) into Eq.~(\ref{eqn:e_nl_of_f}) gives:
 \begin{equation}\label{eqn:de_df}
     \frac{dE_{\mathrm{NL}, i}}{df} = \frac{5}{96} \frac{\left(2 m_i\right)^{2/3} \, m_1 \, m_2 \, A \, c^5}{G (m_1 + m_2)\, \pi \, \mathcal{M}^{5/3}} f_{\mathrm{ref}}^{-n-1/3} f^{(n-5/3)} \Theta(f-f_0)
 \end{equation}
-Integrating this Eq.~(\ref{eqn:de_df}) over all frequencies gives us, to linear order, the energy dissipated by the $p$-$g$ mode instability for a neutron star of mass $m_i$:
+Integrating this Eq.~(\ref{eqn:de_df}) over all frequencies gives us the energy dissipated by the $p$-$g$ mode instability for a neutron star of mass $m_i$:
 \begin{equation}\label{eqn:E_of_f}
     E_{\mathrm{NL}, i}(f) = \frac{5}{96} \frac{\left(2 m_i\right)^{2/3} \, m_1 \, m_2 \, A \, c^5}{G \, \pi \, (m_1 + m_2) \mathcal{M}^{5/3}} f_{\mathrm{ref}}^{-n-1/3} \left(f^{n-2/3} -f_0^{n-2/3}\right) \frac{1}{n-2/3}.
 \end{equation}
-Quick dimensional analysis in SI units confirms that Eq.~(\ref{eqn:E_of_f}) is the form of Joules. We are however only concerned with the energy dissipated by the $p$-$g$ mode instability at $f_{\mathrm{ISCO}}$ when the stars have finally merged. For neutron stars $f_{\mathrm{ISCO}}$ is always greater than $f_0$ in the cases considered in this study, and so this energy dissipation, summing over the contributions from both stars, is:
+Dimensional analysis confirms that Eq.~(\ref{eqn:E_of_f}) is in the form of Joules. In our case however, we are only concerned with the energy dissipated by the $p$-$g$ mode instability at $f_{\mathrm{ISCO}}$ when the stars have finally merged. For neutron stars $f_{\mathrm{ISCO}}$ is always greater than $f_0$, and so the energy dissipation, summing over the contributions from both stars, is:
 \begin{equation}\label{eqn:E_of_fisco}
     E_{\mathrm{NL}}(f_{\mathrm{ISCO}}) =  \frac{5}{96} \frac{\left(2 m_1 + 2 m_2 \right)^{2/3} \, m_1 \, m_2 \, A \, c^5}{G \, \pi \, \mathcal{M}^{5/3}} f_{\mathrm{ref}}^{-n-1/3} \left(f_{\mathrm{ISCO}}^{n-2/3} -f_0^{n-2/3}\right) \frac{1}{n-2/3}.
 \end{equation}
+
+In the next section we move on to describing appropriate prior distribution for the $p$-$g$ mode instability parameters as well as the other intrinsic parameters for GW170817.
 
 \section{Model Priors} \label{sec:priors}
 Bayes theorem offers a methodology for evaluating the plausibility of models relative to a given data set, and then updating these prior model beliefs with better hypotheses. Bayes theorem states, in the notation of Chapter $5$, that
