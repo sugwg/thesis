@@ -1,11 +1,7 @@
 \input{./ch2_macros.tex}
 \section{Introduction}
 \label{s:intro}
-On \OBSEVENTDATEMONTHDAYYEAR\ at \OBSEVENTTIME ~\OBSEVENTTZ\ the LIGO Hanford,
-WA, and Livingston, LA, observatories detected a signal from the binary black
-hole merger \TheEvent{}~\cite{GW150914-DETECTION}.  The initial detection of
-the event was made by low-latency searches for generic gravitational-wave
-transients~\cite{GW150914-BURST}. We report the results of a matched-filter
+We report the results of a matched-filter
 search using relativistic models of compact binary coalescence waveforms that
 recovered \TheEvent{} as the most significant event during the coincident
 observations between the two LIGO detectors from \OBSSTART\ to
@@ -32,7 +28,7 @@ noise background of the search~\cite{Usman:2015kfa,Cannon:2015gha}.
 within the 10\,ms inter-site propagation time, with a combined matched-filter
 signal to noise ratio (SNR) of \OBSEVENTAPPROXCOMBINEDSNR.  The search
 reported a false alarm rate estimated to be less than 1 event per
-\CBCEVENTIFAR~years, equivalent to a significance greater than
+\CBCEVENTIFAR~years, equivalent to a statistical significance greater than
 \CBCEVENTSIGMA\,$\sigma$.  The basic features of the \TheEvent{} signal point
 to it being produced by the coalescence of two black
 holes~\cite{GW150914-DETECTION}.  The best-fit template parameters from the
@@ -54,10 +50,10 @@ event indicates that it is also a binary black hole merger with source frame
 masses {\MONESCOMPACTSecondMonday~\Msun} and
 {\MTWOSCOMPACTSecondMonday~\Msun}, if it is of astrophysical origin.
  
-This paper is organized as follows: Sec.~\ref{s:overview} gives an overview of
+This chapter is organized as follows: Sec.~\ref{s:overview} gives an overview of
 the compact binary coalescence search and the methods used.
 Sec.~\ref{s:pycbc} describes the construction and
-tuning of the analysis used in the search.
+configuration of the analysis used in the search.
 Sec.~\ref{s:results} presents the results of the search, and follow-up of the
 two most significant candidate events, \TheEvent{} and \SECONDMONDAY{}.
 
@@ -67,17 +63,20 @@ two most significant candidate events, \TheEvent{} and \SECONDMONDAY{}.
 
 The binary coalescence
 search~\cite{thorne.k:1987,Sathyaprakash:1991mt,Cutler:1992tc,Finn:1992wt,Finn:1992xs,Dhurandhar:1992mw,Balasubramanian:1995bm,Flanagan:1997sx}
-reported here targets gravitational waves from binary neutron stars, binary
-black holes, and neutron star--black hole binaries, using matched
-filtering~\cite{wainstein:1962} with waveforms predicted by general
-relativity.  The \pycbc{} analysis correlates the detector
+reported here targets gravitational waves from compact binary coalescences using
+matched filtering~\cite{wainstein:1962} with waveforms predicted by general
+relativity. These binary systems include
+binary neutron stars, binary
+black holes, and neutron star--black hole binaries
+ The \pycbc{} analysis correlates the detector
 data with template waveforms that model the expected signal. The analysis
 identifies candidate events that are detected at both observatories consistent
 with the $10$~ms inter-site propagation time. Events are assigned a
-detection-statistic value that ranks their likelihood of being a
+detection statistic value that ranks their likelihood of being a
 gravitational-wave signal. This detection statistic is compared to the
-estimated detector noise background to determine the probability that a
-candidate event is due to detector noise. 
+estimated detector noise background to determine the probability that detector
+noise could generate a candidate event with the same, or greater detection
+statistic.
 
 We report on a search using coincident observations between the two Advanced
 LIGO detectors~\cite{TheLIGOScientific:2014jea} in Hanford, WA (H1) and in
@@ -112,8 +111,8 @@ lowest expected neutron star mass, which we assume to be
 $1\,\Msun$~\cite{Miller:2014aaa}. There is no known maximum black hole
 mass~\cite{Belczynski:2014iua}, however we limit this search to binaries with
 a total mass less than $M = m_1 + m_2 \le 100\,\Msun$. The LIGO detectors
-are sensitive to higher mass binaries, however; the results of searches for binaries
-that lie outside this search space will be reported in future publications.
+are sensitive to higher mass binaries, however we do not reported on these searches
+in this chapter.
 \begin{figure}[t]
 \centering
 \includegraphics[width=\textwidth]{figs/chapter2/uberbank_boundaries.pdf}
@@ -139,7 +138,8 @@ spins~\cite{McClintock:2013vwa}. For binary components with masses larger than
 $2 \Msun$, we limit the spin magnitude to less than $0.9895$.  This is set by
 our ability to generate valid template waveforms at higher
 spins~\cite{Taracchini:2013rva}.  Figure~\ref{fig:uberbank_boundaries} shows the
-boundaries of the search parameter space in the component-mass plane.
+boundaries of the search parameter space in the component-mass plane. We will
+investigate binary systems with neutron stars in Chapters $3$ and $6$.
  
 
 Since the parameters of signals are not known in advance, each detector's
@@ -156,7 +156,8 @@ search~\cite{Keppel:2013uma,Usman:2015kfa}. The templates are placed using a com
 geometric and stochastic
 methods~\cite{Harry:2009ea,Brown:2012qf,Privitera:2013xza,Capano:2016uif}
 such that the loss in matched-filter SNR caused by its discrete nature is
-$\lesssim 3$\%.  Approximately 250,000 template waveforms are used to cover
+$\lesssim 3$\%. 
+Approximately 250,000 template waveforms are used to cover
 this parameter space, as shown in Fig.~\ref{fig:uberbank_boundaries}.  The
 performance of the template bank is tested numerically by simulating binary
 black hole waveforms and determining the fraction of the total possible
@@ -169,40 +170,10 @@ than $99$\% of the $10^5$ simulated signals.
 \includegraphics[width=\columnwidth]{figs/chapter2/uberbank_effectualness.pdf} 
 \caption{\label{fig:uberbank_effectualness}
 Cumulative distribution of fitting factors obtained with the template bank for
-a  population of simulated aligned-spin binary black hole signals.  Less than $1\%$ of the
-signals have an matched-filter SNR loss greater than $3\%$, demonstrating that the
+a  population of simulated aligned-spin binary black hole signals.  The horizontal
+red line denotes that less than $1\%$ of simulated 
+signals have a matched-filter SNR loss greater than $3\%$. This demonstrates that the
 template bank has good coverage of the target search space.}
-\end{figure}
-
-The template bank assumes that the spins of the two compact objects are
-aligned with the orbital angular momentum. The resulting templates can
-nonetheless effectively recover systems with misaligned spins in the
-parameter-space region of GW150914. Figure~\ref{fig:precessing_effective_ff}
-shows the effective fitting factor for simulated signals from a population of
-simulated precessing binary black holes that are uniform in co-moving
-volume~\cite{Pan:2013rra,HarryetalInPrep}. The effective fitting factor
-weights the fraction of the matched-filter SNR recovered by the amplitude of
-the signal~\cite{BuonannoChenVallisneri:2003b}. A signal that has a low
-fitting factor may also have a poor orientation. When its strain is projected
-onto the detector, the amplitude of the signal may be too small to detect even
-if there was no mismatch between the signal and the template; the weighting in
-the effective fitting accounts for this.  The effective fitting factor is
-lowest at high mass ratios and low total mass, where the effects of precession
-are more pronounced. In the region close to the parameters of GW150914  the
-aligned-spin template bank is sensitive to a large fraction of precessing
-signals~\cite{HarryetalInPrep}.
-\begin{figure}[t]
-\includegraphics[width=\textwidth]{figs/chapter2/eff_ff_prec.pdf}
-\caption{\label{fig:precessing_effective_ff}
-The effective fitting factor between simulated precessing binary black hole
-signals and the template bank used for the search as a function of
-detector-frame total mass and mass ratio, averaged over each rectangular tile.
-The effective fitting factor gives the volume-averaged reduction in the
-sensitive distance of the search at fixed matched-filter SNR due to mismatch
-between the template bank and signals.  The cross shows the location of
-\TheEvent{}. The high effective fitting factor near GW150914 demonstrates that
-the aligned-spin template bank used in this search can effectively recover
-systems with misaligned spins and similar masses to GW150914.}
 \end{figure}
 
 In addition to possible gravitational-wave signals, the detector strain
@@ -232,7 +203,7 @@ In the \pycbc{} analysis, these data quality vetoes are applied after filtering.
 total of \CatTwoVetoTime{}~hours is removed from the analysis by data quality
 vetoes.  Despite these detector characterization investigations, the data
 still contains non-stationary and non-Gaussian noise which can affect the
-astrophysical sensitivity of the search. Both analyses implement methods to
+astrophysical sensitivity of the search. The \pycbc{} analysis implements methods to
 identify loud, short-duration noise transients and remove them from the strain
 data before filtering.
 
@@ -240,7 +211,7 @@ data before filtering.
 The \pycbc{} analysis calculates the matched-filter SNR for each
 template and each detector's data~\cite{Allen:2005fk,Cannon2010}.  In the
 \pycbc{} analysis, sources with total mass less than 4$\,$\Msun~are modeled by
-computing the inspiral waveform accurate to third-and-a-half post-Newtonian
+computing the inspiral waveform accurate to $3.5$ post-Newtonian
 order~\cite{Blanchet:1995ez,Droz:1999qx,Blanchet:2004ek}.  To model systems
 with total mass larger than 4$\,$\Msun,~we use templates based on the
 effective-one-body (EOB) formalism~\cite{Buonanno:2000ef}, which combines
@@ -250,15 +221,17 @@ perturbation theory and numerical
 relativity~\cite{Taracchini:2013rva,Puerrer:2014fza} to model the complete
 inspiral, merger and ringdown waveform.  The waveform models used assume that
 the spins of the merging objects are aligned with the orbital angular
-momentum. The analysiss then identifies maxima of the matched-filter SNR (triggers)
+momentum. The analysiss then identifies maxima of the matched-filter
+SNR (triggers)
 over the signal time of arrival.
 
-To suppress large SNR values caused by non-Gaussian detector noise, the two
-analyses calculate additional tests to quantify the agreement between the data
+To suppress large SNR values caused by non-Gaussian detector noise, the \pycbc{}\
+ analysis calculates additional signal consistency tests to quantify the agreement between the data
 and the template.  The \pycbc{} analysis calculates a chi-squared statistic to
-test whether the data in several different frequency bands are consistent with
+test whether the data in different frequency bands are consistent with
 the matching template~\cite{Allen:2004gu}.  The value of the chi-squared
-statistic is used to compute a re-weighted SNR for each maxima.
+statistic is used to compute a new detection statistic for each maxima.
+This detection statistic is called the re-weighted SNR or newSNR.
 
 The \pycbc{} analysis enforces coincidence between detectors by selecting trigger pairs
 that occur within a $15\,$ms window and come from the same template.  The
@@ -269,17 +242,16 @@ vetoes prior to computing coincidence. The remaining coincident events are
 ranked based on the quadrature sum of the re-weighted SNR from both
 detectors~\cite{Usman:2015kfa}.
 
-The significance of a candidate event is determined by the search background.
+The statistical significance of a candidate event is determined by the search background.
 This is the rate at which detector noise produces events with a
-detection-statistic value equal to or higher than the candidate event (the
-false alarm rate).  Estimating this background is challenging for two reasons:
+detection statistic value equal to or higher than the candidate event (the
+false alarm rate).  Estimating this background is challenging because 
 the detector noise is non-stationary and non-Gaussian, so its properties must
-be empirically determined; and it is not possible to shield the detector from
-gravitational waves to directly measure a signal-free background.  The
-specific procedure used to estimate the background is different for the two
-analyses.
+be empirically determined. The background estimation is also difficult because
+it is not possible to shield the detector from
+gravitational waves to directly measure a signal-free background.
 
-To measure the significance of candidate events, the \pycbc{} analysis
+To measure the statistical significance of candidate events, the \pycbc{} analysis
 artificially shifts the time\-stamps of one detector's triggers by an offset
 that is large compared to the inter-site propagation time, and a new set of
 coincident events is produced based on this time-shifted data set. For
@@ -287,15 +259,17 @@ instrumental noise that is uncorrelated between detectors this is an effective
 way to estimate the background.  To account for the search background noise
 varying across the target signal space, candidate and background events are
 divided into three search classes based on template length. To account for
-having searched multiple classes, the measured significance is decreased by a
-trials factor equal to the number of classes~\cite{Lyons:1900zz}.  
+having searched multiple classes, the measured statistical significance is decreased by a
+trials factor equal to the number of classes~\cite{Lyons:1900zz}. This is
+is considered a conservative correction factor for Frequentist $p$-values.
 
-The result of the independent analyses are two separate lists of candidate
-events, with each candidate event assigned a p-value and false
-alarm rate. These quantities are used to determine if a gravitational-wave
-signal is present in the search.
+The $p$-value of a candidate event evaluates the probability that detector
+noise could generate a detection statistic at the same level or greater than
+the candidate event's detection statistic. If this $p$-value falls below a
+certain pre-determined threshold the candidate is considered a potential gravitational
+wave signal.
 
-\section{\pycbc{} Analysis}
+\section{\pycbc{} Detection Statistic and Statistical Significance Evaluation}
 \label{s:pycbc}
 
 The \pycbc{} analysis~\cite{Canton:2014ena,Usman:2015kfa,pycbc-github}  uses
@@ -305,19 +279,20 @@ as those used to search for gravitational waves from compact binaries in the
 initial LIGO and Virgo detector
 era~\cite{Abbott:2003pj,Abbott:2005pe,Abbott:2005pf,Abbott:2005kq,Abbott:2007xi,Abbott:2007ai,Abbott:2009tt,Abbott:2009qj,Abadie:2010yba,Colaboration:2011np,Aasi:2012rja,Aasi:2014bqj},
 with the improvements described in Refs.~\cite{Canton:2014ena,Usman:2015kfa}.
-In this Section, we describe the configuration and tuning of the \pycbc{}
+In this Section, we describe the configuration of the \pycbc{}
 analysis used in this search.  To prevent bias in the search result, the
 configuration of the analysis was determined using data taken prior to the
 observation period searched. When GW150914 was discovered by the low-latency
 transient searches~\cite{GW150914-DETECTION}, all tuning of the \pycbc{}
-analysis was frozen to ensure that the reported p-values are
+analysis was frozen to ensure that the reported $p$-values are
 unbiased. No information from the low-latency transient search is used in this
 analysis.
 
 Of the \TotalCoincAfterCATOne~days of data that are used as input to the
 analysis, the \pycbc{} analysis discards times for which either of the LIGO
 detectors is in their observation state for less than $2064$\,s; shorter
-intervals are considered to be unstable detector operation by this analysis
+intervals are considered to be unstable detector operation by the \pycbc{}
+analysis
 and are removed from the observation time. After discarding time removed by
 data-quality vetoes and periods when detector operation is considered unstable
 the observation time remaining is $\OBSDAYS$.
@@ -370,8 +345,8 @@ search. A time-frequency spectrogram of the data at the time of each
 burst-transient veto was inspected to ensure that none of these windows
 contained the signature of an extremely loud binary coalescence.
 \begin{figure}[t]
- \vspace*{-0.15in}
- \hspace*{-0.02\columnwidth}
+% \vspace*{-0.15in}
+% \hspace*{-0.02\columnwidth}
  \subfloat[H1, 16 $\chi^2$ bins]{%
  \includegraphics[height=0.45\textwidth]{figs/chapter2/H1-pycbc_sngl_trig_hists_before.pdf}%
  }
@@ -379,7 +354,7 @@ contained the signature of an extremely loud binary coalescence.
  \includegraphics[trim={0.65in 0 0 0}, clip, height=0.45\textwidth]{figs/chapter2/H1-pycbc_sngl_trig_hists_after.pdf}%
  }
 \\
- \hspace*{-0.02\columnwidth}
+% \hspace*{-0.02\columnwidth}
  \subfloat[L1, 16 $\chi^2$ bins]{%
  \includegraphics[height=0.45\textwidth]{figs/chapter2/L1-pycbc_sngl_trig_hists_before.pdf}%
  }
@@ -388,7 +363,7 @@ contained the signature of an extremely loud binary coalescence.
  }
 \caption{\label{fig:chisq_and_template_bins}
 Distributions of noise triggers over re-weighted SNR $\hat{\rho}$, for
-Advanced LIGO engineering run data taken between September 2 and September 9,
+Advanced LIGO engineering run data taken between September 2nd and September 9th,
 2015.  Each line shows triggers from templates within a given range of
 gravitational-wave frequency at maximum strain amplitude, $f_\text{peak}$.
 Left: Triggers obtained from H1, L1 data respectively, using a fixed number of
@@ -409,17 +384,18 @@ SNR and identifies maxima of $\rho(t)$  with respect to the time of arrival of
 the signal. For each maximum we calculate a chi-squared statistic to determine
 whether the data in several different frequency bands are consistent with the
 matching template~\cite{Allen:2004gu}. Given a specific number of frequency
-bands $p$, the value of the reduced $\chi_r^2$ is given by
+bands $k$, the value of the reduced $\chi^2$, denoted as $\chi_r^2$, is given by
 \begin{equation}
-\chi_r^2 = \frac{p}{2p-2} \frac{1}{\langle h | h \rangle} \sum_{i=1}^p  \left|\langle s | h_i\rangle - \frac{\langle s | h\rangle}{p}\right|^2,
+\chi_r^2 = \frac{k}{2k-2} \frac{1}{\langle h | h \rangle} \sum_{i=1}^k  \left|\langle s | h_i\rangle - \frac{\langle s | h\rangle}{k}\right|^2,
 \label{eqn:pycbc_chisq}
 \end{equation}
 where $h_i$ is the sub-template corresponding to the $i$-th
-frequency band.  Values of $\chi_r^2$ near unity indicate that the signal is
+frequency band.  A reduced chi-squared statistic is defined as the chi-squared statistic
+divided by the number of degrees of freedom. Values of $\chi_r^2$ near unity indicate that the signal is
 consistent with a coalescence. To suppress triggers from noise transients with
 large matched-filter SNR, $\rho(t)$ is re-weighted
 by~\cite{Colaboration:2011np,Babak:2012zx}
-\begin{equation}
+\begin{equation}\label{eqn:pycbc_newsnr}
 \hat{\rho} = \left\{\begin{array}{lr}
 \rho\left/\left[(1+(\chi^2_r)^3)/2\right]^\frac{1}{6}\right., & \text{if } \chi_r^2 > 1, \\
 \rho, & \text{if } \chi_r^2 \le 1.
@@ -433,7 +409,7 @@ and the susceptibility of the analysis to a particular type of noise transient
 can vary across the search space. This is demonstrated in
 Fig.~\ref{fig:chisq_and_template_bins} which shows the cumulative number of
 noise triggers as a function of re-weighted SNR for Advanced LIGO engineering
-run data taken between September 2 and September 9, 2015. The response of the
+run data taken between September 2nd and September 9th, 2015. The response of the
 template bank to noise transients is well characterized by the
 gravitational-wave frequency at the template's peak amplitude,
 $f_\mathrm{peak}$. Waveforms with a lower peak frequency have less cycles in
@@ -449,14 +425,15 @@ Investigations on data from LIGO's sixth science
 run~\cite{AlexNitzThesis,Aasi:2012rja} showed that better noise rejection is
 achieved with a template-dependent number of bins.  The left two panels of
 Fig.~\ref{fig:chisq_and_template_bins} show the cumulative number of noise
-triggers with $p = 16$ bins used in the $\chi^2$ test.  Empirically, we find
+triggers with $k = 16$ bins used in the $\chi^2$ test.  Empirically, we find
 that choosing the number of bins according to
 \begin{equation}
-p=\lfloor 0.4 (f_\mathrm{peak}/\mathrm{Hz})^{2/3}\rfloor
+k =\lfloor 0.4 (f_\mathrm{peak}/\mathrm{Hz})^{2/3}\rfloor
 \label{eq:chisq_bins}
 \end{equation}
 gives better suppression of noise transients in Advanced LIGO data, as shown
-in the right panels of Fig.~\ref{fig:chisq_and_template_bins}.
+in the right panels of Fig.~\ref{fig:chisq_and_template_bins}. Here we use
+the notation $\lfloor \ldots \rfloor$ to denote the floor function.
 
 The \pycbc{} analysis enforces signal coincidence between detectors by
 selecting trigger pairs that occur within a $15\,$ms window and come from the
@@ -468,8 +445,8 @@ of $10$\,s. Any other events in the same time window are discarded.  This
 ensures that a loud signal or transient noise artifact gives rise to at most
 one candidate event~\cite{Usman:2015kfa}. 
 
-The significance of a candidate event is determined by the rate at which
-detector noise produces events with a detection-statistic value equal to or
+The statistical significance of a candidate event is determined by the rate at which
+detector noise produces events with a detection statistic value equal to or
 higher than that of the candidate event. To measure this, the analysis creates
 a ``background data set" by artificially shifting the time\-stamps of one
 detector's triggers by many multiples of $0.1$\,s and computing a new set of
@@ -482,20 +459,20 @@ of the noise background of the analysis.
 To account for the noise background varying across the target signal space,
 candidate and background events are divided into different search classes
 based on template length.  Based on empirical tuning using Advanced LIGO
-engineering run data taken between September 2 and September 9, 2015, we
+engineering run data taken between September 2nd and September 9th, 2015, we
 divide the template space into three classes according to: (i) $\mathcal{M} <
 1.74\,\Msun$; (ii) $\mathcal{M}
 \geq 1.74\,\Msun$ and $f_\mathrm{peak} \geq 220\,$Hz; (iii) $\mathcal{M} \geq 1.74\,\Msun$
-and $f_\mathrm{peak} < 220\,$Hz.  The significance of candidate events is
+and $f_\mathrm{peak} < 220\,$Hz.  The statistical significance of candidate events is
 measured against the background from the same class.  For each candidate
 event, we compute the \fap{}. This is the probability
 of finding one or more noise background events in the observation time with a
-detection-statistic value above that of the candidate event, given
+detection statistic value above that of the candidate event, given
 by~\cite{Usman:2015kfa, Capano:2016uif}
 \begin{equation} 
 \begin{split}
 \label{eq:pycbc_slide_fap}
- \fap(\hat{\rho}_c) \equiv P(\geq 1\;\text{noise event above}\;\hat{\rho}_c|T, T_b) = \\
+ p(\hat{\rho}_c) \equiv Pr(\geq 1\;\text{noise event above}\;\hat{\rho}_c \, | \, T, T_b) = 
  1 - \exp\left[ -T \frac{1+n_b(\hat{\rho}_c)}{T_b} \right],
 \end{split}
 \end{equation}
@@ -511,31 +488,9 @@ relative shifts between detectors) give independent realizations of a counting
 experiment for noise background events. We expect different time shifts to
 yield independent event counts since the $0.1$\,s offset time is greater than
 the $10$\,ms gravitational-wave travel time between the sites plus the $\sim
-1$\,ms autocorrelation length of the templates. To test the independence of
-event counts over different time shifts over this observation period, we
-compute the differences in the number of background events having $\rwRhoC >
-9$ between consecutive time shifts.  Figure~\ref{fig:slide_corr} shows that the
-measured differences on these data follow the expected distribution for the
-difference between two independent Poisson random
-variables~\cite{Skellam:1946}, confirming the independence of time shifted
-event counts. 
-\begin{figure}[!t]
-\hspace*{-0.1in}
-\includegraphics[width=\textwidth]{figs/chapter2/slide_corr.pdf}
-\caption{\label{fig:slide_corr} 
-The distribution of the differences in the number of events between 
-consecutive time shifts, where $C_i$ denotes the number of events in the 
-$i$th time shift.
-The green line shows the predicted distribution for independent Poisson
-processes with means equal to the average event rate per time shift. 
-The blue histogram shows the distribution obtained from time-shifted 
-analyses.  The variance of the time-shifted background distribution is 
-1.996, consistent with the predicted variance of 2. The distribution 
-of background event counts in adjacent time shifts is well modeled by 
-independent Poisson processes.}
-\end{figure}
+1$\,ms autocorrelation length of the templates.
 
-If a candidate event's detection-statistic value is larger than that of any
+If a candidate event's detection statistic value is larger than that of any
 noise background event, as is the case for GW150914, then the \pycbc{}
 analysis places an upper bound on the candidate's $p$-value.
 After discarding time removed by data-quality vetoes and periods when the
@@ -558,10 +513,10 @@ GW150914 was observed on \OBSEVENTDATEMONTHDAYYEAR\ at \OBSEVENTTIME
 ~\OBSEVENTTZ\ as the most significant event by both analyses. The individual
 detector triggers from GW150914 occurred within the 10\,ms inter-site
 propagation time with a combined matched-filter SNR of
-\OBSEVENTAPPROXCOMBINEDSNR. Both pipelines report the same matched-filter SNR
+\OBSEVENTAPPROXCOMBINEDSNR. The \pycbc{}\ analysis finds a matched-filter SNR
 for the individual detector triggers in the Hanford detector
 ($\rho_\textrm{H1} = 20$) and the Livingston detector ($\rho_\textrm{L1} =
-13$).  GW150914 was found with the same template in both analyses with
+13$).  GW150914 was found with the a template with
 component masses $\CBCEventTemplateMassOne\,\Msun$ and
 $\CBCEventTemplateMassTwo\,\Msun$. The effective spin of the best-matching
 template is $\chi_{\text{eff}} = (c/G) (\mathbf{S_1}/m_1 + \mathbf{S_2}/m_2)
@@ -575,9 +530,9 @@ GW150914-PARAMESTIM}.
 The frequency at peak amplitude of the best-matching template is
 $f_{\mathrm{peak}} = \CBCEventPeakFrequency\,$Hz, placing it in
 noise-background class (iii) of the \pycbc{} analysis.
-Figure~\ref{fig:both_results} (left) shows the result of the \pycbc{} analysis
+Figure~\ref{fig:both_results} shows the result of the \pycbc{} analysis
 for this search class.  In the time-shift analysis used to create the noise
-background estimate for the \pycbc{} analysis, a signal may contribute events
+background estimate, a signal may contribute events
 to the background through random coincidences of the signal in one
 detector with noise in the other detector~\cite{Capano:2016uif}.  This can be
 seen in the background histogram shown by the black line. The tail is due
@@ -593,31 +548,36 @@ rate, as described in Sec.~\ref{s:pycbc}. This bound is equal to the number of
 classes divided by the background time $T_b$. With $3$ classes and $T_b =
 \PYCBCBCKLIVETIME$ years, we find the false alarm rate of GW150914 to be less
 than $\CBCEVENTFAR\,\text{yr}^{-1}$. With an observing time of $\OBSHOURS$,
-the $\fap~\CBCEVENTFAPBOUND$.  Converting this
-$p$-value to single-sided Gaussian standard deviations according
-to $-\sqrt{2}\ \mathrm{erf}^{-1}\left[1 - 2(1-\fap)\right]$, where
-$\mathrm{erf}^{-1}$ is the inverse error function, the \pycbc{} analysis
+the $\fap~\CBCEVENTFAPBOUND$.  We can convert this
+$p$-value to single-sided zero-mean, unit-variance Gaussian standard deviations
+using $z=-\sqrt{2}\ \mathrm{erf}^{-1}\left[1 - 2(1-\fap)\right]$, where
+$\mathrm{erf}^{-1}$ is the inverse error function. Here we use $z$
+to denote the z-score or standard score for the single-sided
+Gaussian standard deviation. The \pycbc{} analysis
 measures the significance of GW150914 as greater than \CBCEVENTSIGMA
-$\,\sigma$. 
+$\,\sigma$.
 \begin{figure*}[t!]
 \centering
 \includegraphics[width=\textwidth]{figs/chapter2/pycbc-hist-0p1s-sigmas.pdf}
-\caption{Left: Search results from the \pycbc{} analysis. The histogram shows
-the number of candidate events (orange) and the number of background events
+\caption{The classification scale for estimating the statististical significance of gravitational
+wave candidate events from the \pycbc{} analysis. The histogram shows
+the number of candidate events (orange) found in the analysis. The number
+of background events
 due to noise in the search class where GW150914 was found (black) as a
-function of the search detection-statistic and with a bin width of $\Delta
-\hat{\rho}_c = 0.2$. The significance of GW150914 is greater than
+function of the search detection statistic and with a bin width of $\Delta
+\hat{\rho}_c = 0.2$. The statistical significance of GW150914 is greater than
 {\CBCEVENTSIGMA} $\sigma$.  The scales immediately above the histogram give
-the significance of an event measured against the noise backgrounds in units
-of Gaussian standard deviations as a function of the detection-statistic.  The
+the statistical significance of an event measured at a particular detection statistic
+against the noise backgrounds in
+units of Gaussian standard deviations.  The
 black background histogram shows the result of the time-shift method to
 estimate the noise background in the observation period. The tail in the
 black-line background of the binary coalescence search is due to random
 coincidences of GW150914 in one detector with noise in the other detector. The
-significance of GW150914 is measured against the upper gray scale.  The purple
+statistical significance of GW150914 is measured against the upper gray scale.  The purple
 background histogram is the background excluding coincidences involving
-GW150914 and it is the background to be used to assess the significance of the
-second loudest event; the significance of this event is measured against the
+GW150914 and it is the background to be used to assess the statistical significance of the
+second loudest event, LVT151012. The statistical significance of LVT151012 is measured against the
 upper purple scale.}
 \label{fig:both_results}
 \end{figure*}
@@ -625,9 +585,13 @@ upper purple scale.}
 \begin{figure*}[t]
 \includegraphics[width=\textwidth]{figs/chapter2/combined_single.pdf}
 \caption{\label{fig:pycbc_gstlal_snr_chisq_vs_time}
-PyCBC matched-filter SNR (blue), re-weighted SNR (purple) and $\chi^2$
+\pycbc{}\ matched-filter SNR (blue), re-weighted SNR (purple) and $\chi^2$
 (green) versus time of the best-matching template at the time of \TheEvent.
-The top plot shows the Hanford detector; bottom, Livingston.
+The top plot shows the Hanford detector; bottom, Livingston. The SNR peaks
+at the event time of GW150914. The $\chi^2$ consistency statistic
+tends towards unity at the event time for signals that match the
+expected signal morphology of a gravitational wave. The re-weighted SNR
+is peaks at the event time of of GW150914.
 }
 \end{figure*}
 
@@ -642,7 +606,7 @@ $\hat\rho$ for the best-matching template over a period of $\pm5$\,ms around
 the time of GW150914 (we take the \pycbc{} trigger time in L1 as a reference).
 The matched-filter SNR peaks in both detectors at the time of the event and
 the value of the reduced chi-squared statistic is $\chi^2_\mathrm{H1} = 1$ and
-$\chi^2_\mathrm{L1} = 0.7$ at the time of the event, indicating an excellent
+$\chi^2_\mathrm{L1} = 0.7$ at the time of the event, indicating a high
 match between the template and the data. The re-weighted SNR of the individual
 detector triggers of $\hat{\rho}_\mathrm{H1} = 19.5$ and
 $\hat{\rho}_\mathrm{L1} = 13.3$ are larger than that of any other
@@ -650,8 +614,9 @@ single-detector triggers in the analysis; therefore the significance
 measurement of \CBCEVENTSIGMA $\,\sigma$ set using the $0.1$~s time shifts is
 a conservative bound on the $p$-value of \TheEvent.
 
-The \pycbc{} analysis has shown that the probability that GW150914 was formed by
-random coincidence of detector noise is extremely small. We therefore conclude
+The \pycbc{} analysis has shown that the probability of measuring a detection
+statistic as great or greater than GW150914's detection statistic due
+to a random coincidence of detector noise is extremely small. We therefore conclude
 that GW150914 is a gravitational-wave signal. To measure the signal
 parameters, we use parameter estimation methods that assume the presence of a
 coherent coalescing binary signal in the data from both
@@ -700,14 +665,15 @@ the distance \DISTANCECOMPACTSecondMonday~Mpc.
 
 \newpage
 
-\begin{table*}[t]
-\begin{adjustbox}{angle=90}
+\begin{sidewaystable}
   \centering
-  \begin{tabular}{c|c|c|c|c|c|c|c|c}
-    Event & Time (UTC) & FAR (yr$^{-1}$) & $p$-value & $\mathcal{M}$ $(\Msun)$ & $m_1$ $(\Msun)$ & $m_2$ $(\Msun)$ & $\chi_{\mathrm{eff}}$ & $D_L$ (Mpc) \\
+  \begin{tabular}{c|c|c|c|c|c|c}
     \hline \hline
-    \TheEvent{} & \CBCEventUTCTimeShort & $< \CBCEVENTFAR$ & $\CBCEVENTFAPBOUND$\newline$(> \CBCEVENTSIGMA\,\sigma)$ & \MCSCOMPACT & \MONESCOMPACT & \MTWOSCOMPACT &  \CHIEFFCOMPACT & \DISTANCECOMPACT \\
-    \SECONDMONDAY{} & \CBCSecondEventUTCTimeShort & \CBCSECONDEVENTFAR & $\CBCSECONDEVENTFAP$\newline$(\PyCBCSecondEventSigma\,\sigma)$ &  \MCSCOMPACTSecondMonday & \MONESCOMPACTSecondMonday  & \MTWOSCOMPACTSecondMonday & \CHIEFFCOMPACTSecondMonday & \DISTANCECOMPACTSecondMonday \\
+    Event & Time (UTC) & FAR (yr$^{-1}$) & $p$-value & $\mathcal{M}$ $(\Msun)$ & $\chi_{\mathrm{eff}}$ & $D_L$ (Mpc) \\
+    \hline \hline
+    \TheEvent{} & \CBCEventUTCTimeShort & $< \CBCEVENTFAR$ & $\CBCEVENTFAPBOUND$\newline$(> \CBCEVENTSIGMA\,\sigma)$ & \MCSCOMPACT &  \CHIEFFCOMPACT & \DISTANCECOMPACT \\
+    \SECONDMONDAY{} & \CBCSecondEventUTCTimeShort & \CBCSECONDEVENTFAR & $\CBCSECONDEVENTFAP$\newline$(\PyCBCSecondEventSigma\,\sigma)$ & \MCSCOMPACTSecondMonday & \CHIEFFCOMPACTSecondMonday & \DISTANCECOMPACTSecondMonday \\
+  \hline\hline
   \end{tabular}
 \caption{\label{tab:results}  Parameters of the two most significant events. The false alarm rate (FAR) and
 $p$-value given here were determined by the \pycbc{}
@@ -721,8 +687,7 @@ posteriors for two model waveforms.  Quoted uncertainties are $90\%$ credible
 intervals that include statistical errors and systematic errors from
 averaging the results of different waveform models.  Further parameter
 estimates of \TheEvent{} are presented in Ref.~\cite{GW150914-PARAMESTIM}.
-In the chapter ~\ref{ch:1_OGC} we will investigate how improvements to
+In chapter ~\ref{ch:1_OGC} we will investigate how improvements to
 the \pycbc{} pipeline can improve the statistical significance estimate
 of LVT151012.}
-\end{adjustbox}
-\end{table*}
+\end{sidewaystable}
