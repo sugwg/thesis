@@ -46,7 +46,7 @@ This marginal likelihood is often called the evidence since it summarizes the li
     \mathcal{Z}(\mathbf{d} \, \, \mathrm{H}) = \frac{\int \pi(\vec{\theta}\, | \, \mathrm{H}) \mathcal{L}(\mathbf{d} \, | \, \vec{\theta}, \mathrm{H}) d\vec{\theta}}
                                                     {\int \pi(\vec{\theta} \, | \, \mathrm{H}) d\vec{\theta}} = \langle \mathcal{L}(\mathbf{d} \, | \, \vec{\theta}, \mathrm{H})_{\pi(\vec{\theta} \, | \, \mathrm{H})}.
 \end{equation}
-Here $\langle \mathcal{L}(\mathbf{d} \, | \, \vec{\theta}, \mathrm{H})_{\pi(\vec{\theta} \, | \, \mathrm{H})}$ denotes taking the average of the likelihood with respect to the measure defined by the prior distribution $\pi(\vec{\theta} \, | \, \mathrm{H})$. Thus, if we consider a Monte Carlo simulation where  we draw random samples from the prior distribution, measure the likelihood, and then take the arithmetic mean of this likelihood we will have approximated the marginal likelihood up to some Monte Carlo uncertainty. In practice, this too is impractical in realistic astrophysical applications~\cite{wall2012practical}. We will consider methods that are more effective for estimating the Bayesian evidence in Sections~\ref{sec:ti, sec:ssa}.
+Here $\langle \mathcal{L}(\mathbf{d} \, | \, \vec{\theta}, \mathrm{H})_{\pi(\vec{\theta} \, | \, \mathrm{H})}$ denotes taking the average of the likelihood with respect to the measure defined by the prior distribution $\pi(\vec{\theta} \, | \, \mathrm{H})$. Thus, if we consider a Monte Carlo simulation where  we draw random samples from the prior distribution, measure the likelihood, and then take the arithmetic mean of this likelihood we will have approximated the marginal likelihood up to some Monte Carlo uncertainty. In practice, this too is impractical in realistic astrophysical applications~\cite{wall2012practical}. We will consider methods that are more effective for estimating the Bayesian evidence in Sections~\ref{sec:ti} and~\ref{sec:ssa}.
 
 We can compare two competing hypotheses by calculating the likelihood ratio of the marginal likelihoods for each hypothesis. If the likelihood ratio is greater than unity, then the hypothesis in the numerator predicts the data with higher likelihood than the hypothesis in the denominator. If this likelihood ratio is smaller than unity, then the hypothesis in the numerator predicts the data with lower likelihood than the hypothesis in the denominator. This likelihood ratio test is known as the Bayes factor. For two hypotheses, $\mathrm{H}_A$, and $\mathrm{H}_B$, with marginal likelihoods $\mathcal{Z}(\mathbf{d} \, | \, \mathrm{H}_A)$ and $\mathcal{Z}(\mathbf{d} \, | \, \mathrm{H}_B)$, respectively, the Bayes factor is defined as
 \begin{equation}
@@ -416,18 +416,32 @@ Now that we have established all of the tools that we need for Bayesian hypothes
 
 \section{Prior Distributions for Gravitational Wave Analysis}
 Choosing a set of prior distributions for our Bayesian inference requires
-us to make choices on acceptable distributions of plausible values for parameters that
-describe the physics of gravitational waves from compact binary
-coalescence that we wish to model. Here we briefly describe some considerations when choosing
-prior distributions and the necessary parameters for Bayesian parameter estimation
-for gravitational waves from compact binary coalescences.
+us to make choices on acceptable distributions of plausible values for parameters.
+Choice of these parameters and the probability distributions we want to ascribe
+to them 
+describe the physics of the gravitational waves 
+that we wish to model. Here we briefly describe some considerations when choosing
+prior distributions for Bayesian parameter estimation
+for gravitational waves from compact binary coalescences. The choices of parameters
+that describe gravitational waves have been described in Chapters 2, 3, and 4, although
+not within the context of Bayesian parameter estimation. In this section we
+follow the discussion of the choice of prior distributions for Bayesian parameter
+estimation from~\cite{biwer2019pycbc}. 
 
 There are a number of parameters that describe the gravitational waves
-radiated from a compact binary coalescence. The compact binaries'
-gravitational wave is parametrized by the 
-the component masses $m_{1,2}$ of the binary as well as the three-dimensional spin vectors
-$\vec{s}_{1,2}$ of each of the compact objects~\cite{Hawking:1987en}.
-The waveform observed by the
+radiated from a compact binary coalescence. These parameters
+include, the component masses $m_{1,2}$ of the binary as well as the three-dimensional spin vectors
+$\vec{s}_{1,2}$ of each of the compact objects~\cite{Hawking:1987en}. This gives us
+$8$ intrinsic parameters to describe gravitational waves from compact binary mergers
+such as binary black hole mergers.
+There are additional possible intrinsic
+parameters that we can consider when modeling the physics of binary black hole mergers,
+and there are yet more parameters that we will need to model the physics of compact objects
+with matter such as binary neutron stars and neutron star-black hole binaries. We do not
+consider them in this section.
+
+Additional parameters are needed to describe gravitational waves from compact binary mergers.
+The gravitational waveform observed by an 
 Earth-based detector network depends on six additional parameters: the
 signal's time of arrival $t_\mathrm{coalescence}$, the binary's luminosity distance
 $d_\mathrm{L}$, and four Euler angles that describe the transformation from the
@@ -436,14 +450,15 @@ angles are the binary's right ascension $\alpha$,
 declination $\delta$, a polarization angle $\Psi$, and the inclination angle
 $\iota$. The inclination angle is the angle between the binary's angular momentum axis $\hat{L}$ 
 and the line of
-sight. The convention adopted in \pycbc{}\ for $\iota$ denotes $\iota = 0$ as a
-``face-on'' binary (line of sight parallel to binary angular momentum), $\iota
-= \frac{\pi}{2}$ as an ``edge-on'' binary (line of sight perpendicular to
-binary angular momentum), and $\iota = \pi$ as a ``face-off'' binary (line of
-sight anti-parallel to binary angular momentum).  
+sight. These parameters are typicaly considered as extrinsic parameters since they
+are not properties of the source of the gravitational waves. Bearing all of these
+parameters in mind this brings the dimensionality of the problem of Bayesian inference
+up to $14$.
 
-Binary mergers present a challenging problem for Bayesian inference, because the
-dimensionality of the signal parameter space is large. This is further
+Modeling gravitational waves from compact binaries is
+currently a challenging problem for Bayesian inference due to the dimensionality
+of the signal parameter space.
+This is further
 complicated by degeneracies between many of the signal's parameters. For example, to
 leading order the gravitational waveform depends on the chirp mass
 $\mathcal{M} \equiv (m_1 m_2)^{3/5} / (m_1 + m_2)^{1/5}$~\cite{Peters:1963ux}.
@@ -451,17 +466,17 @@ The mass ratio $q$ enters the waveform at
 higher orders and is more difficult to measure. This results in an
 amplitude-dependent degeneracy between the component
 masses~\cite{Christensen:2001cr}. Similarly, the binary's mass ratio can be
-degenerate with its spin~\cite{Hannam:2013uu}.
+degenerate with its spin~\cite{Hannam:2013uu}. In Chapter 6 of this dissertation
+we will explore difficulties of Bayesian inference due to parameter degeneracy.
 
 Given a set of parameters $\vec{\theta}$, one can obtain a model of the
 gravitational-wave signal from a binary merger using a variety of different
-methods, including: post-Newtonian theory (see e.g. Ref.~\cite{Blanchet2006}
-and references therein), analytic models calibrated against numerical
-simulations~\cite{Buonanno:1998gg,Buonanno:2000ef,Damour:2000we,Damour:2001tu,Ajith:2007qp,Ajith:2009bn,Santamaria:2010yb},
-perturbation theory~\cite{Teukolsky:1972my,Berti:2009kk}, and full numerical
-solution of the Einstein equations (see e.g. Ref.~\cite{Cardoso:2014uka} and
-references therein). The specific choice of waveform model and marginal prior distribution probabilities
-on parameters specify a $\pi(\vec{\theta} \, | \, \mathrm{H})$ for an MCMC analysis.
+waveform modeling methods, including, but not limited to:
+post-Newtonian theory (see e.g. Ref.~\cite{Blanchet2006}
+and references therein) and analytic models calibrated against numerical
+simulations~\cite{Buonanno:1998gg,Buonanno:2000ef,Damour:2000we,Damour:2001tu,Ajith:2007qp,Ajith:2009bn,Santamaria:2010yb}.
+The specific choice of waveform model and marginal prior distribution probabilities
+on parameters specify a $\pi(\vec{\theta} \, | \, \mathrm{H})$ for a Bayesian analysis.
 The decision of what parameters $\vec{\theta}$ and prior $\pi(\vec{\theta} \, | \, \mathrm{H})$ 
 to use depends on the
 physics that we wish to explore in the model. A variety of waveform models are available
@@ -469,18 +484,22 @@ for use in \pycbc{}\ Inference, either directly implemented in \pycbc{}\ or via
 the LIGO Algorithm Library (LAL)~\cite{lal}.
 
 \section{The Likelihood function for Gravitational Wave Analysis}
+In this section we follow the description of the likelihood function
+given in~\cite{biwer2019pycbc}.
 The gravitational wave strain data observed by gravitational-wave detector networks
-enters Bayes' theorem through the likelihood $\mathcal{L}(\mathbf{d} | \vec{\theta})$
+enters Bayes' theorem through the likelihood $\mathcal{L}(\mathbf{d} \, | \, \vec{\theta})$
  in Eq.~(\ref{eqn:BayesTheorem_PE}).
 Currently, \pycbc{}\ Inference assumes that each detector produces stationary,
 Gaussian noise $n_{i}(t)$ that is uncorrelated between the detectors in the
 network. The observed data is then $d_{i}(t) = n_{i}(t) + s_{i}(t)$, where
-$s_i(t)$ is the gravitational waveform observed in the $i$-th detector.  For
-detectors that are not identical and co-located (as in the case of the Advanced LIGO-Virgo network), each detector observes a slightly different waveform due to their different antennae patterns which are functions of the sky position (right ascension and declination) and polarization~\cite{Wahlquist:1987rx}.
+$s_i(t)$ is the gravitational waveform observed in the $i$th detector.  For
+detectors that are not identical and co-located (as in the case of the Advanced LIGO-Virgo network),
+each detector observes a slightly different waveform due to their different antennae patterns
+which are functions of the sky position (right ascension and declination) and polarization~\cite{Wahlquist:1987rx}.
 
 Under these assumptions, the appropriate form of $\mathcal{L}(\mathbf{d} \, | \, \vec{\theta})$
 is the likelihood for a signal of known morphology in Gaussian noise (see
-e.g.  Ref.~\cite{Wainstein:1962} for its derivation), which is
+e.g.  Ref.~\cite{wainstein:1962} for its derivation), which is
 given by
 \begin{equation}\label{eqn:likelihood}
     \mathcal{L}(\mathbf{d} \, | \, \vec{\theta}) \propto \exp \left[ -\frac{1}{2} \sum_{\limit i = 1}^{\limit N} \left \langle \tilde{n}_{i}(f) | \tilde{n}_{i}(f)\right\rangle \right] \\ 
@@ -488,7 +507,7 @@ given by
 \end{equation}
 where $N$ is the number of detectors in the network. The constant of proportionality for this Gaussian likelihood
 is not important for Bayesian inference under MCMC simulation since the constant drops out
-when proposals are made by the MCMC for how to traverse the parameter space of the prior distribution~\cite{cbiwer_thesis}.
+when proposals are made by the MCMC for how to traverse the parameter space~\cite{cbiwer_thesis}.
 This proportionality constant also cancels out when calculating Bayes factors.
 The inner product $\langle\tilde{a} \, | \, \tilde{b}\rangle$ is
 \begin{equation}
@@ -499,11 +518,10 @@ $S^{(i)}_n(f)$ is the power spectral density of the of the $i$th
 detector's noise. Here, $\tilde{d}_{i}(f)$ and $\tilde{n}_{i}(f)$ are the
 frequency-domain representations of the data and noise, obtained by a Fourier
 transformation of $d_{i}(t)$ and $n_{i}(t)$, respectively. The model waveform
-$\tilde{s}_{i}(f, \vec{\theta})$ may be computed directly in the frequency
-domain, or in the time domain and then Fourier transformed to the frequency
-domain. For a specified prior distribution on parameters,
+$\tilde{s}_{i}(f, \vec{\theta})$ is the waveform in the frequency domain.
+For a specified prior distribution on parameters,
 \pycbc{}\ Inference calculates Eq.~(\ref{eqn:likelihood}) and
-completes Bayesian inference for estimating posterior distributions and
+completes Bayesian inference for estimating parameter posterior distributions and
 estimating Bayesian evidences.
 
 \newpage
