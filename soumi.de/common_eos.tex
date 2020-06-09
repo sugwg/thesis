@@ -1,0 +1,292 @@
+We use gravitational-wave observations of the binary neutron star merger GW170817 to explore the tidal deformabilities and radii of neutron stars.
+We perform Bayesian parameter estimation with the source location and distance informed by electromagnetic observations. We also assume that the two stars have the same equation of state; we demonstrate that for stars with masses comparable to the component masses of GW170817, this is effectively implemented by assuming that the stars' dimensionless tidal deformabilities are determined by the binary's mass ratio $q$ by $\Lambda_1/\Lambda_2 = q^6$. We investigate different choices of prior on the component masses of the neutron stars. We find that the tidal deformability and 90\% credible interval is $\tilde{\Lambda}=222^{+420}_{-138}$ for a uniform component mass prior, $\tilde{\Lambda}=245^{+453}_{-151}$ for a component mass prior informed by radio observations of Galactic double neutron stars, and $\tilde{\Lambda}=233^{+448}_{-144}$ for a component mass prior informed by radio pulsars. We find a robust measurement of the common areal radius of the neutron stars across all mass priors of $8.9 \le \hat{R} \le 13.2$~km, with a mean value of $\langle \hat{R} \rangle = 10.8$~km. Our results are the first measurement of tidal deformability with a physical constraint on the star's equation of state and place the first lower bounds on the deformability and areal radii of neutron stars using gravitational waves.
+
+\section{Introduction}
+
+On August 17, 2017 LIGO and Virgo observed gravitational waves from a binary neutron star coalescence, GW170817~\cite{TheLIGOScientific:2017qsa}.
+This observation can be used to explore the equation of state (EOS) of matter at super-nuclear densities~\cite{thorne.k:1987,Read:2009yp}. This information is encoded as a change in gravitational-wave phase evolution caused by the tidal deformation of the  neutron stars~\cite{Flanagan:2007ix}. 
+At leading order, the tidal effects are imprinted in the gravitational-wave signal through the binary tidal deformability~\cite{Flanagan:2007ix,Hinderer:2007mb}
+\begin{equation}
+\tilde{\Lambda}
+= \frac{16}{13}\frac{(12q+1)\Lambda_1+(12+q)q^4\Lambda_2}{(1+q)^5}, \label{eq:lambda_t0}
+\end{equation}
+where $q = m_2/m_1 \leq 1$ is the binary's mass ratio [cf. Eq.~(34) of Ref.~\cite{Gralla:2017djj}]. The deformability of each star is
+\begin{equation}
+\Lambda_{1,2}=\frac{2}{3}k_2\left(\frac{R_{1,2}c^2}{Gm_{1,2}}\right)^5, \label{eq:lambda_12}
+\end{equation}
+where $k_2$ is the tidal Love number~\cite{Flanagan:2007ix,Hinderer:2007mb}, which depends on the star's mass and the EOS. $R_{1,2}$ and $m_{1,2}$ are the areal radii and masses of the neutron stars, respectively. 
+
+In the results of Ref.~\cite{TheLIGOScientific:2017qsa},
+the priors on $\Lambda_{1,2}$ are taken to be completely uncorrelated,
+which is equivalent to assuming that each star may have a different
+EOS. Here, we reanalyze the gravitational-wave data using Bayesian
+inference \cite{Biwer:2018osg,alex_nitz_2018_1208115,emcee} to measure the tidal deformability, using a
+correlation between $\Lambda_1$ and $\Lambda_2$ which follows from the
+assumption that both stars have the same EOS.  We repeat
+our analysis without the common EOS constraint and calculate the 
+Bayes factor that compares the evidences for these two models.
+We also fix the sky position and
+distance from electromagnetic observations~\cite{Soares-Santos:2017lru,Cantiello:2018ffy}.
+We study the effect of
+the prior for the component masses by performing analyses with three
+different priors: the first is uniform between 1 and $2M_\odot$, the
+second is informed by radio observations of double neutron star
+binaries, and the third is informed by the masses of isolated pulsars~\cite{Ozel:2016oaf}.
+
+\section{The common equation of state constraint}\label{sec:ceos_constraint}
+
+To explore imposing a common EOS constraint, we employ a piecewise polytrope scheme ~\cite{Lattimer:2015nhk} to simulate thousands of equations of state.  Each EOS obeys causality, connects at low densities to the well-known EOS of neutron star crusts~\cite{Lattimer:2012nd}, is constrained by experimental and theoretical studies of the symmetry properties of matter near the nuclear saturation density, and satisfies the observational constraint for the maximum mass of a neutron star, $m_\mathrm{max}\ge2M_\odot$~\cite{Antoniadis:2013pzd}. Figure~\ref{fig:lam-mass} shows the results of Tolman-Oppenheimer-Volkoff (TOV) integrations~\cite{Oppenheimer:1939ne,Postnikov:2010yn} to determine $\Lambda$ as functions of $m$, $R$, and the EOS. Each configuration is color coded according to its
+radius. In the relevant mass range, $\Lambda$ generally varies as
+$m^{-6}$. For a given mass $m$, there is an inherent spread of about a factor of ten in $\Lambda$, which is correlated with $R^6$. We find that the star's tidal deformability is related to its compactness parameter 
+$\beta=Gm/(Rc^2)$ by the relation $\Lambda~\simeq a\beta^{-6}$. We find that $a=0.0093\pm0.0007$ bounds this relation if $1.1M_\odot\le m\le1.6M_\odot$
+(note that this is a bound, not a confidence interval). The additional power of $\beta^{-1}$ in the $\Lambda-\beta$ relation, relative to $\beta^{-5}$ in Eq.~(\ref{eq:lambda_12}), originates because the dimensionless tidal Love number, $k_2$, varies roughly as $\beta^{-1}$ for masses $\geq$
+$1M_\odot$, although this is not the case for all masses~\cite{Postnikov:2010yn}. For $m\to0$ we see that $k_2\to0$ so that $k_2$ is proportional to $\beta$ with a positive power, but since neutron stars with $m < 1\,M_\odot$ are physically unrealistic, that domain is not pertinent to this Letter.
+
+We observed that, for nearly every specific EOS, the range of stellar radii in the mass range of interest for GW170817 is typically small. As long as $m_{\rm max}\ge 2M_\odot$, the piecewise polytrope study reveals $\langle \Delta R \rangle =-0.070$ km and $\sqrt{\langle(\Delta R)^2\rangle}~=0.11$ km, where $\Delta R \equiv R_{1.6}-R_{1.1}$ with $R_{1.1,1.6}$ the radii of stars with $m=1.1$ and $m=1.6M_\odot$, respectively. Therefore, for masses relevant for GW170817, each EOS assigns a common value of $\hat R$ to stellar radii with little sensitivity to the mass. We can combine the relations $\Lambda~\simeq a\beta^{-6}$ and $R_1=R_2$ to find the simple prescription $\Lambda_1=q^6\Lambda_2$. We impose the common EOS constraint in our analysis using this relation. The exponent of $q$ changes with chirp mass $\mathcal{M}$ and for $\mathcal{M} > 1.5\,M_\odot$ this relation has to be modified. However, this is not relevant for the study of GW170817.
+
+\begin{figure}[t]
+  \includegraphics[width=\columnwidth]{figures/common_eos/lam-mass.png}
+  \caption{The tidal deformability $\Lambda$ as a function of mass for physically realistic polytropes. A TOV integration with each EOS parameter set results in a series of values of $\Lambda(m)$ that are shown as points colored by their radii $R$. Dashed curves are lower bounds to $\Lambda$ for a given mass $m$ which vary depending on the assumed lower limit to the neutron star maximum mass, $m_\mathrm{max}$.  All values of $m_\mathrm{max}$ produce the same upper bound. \label{fig:lam-mass}}
+\end{figure}
+
+
+
+\section{Implications for the neutron star radius}
+
+The common EOS constraint allows us to show that the binary tidal deformability $\tilde\Lambda$ is essentially a function of the chirp mass ${\cal{M}}$, the common radius $\hat R$, and the mass ratio $q$, but that its dependence on $q$ is very weak. Substituting the expressions $\Lambda~\simeq a\beta^{-6}$ and $R=\hat R$ into Eq. (\ref{eq:lambda_t0}), we find
+\begin{equation}
+\tilde{\Lambda}=
+\frac{16a}{13}
+\left(
+\frac{\hat{R}c^2}{G{\cal M}}
+\right)^6 f(q).
+\label{eq:lambda_t1}\end{equation}
+where $f(q)$ is very weakly dependent on $q$:
+\begin{equation}
+f(q)=q^{8/5}(12-11q+12q^2)(1+q)^{-26/5}.
+\end{equation}
+For example, if we compare a binary with $q = 0.75$ to an equal mass binary, we find $f(0.75)/f(1)=1.021$. As long as $q\ge0.6$, valid for $1M_\odot\le m\le 1.6 M_\odot$ for both stars, we infer from Eq.~(\ref{eq:lambda_t1}),
+\begin{equation}
+\tilde{\Lambda}=a^\prime\left(\frac{\hat{R}c^2}{G{\cal M}}\right)^6,
+\label{eq:lambda_t2}\end{equation}
+where $a^\prime=0.0042\pm0.0004$. Section \ref{sec:ceos_radius} shows TOV integrations for a range of EOS that validate this relationship. For stars with masses comparable to GW170817, the common radius $\hat R$ can be found from the inversion of Eq. (\ref{eq:lambda_t2}),
+\begin{equation}
+\hat R\simeq R_{1.4}\simeq (11.2\pm0.2)\frac{\cal M}{M_\odot}\left(\frac{\tilde{\Lambda}}{800}\right)^{1/6}{\rm~km}.
+\label{eq:rhat}\end{equation}
+The quoted errors originate from the uncertainties in $a$ and $q$, and amount, in total, to 2\%.
+
+\section{Parameter estimation}
+\subsection{Summary of methods}\label{sec:pe_methods_ceos_summ}
+We use Bayesian inference to measure the parameters of GW170817 \cite{Christensen:2001cr}. We calculate the posterior probability density function, $p(\vec{\theta}|\vec{d}(t),H)$, for the set of parameters $\vec{\theta}$ for the gravitational-waveform model, $H$, given the LIGO Hanford, LIGO Livingston, and Virgo data $\vec{d}(t)$~\cite{Vallisneri:2014vxa,gw170817-losc}
+\begin{equation}
+p(\vec{\theta}|\vec{d}(t),H) = \frac{p(\vec{\theta}|H) p(\vec{d}(t)|\vec{\theta},H)}{p(\vec{d}(t)|H)}.
+\label{eq:postpdf}
+\end{equation}
+The prior, $p(\vec{\theta}|H)$, is the set of assumed probability distributions for the waveform parameters. The likelihood $p(\vec{d}(t)|\vec{\theta},H)$ assumes a Gaussian model for the detector noise~\cite{Rover:2006bb}. Marginalization of the likelihood to obtain the posterior probabilities is performed using Markov Chain Monte Carlo (MCMC) techniques using the PyCBC inference software \cite{Biwer:2018osg,alex_nitz_2018_1208115} and the parallel-tempered EMCEE sampler \cite{emcee,vousden:2016,mcmc}. We fix the sky location and distance to GW170817~\cite{Soares-Santos:2017lru,Cantiello:2018ffy} and calculate the posterior probabilities for the remaining source parameters. Following Ref.~\cite{TheLIGOScientific:2017qsa}, the waveform model $H$ is the restricted TaylorF2 post-Newtonian aligned-spin model \cite{Sathyaprakash:1991mt,Buonanno:2009zt,Arun:2008kb,Mikoczi:2005dn,Bohe:2013cla,Vines:2011ud}.
+Technical details of our parameter estimation and a comparison to Fig.~5 of Ref~\cite{TheLIGOScientific:2017qsa} are provided in Section \ref{sec:pe_methods_ceos_tech_details}.%as Supplemental Material~\cite{supp}.
+
+To implement the common EOS constraint we construct the priors on $\Lambda_{1,2}$ according to
+\begin{equation}
+\Lambda_1=q^3\Lambda_s,\qquad\Lambda_2=q^{-3}\Lambda_s,
+\label{eq:lambdas}\end{equation}
+where $\Lambda_s \sim U[0,5000]$. We discard draws with 
+$\tilde{\Lambda} > 5000$, since these values are beyond the range of all plausible EOS. The resulting prior on $\tilde\Lambda$ is uniform between $0$ and $5000$.  We also perform analyses that do not assume the common EOS constraint where we allow completely uncorrelated priors for $\Lambda_{1,2}$. This allows us to compare the evidences between these hypotheses. For the uncorrelated $\Lambda_{1,2}$ analyses, the prior for $\Lambda_1 \sim U[0,1000]$ and $\Lambda_2 \sim U[0,5000]$ with these intervals set by the range of plausible equations of state in the mass range of interest, our convention of $m_1 \geq m_2$, and discarding draws with $\tilde\Lambda > 5000$.
+
+\iffalse
+\begin{figure*}[t]
+  \includegraphics[width=\textwidth]{figures/common_eos/Lambda1_2_contours_no1D_w_q_moreiter.pdf}
+  \caption{Posterior probability densities for $\Lambda_{1,2}$ with the common EOS constraint using uniform (left), double neutron stars (middle), and Galactic neutron stars (right) component mass priors. The 50$\%$ and 90$\%$ credible region contours are shown as solid curves. Overlaid are contours of $\tilde{\Lambda}$ (in magenta) and $q$ (in gray). The values of $\Lambda_1$ and $\Lambda_2$ forbidden by causality have been excluded from the posteriors.
+\label{fig:lamb12_1abc}
+%
+%\vspace*{-0.3cm}%
+}
+\end{figure*}
+\fi 
+
+The choice of mass prior can have an impact on the recovery of the tidal deformability~\cite{Agathos:2015uaa}. To investigate this, we carry out our parameter estimation analyses using three different priors on the binary's component masses. First, we assume a uniform prior on each star's mass, with $m_{1,2} \sim U[1,2]\, M_\odot$. Then, we assume a Gaussian prior on the component masses $m_{1,2} \sim N(\mu = 1.33, \sigma = 0.09)\, M_\odot$, which is a fit to masses of neutron stars observed in  double neutron star systems~\cite{Ozel:2016oaf}. The third prior assumes that the component masses are drawn from a fit to the observed mass distributions of recycled and slow pulsars in the Galaxy with $m_1 \sim N(\mu = 1.54, \sigma = 0.23)\, M_\odot$ and $m_2 \sim N(\mu = 1.49, \sigma = 0.19)\, M_\odot$~\cite{Ozel:2016oaf}. We impose the constraint $m_1 \geq m_2$ which leads to $\Lambda_2 \geq \Lambda_1$. For all our analyses, the prior on the component spins is $\chi_{1,2} \sim U[-0.05,0.05]$, consistent with the expected spins of field binaries when they enter the LIGO-Virgo sensitive band~\cite{Brown:2012qf}.
+
+\subsection{Technical details}\label{sec:pe_methods_ceos_tech_details}
+To measure the source parameters for GW170817, we performed parameter estimation on the Advanced LIGO-Virgo data available at the LIGO Open Science Center \cite{Vallisneri:2014vxa,gw170817-losc}. 
+Our analysis was performed with the \textit{PyCBC Inference} software \cite{Biwer:2018osg,alex_nitz_2018_1208115} and the parallel-tempered \textit{emcee} sampler \cite{emcee,vousden:2016} for sampling over the parameter space using Markov Chain Monte Carlo (MCMC) techniques \cite{mcmc}. 
+
+The LOSC data files include a post-processing noise subtraction performed by the LIGO-Virgo Collaboration \cite{gw170817-losc,gw170817-noise}. The LOSC documentation states that these data have been truncated to remove tapering effects due to the cleaning process \cite{gw170817-losc}, however the LOSC data shows evidence of tapering after GPS time $1187008900$ in the LIGO Hanford detector. To avoid any contamination of our results we do not use any data after GPS time $1187008891$. The power spectral density (PSD) used to construct the likelihood was calculated using Welch's method \cite{1161901} with 16~second Hann-windowed segments (overlapped by 8~s) taken from GPS time $1187007048$ to $1187008680$. The PSD estimate is truncated to 8~s length in the time domain using the method described in Ref. \cite{Allen:2005fk}. The gravitational-wave data used in the likelihood is taken from the interval $1187008691$ to $1187008891$. 
+
+Ref.~\cite{Abbott:2018wiz} found that choice of the low-frequency cutoff can have an effect on the measurement of the neutron star tidal deformability and used a different power spectral density estimation technique to that used in our analysis~\cite{Littenberg:2014oda}. We investigated the effect of changing our estimate of the power spectral density with the power spectral density released as supplemental materials to Ref.~\cite{Abbott:2018wiz}. We find that the change in parameter measurements is smaller than the statistical errors, and conclude that the choice of power spectral density estimation technique does not affect our results. To investigate the choice of low-frequency cutoff, we computed the measurabilities of the chirp mass $\mathcal{M}$, signal-to-noise ratio $\rho$, and binary deformability $\tilde{\Lambda}$ in the frequency range 10-2000~Hz. These are defined as the integrand as a function of frequency of the noise moment integrals $I_{\mathrm 10}$, $I_{\mathrm 0}$, and $I_{\mathrm -10}$ (see Ref.~\cite{Damour:2012yf}) and shown in Fig.~\ref{fig:measurability}. It can be seen that the signal-to-noise ratio is non-zero down to a frequency of $\sim$ 20~Hz for all the three detectors. While detector sensitivity at this frequency does not affect the measurability of $\tilde\Lambda$, it does affect the measurability of the chirp mass $\mathcal{M}$. We repeated our analyses at 25~Hz, 23~Hz, and 20~Hz, and found an improvement in the $\mathcal{M}$ measurement when extending until the low-frequency cutoff was 20~Hz. Consequently, we evaluated the likelihood from a low-frequency cutoff of 20~Hz to the Nyquist frequency of 2048~Hz. The improved measurement of $\mathcal{M}$ eliminates regions of higher $\tilde{\Lambda}$ values from the posterior probability densities, and hence better constrains the measurement of this parameter, as shown in Fig~\ref{fig:posterior_overlap}.
+
+\begin{figure}[t]
+  \includegraphics[width=14cm]{figures/common_eos/measurability_plots.png}
+  \caption{Measurability~\cite{Damour:2012yf} of the chirp mass $\mathcal{M}$, SNR $\rho$ and binary deformability $\tilde{\Lambda}$ in the frequency range 10 Hz - 2000 Hz. Each detector's parameter measurability is scaled to the maximum frequency to show the relative accumulation of measurement over the detector's frequency band. Note that between detectors, L1 is more sensitive than H1, which is more sensitive than V1. Measurability of chirp mass is accumulated primarily at low frequencies, whereas measurability of tidal deformability is accumulated at higher frequencies. We extend computation of the likelihood down to $20$~Hz where the measured signal-to-noise ratio (the logarthim of the likelihood) drops to zero in all three detectors. 
+  \label{fig:measurability}}
+\end{figure}
+
+The templates for the waveforms used in our parameter estimation analysis are generated using the restricted TaylorF2 waveform model, a Fourier domain waveform model generated using stationary phase approximation. We use the implementation from the LIGO Algorithm Library (LAL)~\cite{lal} accurate to 3.5 post-Newtonian (pN) order in orbital phase \cite{Buonanno:2009zt}, 2.0 pN order in spin-spin, quadrupole-monopole and self-spin interactions\cite{Arun:2008kb,Mikoczi:2005dn}, and 3.5 pN order in spin-orbit interactions \cite{Bohe:2013cla}. The tidal corrections enter at the 5 pN and 6 pN orders~\cite{Vines:2011ud}. The waveforms are terminated at twice the orbital frequency of a test particle at the innermost stable circular orbit of a Schwarzschild black hole of mass $M = m_1 + m_2$, where $m_{1,2}$ are the masses of the binary's component stars. The TaylorF2 model assumes that the spins of the neutron stars are aligned with the orbital angular momentum. Binary neutron stars formed in the field are expected to have small spins, and precession of the binary's orbital plane is not significant~\cite{Brown:2012qf}. 
+
+We fix the sky location of the binary to the right ascension RA =  $197.450374^\circ$ and declination Dec = $-23.381495^\circ$ \cite{Soares-Santos:2017lru} for all of our runs. We also fix the luminosity distance of NGC\,4993 $d_L = 40.7$~Mpc~\cite{Cantiello:2018ffy}. The small error in the known distance of NGC\,4993 produces errors that are much smaller than the errors in measuring the tidal deformability. We have checked that including the uncertainty in the distance error does not affect our conclusions of the tidal deformabilities or radius. The MCMC computes the marginalized posterior probabilities for the remaining source parameters: chirp mass $\mathcal{M}$, mass ratio $q$, the component (aligned) spins $\chi_{1,2} = c J_{1,2}/G m_{1,2}^2$, component tidal deformabilities $\Lambda_{1,2}$, polarization angle $\psi$, inclination angle $\iota$, coalescence phase $\phi_c$, and coalescence time $t_c$. When generating the waveform in the MCMC, each $m_{1, 2}$ draw follows the constraint $m_1 \geq m_2$, and the masses are transformed to the detector frame chirp mass $\mathcal{M}^\mathrm{det}$ and $q$ with a restriction $1.1876 \le \mathcal{M}^\mathrm{det} \le 1.2076$.
+
+\begin{figure}[b]
+\includegraphics[width=\textwidth]{figures/common_eos/lambda1_2_3x_ul.pdf}
+\caption{Posterior probability density function for $\Lambda_1$, $\Lambda_2$ from unconstrained $\Lambda_{1,2} \sim U[0, 3000]$, $m_{1,2} \sim U[1, 2]$ M$_\odot$, $1.1876 \leq \mathcal{M} \leq 1.2076$, $m_1 \geq m_2$, 30~Hz low-frequency cutoff analysis. The black dotted lines show 50\% and 90\% upper limits from our analysis. The red dotted lines show 50\% and 90\% upper limits from the LIGO-Virgo analysis \cite{TheLIGOScientific:2017qsa}. } 
+\label{fig:lv_compare}
+\end{figure}
+
+For direct comparison with the results of Ref.~\cite{TheLIGOScientific:2017qsa}, Fig~\ref{fig:lv_compare} shows the posterior probability densities for $\Lambda_{1,2}$ for an MCMC using a $30$~Hz low-frequency cutoff for the uniform component mass prior $m_{1,2} \sim U[1,2]\, M_\odot$, and assuming that the priors on $\Lambda_{1,2}$ are completely uncorrelated ($\Lambda_{1,2} \sim U[0,3000]$). No cut is placed on $\tilde\Lambda$ in this analysis. We have digitized the 50\% and 90\% contours from Fig.~5 of Ref.~\cite{TheLIGOScientific:2017qsa} and compared them to 50\% and 90\% upper limit contours for our result computed using a radial binning to enclose 50\% and 90\% of the posterior probability starting from $\Lambda_1 = \Lambda_2 = 0$. The 90\% contours agree well, with a slight difference in the 50\% contours. Given the accuracy of measuring the tidal deformability, this difference can 
+be attributed to small differences in the technical aspects of our analysis compared to that of Ref.~\cite{TheLIGOScientific:2017qsa}. We note that the 90\% confidence contour of Fig.~5 in Ref.~\cite{TheLIGOScientific:2017qsa} with $\Lambda_1=\Lambda_2$, passes through $\tilde\Lambda \approx 1100$. If we impose $\Lambda_1=q^6 \Lambda_2$, then this contour continues to follow $\tilde\Lambda \approx 1100$ for $q \leq 1$. We interpret the difference between this result and the result of Table~I of Ref.~\cite{TheLIGOScientific:2017qsa} $\tilde\Lambda \le 800$ (90\% confidence) as being due to a different choice of prior on $\tilde\Lambda$ (one non-uniform and one uniform).
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth,height=7cm,width=8.5cm]{figures/common_eos/prior_lambdatilde.pdf}
+\caption{Comparison of the prior probability distributions on $\tilde\Lambda$ for the three mass priors imposing the common EOS constraint: uniform (purple), double neutron stars (red), galactic neutron stars (green) with a prior in $\Lambda_{1,2} \sim U[0, 3000]$ and $m_{1,2} \sim U[1, 2] M_\odot$, $m_1 \geq m_2$ without the common EOS constraint (blue). The priors in the common EOS analysis are uniform across the region of interest.} 
+\label{fig:lambda_priors}
+\end{figure}
+
+
+Our common equation of state constraint is implemented in the MCMC by drawing a variable $\Lambda_s \sim U[0,5000]$, drawing the component masses from their respective priors and computing
+\begin{equation}
+\Lambda_1=q^3\Lambda_s,\qquad\Lambda_2=q^{-3}\Lambda_s,
+\label{eq:lambdas_supp}\end{equation}
+with draws that have $\tilde\Lambda > 5000$ discarded. This produces a prior that is uniform in $\tilde\Lambda$ between 0 and 5000, as shown in Fig.~\ref{fig:lambda_priors} for all of our three mass priors discussed in Section \ref{sec:pe_methods_ceos_summ}. For comparison, we also show the prior on $\tilde\Lambda$ computed assuming independent $\Lambda_{1,2} \sim U[0,3000]$ and the component mass prior $m_{1,2}\sim U[1,2]\,M_\odot$. It can be seen that this prior vanishes as $\tilde\Lambda \rightarrow 0$ and so can bias the posterior at low values of   $\tilde\Lambda$. In addition to the physical requirement of a common EOS constraint, the prior used in the common EOS analysis is uniform as $\tilde\Lambda \rightarrow 0$, allowing us to fully explore likelihoods in this region, and set lower bounds on our credible intervals.
+
+%SOUMI: Inserted from Supp Materials
+\section{The common neutron star radius}\label{sec:ceos_radius}
+
+To validate the relationship
+\begin{equation}
+\tilde{\Lambda}=a^\prime\left(\frac{\hat{R}c^2}{G{\cal M}}\right)^6,
+\label{eq:lambda_t2_supp}\end{equation}
+where $a^\prime=0.0042\pm0.0004$, we perform Tolman-Oppenheimer-Volkoff (TOV) integrations~\cite{Oppenheimer:1939ne} as described in Section \ref{sec:ceos_constraint}.
+\begin{figure}[b]
+  \includegraphics[width=\columnwidth]{figures/common_eos/lambdatilde_mchirp.png}
+  \caption{The dimensionless binary tidal deformability $\tilde \Lambda$ as a function of chirp mass $\cal{M}$ for piecewise polytropes with parameters bounded by causality, neutron matter studies and nuclear experiments. Various binary mass combinations with each equation of state result in many points which are color-coded according to that equation of state's value of $R_{1.4}$.  The values of $\tilde\Lambda(\cal{M})$ are bounded according to the assumed value of the maximum neutron star mass, $m_\mathrm{max}$. \label{fig:lambar-mass}}
+\end{figure}
+
+The relationship between $\tilde\Lambda$, chirp mass ${\cal M}$ and the common radius $\hat R$ closely resembles the relation between $\Lambda$, the neutron star mass $m$ and radius $R$. We confirm this using piecewise polytropes as shown in Fig.~\ref{fig:lambar-mass}, which was prepared using the results computed to create Fig.~1 in Section \ref{sec:ceos_constraint}. A single mass-radius curve is generated for each equation of state containing $N$ masses between $1M_\odot$ and $m_\mathrm{max}$ for that EOS. $N(N-1)$ values of $\tilde\Lambda$ and $\cal{M}$ are then computed for all the unique combinations of $m_1$ and $m_2$ from these $N$ masses. The resulting points are plotted in Fig.~\ref{fig:lambar-mass}, and are color-coded by that equation of state's value of $R_{1.4}$. The process is repeated for all combinations of the parameters controlling the piecewise polytropic EOS described in \cite{Lattimer:2015nhk}. For the entries bounded by $0.9 M_\odot\le~{\cal M} \le~1.3M_\odot$, an interval including GW170817, Eq. (\ref{eq:lambda_t2_supp}) is determined by finding the upper and lower bounds of $a^\prime=\tilde\Lambda[G{\cal M}/(R_{1.4}c^2)]^6$.
+
+\begin{figure}[t]
+  \includegraphics[width=\textwidth]{figures/common_eos/lamb6.png}
+  \caption{$\Lambda \beta^{6}$ as a function of neutron star mass $m$ for physically realistic polytropes. The curves show lower bounds to $\Lambda$ for a given mass $m$ for different assumed lower limits to the neutron star maximum mass, $m_\mathrm{max}$. The curves are colored by $m_\mathrm{max}$. All values of $m_\mathrm{max}$ produce the same upper bound. \label{fig:lam-beta6}}
+\end{figure}
+
+The numerical results also confirmed our value for $a^\prime$. This is valid for values of $\mathcal{M} < 1.3 M_\odot$, which is relevant not only for GW170817 but also for all known double neutron star binaries, which are clustered in the narrow range $1.09M_\odot<{\cal M}<1.25M_\odot$ \cite{Tauris:2017omb,Ozel:2016oaf,Lattimer:2012nd}. The robustness of $\tilde{\Lambda}\propto\beta^{-6}$ confirms that the assumption $R_1=R_2$ is a valid proposition. To justify the degree of correlation in the $\Lambda~\simeq a\beta^{-6}$ that we established in Section \ref{sec:ceos_constraint}, we show in Fig.~\ref{fig:lam-beta6} the dependence of $\Lambda \beta^{6}$ on $m$. The variation of $\Lambda \beta^{6}$ is negligible in the mass range relevant for GW170817, $1.1 < m < 1.6 M_\odot$, thus confirming the validity of the $\Lambda~\simeq a\beta^{-6}$ relation for GW170817.
+
+\section{Causal constraints on the tidal deformation}
+
+The posterior probability distribution that we observe for the star's tidal deformability includes regions forbidden by causality~\cite{Zhao:2018nyf}. In our results for $\Lambda$ and (and hence $\hat{R}$), we apply the causal lower limit constraint on the tidal deformability $\Lambda$ as a function of mass $m$. We implement this constraint using the following relation, which is valid for $0.4 < m/m_{max} < 0.95$,
+\begin{equation}
+\begin{split}
+\ln\Lambda_{\mathrm min} = 13.42 - 23.01\left(\frac{m}{m_{\mathrm max}}\right) \\
++ 20.53 \left(\frac{m}{m_{\mathrm max}}\right)^2 \\
+- 9.599\left(\frac{m}{m_{\mathrm max}}\right)^3.
+\end{split}
+\end{equation}
+Here, we use $m_{\mathrm max} = 2 M_\odot$. Note that $m_{\mathrm max} > 2$, would increase the lower limit for $\Lambda(m)$, so $m_{\mathrm max}=2$ is a conservative choice~\cite{Zhao:2018nyf}.
+
+
+\section{Results}
+
+%SOUMI commented for thesis:We perform parameter estimation for each mass prior with and without the common EOS constraint and calculate the Bayes factor---the ratio of the evidences $p(\vec{d}(t)|H)$---between the common EOS constrained and unconstrained analyses. We find Bayes factors $\mathcal{B}$ of 369, 125, and 612 for the three mass priors, respectively, indicating that the data strongly favor the common EOS constraint in all cases. 
+%The full posterior probability densities of the parameters $p(\vec{\theta}|\vec{d}(t),H)$ for the common EOS runs are shown in the Section \ref{sec:pe_methods_ceos_tech_details} %Supplemental Material~\cite{supp} 
+%and are available for download at Ref.~\cite{gw170817commoneos}. 
+Figure \ref{fig:lamb12_1abc} shows the posterior probability densities for $\Lambda_1$ and $\Lambda_2$ with 90\% and 50\% credible region contours, for the common EOS runs. Overlaid are $q$ contours and $\tilde{\Lambda}$ contours obtained from Eq.~(\ref{eq:lambda_t0}), $\Lambda~\simeq a\beta^{-6}$, and $R_1 \simeq R_2 \simeq \large \hat R$ as
+\begin{equation}
+\Lambda_1(\tilde{\Lambda},q)={\frac{13}{16}}\tilde{\Lambda}{\frac{q^2(1+q)^4}{12q^2-11q+12}},
+\label{eq:l1l2}\quad \Lambda_2(\tilde{\Lambda},q) = q^{-6} \Lambda_1 .\end{equation}
+Because of our constraint $\Lambda_2 \geq \Lambda_1$, our credible contours are confined to the region where $q \leq 1$. One can easily demonstrate that $\Lambda_2 \geq \Lambda_1$ is valid unless $(c^2/G)dR/dm > 1$, which is impossible for realistic equations of state. For the entire set of piecewise polytropes satisfying $m_\mathrm{max}>2M_\odot$ we considered, $(c^2/G)dR/dm$ never exceeded 0.26. Even if a first order phase transition appeared in stars with masses between $m_2$ and $m_1$, it would necessarily be true that $dR/dm < 0$ across the transition. Because of the $q$ dependence of $\Lambda_1$, $\Lambda_2$, the credible region enclosed by the contours broadens from the double neutron star (most restricted), to the pulsar, to the uniform mass (least restricted) priors. However, the upper bound of the credible region is robust.
+
+\begin{figure*}[t]
+  \includegraphics[width=\textwidth]{figures/common_eos/Lambda1_2_contours_no1D_w_q_moreiter.pdf}
+  \caption{Posterior probability densities for $\Lambda_{1,2}$ with the common EOS constraint using uniform (left), double neutron stars (middle), and Galactic neutron stars (right) component mass priors. The 50$\%$ and 90$\%$ credible region contours are shown as solid curves. Overlaid are contours of $\tilde{\Lambda}$ (in magenta) and $q$ (in gray). The values of $\Lambda_1$ and $\Lambda_2$ forbidden by causality have been excluded from the posteriors.
+\label{fig:lamb12_1abc}
+%
+%\vspace*{-0.3cm}%
+}
+\end{figure*}
+
+We find $\tilde{\Lambda}=
+205^{+415}_{-167}$ for the uniform component mass prior, $\tilde{\Lambda}=234^{+452}_{-180}$ for the prior informed by double neutron star binaries in the Galaxy, and $\tilde{\Lambda}=218^{+445}_{-173}$ for the prior informed by all Galactic neutron star masses (errors represent 90\% credible intervals). Our measurement of $\tilde{\Lambda}$ appears to be robust to the choice of component mass prior, within the (relatively large) statistical errors on its measurement. The Bayes factors comparing the evidence from the three mass priors are of order unity, so we cannot claim any preference between the mass priors.
+
+The 90\% credible intervals on $\tilde{\Lambda}$ obtained from the gravitational-wave observations include regions forbidden by causality. Applying a constraint to our posteriors for the causal lower limit of $\Lambda$ as a function of $m$~\cite{Zhao:2018nyf}, we obtain $\tilde{\Lambda}=
+222^{+420}_{-138}$ for the uniform component mass prior, $\tilde{\Lambda}=245^{+453}_{-151}$ for the prior informed by double neutron star binaries in the Galaxy, and $\tilde{\Lambda}=233^{+448}_{-144}$ for the prior informed by all Galactic neutron star masses (errors represent 90\% credible intervals). Using Eq.~(\ref{eq:rhat}), we map our $\cal{M}$ posteriors and $\tilde{\Lambda}$ posteriors (with the causal lower limit applied) to $\hat{R} \simeq R_{1.4}$ posteriors, allowing us to estimate the common radius of the neutron stars for GW170817 for each mass prior. Figure~\ref{fig:radius_lambda} shows the posterior probability distribution for the binary tidal deformation $\tilde\Lambda$ and the common radius $\hat{R}$ of the neutron stars in the binary. Our results suggest a radius $\hat R = 10.7^{+2.1}_{-1.6} \pm 0.2$ km (90\% credible interval, statistical and systematic errors) for the uniform mass prior,  $\hat R = 10.9^{+2.1}_{-1.6} \pm 0.2$ km for double neutron star mass prior, and $\hat R = 10.8^{+2.1}_{-1.6} \pm 0.2$ km for the prior based on all neutron star masses.
+
+%SOUMI commented for thesis: For the uniform mass prior, we computed the Bayes factor comparing a model with a prior $\Lambda_s \sim U[0,5000]$ to a model with a prior $\Lambda_s \sim U[0,100]$. We find $\log_{10}(\mathcal{B}) \sim 1$, suggesting that the data favors a model that includes measurement of tidal deformability $\tilde\Lambda \gtrsim 100$. However, the evidences were calculated using thermodynamic integration of the MCMC chains~\cite{emcee}. We will investigate model selection using, e.g., nested sampling \cite{skilling2006} in a future work.
+
+%SOUMI: Added from Supp Materials Results section
+Fig.~\ref{fig:posterior_overlap} shows the full posterior probability densities for the parameters of interest in our study: the source frame chirp mass $\mathcal{M}^\mathrm{src}$; the mass ratio $q=m_2/m_1$; the source frame component masses $m_{1,2}^\mathrm{src}$ (which are functions of $\mathcal{M}^\mathrm{src}$ and $q$); the effective spin $\chi_\mathrm{eff} = (m_1 \chi_1 + m_2 \chi_2) / (m_1 + m_2)$; and the binary tidal deformability $\tilde{\Lambda}$. Posterior probability densities are shown for the uniform mass prior, double neutron star mass prior, and the Galactic neutron star mass prior analyses with 20~Hz low-frequency cutoff, and the uniform mass prior analyses with 25~Hz low-frequency cutoff. All the four analyses had the common EOS constraint and the causal $\Lambda(m)$ lower limit imposed. Electronic files containing the thinned posterior probability densities and an IPython notebook \cite{PER-GRA:2007} for manipulating these data are available at Ref.~\cite{gw170817commoneos}.
+
+\begin{figure}
+\begin{adjustwidth}{-1.5cm}{-0.8cm}
+\centering
+  %\includegraphics[max size={14cm}{14cm}]{figures/common_eos/posteriors_main_bothspins.png}
+  \includegraphics[width=\columnwidth]{figures/common_eos/posteriors_main_bothspins.png}
+  \caption{\footnotesize Posterior distributions for the source frame chirp mass $\mathcal{M}^{\rm src}$, mass ratio $q$, source frame primary mass $m_1^{\rm src}$ and secondary mass $m_2^{\rm src}$, effective spin $\chi_{\rm eff}$, and binary deformability parameter $\tilde{\Lambda}$ from parameter estimation analyses with three different choices of mass priors. The posteriors represented in blue are from the analysis using a uniform prior on component masses, $m_{1,2} \sim U[1,2]\, M_\odot$, and 20~Hz low-frequency cutoff. The posteriors represented in red are from the analysis using a Gaussian mass prior for component masses $m_{1,2} \sim N(\mu = 1.33, \sigma = 0.09)\, M_\odot$ known from radio observations of neutron stars in double neutron star (DNS) systems, and 20~Hz low-frequency cutoff. The posteriors represented in green are from the analysis using the observed mass distributions of recycled and slow pulsars in the Galaxy with $m_1 \sim N(\mu = 1.54, \sigma = 0.23)\, M_\odot$ and $m_2 \sim N(\mu = 1.49, \sigma = 0.19)\, M_\odot$~\cite{Ozel:2016oaf}, and 20~Hz low-frequency cutoff. The posteriors represented in gray are from the analysis using a uniform prior on component masses, $m_{1,2} \sim U[1,2]\, M_\odot$, and 25~Hz low-frequency cutoff. All four analyses had the common EOS constraint and the causal $\Lambda(m)$ lower limit imposed. The one-dimensional plots show marginalized probability density functions for the parameters. The dashed lines on the one-dimensional histograms represent the 5$\%$, 50$\%$ and 95$\%$ percentiles for each analysis, the values of which are quoted in the titles of the histograms. The 2D plots show 50$\%$ and 90$\%$ credible regions for the different pairs of parameters. Comparison between the analyses with low-frequency cutoff 20~Hz (blue) and 25~Hz (gray) for the uniform mass prior case shows that extending from 25~Hz to 20~Hz better constrains $\mathcal{M}$, which improves the measurement of $\tilde\Lambda$ by eliminating a region of the posterior with higher values $\mathcal{M}$ and high $\tilde\Lambda$.
+  \label{fig:posterior_overlap}}
+%}}
+\end{adjustwidth}
+\end{figure}
+
+Finally, we note the post-Newtonian waveform family used will result in systematic errors in our measurement of the tidal deformability \cite{Wade:2014vqa,Lackey:2014fwa}. However, this waveform family allows a direct comparison to the results of Ref.~\cite{TheLIGOScientific:2017qsa}. Accurate modeling of the waveform is challenging, as the errors in numerical simulations are comparable to the size of the matter effects that we are trying to measure~\cite{Barkett:2015wia}. Waveform systematics and comparison of other waveform models (e.g., \cite{Bernuzzi:2014owa}) will be investigated in a future work.
+
+\begin{figure}[t]
+  \includegraphics[width=\columnwidth]{figures/common_eos/Radius_lambda_bothspins.pdf}
+  \caption{The 90\% credible region of the posterior probability for the common radius $\hat{R}$ and binary tidal deformability $\tilde\Lambda$ with the common EOS constraint for the three mass priors. The posteriors for the individual parameters are shown with dotted lines at  the 5$\%$, 50$\%$ and 95$\%$ percentiles. The values of $\tilde\Lambda$, and hence $\hat{R}$ forbidden by causality have been excluded from the posteriors. 
+\label{fig:radius_lambda}%
+%\vspace*{-0.5cm}%
+}
+\end{figure}
+
+%\input{supp_common_eos.tex}
+
+\section{Discussion}
+
+Using Bayesian parameter estimation, we have measured the tidal deformability and common radius of the neutron stars in GW170817. Table~\ref{tab:summary_table} summarizes our findings.  To compare to Ref.~\cite{TheLIGOScientific:2017qsa}, which reports a 90\% upper limit on $\tilde\Lambda \le 800$ under the assumption of a uniform prior on $\tilde\Lambda$, we integrate the posterior for $\tilde{\Lambda}$ to obtain 90\% upper limits on $\tilde{\Lambda}$.   For the common EOS analyses, these are $485$, $521$, and $516$ for the uniform, double neutron star, and Galactic neutron star component mass priors, respectively. We find that, in comparison to the unconstrained analysis, the common EOS assumption significantly reduces the median value and 90\% confidence upper bound of $\tilde\Lambda$ by about 28\% and 19\%, respectively, for all three mass priors. The difference between our common EOS results for the three mass priors is consistent with the physics of the gravitational waveform. At constant $\mathcal{M}$, decreasing $q$ causes the binary to inspiral more quickly \cite{Hannam:2013uu}. At constant $\mathcal{M}$ and constant $q$, increasing $\tilde\Lambda$ also causes the binary to inspiral more quickly, so there is a mild degeneracy between $q$ and $\tilde\Lambda$. The uniform mass prior allows the largest range of mass ratios, so we can fit the data with a larger $q$ and smaller $\tilde\Lambda$. The double neutron star mass prior allows the smallest range of mass ratios, and so, a larger $\tilde\Lambda$ is required to fit the data, with the Galactic neutron star mass prior lying between these two cases. 
+
+\begin{table}[t]\label{tab:parameters}
+\setlength{\tabcolsep}{3.8pt}
+\centering\begin{tabular}{lccc} 
+\hline
+\rule{0pt}{3ex}%
+Mass prior \quad & \quad $\tilde{\Lambda}$ \quad & \quad $\hat{R}$ (km) \quad & \quad $\tilde{\Lambda}_{90\%}$\quad \\\hline
+\rule{0pt}{3ex}%
+Uniform & 222$^{+420}_{-138}$ & 10.7$^{+2.1}_{-1.6}\pm 0.2$ & $< 485$\\
+Double neutron star & 245$^{+453}_{-151}$ & 10.9$^{+2.1}_{-1.6}\pm 0.2$ & $< 521$ \\
+Galactic neutron star & 
+233$^{+448}_{-144}$ & 10.8$^{+2.1}_{-1.6}\pm 0.2$ & $< 516$ \\
+\hline
+\end{tabular}
+\caption{Results from parameter estimation analyses using three different mass prior choices with the common EOS constraint, and applying the causal minimum constraint to $\Lambda(m)$. We show 90$\%$ credible intervals for $\tilde{\Lambda}$, 90$\%$ credible intervals and systematic errors for $\hat{R}$, %Bayes factors $\mathcal{B}$ comparing our common EOS to the unconstrained results, 
+and the 90\% upper limits on $\tilde\Lambda$.%
+%\vspace*{-0.5cm}%
+}
+\label{tab:summary_table}
+\end{table}
+Nevertheless, considering all analyses we performed with different mass prior choices, we find a relatively robust measurement of the common neutron star radius with a mean value $\langle \large \hat R \rangle$ = 10.8 km bounded above by $\hat R < 13.2$~km and below by $\hat R > 8.9$~km. Nuclear theory and experiment currently predict a somewhat smaller range by 2 km but with approximately the same centroid as our results~\cite{Lattimer:2012nd,Lattimer:2012xj}. A minimum radius 10.5--11 km is strongly supported by neutron matter theory~\cite{Gandolfi:2011xu,Lynn:2015jua,Drischler:2015eba}, the unitary gas~\cite{Kolomeitsev:2016sjl}, and most nuclear experiments~\cite{Lattimer:2012nd,Lattimer:2012xj,Tews:2012fj}. The only major nuclear experiment that could indicate radii much larger than 13 km is the PREX neutron skin measurement, but this has published error bars much larger than previous analyses based on antiproton data, charge radii of mirror nuclei, and dipole resonances. 
+Our results are consistent with photospheric radius expansion measurements of x-ray binaries which obtain $R \approx 10$--$12$~km~\cite{Ozel:2016oaf,Steiner:2010fz,Degenaar:2018lle}. Reference~\cite{Guillot:2014lla} found from an analysis of five neutron stars in quiescent low-mass x-ray binaries a common neutron star radius $9.4\pm1.2$ km, but systematic effects including uncertainties in interstellar absorption and the neutron stars' atmospheric compositions are large. Other analyses have inferred $12\pm0.7$~\cite{Lattimer:2013hma} and $12.3\pm1.8$ km~\cite{Shaw:2018wxh} for the radii of $1.4M_\odot$ quiescent sources. 
+
+We have found that the relation $q^{7.48} < \Lambda_1/\Lambda_2 < q^{5.76}$, in fact, completely bounds the uncertainty for the range of $\mathcal{M}$ relevant to GW170817, assuming $m_2 > 1M_\odot$ \cite{Zhao:2018nyf} and that no strong first-order phase transitions occur near the nuclear saturation density (i.e., the case in which $m_1$ is a hybrid star and $m_2$ is not). Analyses using this prescription instead of the $q^6$ correlation produce insignificant differences in our results. Since models with the common EOS assumption are highly favored over those without this assumption, our results support the absence of a strong first-order phase transition in this mass range.
+
+In this Letter, we have shown that, for binary neutron star mergers consistent with observed double neutron star systems~\cite{Tauris:2017omb}, assuming a common EOS implies that $\Lambda_1 / \Lambda_2 \simeq q^6$. We find evidence from GW170817 that favors the common EOS interpretation compared to uncorrelated deformabilities. Although previous studies have suggested that measurement of the tidal deformability is sensitive to the choice of mass prior \cite{Agathos:2015uaa}, we find that varying the mass priors does not significantly influence our conclusions suggesting that our results are robust to the choice of mass prior. Our results support the conclusion that we find the first evidence for finite size effects using gravitational-wave observations. 
+
+Recently, the LIGO/Virgo collaborations have placed new constraints on the radii of the neutron stars using GW170817~\cite{Abbott:2018exr}. The most direct comparison is between our uniform mass prior result ($\hat R = 10.7^{+2.1}_{-1.6} \pm 0.2$) and the LIGO/Virgo method that uses equation-of-state-insensitive relations~\cite{Yagi:2016qmr,Chatziioannou:2018vzf} ($R_1 = 10.8^{+2.0}_{-1.7}$ and $R_2 = 10.7^{+2.1}_{-1.5}$~km). This result validates our approximation $R_1=R_2$ used to motivate the prescription $\Lambda_1=q^6\Lambda_2$, and Eqs.~(\ref{eq:lambda_t1}, \ref{eq:lambda_t2}). Our statistical errors are comparable to the error reported by LIGO/Virgo. Systematic errors from EOS physics of $\pm 0.2$~km are added as conservative bounds to our statistical errors, broadening our measurement error, whereas Ref.~\cite{Abbott:2018exr} marginalized over these errors in the analysis. Reference~\cite{Abbott:2018exr} also investigates a method of directly measuring the parameters of the EOS which results in smaller measurement errors. Investigation of these differences between our analysis and the latter approach will be pursued in a future paper. 
+
+Observations of future binary neutron star mergers will allow further constraints to be placed on the deformability and radius, especially if these binaries have chirp masses similar to GW170817 as radio observations suggest. As more observations improve our knowledge of the neutron star mass distribution, more precise mass-deformability correlations can be used to further constrain the star's radius.
+
+%\clearpage
+%\newpage
+
+%\onecolumngrid
+%\begin{center}
+%{\large \bf Supplemental Material}
+%\vspace*{1cm}
+%\twocolumngrid
+%\end{center}
+
+%\clearpage
+%\newpage
+
+%\onecolumngrid
+%\begin{center}
+%{\large \bf Erratum}
+%\vspace*{1cm}
+%\twocolumngrid
+%\end{center}
+
+%\input{erratum_common_eos.tex}

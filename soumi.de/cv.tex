@@ -1,0 +1,834 @@
+%\documentclass[11pt,a4paper,roman]{moderncv}        % possible options include font size ('10pt', '11pt' and '12pt'), paper size ('a4paper', 'letterpaper', 'a5paper', 'legalpaper', 'executivepaper' and 'landscape') and font family ('sans' and 'roman')
+
+% modern themes
+%\moderncvstyle{banking}                            % style options are 'casual' (default), 'classic', 'oldstyle' and 'banking'
+%\moderncvcolor{black}                                % color options 'blue' (default), 'orange', 'green', 'red', 'purple', 'grey' and 'black'
+%\renewcommand{\familydefault}{\sfdefault}         % to set the default font; use '\sfdefault' for the default sans serif font, '\rmdefault' for the default roman one, or any tex font name
+%\nopagenumbers{}                                  % uncomment to suppress automatic page numbering for CVs longer than one page
+
+\nopagenumbers
+\AtEndPreamble{%
+  \AtBeginDocument{%
+          \newlength{\pagenumberwidth}%
+          \settowidth{\pagenumberwidth}{\color{color2}\addressfont\itshape\thepage}%
+          \fancypagestyle{plain}{%
+            \fancyfoot[r]{\parbox[b]{\pagenumberwidth}{\color{darkgray}\pagenumberfont\thepage}}}
+          \pagestyle{plain}}}
+          
+% character encoding
+%\usepackage[utf8]{inputenc}
+%\usepackage{fontawesome}
+%\usepackage{tabularx}
+%\usepackage{ragged2e}
+%\usepackage{scrextend}
+%\usepackage{etaremune}
+%\usepackage{enumitem,xcolor}
+%\usepackage{multicol}
+%\usepackage[hidelinks]{hyperref}
+\hypersetup{
+  colorlinks   = true, %Colours links %instead of ugly boxes
+  urlcolor     = blue, %Colour for %external hyperlinks
+  linkcolor    = blue, %Colour of %internal links
+  citecolor   = blue %Colour of %citations
+}
+
+% if you are not using xelatex ou lualatex, replace by the encoding you are using
+%\usepackage{CJKutf8}                              % if you need to use CJK to typeset your resume in Chinese, Japanese or Korean
+
+% adjust the page margins
+\usepackage[scale=0.8]{geometry}
+
+\usepackage{fancyhdr}
+ 
+\pagestyle{fancy}
+\fancyhf{}
+%\fancyhead[LE,RO]{Overleaf}
+%\fancyhead[RE,LO]{Guides and tutorials}
+\fancyfoot[CE,CO]{\textcolor{darkgray}{Soumi De}}
+\fancyfoot[LE,LO]{\textcolor{darkgray}{Curriculum Vitae}}
+%\setlength{\hintscolumnwidth}{3cm}                % if you want to change the width of the column with the dates
+%\setlength{\makecvtitlenamewidth}{10cm}           % for the 'classic' style, if you want to force the width allocated to your name and avoid line breaks. be careful though, the length is normally calculated to avoid any overlap with your personal info; use this at your own typographical risks...
+
+\makeatletter
+\RenewDocumentCommand{\subsection}{sm}{
+  \strut\subsectionstyle{#2}{\color{color1}{\subsectionfill}}%
+  \par\nobreak\addvspace{0.5ex}\@afterheading}
+%
+\makeatother
+
+% personal data
+\name{Soumi}{De}
+% \title{Curriculum Vitae}                               % optional, remove / comment the line if not wanted
+%\address{Department of Physics, Syracuse University}{NY 13244}{USA}% optional, remove / comment the line if not wanted; the "postcode city" and and "country" arguments can be omitted or provided empty
+%\phone[mobile]{(+88)0 1718268856}                   % optional, remove / comment the line if not wanted
+% \phone[fixed]{01234 123456}                    % optional, remove / comment the line if not wanted
+%\phone[fax]{+3~(456)~789~012}                      % optional, remove / comment the line if not wanted
+% \email{xpan1@swarthmore.edu}                               % optional, remove / comment the line if not wanted
+% \homepage{shawnpan.me}                         % optional, remove / comment the line if not wanted
+% \extrainfo{}                 % optional, remove / comment the line if not wanted
+%\photo[64pt][0.4pt]{picture}                       % optional, remove / comment the line if not wanted; '64pt' is the height the picture must be resized to, 0.4pt is the thickness of the frame around it (put it to 0pt for no frame) and 'picture' is the name of the picture file
+%\quote{Some quote}                                 % optional, remove / comment the line if not wanted
+
+% to show numerical labels in the bibliography (default is to show no labels); only useful if you make citations in your resume
+%\makeatletter
+%\renewcommand*{\bibliographyitemlabel}{\@biblabel{\arabic{enumiv}}}
+%\makeatother
+%\renewcommand*{\bibliographyitemlabel}{[\arabic{enumiv}]}% CONSIDER REPLACING THE ABOVE BY THIS
+
+% bibliography with mutiple entries
+%\usepackage{multibib}
+%\newcites{book,misc}{{Books},{Others}}
+
+% To control separation between items
+%\begin{itemize}\itemsep2pt
+%\renewcommand{\labelitemi}{$\bullet$}
+%\item
+%\end{itemize}
+
+\renewcommand{\subsectionfont}{\scshape\Large\bfseries}
+
+\newcommand*{\customcventry}[7][.5em]{
+  \begin{tabular}{@{}l} 
+    {\bfseries #4}
+  \end{tabular}
+  \hfill% move it to the right
+  \begin{tabular}{l@{}}
+     {\upshape\color{darkgray} #5}
+  \end{tabular} \\
+  \begin{tabular}{@{}l} 
+    {\upshape #3}
+  \end{tabular}
+  \hfill% move it to the right
+  \begin{tabular}{l@{}}
+     {\itshape #2}
+  \end{tabular}
+  \ifx&#7&%
+  \else{\\%
+    \begin{minipage}{\maincolumnwidth}%
+      \small#7%
+    \end{minipage}}\fi%
+  \par\addvspace{#1}}
+
+\newcommand*{\customcvproject}[4][.5em]{
+%   \vfill\noindent
+  \begin{tabular}{@{}l} 
+    {\bfseries #2}
+  \end{tabular}
+  \hfill% move it to the right
+  \begin{tabular}{l@{}}
+     {\itshape #3}
+  \end{tabular}
+  \ifx&#4&%
+  \else{\\%
+    \begin{minipage}{\maincolumnwidth}%
+      \itshape#4%
+    \end{minipage}}\fi%
+  \par\addvspace{#1}}
+  
+\newcommand*{\customcvprojectsimple}[4][.5em]{
+%   \vfill\noindent
+  \begin{tabular}{@{}l} 
+    {\normalfont #2}
+  \end{tabular}
+  \hfill% move it to the right
+  \begin{tabular}{l@{}}
+     {\itshape #3}
+  \end{tabular}
+  \ifx&#4&%
+  \else{\\%
+    \begin{minipage}{\maincolumnwidth}%
+      \normalfont#4%
+    \end{minipage}}\fi%
+  \par\addvspace{#1}}
+
+\setlength{\tabcolsep}{12pt}
+
+%----------------------------------------------------------------------------------
+%            content
+%----------------------------------------------------------------------------------
+\begin{document}
+%\begin{CJK*}{UTF8}{gbsn}                          % to typeset your resume in Chinese using CJK
+%-----       resume       ---------------------------------------------------------
+\makecvtitle
+\vspace*{-8mm}
+
+%\begin{center}
+%\begin{tabular}{ c c c c }
+ %\faGlobe\enspace sites.google.com  
+% \faEnvelopeO\enspace sde101@syr.edu & %\faMobile\enspace (+1) 315-416-6928\\  
+%\end{tabular}
+%\end{center}
+
+\iffalse
+\section{RESEARCH INTERESTS}
+%\vspace{1mm}
+Computational Physics, Big Data Analysis, Computational Fluid Dynamics, Data Science, Multi-scale Multi-Physics Simulations, Hydrodynamics and Nucleosynthesis of Astrophysical Remnants, Common Envelope Hydrodynamics, Gravitational-Wave Data Analysis, Statistical Inference and Model Selection, Neutron Stars and Nuclear Equation of State.
+\fi
+
+\iffalse
+\vspace{0.8mm}
+\begin{addmargin}[-1em]{}
+\begin{itemize}
+\renewcommand{\labelitemi}{~}
+  \begin{minipage}{0.15\linewidth}
+    \item Address \\
+    \item Email
+    \item Phone
+  \end{minipage}
+  \begin{minipage}{0.9\linewidth}
+    \item Department of Physics, Syracuse University \\ Syracuse, NY 13244, USA
+    \item sde101@syr.edu
+    \item +1 315-416-6928       
+  \end{minipage}
+\end{itemize}
+\end{addmargin}
+\fi
+
+%\textbf{Contact Information:}
+\vspace{0.8mm}
+\begin{addmargin}[-1em]{}
+\begin{itemize}
+\renewcommand{\labelitemi}{~}
+  \begin{minipage}{0.3\linewidth}
+    \item Department of Physics, \\ Syracuse University \\ Syracuse, NY 13244, USA
+  \end{minipage}
+  \begin{minipage}{0.7\linewidth}
+    \vspace{3mm}
+    \begin{flushright}
+    \item Email: sde101@syr.edu \\ Phone: +1 315-416-6928 \\ Website: \url{https://sde101.expressions.syr.edu} \\
+    \end{flushright}
+  \end{minipage}
+\end{itemize}
+\end{addmargin}
+
+\begin{addmargin}[1em]{1em}
+%\begin{tabular}{ @{} >{\bfseries}l @{\hspace{2ex}} l }
+%{{Address: }:\hspace{2ex}}{Department of Physics, } \\
+\end{addmargin}
+%{Address: }{cvcvc} \\
+%{Phone: }{7879797}
+
+\section{EDUCATION}
+%\vspace{1mm}
+{\customcventry{Aug 2015 - Jun 2020 (Expected)}{Syracuse University, USA \\ Thesis title: \textit{Merging neutron star and black hole binaries: Inference of} \\ \textit{their parameters and hydrodynamic simulations of their formation and fate}}{PhD Candidate, Department of Physics}{}{}{Advisor: Prof. Duncan Brown}}
+\vspace{0.9mm}
+{\customcventry{2012 - 2014}{University of Calcutta, India}{MSc. (First Class) in Physics}{}{}{}}
+
+\vspace{0.9mm}
+{\customcventry{2009 - 2012}{St. Xavier's College, Kolkata, India}{BSc. in Physics (First Class Honours), minor: Mathematics and Chemistry}{}{}{}}
+\vspace{1mm}
+
+\section{PHD RESEARCH}
+\begin{itemize}
+\renewcommand{\labelitemi}{$\bullet$}
+    \item Gravitational-wave data science: Bayesian inference analyses of signals from neutron star and black hole binaries, constraining the nuclear equation of state using neutron star mergers, code development for PyCBC - open software for analyzing gravitational-wave data \url{https://github.com/gwastro/pycbc}.
+    \item Common envelope hydrodynamics: Simulations and modeling of astrophysical fluid flows past compact objects in stellar structures, tracking the common envelope inspiral phase of binaries; accretion-fed growth of stellar mass black holes.
+    \item Neutron star merger remnants and outflows: General-relativistic magnetohydrodynamic simulations, modeling and analysis of post-merger accretion disks of neutron star binaries; connecting the binary parameters to the disk physics, r-process nucleosynthesis, and kilonova characteristics.
+\end{itemize}
+\vspace{0.05mm}
+
+%\section{ALGORITHMS AND TECHNIQUES}
+%\vspace{1mm}
+\iffalse
+\section{COMPUTATIONAL EXPERIENCE}
+\textsc{\textbf{Programming Languages and Platforms}}
+\begin{addmargin}[2em]{2em}
+%\begin{tabular}{ @{} >{\bfseries}l @{\hspace{2ex}} l }
+{\textbf{Proficient}:\hspace{2ex}}{Python, C, Bash, jupyter, HDF5, Latex} \\
+%{\textbf{Substantial Knowledge}:\hspace{2ex}}{Fortran, Java, MATLAB/Octave, Mathematica, BASIC, OpenMP, MPI, Open Science Grid, Pegasus, HTML, XML}  \\
+{\textbf{Substantial Knowledge}:\hspace{2ex}}{Fortran, MATLAB/Octave, Mathematica, HTML, XML, Java}  \\
+%{\textbf{Working Knowledge}:\hspace{2ex}}{}
+%\end{tabular}
+\end{addmargin}
+\vspace*{-2mm}
+\textsc{\textbf{High-throughput and High-Performance computing}}
+\begin{addmargin}[2em]{2em}
+{Condor, Open Science Grid, Pegasus, MPI, OpenMP.
+\begin{itemize}
+\renewcommand{\labelitemi}{-}
+\vspace{-2mm}
+\item Proficient at running software on High-Performance and High-Throughput computing clusters.
+\vspace{-7mm}
+\item Substantial experience in developing software and scientific workflows to be run on High-Throughput clusters.
+\end{itemize}
+}
+\end{addmargin}
+
+\textsc{\textbf{Code/Data Sharing and Management}}
+\begin{addmargin}[2em]{2em}
+{Github, Gitlab, Zenodo, Bitbucket, Docker, Globus.
+\begin{itemize}
+\renewcommand{\labelitemi}{-}
+\vspace{-2mm}
+\item Proficient at using these platforms for building, maintaining, reviewing, transferring, publishing version-controlled code and data generated in large collaborative projects.
+\end{itemize}
+}
+\end{addmargin}
+
+\textsc{\textbf{Software}}
+\begin{addmargin}[2em]{2em}
+{\textbf{Maintainer}:\hspace{1.5ex}}{PyCBC} \\
+{\textbf{Analyses and simulations with}:\hspace{1.5ex}}{PyCBC, FLASH, Einstein Toolkit, SkyNet, MESA, EMCEE, yt, Astropy}
+\end{addmargin}
+\vspace{2mm}
+\fi 
+
+\section{HONORS, AWARDS, AND FELLOWSHIPS}
+%\textbf{"Feature Selection and Classification on BDHS(Bangladesh Demographic and Health Survey, 2014) data analysis:a hybrid approach for predicting pregnancy termination."}
+\vspace{1mm}
+{\customcvprojectsimple{\textbf{Research Excellence Doctoral Funding Fellowship}, Syracuse University}{2019-2020}
+{
+\begin{itemize}
+\renewcommand{\labelitemi}{-}
+%\vspace{-3mm}
+    \item Awarded to 36 graduate students across 16 departments.
+\end{itemize}}}
+
+\vspace{1mm}
+{\customcvprojectsimple{\textbf{Inaugural Kathy '73 and Stan '72 Walters Endowed Fund for Science Research}, \\ Syracuse University}{2018}
+{
+\begin{itemize}
+\renewcommand{\labelitemi}{-}
+%\vspace{-3mm}
+    \item Awarded to 1 candidate across all Science disciplines.
+\end{itemize}}}
+
+\vspace{1mm}
+{\customcvprojectsimple{\textbf{Kavli Student Fellow}, Kavli Summer Program in Astrophysics, Copenhagen, \\ Denmark}{2017}
+{
+\begin{itemize}
+\renewcommand{\labelitemi}{-}
+    \item Granted to 14 graduate students from institutes across the USA and Europe to \\ conduct research projects in astrophysics in collaboration with senior scientists \\ in the program.
+\end{itemize}}}
+
+\vspace{1mm}
+{\customcvprojectsimple{\textbf{Princess of Asturias Award for Technical and Scientific Research}, as a member of \\ the LIGO Scientific Collaboration}{2017}
+{
+%\begin{itemize}
+%\renewcommand{\labelitemi}{-}
+%    \item Awarded for the discovery of gravitational waves.
+%\end{itemize}
+}}
+
+\vspace{-1mm}
+{\customcvprojectsimple{\textbf{Special Breakthrough Prize in Fundamental Physics}, as a member of the LIGO \\ Scientific Collaboration}{2016}
+{
+%\begin{itemize}
+%\renewcommand{\labelitemi}{-}
+%    \item Awarded for the discovery of %gravitational waves.
+%\end{itemize}
+}}
+
+\vspace{-1mm}
+{\customcvprojectsimple{\textbf{Gruber Cosmology Prize}, as a member of the LIGO Scientific Collaboration}{2016}
+{
+%\begin{itemize}
+%\renewcommand{\labelitemi}{-}
+%    \item Awarded for the discovery of %gravitational waves.
+%\end{itemize}
+}}
+
+
+\vspace{-4mm}
+{\customcvprojectsimple{\textbf{Indian Science Academies' Summer Research Fellow}}{2013}
+{
+\begin{itemize}
+\renewcommand{\labelitemi}{-}
+    \item Granted to 241 Physics Bachelors and Masters students across India to conduct \\research projects in their preferred institute.
+\end{itemize}}}
+
+\vspace{1mm}
+{\customcvprojectsimple{\textbf{Visiting Students' Programme Research Fellowship}}{2013}
+{
+\begin{itemize}
+\renewcommand{\labelitemi}{-}
+    \item Granted to 12 Masters students across India to conduct research projects in \\ Astronomy and Astrophysics at IUCAA.
+\end{itemize}}}
+\vspace{1mm}
+
+\iffalse
+\begin{itemize}
+\setlength{\itemsep}{0pt}
+\renewcommand{\labelitemi}{$\bullet$}
+\item & Syracuse University Research Excellence Doctoral Funding Graduate Fellowship (2019-2020).
+\begin{itemize}
+%\renewcommand{\labelitemi}{~}
+\vspace{-3mm}
+    \item Awarded to 36 graduate students on a competitive basis across 16 departments.
+\end{itemize}
+\item Inaugural Kathy '73 and Stan '72 Walters Endowed Fund for Science Research Graduate Fellow, Syracuse University, (Summer 2018)
+\item Kavli Student Fellow, Kavli Summer Program in Astrophysics, Copenhagen, Denmark (2017)
+\vspace{-3mm}
+\begin{itemize}
+    \item Granted to 14 graduate students from institutes across the USA and Europe to conduct research projects in astrophysics in collaboration with senior scientists in the program.
+\end{itemize}
+\item Special Breakthrough Prize in Fundamental Physics, as a member of the LIGO Scientific Collaboration (2016)
+\vspace{-3mm}
+\begin{itemize}
+    \item Awarded for the discovery of gravitational waves.
+\end{itemize}
+\item Gruber Cosmology Prize, as a member of the LIGO Scientific Collaboration (2016)
+\vspace{-3mm}
+\begin{itemize}
+    \item Awarded for the discovery of gravitational waves.
+\end{itemize}
+\item Indian Science Academies' Summer Research Fellow (2013)
+\vspace{-3mm}
+\begin{itemize}
+    \item Granted to 241 Physics Bachelors and Masters students across India to conduct research projects in their preferred institute.
+\end{itemize}
+\item Visiting Students' Programme Research Fellowship, 
+Inter University Centre for Astronomy and Astrophysics, India (2013).
+\vspace{-3mm}
+\begin{itemize}
+    \item Granted to 12 Masters students across India to conduct research projects in Astronomy and Astrophysics at IUCAA.
+\end{itemize}
+\end{itemize}
+\fi
+
+
+%\section{COMPETITIVE PROGRAMMING}
+%{\customcvproject{Problem Solving}{}
+%{\begin{itemize}
+  %\item UVA online judge (80+ problems)
+%\end{itemize}
+%}
+%}
+
+%\iffalse
+\section{PUBLICATIONS \& PRODUCTS}
+Short author papers -- first author: 4, contributing author: 5, citations: 282+ (Source: SAO/NASA \href{https://ui.adsabs.harvard.edu/public-libraries/gHu-E7kETp2oguortiykaA}{Astrophysics Data System}). \\ %/ citations: 204+ short author papers (09/20/2019). \\ 
+\\
+%\vspace{0.5mm}
+\subsection{\textbf{Short Author - Refereed and Preprints :}}
+\vspace{1mm}
+%\renewcommand{\listitemsymbol}{~}
+\begin{etaremune}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parskip}{0pt}
+% \setlength{\parsep}{0pt}
+\renewcommand{\labelenumi}{\textcolor{gray}{\arabic{enumi}.}}
+\item{\textbf{Soumi De}, Morgan MacLeod, Rosa Wallace Everson, Andrea Antoni, Ilya Mandel, Enrico Ramirez-Ruiz, \textit{Common Envelope Wind Tunnel: The effects of binary mass ratio and implications for the accretion-driven growth of LIGO binary black holes}, arXiv:1910.13333 (2019), Accepted by Astrophysical Journal. [2 citations]
+\begin{itemize}
+%\renewcommand{\labelitemi}{$\bullet$}
+\vspace{-2mm}
+    \item \textbf{Associated visualizations}: https://soumide1102.github.io/common-envelope-hydro-paper/
+    \vspace{-1mm}
+    \item \textbf{Contribution}: Performed the full set of hydrodynamic simulations presented and their formal analysis, %significantly participated in the methodology,
+    prepared the original draft and visualizations, edited and reviewed.
+\end{itemize}
+}
+
+\item{Collin D. Capano, Ingo Tews, Stephanie M. Brown, Ben Margalit, \textbf{Soumi De}, Sumit Kumar, Duncan A. Brown, Badri Krishnan, Sanjay Reddy, \textit{GW170817: Stringent constraints on neutron-star radii from multimessenger observations and nuclear theory}, arXiv:1908.10352 (2019), Accepted by Nature Astronomy. [17 citations]
+\begin{itemize}
+%\renewcommand{\labelitemi}{$\bullet$}
+\vspace{-2mm}
+    \item \textbf{Data release}: https://github.com/sugwg/gw170817-eft-eos
+    \vspace{-1mm}
+    \item \textbf{Contribution}:
+    Carried out part of the gravitational-wave data analysis and code development, %participated in the methodology,
+    reviewed and edited the draft.
+\end{itemize}
+}
+
+\item{Michael Forbes, Sukanta Bose, Sanjay Reddy, Dake Zhou, Arunava Mukherjee, \textbf{Soumi De}, \textit{Constraining the neutron-matter equation of state with gravitational waves}, Phys. Rev. D, 100, 083010 (2019). [8 citations]
+\begin{itemize}
+\vspace{-2mm}
+\item \textbf{Contribution}:
+    Developed the base for the gravitational-wave data analysis framework.
+\end{itemize}
+}
+\item{\textbf{Soumi De}, Christopher M. Biwer, Collin D. Capano, Alexander H. Nitz, Duncan A. Brown, \textit{Posterior samples of the parameters of binary black holes from Advanced LIGO, Virgo's second observing run}, Nature Scientific Data 6, 81 (2019). [4 citations]
+\begin{itemize}
+%\renewcommand{\labelitemi}{$\bullet$}
+\vspace{-2mm}
+    \item \textbf{Data release}: https://doi.org/10.5281/zenodo.2652488
+\vspace{-1mm}
+\item \textbf{Contribution}:
+    Performed the formal analysis and data release, %developed the methodology,
+    prepared the original draft, edited and reviewed.
+\end{itemize}
+}
+
+\item{Christopher M. Biwer, Collin D. Capano, \textbf{Soumi De}, Miriam Cabero, Alexander H. Nitz, Duncan A. Brown, Vivien Raymond, \textit{PyCBC Inference: A Python-based parameter estimation toolkit for compact binary coalescence signals}, Publ. Astron. Soc. Pac., 131, 996 (2019). [34 citations]
+\begin{itemize}
+%\renewcommand{\labelitemi}{$\bullet$}
+\vspace{-2mm}
+    \item \textbf{Data release}: https://doi.org/10.5281/zenodo.2009049
+    \vspace{-1mm}
+    \item \textbf{Contribution}:
+    One of the contributors of the software, performed the formal inference analysis of the real gravitational-wave events presented, performed the data release, significantly participated in preparing the original draft, edited and reviewed.
+\end{itemize}
+}
+
+\item{\textbf{Soumi De}, Daniel Finstad, James M. Lattimer, Duncan A. Brown, Edo Berger, Christopher M. Biwer, \textit{Tidal Deformabilities and Radii of Neutron Stars from the Observation of GW170817}, Phys. Rev. Lett., 121, 091102 (2018). [182 citations]
+\begin{itemize}
+%\renewcommand{\labelitemi}{$\bullet$}
+\vspace{-2mm}
+    \item \textbf{Data release}: https://github.com/sugwg/gw170817-common-eos
+    \vspace{-1mm}
+    \item \textbf{Contribution}:
+    Performed the formal gravitational-wave Bayesian inference data analysis, code development, data release, %significantly participated in the methodology,
+    prepared the original draft, edited and reviewed.
+\end{itemize}
+}
+
+\item{Daniel Finstad, \textbf{Soumi De}, Duncan A. Brown, Edo Berger, Christopher M. Biwer, \textit{Measuring the viewing angle of GW170817 with electromagnetic and gravitational waves}, Astrophys. J. Lett. 860, L2 (2018). [35 citations]
+\begin{itemize}
+%\renewcommand{\labelitemi}{$\bullet$}
+\vspace{-2mm}
+    \item \textbf{Data release}: https://github.com/sugwg/gw170817-inclination-angle
+    \vspace{-1mm}
+    \item \textbf{Contribution}:
+    %Participated in the methodology, 
+    Validated the analysis, edited and reviewed the draft.
+\end{itemize}
+}
+
+\end{etaremune}
+
+% SOUMI LOOK AT UNCOMMENTING FOR CfA
+\iffalse
+\subsection{\textbf{Short author - preprints :}}
+\vspace{1mm}
+\begin{etaremune}
+\item{Collin D. Capano, Ingo Tews, Stephanie M. Brown, Ben Margalit, \textbf{Soumi De}, Sumit Kumar, Duncan A. Brown, Badri Krishnan, Sanjay Reddy, \textit{GW170817: Stringent constraints on neutron-star radii from multimessenger observations and nuclear theory}, arXiv:1908.10352 (2019), Submitted to Nature Astronomy.}
+
+\renewcommand{\labelenumi}{\textcolor{gray}{\arabic{enumi}.}}
+\item{Michael Forbes, Sukanta Bose, Sanjay Reddy, Dake Zhou, Arunava Mukherjee, \textbf{Soumi De}, \textit{Constraining the neutron-matter equation of state with gravitational waves}, arXiv:1904.04233 (2019), Accepted by Phys. Rev. D.}
+\end{etaremune}
+\fi
+
+\vspace{1.8mm}
+\subsection{\textbf{Short author - In Preparation :}}
+\vspace{1mm}
+\begin{etaremune}
+\renewcommand{\labelenumi}{\textcolor{gray}{\arabic{enumi}.}}
+\item{\textbf{Soumi De}, Daniel Siegel et al. \textit{Three-dimensional GRMHD simulations of remnant accretion disks in neutron star mergers: Connecting the disk physics and nucleosynthesis to binary parameters} (2019).}
+
+\item{Rosa Wallace Everson, Morgan MacLeod, \textbf{Soumi De}, Phillip Macias, Enrico Ramirez-Ruiz, \textit{Self-similarity in dynamical common envelope events} (2019).}
+\end{etaremune}
+
+
+\subsection{\textbf{LIGO Scientific Collaboration publications: }} 
+Following are the publications that I have contributed to as member of the collaboration from Sep 2015 to Jan 2018
+\vspace{1mm}
+%\renewcommand{\listitemsymbol}{~}
+\begin{etaremune}
+\renewcommand{\labelenumi}{\textcolor{gray}{\arabic{enumi}.}}
+\item{B. P. Abbott et al., \textit{GW170817: Observation of gravitational waves from a binary neutron star inspiral}, Phys. Rev. Lett., 119, 161101 (2017). [2784 citations]}
+
+\item{B. P. Abbott et al., \textit{Muti-messenger observations of a binary neutron star merger}, Astrophys. J. Lett., 848, 2 (2017). [1202 citations]}
+
+\item{B. P. Abbott et al., \textit{Binary Black Hole Mergers in the First Advanced LIGO Observing Run}, Phys. Rev.~X 6, 041015 (2016). [667 citations]}
+
+\item{B. P. Abbott et al., \textit{GW151226: Observation of Gravitational Waves from a 22-Solar-Mass Binary Black Hole Coalescence}, Phys. Rev. Lett., 116, 241103 (2016). [1924 citations]}
+
+\item{B. P. Abbott et al., \textit{The Rate of Binary Black Hole Mergers Inferred from Advanced LIGO Observations Surrounding GW150914}, Astrophys. J. Lett. 833, 1 (2016). [264 citations]}
+
+\item{B. P. Abbott et al., \textit{GW150914: First Results from the Search for Binary Black Hole Coalescence with Advanced LIGO}, Phys. Rev. D 93, 122003 (2016). [217 citations]}
+
+\item{B. P. Abbott et al., \textit{Observation of Gravitational Waves from a Binary Black Hole Merger}, Phys. Rev. Lett., 116, 061102 (2016). [4592 citations]}
+\end{etaremune}
+%\fi
+
+\section{PRESENTATIONS}
+\vspace{1mm}
+\subsection{\textbf{Invited Talks :}}
+\begin{addmargin}[1em]{0em}
+{\customcvproject{Strong Gravity Seminar, Perimeter Institute for Theoretical Physics\\ Waterloo, Canada}{Mar 2020}
+  {
+    \begin{itemize}
+    \renewcommand{\labelitemi}{~}
+    \item Modeling the Common Envelope Inspiral Phase and Formation of \\ LIGO’s Binary Black Holes
+    \end{itemize}
+  }
+}
+
+{\customcvproject{Data Science Seminar, Los Alamos National Laboratory \\ Los Alamos, New Mexico, USA}{Feb 2020}
+  {
+    \begin{itemize}
+    \renewcommand{\labelitemi}{~}
+    \item Characterizing neutron stars and black holes with gravitational-wave data science: \\ Techniques and digital infrastructures
+    \end{itemize}
+  }
+}
+
+{\customcvproject{Astrophysics Seminar, Los Alamos National Laboratory \\ Los Alamos, New Mexico, USA}{Feb 2020}
+  {
+    \begin{itemize}
+    \renewcommand{\labelitemi}{~}
+    \item Probing neutron star and black hole binaries in the era of multi-messenger astronomy: \\ From simulations to observations
+    \end{itemize}
+  }
+}
+\vspace*{1mm}
+
+{\customcvproject{International Workshop on Gross Properties of Nuclei and Nuclear
+Excitations\\ Hirschegg, Austria}{Jan 2020}
+  {%\iffalse
+    \begin{itemize}
+    \renewcommand{\labelitemi}{~}
+    \item Tidal deformabilities and radii of neutron stars from multimessenger observations
+    \end{itemize}
+    %\fi
+  }
+}
+
+{\customcvproject{High Energy Phenomena Seminar, Harvard Smithsonian Center for Astrophysics \\ Cambridge, Massachusetts, USA}{Feb 2019}
+  {\begin{itemize}
+    \renewcommand{\labelitemi}{~}
+    \item Constraining the properties and evolution of neutron star and black hole \\ binaries from gravitational-wave observations
+    \end{itemize}
+  }
+}
+
+{\customcvproject{Gravitational Wave Physics and Astronomy Workshop \\ College Park, Maryland, USA}{Dec 2018}
+  {\begin{itemize}
+    \renewcommand{\labelitemi}{~}
+    \item Tidal Deformabilities and Radii of Neutron Stars from the Observation of GW170817
+  \end{itemize}
+  }
+}
+
+{\customcvproject{Kavli Summer Program in Astrophysics \\ Niels Bohr Institute, Copenhagen, Denmark}{Aug 2017}
+  {\begin{itemize}
+    \renewcommand{\labelitemi}{~}
+    \item Effect of mass ratio on Common Envelope flows
+  \end{itemize}
+  }
+}
+\end{addmargin}
+
+\vspace{2mm}
+\subsection{\textbf{Contributed talks :}}
+\begin{addmargin}[1em]{0em}
+{\customcvproject{American Physical Society April meeting \\ Denver, Colorado, USA}{Apr 2019}
+  {\begin{itemize}
+    \renewcommand{\labelitemi}{~}
+    \item Tidal Deformabilities and Radii of Neutron Stars from the Observation of GW170817
+  \end{itemize}
+  }
+}
+
+{\customcvproject{Conference on Computational Physics \\ University of California, Davis, USA}{Aug 2018}
+  {\begin{itemize}
+    \renewcommand{\labelitemi}{~}
+    \item Parameter Estimation of Compact Binaries using PyCBC Inference
+  \end{itemize}
+  }
+}
+
+{\customcvproject{Eastern Gravity Meeting, Long Island University \\ Brooklyn, USA}{May 2018}
+  {\begin{itemize}
+    \renewcommand{\labelitemi}{~}
+    \item Constraining the nuclear equation of state with GW170817
+  \end{itemize}
+  }
+}
+\end{addmargin}
+
+\vspace{2mm}
+\subsection{\textbf{Posters :}}
+\begin{addmargin}[1em]{0em}
+
+{\customcvproject{Introductory Summer School on Astronomy and Astrophysics  \\ IUCAA, India}{May - Jun 2012}
+  {\begin{itemize}
+    \renewcommand{\labelitemi}{~}
+    \item Quasars and Active Galactic Nuclei
+  \end{itemize}
+  }
+}
+\end{addmargin}
+
+%\clearpage
+\vspace{1mm}
+\section{PROFESSIONAL DEVELOPMENT}
+\vspace{1mm}
+{\customcventry{Aug 2019}{University of California, Santa Barbara}{MESA (Modules for Experiments in Stellar Astrophysics) Summer School}{Summer School}{}{}}
+
+{\customcventry{May - Jul 2019}{Kavli Intitute for Theoretical Physics}{The New Era of Gravitational-Wave Physics and Astrophysics}{Summer Program}{}{}}
+
+{\customcventry{Apr 2018}{Michigan State University}{Neutron Star Merger Summer School, Facility for Rare Isotope Beams}{Summer School}{}{}}
+
+{\customcventry{Dec 2017}{Kavli Intitute for Theoretical Physics}{Astrophysics from a Neutron Star Merger}{Conference}{}{}}
+
+{\customcventry{Jul - Aug 2017}{Niels Bohr Institute, Copenhagen}{Kavli Summer Program in Astrophysics}{Summer Program}{}{}}
+
+{\customcventry{Jul 2016}{University of Wisconsin, Madison, Computer Sciences Department}{Open Science Grid User School}{Summer School}{}{}}
+
+\vspace{2mm}
+\section{MENTORING AND OUTREACH}
+\vspace{1mm}
+{\customcvprojectsimple{Co-mentored Syracuse University undergraduate students Laurel White \\ (Physics major) and Celines Aquino (Elec. Engg. and Physics major) on \\ gravitational-wave data analysis research projects. Tools and techniques \\ involved: Signal processing, Bayesian Inference, Python, Bash.}{Spring 2019}
+{}}
+
+{\customcvprojectsimple{Delivered demos of detecting gravitational-wave signals in the LIGO data. \\ Syracuse University Alumni Outreach Event, New York City, USA}{Feb 2017}
+{}}
+
+{\customcvprojectsimple{Delivered demos of detecting gravitational-wave signals in the LIGO data. \\ Press conference for announcement of LIGO's first observation of gravitational \\ waves from a binary black hole merger, Syracuse University, USA}{Feb 2016}
+{}}
+
+{\customcvprojectsimple{Member of the Local Organizing Committee: Conference for Undergraduate \\ Women in Physics (CUWIP), Syracuse University, USA}{Dec 2015}
+{}}
+
+\vspace{2mm}
+% SOUMI : UNCOMMENT FOR OTHER APPLICATIONS
+%\iffalse
+\section{PAST RESEARCH EXPERIENCE}
+\vspace{1mm}
+{\customcvproject{Associate Research Student  \\ IUCAA, India (Advisor: Prof. Sukanta Bose)}{Sep 2014 - Jul 2015}
+  {\begin{itemize}
+    \renewcommand{\labelitemi}{~}
+    \item Data analysis software development: \\ Constraining the neutron-matter equation of state with gravitational-waves.
+  \end{itemize}
+  }
+}
+
+{\customcvproject{Summer Research Student  \\ IUCAA, India (Advisor: Prof. Sukanta Bose)}{Jun - Aug 2013}
+  {\begin{itemize}
+    \renewcommand{\labelitemi}{~}
+    \item Data analysis software development: \\ Constraining the parameters of the dark energy equation of state with gravitational-waves
+  \end{itemize}
+  }
+}
+
+{\customcvproject{Indian Academy of Sciences Summer Research Fellow  \\ IUCAA, India (Advisor: Prof. R. Srianand)}{Jun - Aug 2013}
+  {\begin{itemize}
+    \renewcommand{\labelitemi}{~}
+    \item Big Bang Nucleosynthesis: Determination of the baryonic density parameter \\ from measurements of Deuterium abundance.
+  \end{itemize}
+  }
+}
+
+{\customcvproject{BSc. final year project \\ St. Xavier's College, Kolkata, India (Advisor: Prof. Shibaji Banerjee)}{Jul 2012 - Apr 2013}
+  {\begin{itemize}
+    \renewcommand{\labelitemi}{~}
+    \item Motion analysis using computer vision based techniques: \\ Determination of coefficient of restitution of a bouncing ball from video tracking.
+  \end{itemize}
+  }
+}
+%\fi
+\vspace{2mm}
+
+%\iffalse
+\section{COMPUTATIONAL EXPERIENCE}
+\textsc{\textbf{Programming Languages and Platforms}}
+\begin{addmargin}[2em]{2em}
+%\begin{tabular}{ @{} >{\bfseries}l @{\hspace{2ex}} l }
+{\textbf{Proficient}:\hspace{2ex}}{Python, C, Bash, jupyter, HDF5, Latex} \\
+%{\textbf{Substantial Knowledge}:\hspace{2ex}}{Fortran, Java, MATLAB/Octave, Mathematica, BASIC, OpenMP, MPI, Open Science Grid, Pegasus, HTML, XML}  \\
+{\textbf{Substantial Knowledge}:\hspace{2ex}}{Fortran, MATLAB/Octave, Mathematica, HTML, XML, Java}  \\
+%{\textbf{Working Knowledge}:\hspace{2ex}}{}
+%\end{tabular}
+\end{addmargin}
+%\clearpage
+%\vspace*{-2mm}
+\textsc{\textbf{High-Throughput and High-Performance Computing}}
+\begin{addmargin}[2em]{2em}
+{Condor, Open Science Grid, Pegasus, OpenMP, MPI.
+\begin{itemize}
+\renewcommand{\labelitemi}{-}
+\vspace{-2mm}
+\item Proficient at running software on High-Performance and High-Throughput computing clusters.
+\vspace{-3mm}
+\item Substantial experience in developing software and scientific workflows to be run on High-Throughput clusters.
+\end{itemize}
+}
+\end{addmargin}
+
+\textsc{\textbf{Code/Data Sharing and Management}}
+\begin{addmargin}[2em]{2em}
+{Github, Gitlab, Zenodo, Bitbucket, Docker, Globus.
+\begin{itemize}
+\renewcommand{\labelitemi}{-}
+\vspace{-2mm}
+\item Proficient at using these platforms for building, maintaining, reviewing, transferring, publishing version-controlled code and data generated in large collaborative projects.
+\end{itemize}
+}
+\end{addmargin}
+
+\textsc{\textbf{Software}}
+\begin{addmargin}[2em]{2em}
+{\textbf{Maintainer}:\hspace{1.5ex}}{PyCBC} \\
+{\textbf{Analyses and simulations with}:\hspace{1.5ex}}{PyCBC, FLASH, Einstein Toolkit, SkyNet, MESA, EMCEE, yt, Astropy}
+\end{addmargin}
+\vspace{2mm}
+%\fi 
+
+%\clearpage
+\vspace{2mm}
+\section{REFERENCES}
+\vspace{1mm}
+%\iffalse
+%\fi
+\begin{addmargin}[-1em]{}
+\begin{itemize}
+\renewcommand{\labelitemi}{~}
+  \begin{minipage}{0.6\textwidth}
+    \renewcommand{\labelitemi}{~}
+    \item \textbf{Prof. Duncan Brown}\\
+    Charles Brightman Professor of Physics \\
+    Department of Physics, \\
+    Syracuse University \\
+    Syracuse, NY 13244-1130, USA \\
+    dabrown@syr.edu \\
+    \textbf{PhD advisor}
+  \end{minipage}
+  \begin{minipage}{0.5\textwidth}
+   \renewcommand{\labelitemi}{~}
+    \item \textbf{Prof. James Lattimer}\\
+    Distinguished Professor \\
+    Department of Physics and Astronomy, \\
+    Stony Brook University \\
+    Stony Brook, NY 11794-3800, USA \\
+    james.lattimer@stonybrook.edu \\
+  \end{minipage}
+\end{itemize}
+\end{addmargin}
+
+% SOUMI : ADD THIRD REFERENCE HERE
+\vspace{1cm}
+\begin{addmargin}[-1em]{}
+\begin{itemize}
+\renewcommand{\labelitemi}{~}
+  \begin{minipage}{0.6\textwidth}
+    \renewcommand{\labelitemi}{~}
+    \item \textbf{Prof. Enrico Ramirez-Ruiz}\\
+    Professor \\
+    Department  of  Astronomy  and  Astrophysics, \\
+    University of California, Santa Cruz \\
+    Santa Cruz, CA 95064, USA \\
+    enrico@ucolick.org
+  \end{minipage}
+  \begin{minipage}{0.5\textwidth}
+   \renewcommand{\labelitemi}{~}
+    \item
+  \end{minipage}
+\end{itemize}
+\end{addmargin}
+%\fi
+      
+
+% Publications from a BibTeX file without multibib
+%  for numerical labels: \renewcommand{\bibliographyitemlabel}{\@biblabel{\arabic{enumiv}}}% CONSIDER MERGING WITH PREAMBLE PART
+%  to redefine the heading string ("Publications"): \renewcommand{\refname}{Articles}
+\nocite{*}
+\bibliographystyle{plain}
+\bibliography{publications}                        % 'publications' is the name of a BibTeX file
+
+% Publications from a BibTeX file using the multibib package
+%\section{Publications}
+%\nocitebook{book1,book2}
+%\bibliographystylebook{plain}
+%\bibliographybook{publications}                   % 'publications' is the name of a BibTeX file
+%\nocitemisc{misc1,misc2,misc3}
+%\bibliographystylemisc{plain}
+%\bibliographymisc{publications}                   % 'publications' is the name of a BibTeX file
+
+%-----       letter       ---------------------------------------------------------
+
+\end{document}
+
+
+%% end of file `template.tex'.
