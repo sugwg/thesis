@@ -1,0 +1,89 @@
+\section{Introduction}
+\label{sec:pe-intro}
+The Advanced LIGO and Virgo observatories have detected two binary neutron star mergers, GW170817 \cite{TheLIGOScientific:2017qsa} and GW190425 \cite{Abbott:2020uma}. To date, 17 double neutron star systems have been observed through radio surveys of the Milky Way field \cite{Martinez:2017jbp,Tauris:2017omb,Cameron:2017ody,Stovall:2018ouw,Lynch:2018zxo}. Observations of binary neutron stars allow us to determine their formation channels \cite{Smarr1976,Canal:1990dz,PortegiesZwart1:1997zn,Postnov:2006hka,Kalogera:2006uj,Kowalska:2010qg,Tauris:2017omb,Belczynski:2018ptv,Vigna-Gomez:2018dza,Giacobbo:2018etu,Mapelli:2018wys,Andrews:2019vou}, constrain the neutron-matter equation of state \cite{Bauswein:2017vtn,Annala:2017llu,Fattoyev:2017jql,De:2018uhw,Abbott:2018exr,Capano:2019eae,Tews:2018iwm,Most:2018hfd,Radice:2018ozg,Coughlin:2018fis,Forbes:2019xaz}, and test the strong-field regime of general relativity \cite{Abbott:2018lct}.
+
+Although the eccentricity of double neutron stars in the Milky Way field ranges from $0.06$ to $0.828$ \cite{Zhu:2017znf,Andrews:2019vou}, field binaries will circularize to eccentricity $e \leq 10^{-4}$ \cite{Peters:1964zz,Kowalska:2010qg}, making them detectable by matched-filter searches that neglect eccentricity \cite{Martel:1999tm,Cokelaer:2009hj,Brown:2009ng,Huerta:2013qb}.
+GW170817 and GW190425 were detected by searches that neglect eccentricity \cite{TheLIGOScientific:2017qsa,Abbott:2020uma}, suggesting that their eccentricity is $e \lesssim 0.05$ \cite{Huerta:2013qb}, however no direct measurement of their eccentricity has been made. Ref.~\cite{10.1093/mnrasl/slaa084} place a limit on the eccentricity of GW190425 by estimating the effect of eccentricity on the measured parameters of the signal. Here, we directly measure the eccentricity of GW170817 and GW190425 using Bayesian parameter estimation \cite{Biwer:2018osg}.
+
+We use the observations from the Gravitational-Wave Open Science Center \cite{TheLIGOScientific:2017qsa,Abbott:2020uma}, waveform templates that include eccentricity \cite{Moore:2016qxz}, and Markov Chain Monte Carlo parameter estimation \cite{ForemanMackey:2012ig,Biwer:2018osg} to measure the eccentricity of the GW170817 and GW190425 when they have a gravitational-wave frequency of 10 Hz. We find that the eccentricity of GW170817 is $e \leq 0.027$ and GW190425 is $e \leq 0.052$ at 90\% confidence for a uniform prior on $e$. Our limit on eccentricity of GW170817 is a factor of two smaller than the limit estimated by its detection with circular waveform templates. We note that when using a common prior on eccentricity, our limit on the eccentricity of GW190425 is a factor of three greater than the limit of Ref.~\cite{10.1093/mnrasl/slaa084}. We find that this is due to a degeneracy between the chirp mass and eccentricity that is not included in the analysis of Ref.~\cite{10.1093/mnrasl/slaa084}. However, this difference does not invalidate their conclusions about the formation of GW190425.
+
+Dynamical interations may form binary neutron stars with residual eccentricity, although the rate of such mergers is expected to be small in current detectors \cite{Lee:2009ca,Ye:2019xvf} and a search for eccentric binary neutron stars in the O1 and O2 observing runs did not yield any candidates \cite{Nitz:2019spj}. However, since eccentricity is an interesting probe of binary formation channels and eccentric binaries may produce different electromagnetic emission than circular binary neutron stars \cite{Radice:2016dwd,Chaurasia:2018zhg}, it is important to accurately constrain the eccentricity of binary neutron stars as the number of observed mergers increases in the coming years.
+
+\section{Methods}
+
+\label{sec:pe-method}
+
+We measure the parameters of GW170817 and GW190425 using Bayseian inference \cite{Finn:2000hj,Rover:2006ni}. We use gravitational-wave data from Advanced LIGO and Virgo \cite{Blackburn:170817,dataLIGO:190425}, $\boldsymbol{d}(t)$, and a model of the gravitational waves, $H$, to calculate the posterior probability density function, $p(\boldsymbol{\theta}|\boldsymbol{d}(t),H)$, given by
+\begin{equation}
+    p(\boldsymbol{\theta}|\boldsymbol{d}(t),H) = \frac{p(\boldsymbol{\theta}|H) p(\boldsymbol{d}(t)|\boldsymbol{\theta},H)}{p(\boldsymbol{d}(t)|H)},
+\end{equation}
+where $\boldsymbol{\theta}$ denotes the parameters of the gravitational waveform, $p(\boldsymbol{\theta}|H)$, is the prior distribution on the signal parameters, and $p(\boldsymbol{d}(t)|\boldsymbol{\theta},H)$, is the probability of observing the data, known as the likelihood. The likelihood models the noise in the detector as a Gaussian and depends upon a noise-weighted inner product between the gravitational waveform and gravitational-wave data, $\boldsymbol{d}(t)$. Markov Chain Monte Carlo (MCMC) techniques can be used to marginalize over the parameters to obtain the posterior probabilities \cite{Christensen:2001cr}. Our implementation of Bayesian inferences uses the \textit{PyCBC Inference} software package \cite{Biwer:2018osg,alex_nitz_2020_3630601} and the parallel-tempered \textit{emcee} sampler, \texttt{emcee\_pt} \cite{ForemanMackey:2012ig,emceept}.
+
+For GW170817 and GW190425, the MCMC is performed over the component masses of the binary, $m_{1,2}$, the component spins aligned with the orbital angular momentum, $\chi_{1,2}$, the time of coalescence, $t_c$, the polarization of the GW, $\psi$, the inclination angle, $\iota$, and the eccentricity, $\ecc$.
+
+\begin{table*}
+\begin{center}
+\resizebox{\textwidth}{!}{
+    \begin{tabular}{|c||c|c|}
+        \hline
+        \textbf{Parameters}              & \textbf{GW170817}                 & \textbf{GW190425}                     \\ \hline
+        \textbf{Component Masses} (\msun)  & {[}1.0,3.0{]}                     & {[}1.0,3.0{]}                         \\ \hline
+        \textbf{Component Spins}         & {[}-0.05,0.05{]}                  & {[}-0.05,0.05{]}                      \\ \hline
+        \textbf{Coalescence Time} (s)    & {[}1187008882.33,1187008882.53{]} & {[}1240215502.917,1240215503.117{]}   \\ \hline
+        \textbf{Polarization}            & {[}0,2$\pi${]}                    & {[}0,2$\pi${]}                        \\ \hline
+        \textbf{Inclination Angle}       & $\sin \iota$                      &  $\sin \iota$                         \\ \hline
+        \textbf{Distance} (Mpc)          & 40.7 $\pm$ 2.36~\cite{Cantiello:2018ffy} & uniform in comoving volume                     \\ \hline
+        \textbf{RA/Dec} ($^{\circ}$)        & 3.44615914, -0.40808407~\cite{Coulter:2017wya,Soares-Santos:2017lru} & {[}$-\pi/2$,$\pi/2${]}           \\ \hline
+        \textbf{Eccentricity}            & {[}0.0,0.1{]}                     & {[}0.0,0.1{]}                        \\ \hline 
+        \hline
+        \textbf{PSD Estimation Interval} (s) & {[}1187008382,1187008918{]}   & {[}1240215003,1240215543{]}          \\ \hline
+        \textbf{Likelihood Interval} (s) & {[}1187008692,1187008892{]}       & {[}1240215313,1240215513{]}          \\ \hline
+    \end{tabular}}
+\caption{Prior distributions and GPS time intervals for GW170817 and GW190425.}
+\label{tab:prior}
+\end{center}
+
+\end{table*}
+
+We assume a uniform prior distribution on the component masses, component spins, and coalescence time around the trigger shown in Table~\ref{tab:prior}. We assume an isotropic sky location for GW190425 and a prior uniform in $\sin \iota$ for the inclination angle of both detections. We fix the sky location of GW170817 to the observed EM counterpart using a Gaussian prior distribution on the distance \cite{Cantiello:2018ffy}. We explore the prior distribution on the eccentricity by running the MCMC with two prior distributions: a prior that is uniform in $\ecc$ and a prior uniform in $\log e$ to compare with the GW190425 results found by Ref.~\cite{10.1093/mnrasl/slaa084}.
+
+We use the GW strain data from the Advanced LIGO and Virgo detectors for GW170817 and GW190425, available through the LIGO Open Science Center (LOSC) \cite{Vallisneri:2014vxa}. The \texttt{LOSC\_CLN\_4\_V1} data that we use for GW170817 includes post-processing noise-subtraction performed by the LIGO/Virgo Collaboration \cite{Blackburn:170817,Driggers:2018gii}. The \texttt{T1700406\_v3} data that we use for GW190425 includes pre-processing glitch removal performed by the LIGO/Virgo Collaboration specifically for use in parameter estimation \cite{Abbott:2020uma,dataLIGO:190425}.
+
+We high-pass the data using an eighth-order Butterworth filter with an attenuation of 0.1 at 15 Hz. To conserve the phase of the delay, the filter is applied forward and backwards. A low-pass finite impulse response filter is applied to the data prior to resampling. The data is decimated to 2048 Hz for the analysis. For computing the likelihood, we use Welch's method to estimate the detector's noise power spectral density (PSD). Welch's method is used with 16 second Hanning windowed segments that are overlapped by 8 seconds. The PSD is shortened to 8 seconds in the time domain \cite{Allen:2005fk}. The gravitational-wave data, $\boldsymbol{d}(t)$, used in the likelihood is taken from the intervals shown in Table~\ref{tab:prior}. The gravitational-wave likelihood is evaluated from a low-frequency cutoff of 20 Hz to the Nyquist Frequency of 1024 Hz.
+
+A variety of waveforms are available that model eccentricity \cite{Huerta:2014eca,Tanay:2016zog,Moore:2016qxz,Huerta:2016rwp,Cao:2017ndf,Hinder:2017sxy,Tiwari:2019jtz,Moore:2019xkm}. From what we know of binary neutron star mergers, we expect them to have low mass, spin, and eccentricity making TaylorF2Ecc a suitable waveform. The waveform model, H, is TaylorF2Ecc, a TaylorF2 post-Newtonian (pN) model with eccentric corrections. We use the LIGO Algorithm Library implementation \cite{lalsuite} accurate to 3.5 pN order in orbital phase \cite{Buonanno:2009zt}, 3.5 pN order in the spin-orbit interactions \cite{Bohe:2013cla}, 2.0 pN order in spin-spin, quadrupole-monopole, and self-interactions of individual spins \cite{Mikoczi:2005dn,Arun:2008kb}, and 3.0 pN order in eccentricity \cite{Moore:2016qxz}. Since TaylorF2Ecc follows TaylorF2 in its construction, the waveform will terminate at twice the orbital frequency of a particle at the innermost stable circular orbit of a Schwarzschild black hole.
+
+As a check on our analysis, we estimate the parameters of GW170817 and GW190425 using two available waveforms: the TaylorF2Ecc waveform at $e=0$ and the TaylorF2 waveform. Our analyses are consistent with each other and with the parameters estimated by Advanced LIGO and Virgo \cite{TheLIGOScientific:2017qsa,Abbott:2020uma}. 
+
+\section{Results}
+\label{sec:pe-Results}
+We first constrain the level of the eccentricity by using the TaylorF2Ecc waveform and a prior uniform in $\ecc$. We find that the 90\% credible intervals at 10 Hz for GW170817 and GW190425 are $e = 0.013^{+0.014}_{-0.011}$ and $e = 0.028^{+0.024}_{-0.024}$ respectively. A degeneracy between the chirp mass, $\chirpm$, and eccentricity, $\ecc$ and a small correlation between the effective spin, $\chieff$, and $\ecc$ are shown in our posterior distributions in Figure~\ref{Fig:GW170817} and Figure~\ref{Fig:GW190425}. Since $\chirpm$ and $\chieff$ are correlated \cite{Baird:2012cu,Safarzadeh:2020mlb}, this will create a small correlation between $\ecc$ and $\chieff$.
+
+\begin{figure*}
+    \includegraphics[width=\textwidth]{Figures/bns-pe/GW170817-e10.png}
+    \caption{Posterior probability distribution of GW170817 at 10 Hz. The analysis used a prior uniform in $\ecc$. Each parameter is quoted with a median value (solid red line) and a 90\% credible interval (dashed red lines). The chirp mass $\chirpm$ is given in the detector frame. Note the degeneracy between $\chirpm$ and $\ecc$.}
+\label{Fig:GW170817}
+\end{figure*}
+
+\begin{figure*}
+    \includegraphics[width=\textwidth]{Figures/bns-pe/GW190425-e10.png}
+    \caption{Posterior probability distribution of GW190425 at 10 Hz. The analysis used a prior uniform in $\ecc$. Each parameter is quoted with a median value (solid red line) and a 90\% credible interval (dashed red lines). The chirp mass $\mathcal{M}$ is given in the detector frame. Note the degeneracy between $\chirpm$ and $\ecc$.}
+\label{Fig:GW190425}
+\end{figure*}
+
+Ref.~\cite{10.1093/mnrasl/slaa084} estimated the eccentricity of GW190425 to determine if the formation channel was due to unstable BB mass transfer. They estimate the eccentricity induced by the supernova kick in this formation scenario to be between $10^{-6}$ and $10^{-3}$ at 10 Hz. To find the eccentricity of GW190425, Ref.~\cite{10.1093/mnrasl/slaa084} reweight the posterior samples from the parameter estimation performed using circular binaries to estimate the limit of the eccentricity using the same method used to estimate the eccentricity of binary black holes \cite{Romero-Shaw:2019itr}. They estimate the eccentricity of GW190425 at 10 Hz to be $e \leq 0.007$ (90\% confidence) using a prior uniform in $\log e$. They find no evidence for or against unstable BB mass transfer as their analysis is not able to distinguish the small residual eccentricity expected from the investigated formation channel. 
+
+To more directly compare our limit on GW190425's eccentricity, we repeat our analysis using a $\log e$ prior. In Figure~\ref{Fig:1DMarginal} we can see the differences in the posterior distributions of each prior. With the $\log e$ prior we estimate the eccentricity at 10 Hz to be $e \leq 0.04$. This is a factor of three larger than interval estimated by Ref.~\cite{10.1093/mnrasl/slaa084}. By re-weighting the posterior samples rather than a full MCMC, the degeneracy between $\chirpm$ and $\ecc$ is missed. We find that by excluding posterior samples with lower values of $\chirpm$, we can recover the upper limit reported by Ref.~\cite{10.1093/mnrasl/slaa084}. Although our limit on the eccentricity is larger than that of Ref.~\cite{10.1093/mnrasl/slaa084}, our result does not change their conclusion: indeed the strong dependence of the eccentricity posterior on the prior seen in Figure~\ref{Fig:1DMarginal} agrees with their conclusion that the signal-to-noise ratio of GW190425 is not large enough to explore the eccentricities expected in BB mass transfer. We would need to be able to determine the eccentricity at lower frequencies to distinguish the formation channel.
+
+\begin{figure*}
+    \includegraphics[width=\textwidth]{Figures/bns-pe/1Dmarginal-eccen-10hz.png}
+    \caption{Eccentricity posteriors of GW190425 (solid black line) plotted against their priors (dotted line) for two choices of prior: uniform in $\ecc$ (left) and uniform in $\log_{10}(e)$ (right). We quote the median (solid red line) and 90\% credible interval (dashed red lines) for e in each posterior. The prior uniform in $\log_{10}(e)$ has the same distribution as the prior used in the Ref.~\protect\cite{10.1093/mnrasl/slaa084} analysis.}
+    \label{Fig:1DMarginal}
+\end{figure*}
+
+\section{Conclusion}
+Our analysis used the gravitational-wave observations as well as a prior on the eccentricity to constrain the eccentricity of GW170817 and GW190425. Our 90\% confidence limit using a uniform prior on $\ecc$ for GW170817, $e \leq 0.027$, and GW190425, $e \leq 0.052$, are consistent with expectations since they were found by a circular search \cite{Peters:1964zz}. We have constrained the eccentricity to a factor of two smaller than estimates obtained from circular searches \cite{Brown:2009ng,Huerta:2013qb}. Our 90\% credible intervals on the eccentricity of GW190425 are a approximately a factor of six larger than the interval estimated by \cite{10.1093/mnrasl/slaa084}, which used a prior uniform in $\log e$. This demonstrates the impact of prior choice, and the importance of measuring the eccentricity of signals using full parameter estimation to account for the correlation between parameters.
+
+Unfortunately, based on current merger rate estimates the detection of an eccentric binary neutron star merger will be difficult with current observatories \cite{Lee:2009ca,Ye:2019xvf,Nitz:2019spj}, but gravitational-wave capture binaries that have $e \geq 0.8$ and could form in the LIGO-Virgo band \cite{Rodriguez:2018pss,Takatsy:2018euo}. However, since the eccentricity of the detections is expected to be low and negligible, $e \leq 0.02$, a circular search is effective in detecting them \cite{Brown:2009ng,Huerta:2013qb}. 
+
+Current waveform models are effective for detection as spin and eccentricity are assumed to be low, but that might not be the case for future gravitational-wave signals. Future signals may have high eccentricity and spin and will need further corrections to be able to detect them efficiently and produce unbiased parameter estimates. Waveforms that better model eccentric signals will need to be developed before we are able to make a detection of a merger with a high eccentricity or spin. The detection of a binary neutron star mergers with high eccentricity or spin in future observing runs and with third generation detectors will reveal more about the formation channel of eccentric binaries and the existence of a dynamical formation channel. 
