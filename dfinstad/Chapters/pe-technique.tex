@@ -1,0 +1,163 @@
+\newcommand{\pset}{\vartheta}
+\newcommand{\likelihood}{\ensuremath{p(\vec{d}(t)|\vec{\pset},H)}}
+\newcommand{\prior}{\ensuremath{p(\vec{\pset}|H)}}
+\newcommand{\evidence}{\ensuremath{p(\vec{d}(t)|H)}}
+\newcommand{\posterior}{\ensuremath{p(\vec{\pset}|\vec{d}(t),H)}}
+
+We give an overview of the techniques of gravitational-wave parameter estimation, which are employed widely throughout this thesis. We outline the basic principles behind Bayesian inference for gravitational-wave astronomy and the sampling methods we use to produce posterior estimates in our analyses. We also comment on some practical considerations we found useful in the completion of this work, though we emphasize the items we discuss are by no means an exhaustive list.
+
+\section{Bayesian inference}\label{sec:bayesian_inference}
+In gravitational-wave astronomy we use Bayesian methods as a convenient way to infer the astrophysical source parameters from a detected signal~\cite{FinnChernoff:1993,Cutler:1994ys,Nicholson:1997qh,Christensen:2001cr}. For a stretch of gravitational-wave detector data $\vec{d}(t)$ identified as containing a gravitational-wave signal, Bayes' theorem~\cite{Bayes:1793,Jaynes:2003} states that for a hypothesis $H$, the posterior probability density is
+% joint posterior probability definition
+\begin{equation}
+\label{eqn:bayes} \posterior =
+\frac{\likelihood \prior}{\evidence} .
+\end{equation}
+Here $p(A|B)$ denotes the conditional probability of $A$ given $B$. In the context of gravitational-wave inference, the hypothesis $H$ is the model of the gravitational waveform, and 
+$\vec{\pset}$ is the set of parameters defining this model. Thus the posterior probability density \posterior\ is the conditional probability that the gravitational-wave signal is defined by parameters $\vec{\pset}$, given data $\vec{d}(t)$ and waveform model $H$. The prior probability density \prior\ represents our prior knowledge of the parameters $\vec{\pset}$ before considering the observed data $\vec{d}(t)$. The posterior probability density is proportional to the prior probability density, as the Bayesian framework considers any new observations in the broader context of prior knowledge. The denominator of Eqn.~\ref{eqn:bayes}, \evidence\ is known as the ``evidence" or ``marginal likelihood," and it serves as a normalizing constant to ensure the integral of \posterior\ over the parameter space is equal to unity.
+
+In practice, we are very often interested in posterior estimates of only one or a few parameters. In this case we can obtain marginalized posterior probability density functions by integrating \posterior\ over all unwanted parameters. For instance, given a set of parameters $\vec{\pset}=\left\{ \theta_1,\theta_2,\ldots,\theta_n \right\}$, the marginalized posterior probability density for source parameter $\theta_1$ is
+\begin{equation}\label{eqn:margpost}
+p(\theta_1|\vec{d}(t),H) = \int \posterior\mathrm{d}\theta_2\mathrm{d}\theta_3\ldots\mathrm{d}\theta_n .
+\end{equation}
+
+In a parameter estimation analysis of gravitational-wave data, an implicit assumption is made that the gravitational-wave detector noise is stationary, Gaussian, and uncorrelated between detectors in the network. The data stream from the $i$-th detector in a network is then $d_{i}(t)=n_{i}(t)+s_{i}(t)$, where $s_{i}(t)$ is the gravitational waveform and $n_{i}(t)$ is the Gaussian detector noise. Under these assumptions, the likelihood in Eqn.~\ref{eqn:bayes} has the form~\cite{wainstein:1962}
+% likelihood
+\begin{eqnarray}\label{eqn:log_likelihood}
+\likelihood = \exp \left[ -\frac{1}{2} \sum_{i = 1}^{N} \left<\tilde{n}_{i}(f) | \tilde{n}_{i}(f)\right> \right] \nonumber\\ 
+= \exp \left[ -\frac{1}{2} \sum_{i = 1}^{N} \left<\tilde{d}_{i}(f) - \tilde{s}_{i}(f, \vec{\pset})| \tilde{d}_{i}(f) - \tilde{s}_{i}(f, \vec{\pset})\right> \right] ,
+\end{eqnarray}
+where $N$ is the number of detectors in the network.
+The inner product $\langle\tilde{a} | \tilde{b}\rangle$ is
+\begin{equation}
+\left<\tilde{a}_i(f) | \tilde{b}_i(f)\right> = 4\Re \int_{0}^{\infty} \frac{\tilde{a}_i(f) \tilde{b}_i(f)}{S^{(i)}_n(f)} \mathrm{d}f \,,
+\end{equation}
+where $S^{(i)}_n(f)$ is the power spectral density of the $i$-th
+detector's noise.  Here, $\tilde{d}_{i}(f)$ and $\tilde{n}_{i}(f)$ are the
+frequency-domain representations of the data and noise, obtained by a Fourier
+transformation of $d_{i}(t)$ and $n_{i}(t)$, respectively.  The model waveform
+$\tilde{s}_{i}(f, \vec{\pset})$ may be computed directly in the frequency
+domain, or in the time domain and then Fourier transformed to the frequency
+domain.
+
+\section{Sampling}
+In order to explore the parameter space and produce marginalized posterior distributions for astrophysical parameters of interest we use a variety of stochastic sampling techniques. For all sampling methods though the general principle is the same.
+
+\subsection{Markov Chain Monte Carlo}
+% basic markov chain and ensemble sampling
+A common sampling technique is Markov Chain Monte Carlo (MCMC) where the sampler will assemble a chain of samples drawn from the parameter space according to several rules. The first sample in the chain is drawn randomly from the prior probability density function, then at each iteration a new sample is proposed. Each proposed sample is accepted or rejected according to a tunable acceptance probability, which depends on a comparison of the likelihoods of the previous and proposed samples. If the proposed sample is accepted it is appended to the chain, otherwise the previous sample is repeated instead. The cycle then repeats and sampling proceeds until the desired stopping criteria are satisfied. Ensemble MCMC sampling, where multiple Markov chains are initialized and advanced independently, is also commonly used as a more efficient means to explore a large parameter space.
+
+% autocorrelation length and independent samples
+Neighboring samples in a Markov chain are not independent of one another, since the nature of the sampling technique has each sample in the chain rely on the previous sample~\cite{Christensen:2004jm}. In order to identify samples in the chain that are independent, we calculate the autocorrelation length $\tau_K$, which is the characteristic length over which samples can be considered independent~\cite{Madras:1988ei}. For a Markov chain $X_l$ of length $l$, the autocorrelation length is
+\begin{equation}\label{eqn:acl}
+\tau_K = 1 + 2\sum_{i=1}^{K}\hat{R}_{i} ,
+\end{equation}
+where $K$ is the index of the first sample in the Markov chain satisfying $5\tau_K \leq K$. The autocorrelation function $\hat{R}_{i}$ is defined as
+\begin{equation}\label{eqn:acf}
+\hat{R}_{i} = \frac{1}{l \sigma^{2}} \sum_{t=1}^{l-i} \left( X_{t} - \mu \right) \left( X_{t+i} - \mu \right),
+\end{equation}
+where $X_t$ are the samples of $X_{l}$ between the 0-th and the $t$-th sample, $X_{t+i}$ are the samples of $X_{l}$ between the 0-th and the $(t+1)$-th sample, and $\mu$ and $\sigma^2$ are the mean and variance of $X_t$ respectively. We can then extract samples from a Markov chain that are representative of the posterior probability density function by drawing samples from the chain spaced by an interval of the autocorrelation length~\cite{Christensen:2004jm}.
+
+% parallel-tempered sampling
+An additional modification to typical MCMC sampling is to create parallel copies of each Markov chain at different ``temperatures," and advance chains of each temperature independently. Chains at a temperature $T$ will explore a modified likelihood so that the posterior probability density function becomes
+\begin{equation}
+p_{T}(\vec{\pset}|\vec{d}(t),H) = \frac{ \likelihood^{\frac{1}{T}} \prior }{p(\vec{d}(t)|H)} .
+\end{equation}
+This modification causes the Markov chains with a higher temperature to explore an effectively flatter likelihood landscape, increasing the probability that proposed steps are accepted and thus making these chains more likely to fully explore the parameter space and potentially find largely separated modes of high likelihood. As $T \to \infty$, the posterior probability density becomes just the (normalized) prior probability density. At each iteration the position of Markov chains are swapped between temperatures using an acceptance criteria described in Ref.~\cite{vousden:2016}, allowing information of the likelihood across the entire parameter space to propagate among all the chains. Upon completion of the analysis, posterior samples are taken only from chains where $T=1$, with independent samples extracted from the chains as described above.
+
+\subsection{Nested sampling}
+An alternative to MCMC sampling is ``nested" sampling~\cite{Skilling:2006,Feroz:2007kg,Speagle_2020}, which was initially designed as a means of efficiently computing the evidence but will also produce marginal posteriors as a useful byproduct.
+Nested sampling does not rely on chains of samples, but rather a constantly updating set of ``live points." To initialize the sampling, $N_{\mathrm{live}}$ samples are drawn from the prior volume and the likelihood $\mathcal{L}$ for each is calculated. Then at each iteration $i$ the live point with the lowest likelihood $\mathcal{L}_i$ is dropped from the set, and a new sample is drawn with the condition $\mathcal{L} > \mathcal{L}_i$. In this way, a nested sampler will progress through nested ``shells" of increasing likelihood, contracting onto any regions of high likelihood in the parameter space. The remaining prior volume $X_i$, defined as the fraction of the prior volume contained within an iso-likelihood contour with $\mathcal{L}=\mathcal{L}_i$, is then a monotonically decreasing sequence with
+\begin{equation}
+    1=X_0>X_1>\cdots>X_M>0
+\end{equation}
+after $M$ iterations. The evidence $\mathcal{Z}$ can then be numerically approximated by calculating the weighted sum over the discarded samples
+\begin{equation}\label{eqn:quadsumev}
+    \mathcal{Z} = \sum_{i=1}^{M} \mathcal{L}_{i}w_{i} ,
+\end{equation}
+where the weights $w_i$ are determined by the quadrature method used, and adding the contribution from the set of live points
+\begin{equation}
+    \mathcal{Z}_{\mathrm{live}} = \frac{X_M}{N_{\mathrm{live}}} \sum_{j=1}^{N_{\mathrm{live}}} \mathcal{L}_j .
+\end{equation}
+Upon completion of the run, every sample in the collection of discarded and live points is assigned the posterior weight~\cite{Feroz:2008xx}
+\begin{equation}\label{eqn:nestpostweight}
+    p_{j} = \frac{\mathcal{L}_{j}w_{j}}{\mathcal{Z}} ,
+\end{equation}
+where $j$ goes from $1$ to $M+N_{\mathrm{live}}$, and $w_{j>M}=X_M/N_{\mathrm{live}}$.
+These posterior weights can then be used to draw posterior samples from the full sequence of sampled points in the analysis~\cite{Feroz:2008xx}.
+
+Nested sampling is preferable to an MCMC sampler when calculating evidence, as the nested sampling algorithm more efficiently explores the full parameter space. However, the nested samplers available in \textit{PyCBC Inference} are more restrictive in the prior distributions that can be used; they draw samples from a unit interval for each source parameter in the analysis and require a transformation from this space to the desired prior probability distribution. We have also observed nested samplers will sometimes fail to produce reasonable posterior estimates for loud signals, which we discuss in more detail in the next section. In the case where the necessary prior transformation is unavailable, or when analyzing loud signals, an MCMC sampler will perform better than the nested samplers.
+
+
+\section{Practical considerations}
+In this section we describe specific details on the implementation of the principles of Bayesian parameter estimation for gravitational-wave astronomy. In particular, we outline the parameterized waveform models describing the binary inspiral signals that we seek to measure, and additional considerations about specific likelihood models and samplers that are used in this thesis.
+
+\subsection{Waveform model}
+The intrinsic parameters describing the gravitational wave radiated by a binary merger in its source frame include the component masses $m_{1,2}$, the three-dimensional spin vectors $\vec{s}_{1,2}$ of the compact objects~\cite{Hawking:1987en}, and the eccentricity $e$ of the binary~\cite{Peters:1964zz}. The ``coalescence phase'' $\phi$ describes the phase of the binary at a fiducial reference time, which is often taken to be the phase at the time of merger. For binaries containing neutron stars, additional parameters $\Lambda_{1,2}$ describe the tidal deformabilities~\cite{Flanagan:2007ix,Hinderer:2007mb} of the stars which depend on the equation of state and the masses. The signal observed by a gravitational-wave detector network on Earth depends on six additional parameters: the geocentric time of arrival $t_c$, the luminosity distance to the binary $d_L$, and four Euler angles that describe the transformation of the binary's source frame to the local frame of the detector network. These four angles are defined by the binary's right ascension $\alpha$, declination $\delta$, polarization angle $\Psi$, and inclination angle $\iota$ (the angle between the line of sight and the angular momentum axis of the binary).
+
+The binary's gravitational-wave phasing depends at leading order
+on its chirp mass $\mathcal{M} = (m_1 m_2)^{3/5} (m_1 + m_2)^{-1/5}$, where
+$m_{1}$ and $m_{2}$ are the binary's component masses~\cite{Peters:1963ux}; 
+this quantity will be most accurately measured 
+in a gravitational-wave detection. The mass ratio $\eta = m_1 m_2 / (m_1 +
+m_2)^2$ enters through higher-order corrections and is less accurately
+measured. 
+In this thesis, we restrict to binaries where the angular momenta $\chi_{1,2} = J_{1,2} /
+m_{1,2}^2$ of each compact object (often refereed to as the compact object's spins) are aligned with the orbital angular momentum vector of the binary, reducing the number of spin parameters in the waveform from six to two. We also only consider binaries in quasi-circular orbits, so $e=0$.
+
+The static neutron star tidal effects first enter at fifth post-Newtonian order
+and depend on the tidal deformability of each star $\Lambda_i$~\cite{Flanagan:2007ix,Hinderer:2009ca}.
+The parameter $\Lambda_i$ measures how much each neutron star deforms in the presence
+of a tidal field, and depends on the neutron star mass and equation of state implicitly through its
+dimensionless Love number $k_{2,i}$ and radius $R_i$:
+$\lambda_i=(2/3)k_{2,i}R_i^5$. At leading order, the tidal effects are imprinted in
+the gravitational-wave signal through the effective tidal deformability parameter
+\begin{equation}
+\tilde{\Lambda}
+= \frac{16}{13}\frac{(12q+1)\Lambda_1+(12+q)q^4\Lambda_2}{(1+q)^5}, \label{eq:pe_tech_lambda_t0}
+\end{equation}
+where $q = m_2/m_1 \leq 1$ is the binary's mass ratio. We ignore the dynamic tides in this thesis, as they do not significantly affect the waveform for the systems considered.
+
+
+Given a full set of parameters $\vec{\pset}$ one can generate a model of a gravitational-waveform from a binary merger using a variety of methods. These methods include: full numerical solutions of the Einstein equations (see Ref.~\cite{Cardoso:2014uka} and references therein), perturbation theory~\cite{Teukolsky:1972my,Berti:2009kk}, analytic models calibrated against numerical simulations~\cite{Buonanno:1998gg,Buonanno:2000ef,Damour:2000we,Damour:2001tu,Ajith:2007qp,Ajith:2009bn,Santamaria:2010yb}, and post-Newtonian (pN) theory (see e.g. Ref.~\cite{Blanchet2006} and references therein). 
+
+Gravitational-wave signals  consist of a superposition of harmonic
+modes. However, sub-dominant harmonics are too weak to be measured, and so in many cases it is sufficient to model only the dominant mode. In this case, the gravitational-wave signal has the same simple dependence on the fiducial phase $\phi$ in all detectors,
+\begin{equation}
+\tilde{s}_i(f, \vec{\pset}, \phi) = \tilde{s}_i^0(f, \vec{\pset}, 0) e^{i\phi}.
+\end{equation}
+The posterior probability $\posterior$ can be analytically marginalized over $\phi$
+for models that use this simplification~\cite{wainstein:1962}. If we assume a uniform prior on
+$\phi \in [0,2\pi)$, then using the notation of Section~\ref{sec:bayesian_inference} the logarithm of the marginalized posterior is
+\begin{eqnarray}
+\label{eqn:marginalized_phase}
+\log \posterior &\propto \log \prior +
+        I_0\left(\left|\sum_i O(\tilde{s}^0_i, \tilde{d}_i)\right|\right) \nonumber \\
+        & \qquad - \frac{1}{2}\sum_i\left[ \left<\tilde{s}^0_i, \tilde{s}^0_i\right> -
+                                \left<\tilde{d}_i, \tilde{d}_i\right> \right],
+\end{eqnarray}
+where
+\begin{equation*}
+\tilde{s}_i^0 \equiv \tilde{s}_i(f, \vec{\pset}, \phi=0),
+\end{equation*}
+\begin{equation*}
+O(\tilde{s}^0_i, \tilde{d}_i) \equiv 4 \int_0^\infty
+        \frac{\tilde{s}_i^*(f; \pset,0)\tilde{d}_i(f)}{S^{(i)}_n(f)}\mathrm{d}f,
+\end{equation*}
+and $I_0$ is the modified Bessel function of the first kind.
+
+In this thesis we use the TaylorF2~\cite{Sathyaprakash:1991mt,Buonanno:2009zt,Arun:2008kb,Mikoczi:2005dn,Bohe:2013cla,Vines:2011ud}, IMRPhenomD~\cite{Husa:2015iqa,Khan:2015jqa}, and IMRPhenomD\_NRTidal~\cite{Husa:2015iqa,Khan:2015jqa,Dietrich:2017aum} waveform models. TaylorF2 is a post-Newtonian waveform model, accurate to 3.5 pN order in orbital phase, 2.0 pN order in spin--spin, quadrupole--monopole and self-spin interactions, and 3.5 pN order in spin--orbit interactions. IMRPhenomD is a phenomenological model tuned to numerical relativity data, and includes representations of each of the inspiral, merger, and ringdown portions of a signal. IMRPhenomD\_NRTidal builds on the IMRPhenomD model by adding corrections to the gravitational-wave phase due to the tidal deformabilities of neutron stars. All waveforms are generated using their respective LIGO Algorithm Library~\cite{lal} implementation.
+
+\subsection{emcee\_pt}
+Several of the analyses in this thesis use the parallel-tempered MCMC sampler \\ \texttt{emcee\_pt}~\cite{Foreman_Mackey_2013,Vousden_2015}. In these analyses we found frequently that the sampler would fail to converge in a reasonable time, with the number of independent samples staying constant at around 3000 which results in a poorly sampled posterior distribution. \textit{PyCBC Inference} allows for specifying initial distributions for the MCMC chains, as opposed to having their positions drawn randomly from the prior. We found that drawing the initial positions from Gaussian distributions for each parameter, centered near the peak of the likelihood, would result in full convergence in a reasonably short amount of time. In practice, the location of the likelihood peak can be determined by a trial run where the chains are initialized from the full prior distribution, or is known \textit{a priori} as is the case when analyzing a simulated signal.
+
+Another consideration for the \texttt{emcee\_pt} sampler is the number of temperatures to be used in the analysis. In \textit{PyCBC Inference} this is a tunable setting which can be specified by supplying either an integer, in which case the sampler will automatically pick the temperature spacing, or as an array of inverse-temperatures, with each inverse-temperature specified by $\beta_i=1/T_i$. Generally, a sufficient number of temperatures, and appropriate placement of them, is an important consideration when performing analyses meant to calculate evidence, as this calculation is done via thermodynamic integration and can easily produce inaccurate results for poor choices of temperatures. However in the analyses we perform we are only concerned with measuring posterior probability distributions for various parameters of interest, and as such we found that using $3$ temperatures with the sampler's automatic spacing was sufficient.
+
+\subsection{dynesty}
+In Ch.~\ref{ch:rel-bin-pe} we use the \texttt{dynesty} nested sampler~\cite{Speagle_2020} for our analysis. We found that when sampling in component masses $m_{1,2}$, this sampler would sometimes struggle to explore the parameter space fully. As a result the sampler would miss regions of high likelihood, and would prematurely claim to have reached its stopping criteria. The posterior distributions in these cases would appear ``patchy," with many small, disjoint regions. We found that in many cases this problem could be avoided by sampling in the natural mass coordinates of a gravitational-wave signal according to post-Newtonian theory, namely the chirp mass $\mathcal{M}$ and mass ratio $q=m_1/m_2$ or symmetric mass ratio $\eta=m_{1}m_{2}/(m_{1}+m_{2})^2$. However for very loud signals, with signal-to-noise ratio $\rho \gtrsim 75$, we sometimes saw the same issue even when sampling in the natural mass coordinates. We did not find any satisfactory solution to this problem in the case of loud signals, so for these signals we recommend the use of a different sampler.
+
+\subsection{Long duration signals}
+Gravitational-wave detectors that use an L-shaped interferometer design, such as the two LIGO detectors and the Virgo detector, have the greatest sensitivity in the direction normal to the plane of the detector arms. This direction is a time-dependent quantity though, as the Earth rotates and moves along its orbit around the sun. Typical parameter estimation analyses will neglect any time-dependence in the detector sensitivity, as the duration of a signal in the sensitive frequency band of current generation detectors is only a few minutes, over which time the antenna pattern can be reasonably approximated as constant. However, third-generation detectors such as Cosmic Explorer will have good sensitivity down to much lower frequencies, which can translate into a low-mass binary inspiral signal staying in the sensitive band for an hour or longer. At this point the time-dependence of the detector antenna pattern becomes non-negligible and it is important that the template waveform used in a likelihood calculation accounts for the variation in sensitivity over its duration. Currently, the relative likelihood model in \textit{PyCBC Inference} has an option which will apply a time-dependent detector antenna response to the template waveforms, and we use this functionality for analyses in this work that use a third-generation detector.
+
+\subsection{Relative likelihood}
+In Ch.~\ref{ch:rel-bin-pe} and Ch.~\ref{ch:eos-meas} we use the relative likelihood model available in \textit{PyCBC Inference} which uses an approximation to the likelihood near its peak in order to reduce run time~\cite{Cornish:2010kf,Zackay:2018qdy,Finstad:2020sok}. In practice, the use of this likelihood model requires some care as the approximation it uses is not valid far from the peak of the likelihood. A specific failure mode we encountered would happen when attempting to explore a large prior volume, which allowed sampling parameter space far from the likelihood peak. In this failure mode we would see the analysis would ``run away" to erroneously large likelihoods, generally for parameter values near the boundaries of the prior volume. To prevent this failure we found that placing a mild restriction on the prior volume was broadly effective. Specifically we found that restricting the chirp mass $\mathcal{M}$ to within $\sim 20\%$ of the expected signal would ensure proper convergence. Alternatively (or in addition) the relative likelihood model can be tuned to use more frequency bins in the likelihood calculation which we found would sometimes also prevent this failure.
